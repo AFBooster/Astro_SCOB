@@ -34,6 +34,16 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .story{font-size:14.5px;margin:10px 0;}
 .hint{font-size:13px;color:var(--mute);}
 .tagline{color:var(--gold);font-weight:700;font-size:13px;margin-top:8px;}
+/* sky lore around the world */
+.wlore{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-top:14px;}
+.wlore h4{margin:0 0 8px;font-size:13px;color:var(--cyan);font-weight:800;}
+.wlrow{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line);}
+.wlrow:first-of-type{border-top:0;}
+.wlrow .cul{flex:0 0 74px;font-size:12px;font-weight:800;color:var(--gold);}
+.wlrow .wl{font-size:13px;line-height:1.5;}
+.wlrow .wl b{color:var(--white);}
+.wlrow .wl .mn{color:var(--mute);}
+.wlore .wcap{font-size:11.5px;color:var(--mute);margin-top:9px;line-height:1.5;}
 h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);margin:14px 0 4px;}
 .others{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
 .others button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:6px 11px;font-size:12.5px;cursor:pointer;}
@@ -359,6 +369,43 @@ function attachChart(){
     box.onpointermove=function(e){if(!dragging||viewMode==='top')return;var dx=e.clientX-dragX;dragX=e.clientX;panFrac=Math.max(0,Math.min(1,panFrac+dx/260));if(sl)sl.value=Math.round(panFrac*100);updateChart();};
     box.onpointerup=box.onpointercancel=function(){dragging=false;};}
 }
+/* ---- Sky lore around the world (verified names; Singapore's own communities) ----
+   Each entry: [culture label, name, meaning]. Chinese/Malay/Indian traditions each
+   drew their own patterns, so these are not always the exact same stars as the Greek
+   figure — noted where it differs. Sources: Chinese lunar-mansion system, Malay/Javanese
+   sky-lore, and the Indian nakshatra tradition. */
+var WORLDLORE={
+ 'Orion':[
+   ['Chinese','參 (Shēn) — “the Three Stars”','Orion’s belt named the 21st lunar mansion; China, like Greece, also saw a great hunter here.'],
+   ['Malay','Bintang Tiga Beradik — “the three sibling stars”','the belt — used low in the west to find the <b>qibla</b>, the direction of prayer.'],
+   ['Indian','Mrigashira — “the deer’s head”','the 5th <i>nakshatra</i>; the Rigveda calls this region Mriga, the deer.']],
+ 'Taurus':[
+   ['Chinese','昴 (Mǎo)','the 18th lunar mansion — the “hairy head” of the White Tiger of the West (the Pleiades cluster).'],
+   ['Malay','Bintang Tujuh — “the seven stars”','the Malay name for the Pleiades, the little misty knot of stars on the Bull’s shoulder.'],
+   ['Indian','Krittika — “the cutters”','the Pleiades: the six mothers of the war-god Murugan, and wives of the Seven Sages.']],
+ 'Scorpius':[
+   ['Chinese','心 (Xīn) — “the Heart”','red Antares and its two flankers are the Heart of the <b>Azure Dragon of the East</b>; Antares was tied to fire.'],
+   ['Malay','Kalajengking — “the scorpion”','the Malay world saw a scorpion too; in Java the same stars were a “leaning coconut tree.”'],
+   ['Indian','Jyeshtha — “the eldest”','Antares marks this <i>nakshatra</i>, imagined as an elder’s earring or umbrella.']],
+ 'Crux':[
+   ['Malay','Buruj Pari / Bintang Pari — “the stingray”','across the Malay world the Southern Cross is a ray fish gliding across the sky.'],
+   ['Javanese','Gubug Penceng — “the lopsided hut”','also “the granary” — its tilted shape read as a little leaning shed.'],
+   ['Note','far south','too low in the old Chinese and Indian skies to earn a classical name — a Southern-Hemisphere treasure we see well from the equator.']],
+ 'Canis Major':[
+   ['Chinese','天狼 (Tiānláng) — “the Celestial Wolf”','Sirius, the brightest star, was a lone wolf said to warn of invasion and plunder.'],
+   ['Western','the Dog Star','Sirius is the eye/heart of Orion’s hunting dog — the origin of the “dog days” of summer.'],
+   ['Indian','Mrigavyadha — “the deer-hunter”','Sirius as the hunter who chases Mriga (Orion), a very old Vedic image.']],
+ 'Ursa Major':[
+   ['Chinese','北斗 (Běidǒu) — “the Northern Dipper”','the seven stars that swing around the pole and point the way north.'],
+   ['Malay','Buruj Biduk — “the ladle”','the same dipper shape, seen as a scoop.'],
+   ['Indian','Saptarishi — “the Seven Sages”','the seven great rishis of Hindu tradition (earlier, in the Rigveda, simply the Bear).']]
+};
+function worldLoreHTML(name){
+  var L=WORLDLORE[name];if(!L)return '';
+  return '<div class="wlore"><h4>🌏 The same stars, around the world</h4>'+
+    L.map(function(r){return '<div class="wlrow"><div class="cul">'+r[0]+'</div><div class="wl"><b>'+r[1]+'</b> <span class="mn">— '+r[2]+'</span></div></div>';}).join('')+
+    '<div class="wcap">Singapore’s Chinese, Malay and Indian communities each inherited their own map of these stars. Different cultures often grouped them differently, so these are not always the exact figure the Greeks drew.</div></div>';
+}
 function render(featName){
   var date=theDate();
   var scored=CONST.map(function(c){return {c:c,p:meanAltAz(c,date)};}).sort(function(a,b){return b.p.alt-a.p.alt;});
@@ -382,7 +429,8 @@ function render(featName){
     '<div class="galaxy" id="galaxy"></div>'+
     '<div class="story">'+body+'</div>'+
     '<h3>How to find it</h3><div class="hint">'+st.f+'</div>'+
-    '<div class="tagline">Best on Singapore evenings: '+st.s+'</div>';
+    '<div class="tagline">Best on Singapore evenings: '+st.s+'</div>'+
+    worldLoreHTML(c[0]);
   updateChart();attachChart();
   var oh=document.getElementById('others');
   oh.innerHTML=scored.map(function(o){var u=o.p.alt>15;return '<button type="button" class="'+(u?'up':'')+'" data-c="'+o.c[0]+'">'+o.c[0]+(u?' · '+Math.round(o.p.alt)+'°':'')+'</button>';}).join('');

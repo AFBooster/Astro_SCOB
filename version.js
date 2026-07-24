@@ -13,7 +13,7 @@
  *   ./check-release.sh
  * to confirm everything is in sync before uploading.
  */
-window.SCOB_VERSION   = 'v3.44';
+window.SCOB_VERSION   = 'v3.45';
 window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do not roll forward
 
 (function () {
