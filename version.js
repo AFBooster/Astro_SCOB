@@ -13,8 +13,8 @@
  *   ./check-release.sh
  * to confirm everything is in sync before uploading.
  */
-window.SCOB_VERSION   = 'v3.42';
-window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.cc';   // year of creation — do not roll forward
+window.SCOB_VERSION   = 'v3.43';
+window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.app';   // year of creation — do not roll forward
 
 (function () {
   function fill() {
