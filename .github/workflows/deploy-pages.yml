@@ -63,6 +63,8 @@ jobs:
           cp -v icon-*.png      _site/ 2>/dev/null || true
           # Make the bare site URL open the dashboard directly.
           if [ -f scob-dashboard-v3.html ]; then cp -v scob-dashboard-v3.html _site/index.html; fi
+          # Custom domain — written on every build so the GitHub Actions deploy never resets it.
+          echo 'afbooster.online' > _site/CNAME
           echo "----- staged for publish -----"
           ls -la _site
 
