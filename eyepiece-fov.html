@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eyepiece &amp; Field of View — SCOB Night-Sky</title>
+<meta name="description" content="Pick a SCOB telescope and eyepiece to see the magnification, true field of view and exit pupil, with the target framed to scale so you can choose the right eyepiece.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:720px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px;}
+.card h2{margin:0 0 10px;font-size:15px;color:var(--cyan);}
+label{display:block;font-size:12px;color:var(--mute);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.3px;}
+select,input{width:100%;background:#0e1a38;color:var(--white);border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:14px;}
+.two{display:flex;gap:8px;}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+.stat .b{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+.stat .k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.3px;}
+.stat .v{font-size:20px;font-weight:800;color:var(--gold);line-height:1.2;}
+.stat .v small{font-size:12px;color:var(--mute);font-weight:600;}
+.warn{margin-top:10px;font-size:12.5px;border-radius:9px;padding:8px 10px;}
+.warn.ok{background:rgba(95,211,138,.12);color:#9be9b8;}
+.warn.bad{background:rgba(255,107,107,.14);color:#ffb4b4;}
+.fov{display:flex;flex-direction:column;align-items:center;}
+.fov svg{width:100%;max-width:320px;height:auto;}
+.cap{font-size:12.5px;color:var(--mute);text-align:center;margin-top:8px;}
+.reco{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;background:var(--navy3);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:8px;color:var(--white);font-family:inherit;font-size:13.5px;cursor:pointer;}
+.reco:hover{border-color:var(--cyan);}
+.reco.best{border-color:var(--gold);}
+.reco .rk{font-size:17px;line-height:1.2;flex:0 0 auto;}
+.reco .nm{font-weight:800;}
+.reco.best .nm{color:var(--gold);}
+.reco .rw{color:var(--mute);font-size:12.5px;line-height:1.5;margin-top:2px;}
+.reco .rs{color:var(--cyan);font-size:12px;font-weight:700;margin-top:3px;}
+.reco.no{cursor:default;opacity:.72;border-style:dashed;}
+.reco.no .nm{color:#ffb4b4;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔭 Eyepiece &amp; Field of View</h1>
+    <div class="loc">Pick a SCOB scope + eyepiece and see how a target frames up — magnification, true field &amp; exit pupil. Science Centre Observatory, Jurong.</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="telescope-types.html">🔭 Telescope guide</a>
+      <a href="tonights-tour.html">🎟️ Tonight's Tour</a>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1 · Telescope</h2>
+      <label>SCOB instrument (preset)</label>
+      <select id="scopePreset"></select>
+      <div class="two">
+        <div style="flex:1"><label>Aperture (mm)</label><input id="ap" type="number" value="406"></div>
+        <div style="flex:1"><label>Focal length (mm)</label><input id="fl" type="number" value="4064"></div>
+      </div>
+      <h2 style="margin-top:16px">2 · Eyepiece</h2>
+      <label>Eyepiece (preset)</label>
+      <select id="epPreset"></select>
+      <div class="two">
+        <div style="flex:1"><label>EP focal length (mm)</label><input id="epfl" type="number" value="25"></div>
+        <div style="flex:1"><label>Apparent FOV (°)</label><input id="epafov" type="number" value="52"></div>
+      </div>
+      <div class="stat" style="margin-top:14px">
+        <div class="b"><div class="k">Magnification</div><div class="v" id="mag">—</div></div>
+        <div class="b"><div class="k">True field of view</div><div class="v" id="tfov">—</div></div>
+        <div class="b"><div class="k">Exit pupil</div><div class="v" id="exit">—</div></div>
+        <div class="b"><div class="k">Focal ratio</div><div class="v" id="fr">—</div></div>
+      </div>
+      <div class="warn" id="warn"></div>
+    </div>
+
+    <div class="card fov">
+      <h2 style="align-self:flex-start">3 · Framing</h2>
+      <label style="align-self:flex-start;width:100%">Target to frame</label>
+      <select id="target" style="margin-bottom:12px"></select>
+      <svg id="fovsvg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The chosen target drawn to scale inside the eyepiece field of view"></svg>
+      <div class="cap" id="cap">—</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>4 · Which eyepiece should I use?</h2>
+    <div id="recos"></div>
+    <div class="cap" id="recnote" style="text-align:left;margin-top:10px"></div>
+  </div>
+
+  <div class="foot">
+    Magnification = telescope focal length ÷ eyepiece focal length · true field = apparent field ÷ magnification · exit pupil = aperture ÷ magnification. Preset scope specs are typical values — adjust the boxes for your exact instrument. Target angular sizes are approximate.<br>
+    The recommender ranks the eyepiece case for the chosen target: it rules out anything past 2× aperture or ~250× (Singapore seeing), or with an exit pupil over 7 mm, then scores what is left on framing, image scale and — for faint objects under Jurong's bright sky — exit pupil, since roughly a 3 mm exit pupil keeps the background darkest. Treat it as a starting point, not gospel: the sky, the target's altitude and your own eye all get a vote.<br>
+    Companion pages: <a href="telescope-types.html">telescope guide &amp; magnification</a> · <a href="scob-dashboard-v3.html">dashboard</a> · <a href="tonights-tour.html">Tonight's Tour</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script>
+"use strict";
+// SCOB fleet presets [aperture mm, focal length mm]
+var SCOPES=[
+  ['40 cm (16") Cassegrain — main dome',406,4064],
+  ['15 cm (6") apo refractor — main dome',152,1200],
+  ['28 cm (11") SCT — CPC 1100',279,2800],
+  ['20 cm (8") SCT — CPC 800',203,2032],
+  ['18 cm (7") Maksutov — 2nd dome',180,2700],
+  ['15 cm (6") C6 SCT — deck',150,1500],
+  ['Seestar S30 Pro (30 mm f/5)',30,150]
+];
+var EPS=[
+  ['40 mm Plössl (43°)',40,43],['32 mm Plössl (52°)',32,52],['25 mm Plössl (52°)',25,52],
+  ['15 mm wide (60°)',15,60],['10 mm wide (60°)',10,60],['9 mm (72°)',9,72],['6 mm (60°)',6,60]
+];
+// targets: name, angular size in arc-minutes (diameter); doubles carry sep in arcsec;
+// 4th field = observing class, used by the eyepiece recommender:
+//   'wide' frame it · 'faint' frame it but watch sky-glow · 'planet'/'glob' power matters · 'double' must split
+// 5th field (doubles only) = the separation that actually has to be RESOLVED, where that
+//   differs from the separation drawn. ε Lyrae is drawn as its wide 210″ pair, but the
+//   thing you are really trying to split is each component's own ~2.4″ pair.
+var TARGETS=[
+  ['Full Moon',31,null,'wide'],['Sun (with filter!)',32,null,'wide'],
+  ['Jupiter — disc',0.7,null,'planet'],['Jupiter + 4 moons (span)',10,null,'wide'],
+  ['Saturn + rings',0.75,null,'planet'],['Mars — disc',0.3,null,'planet'],
+  ['Orion Nebula (M42)',60,null,'faint'],['Lagoon Nebula (M8)',60,null,'faint'],
+  ['Pleiades (M45)',110,null,'wide'],['Andromeda (M31)',180,null,'faint'],
+  ['Omega Centauri',36,null,'glob'],['Hercules Cluster (M13)',20,null,'glob'],
+  ['Albireo (double)',null,35,'double'],['Double-Double (ε Lyr)',null,210,'double',2.4]
+];
+function opt(sel,arr,i){sel.innerHTML=arr.map(function(a,j){return '<option value="'+j+'">'+a[0]+'</option>';}).join('');sel.value=i;}
+var $=function(id){return document.getElementById(id);};
+opt($('scopePreset'),SCOPES,0);opt($('epPreset'),EPS,2);opt($('target'),TARGETS,0);
+$('scopePreset').onchange=function(){var s=SCOPES[+this.value];$('ap').value=s[1];$('fl').value=s[2];calc();};
+$('epPreset').onchange=function(){var e=EPS[+this.value];$('epfl').value=e[1];$('epafov').value=e[2];calc();};
+['ap','fl','epfl','epafov','target'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+function calc(){
+  var ap=+$('ap').value,fl=+$('fl').value,epfl=+$('epfl').value,afov=+$('epafov').value;
+  if(!ap||!fl||!epfl||!afov){return;}
+  var mag=fl/epfl, tfov=afov/mag, exit=ap/mag, fr=fl/ap;
+  $('mag').innerHTML=Math.round(mag)+'<small>×</small>';
+  var tfovMin=tfov*60;
+  $('tfov').innerHTML=(tfov>=1?tfov.toFixed(2)+'<small>°</small>':Math.round(tfovMin)+'<small>′</small>');
+  $('exit').innerHTML=exit.toFixed(1)+'<small> mm</small>';
+  $('fr').innerHTML='f/'+fr.toFixed(1);
+  var maxUseful=2*ap; var w=$('warn');
+  if(mag>maxUseful){w.className='warn bad';w.innerHTML='⚠️ Over the useful limit (~'+Math.round(maxUseful)+'× for this aperture) — the image will be dim &amp; fuzzy. Use a longer eyepiece.';}
+  else if(exit>7){w.className='warn bad';w.innerHTML='⚠️ Exit pupil '+exit.toFixed(1)+' mm is wider than a dark-adapted eye (~7 mm) — light is wasted, and on a Cassegrain/SCT the central shadow may appear. Use a shorter eyepiece.';}
+  else{w.className='warn ok';w.innerHTML='✔ A comfortable, usable combination (exit pupil '+exit.toFixed(1)+' mm).';}
+  drawFOV(tfovMin);
+  recommend();
+}
+/* ---------- Best-eyepiece recommender ----------
+   Ranks every eyepiece in the SCOB case for the selected target on the selected scope.
+   Ceilings applied: 2× aperture (the classic useful-magnification limit) and ~250×,
+   which is about all Singapore's low-altitude seeing will usually carry. */
+function recommend(){
+  var ap=+$('ap').value, fl=+$('fl').value;
+  var box=$('recos'), note=$('recnote');
+  if(!ap||!fl||!box)return;
+  var t=TARGETS[+$('target').value], kind=t[3]||'wide';
+  var capUse=2*ap, capSee=250, cap=Math.min(capUse,capSee);
+  if(ap<=50&&fl<=250){   // Seestar-class smart telescope — sealed camera, no eyepiece at all
+    box.innerHTML='<button type="button" class="reco no"><span class="rk">📷</span><span><span class="nm" style="color:var(--cyan)">This one takes no eyepiece</span>'+
+      '<div class="rw">The Seestar is a sealed smart telescope — you frame and view on the phone app, not through glass. Its field is fixed at roughly <b>1.3° × 2.3°</b>, which is why it swallows the Pleiades and Andromeda whole while the big domes cannot. Pick a dome instrument above to rank eyepieces.</div></span></button>';
+    note.innerHTML='';return;
+  }
+  var rows=EPS.map(function(e,i){
+    var mag=fl/e[1], tf=e[2]/mag*60, ex=ap/mag;
+    var r={i:i,e:e,mag:mag,tf:tf,ex:ex,ok:true,why:'',score:-99,ideal:0};
+    if(mag>cap){r.ok=false;r.why=Math.round(mag)+'× is '+(capUse<capSee?'past the useful limit for a '+ap+' mm aperture (~'+Math.round(capUse)+'×)':'more than Singapore seeing usually carries (~250×)')+' — dim and mushy.';return r;}
+    if(ex>7){r.ok=false;r.why='Exit pupil '+ex.toFixed(1)+' mm is wider than a dark-adapted pupil — light spills past your eye'+(fl/ap>7?', and on a Cassegrain the central shadow can appear':'')+'.';return r;}
+    var s=0,n=[];
+    if(kind==='double'){
+      var sep=t[4]||t[2];                           // the gap that must actually be resolved
+      var appMin=sep*mag/60;                        // apparent separation in arc-minutes
+      if(appMin<4){r.ok=false;r.why='Opens the '+sep+'″ gap to only '+appMin.toFixed(1)+'′ apparent — too tight to show cleanly.';return r;}
+      // Enough power to split (240″ apparent ≈ 4′), but a double also wants real image scale
+      // to show colour and contrast — hence the aperture term.
+      r.ideal=Math.min(Math.max((240/sep)*2.5,0.35*ap),cap);
+      s=-Math.abs(Math.log(mag/r.ideal));
+      n.push('Opens the '+sep+'″ gap to '+appMin.toFixed(0)+'′ apparent — an easy, obvious split'+(t[4]?' of each tight pair':'')+'.');
+    } else if(kind==='planet'||kind==='glob'){
+      r.ideal=Math.min(kind==='planet'?1.3*ap:0.7*ap, kind==='planet'?220:180, cap);
+      s=-Math.abs(Math.log(mag/r.ideal));
+      n.push(Math.round(mag)+'× — '+(kind==='planet'?'enough scale for belts, rings and disc detail without turning to mush':'enough power to start resolving the cluster into individual stars'));
+    } else {
+      var fill=t[1]/tf;
+      // A little overflow is fine in practice — you still get the bright core, which is what
+      // visitors actually see. Beyond ~1.6× the field it stops reading as an object at all.
+      if(fill>1.6){r.ok=false;r.why='Target is '+fill.toFixed(1)+'× wider than the '+(tf>=60?(tf/60).toFixed(2)+'°':Math.round(tf)+'′')+' field — too big to make sense of.';return r;}
+      s=-1.2*Math.abs(Math.log(fill/0.55));
+      n.push(fill>1?'Shows the bright core at '+Math.round(fill*100)+'% of the field — the outer glow spills past the edge.'
+                   :'Frames it at '+Math.round(fill*100)+'% of the field width — comfortably surrounded by sky.');
+      if(kind==='faint'){
+        var ep=Math.max(1.2,Math.min(ex,6.9));
+        s-=0.8*Math.abs(Math.log(ep/3));            // ~3 mm exit pupil is the contrast sweet spot under Bortle 8
+        n.push(ex>4.5?'⚠ A '+ex.toFixed(1)+' mm exit pupil pours Jurong sky-glow into the view and washes the contrast out.'
+                     :'Exit pupil '+ex.toFixed(1)+' mm keeps the background sky properly dark.');
+      }
+    }
+    r.score=s;r.why=n.join(' ');return r;
+  });
+  var ok=rows.filter(function(r){return r.ok;}).sort(function(a,b){return b.score-a.score;});
+  var bad=rows.filter(function(r){return !r.ok;});
+  var html='',medal=['🥇','🥈','🥉'];
+  if(ok.length){
+    ok.slice(0,3).forEach(function(r,j){
+      html+='<button type="button" class="reco'+(j===0?' best':'')+'" data-ep="'+r.i+'"><span class="rk">'+medal[j]+'</span><span><span class="nm">'+r.e[0]+'</span>'+
+        '<div class="rw">'+r.why+'</div><div class="rs">'+Math.round(r.mag)+'× · field '+(r.tf>=60?(r.tf/60).toFixed(2)+'°':Math.round(r.tf)+'′')+' · exit pupil '+r.ex.toFixed(1)+' mm — tap to load it above</div></span></button>';});
+  }
+  var msg='';
+  if(!ok.length){
+    var over=bad.filter(function(r){return /overflows/.test(r.why);}).length;
+    var alt=rows.slice().sort(function(a,b){return b.tf-a.tf;})[0];
+    html='<button type="button" class="reco no"><span class="rk">⚠️</span><span><span class="nm">Nothing in the case is a good match here</span>'+
+      '<div class="rw">'+(over?'At '+Math.round(fl)+' mm focal length even the longest eyepiece frames only '+(alt.tf>=60?(alt.tf/60).toFixed(2)+'°':Math.round(alt.tf)+'′') +', and this target is '+(t[1]>=60?(t[1]/60).toFixed(1)+'°':t[1]+'′')+' across. Use a shorter-focal-length scope (the C6, the 6″ refractor or the Seestar), or show it in sections.'
+        :'Every combination lands outside a comfortable exit pupil or past the useful magnification limit for this aperture.')+'</div></span></button>';
+  } else {
+    var w=ok[0];
+    if(w.ideal&&w.mag<0.62*w.ideal)
+      msg='💡 Even the best match here is well under the ~'+Math.round(w.ideal)+'× this target can take on this scope. A <b>2× Barlow</b> on the '+w.e[1]+' mm would give '+Math.round(w.mag*2)+'× — worth trying if the seeing is steady.';
+    else if(w.ideal&&w.mag>1.6*w.ideal)
+      msg='💡 This is the gentlest combination available, but it is still more power than the target really wants — expect a dim image on a soft night.';
+  }
+  var skipped=bad.length;
+  note.innerHTML=(msg?msg+'<br><br>':'')+
+    'Ranked for <b>'+t[0]+'</b> on a '+ap+' mm f/'+(fl/ap).toFixed(1)+' scope'+(skipped?' · '+skipped+' eyepiece'+(skipped>1?'s':'')+' ruled out (over-magnified, over-wide exit pupil, or the target overflows the field)':'')+
+    '.<br>Ceilings used: <b>'+Math.round(capUse)+'×</b> (2× aperture, the classic useful limit) and <b>250×</b> — about all Singapore&rsquo;s hot, low-altitude seeing will usually carry on a typical night. On an exceptionally steady night you can push past 250×; on a shimmering one, back off.';
+  box.innerHTML=html;
+  Array.prototype.forEach.call(box.querySelectorAll('.reco[data-ep]'),function(b){
+    b.onclick=function(){var e=EPS[+b.getAttribute('data-ep')];
+      $('epPreset').value=b.getAttribute('data-ep');$('epfl').value=e[1];$('epafov').value=e[2];calc();};});
+}
+function drawFOV(tfovMin){
+  var t=TARGETS[+$('target').value];var name=t[0],sizeMin=t[1],sepArcsec=t[2];
+  var R=118, cx=150, cy=138;                 // field circle (kept clear of edges & labels)
+  var s='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="#08101f" stroke="#5bd6e0" stroke-width="2"/>';
+  s+='<line x1="'+cx+'" y1="'+(cy-R)+'" x2="'+cx+'" y2="'+(cy+R)+'" stroke="#1a2b56" stroke-width="1"/>';
+  s+='<line x1="'+(cx-R)+'" y1="'+cy+'" x2="'+(cx+R)+'" y2="'+cy+'" stroke="#1a2b56" stroke-width="1"/>';
+  var fit=true, capExtra='';
+  if(sepArcsec!=null){                        // double star: two dots at true separation
+    var sepMin=sepArcsec/60; var px=2*R*(sepMin/tfovMin); // diameter scale
+    fit = sepMin < tfovMin*0.9; px=Math.min(px,2*R*0.9);
+    s+='<circle cx="'+(cx-px/2).toFixed(1)+'" cy="'+cy+'" r="4" fill="#f5c542"/><circle cx="'+(cx+px/2).toFixed(1)+'" cy="'+cy+'" r="3.4" fill="#bcd4ff"/>';
+    capExtra=' · separation '+sepArcsec+'″';
+  } else {
+    var trueR=R*(sizeMin/tfovMin);            // to-scale radius (full field diameter = tfovMin)
+    fit = sizeMin <= tfovMin;
+    var drawR=Math.min(trueR,R);              // never spill outside the field circle
+    var col=/Moon|Sun/.test(name)?'#d9def0':(/Jupiter|Saturn|Mars/.test(name)?'#f0d9a8':'#9fd7ff');
+    var faint=/Nebula|Pleiades|Andromeda|Centauri|Cluster/.test(name);
+    s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+drawR.toFixed(1)+'" fill="'+col+'" fill-opacity="'+(faint?0.32:0.85)+'" stroke="'+col+'" stroke-width="'+(fit?1:2)+'"'+(fit?'':' stroke-dasharray="4 3"')+'/>';
+    capExtra=' · '+(sizeMin>=60?(sizeMin/60).toFixed(1)+'° across':sizeMin+'′ across')+(fit?'':' — '+(sizeMin/tfovMin).toFixed(1)+'× the field');
+  }
+  s+='<text x="'+cx+'" y="'+(cy+R+20)+'" text-anchor="middle" fill="#9fb0d6" font-size="11">field of view '+(tfovMin>=60?(tfovMin/60).toFixed(2)+'°':Math.round(tfovMin)+'′')+'</text>';
+  $('fovsvg').innerHTML=s;
+  $('cap').innerHTML='<b style="color:'+(fit?'#9be9b8':'#ffb4b4')+'">'+name+'</b>'+capExtra+' — '+(fit?'fits in the field ✔':'bigger than the field — use a lower-power (longer) eyepiece');
+}
+calc();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

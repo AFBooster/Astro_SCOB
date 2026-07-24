@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Cards — SCOB Night-Sky</title>
+<meta name="description" content="Printable one-per-object cards for the SCOB showpieces — a fact, where to look, and the right telescope — to place beside each scope.">
+<style>
+:root{--navy:#0b1733;--navy2:#13224a;--gold:#c8971a;--cyan:#0a7f8c;--ink:#1a2440;--mute:#5a6683;--line:#c9d2e6;}
+*{box-sizing:border-box;margin:0;}
+body{background:#eef1f8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 40px;}
+header h1{font-size:22px;color:#0b1733;margin:0;}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.bar button,.bar select{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;}
+.bar .print{background:var(--gold);color:#fff;border-color:var(--gold);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 15px;break-inside:avoid;}
+.card .top{display:flex;align-items:center;gap:10px;}
+.card .ic{width:48px;height:48px;flex:0 0 auto;}
+.card .ic svg{width:48px;height:48px;display:block;border-radius:8px;background:#0b1020;}
+.card h3{font-size:17px;color:#0b1733;line-height:1.1;}
+.card .kind{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.4px;}
+.card .fact{font-size:13.5px;margin:9px 0;}
+.card .look{font-size:12.5px;color:var(--cyan);font-weight:600;}
+.card .scope{font-size:12px;color:var(--mute);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px;}
+.card .qrrow{display:flex;align-items:center;gap:9px;margin-top:8px;border-top:1px dashed var(--line);padding-top:8px;}
+.card .qr{width:74px;height:74px;flex:0 0 auto;background:#fff;}
+.card .qr img,.card .qr canvas{width:74px !important;height:74px !important;display:block;}
+.card .qrcap{font-size:11px;color:var(--mute);line-height:1.3;}
+.card .qrcap b{color:#0b1733;}
+.foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px;}
+.foot a{color:var(--cyan);}
+.hint{font-size:12.5px;color:var(--mute);margin-bottom:10px;}
+@media print{
+  body{background:#fff;font-size:12px;}
+  .bar,.hint,.foot,header .loc{display:none;}
+  .grid{grid-template-columns:repeat(3,1fr);gap:8px;}
+  .card{border:1px solid #999;border-radius:8px;padding:9px 10px;}
+  .card h3{font-size:13px;} .card .ic{width:38px;height:38px;} .card .ic svg{width:38px;height:38px;} .card .fact{font-size:11px;margin:6px 0;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🃏 Object Cards</h1>
+    <div class="loc">Printable one-per-object cards — a fact, where to look &amp; the right scope. Place them beside each telescope. Science Centre Observatory, Jurong.</div>
+  </header>
+  <div class="bar">
+    <a href="scob-dashboard-v3.html">← Dashboard</a>
+    <select id="filter">
+      <option value="all">All objects</option>
+      <option value="planet">Planets &amp; Moon</option>
+      <option value="dso">Deep-sky (clusters &amp; nebulae)</option>
+      <option value="star">Stars &amp; double stars</option>
+    </select>
+    <button type="button" class="print" id="print">🖨 Print cards</button>
+  </div>
+  <div class="hint">Tip: print double-sided or on card stock, cut along the boxes, and laminate for reuse on the observing deck.</div>
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    Facts are docent talking points — keep it conversational. Positions aren't shown here (they change nightly) — use the <a href="scob-dashboard-v3.html">dashboard</a> or <a href="tonights-tour.html">Tonight's Tour</a> for what's up. · Science Centre Observatory, Singapore.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro;
+function ic(sp){return sp.kind==='moon'?'🌙':sp.kind==='planet'?'🪐':sp.kind==='double'?'✨':sp.kind==='star'?'⭐':'🌌';}
+function kindLabel(sp){return sp.kind==='planet'?'Planet':sp.kind==='moon'?'Moon':sp.kind==='double'?'Double star':sp.kind==='star'?'Star':'Deep-sky object';}
+function render(){
+  var f=document.getElementById('filter').value;
+  var list=A.SHOWPIECES.filter(function(sp){
+    if(f==='all')return true;
+    if(f==='planet')return sp.kind==='planet'||sp.kind==='moon';
+    if(f==='dso')return sp.kind==='dso';
+    if(f==='star')return sp.kind==='star'||sp.kind==='double';
+    return true;});
+  document.getElementById('grid').innerHTML=list.map(function(sp){
+    return '<div class="card"><div class="top"><span class="ic">'+A.illus(sp,48)+'</span><div><h3>'+sp.name+'</h3><div class="kind">'+kindLabel(sp)+'</div></div></div>'
+      +'<div class="fact">'+sp.blurb+'</div>'
+      +'<div class="look">👀 '+sp.look+'</div>'
+      +'<div class="scope">🔭 Best in: '+sp.scope+'</div>'
+      +'<div class="qrrow"><div class="qr" id="qr_'+sp.id+'"></div><div class="qrcap"><b>Scan to find it</b><br>opens the point-your-phone finder aimed at this object</div></div></div>';
+  }).join('');
+  LASTLIST=list;
+  loadQRlib(function(){paintQRs(list);});
+}
+// deep link to the finder, pre-aimed at this object
+function deepLink(id){try{return new URL('sky-finder.html?target='+encodeURIComponent(id),location.href).href;}catch(e){return 'sky-finder.html?target='+id;}}
+function paintQRs(list){
+  if(typeof QRCode==='undefined'||!/^https?:/.test(location.href))return;   // needs a real URL to be scannable
+  list.forEach(function(sp){var box=document.getElementById('qr_'+sp.id);if(!box)return;box.innerHTML='';
+    try{new QRCode(box,{text:deepLink(sp.id),width:74,height:74,colorDark:'#0b1733',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}});
+}
+// Offline-capable QR: load a known-good library, caching it in localStorage on first (online)
+// load so cards render QRs with no internet afterwards.
+function loadQRlib(cb){
+  if(typeof QRCode!=='undefined')return cb();
+  var inject=function(txt){try{var sc=document.createElement('script');sc.textContent=txt;document.head.appendChild(sc);}catch(e){}};
+  var cached=null;try{cached=localStorage.getItem('scobQRlib');}catch(e){}
+  if(cached){inject(cached);if(typeof QRCode!=='undefined')return cb();}
+  fetch('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
+    .then(function(r){return r.text();})
+    .then(function(txt){try{localStorage.setItem('scobQRlib',txt);}catch(e){}inject(txt);cb();})
+    .catch(function(){cb();});
+}
+var LASTLIST=[];
+document.getElementById('filter').addEventListener('change',render);
+document.getElementById('print').addEventListener('click',function(){window.print();});
+render();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

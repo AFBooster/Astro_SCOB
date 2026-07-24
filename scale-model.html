@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solar System to Scale — SCOB</title>
+<meta name="description" content="An interactive scale model of the solar system: shrink the Sun to a basketball and see how tiny the planets are and how vast the distances between them. A crowd explainer for the Science Centre Observatory.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--orange:#ff9d3c;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--orange);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--orange);}
+.presets{display:flex;gap:8px;flex-wrap:wrap;}
+.presets button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:10px;padding:9px 13px;font-size:14px;font-weight:700;cursor:pointer;}
+.presets button.on{border-color:var(--gold);color:var(--gold);}
+.sunline{margin:12px 0 4px;font-size:15px;}
+.sunline b{color:var(--gold);}
+table{width:100%;border-collapse:collapse;margin-top:6px;}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);}
+td{padding:8px 6px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:top;}
+td .nm{font-weight:700;}
+td .cmp{color:var(--cyan);font-size:12px;}
+td .dist{font-weight:700;}
+.fact{font-size:13px;color:var(--mute);margin-top:10px;line-height:1.6;}
+.fact b{color:var(--white);}
+/* ---- cosmic distance ladder ---- */
+.rungs{display:flex;flex-direction:column-reverse;gap:6px;margin:4px 0 12px;}
+.rung{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--line);color:var(--white);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.rung:hover{border-color:var(--cyan);}
+.rung.on{border-color:var(--gold);border-left-color:var(--gold);color:var(--gold);}
+.rung .rr{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--mute);white-space:nowrap;}
+.rung.on .rr{color:var(--gold);}
+.ladderbar{width:100%;height:auto;display:block;margin:6px 0 2px;}
+.rdet{background:#0e1a38;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;line-height:1.6;color:var(--mute);}
+.rdet b{color:var(--white);}
+.rdet .hd{color:var(--gold);font-weight:800;font-size:14px;display:block;margin-bottom:4px;}
+.rdet .cal{display:block;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--cyan);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+/* where does it end — the three edges */
+.edge{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:9px;background:rgba(255,255,255,.02);}
+.edge.e1{border-left-color:var(--cyan);}
+.edge.e2{border-left-color:var(--orange);}
+.edge.e3{border-left-color:var(--gold);}
+.edge .en{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--navy3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--white);}
+.edge .et{font-weight:800;font-size:14.5px;}
+.edge.e1 .et{color:var(--cyan);}.edge.e2 .et{color:var(--orange);}.edge.e3 .et{color:var(--gold);}
+.edge .ed{font-size:13px;color:var(--mute);margin-top:2px;line-height:1.55;}
+.edge .eref{font-size:13.5px;margin-top:6px;}
+.edge .eref b{color:var(--white);}
+.edge .eau{font-size:11.5px;color:var(--mute);}
+@media(max-width:520px){td .cmp{display:block;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🪐 Solar System to Scale</h1>
+    <div class="loc">Shrink the Sun and watch how tiny — and how far apart — the planets really are. Science Centre Observatory, Jurong.</div>
+    <div class="bar"><a href="scob-dashboard-v3.html">← Dashboard</a><a href="object-cards.html">🃏 Object cards</a></div>
+  </header>
+
+  <div class="card">
+    <h2>Pick a size for the Sun</h2>
+    <div class="presets" id="presets"></div>
+    <div class="sunline" id="sunline"></div>
+  </div>
+
+  <div class="card">
+    <h2>…then the planets become</h2>
+    <table><thead><tr><th>Planet</th><th>Model size</th><th>Distance from the Sun</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="fact" id="fact"></div>
+  </div>
+
+  <div class="card">
+    <h2>So where does the solar system actually <i>end</i>?</h2>
+    <div class="fact" style="margin-top:0">There isn&rsquo;t one edge — there are three, and they are startlingly far apart. Distances below are shown as everyday journeys at your chosen Sun size, because the real model numbers get too big to picture.</div>
+    <div id="edges"></div>
+    <div class="fact" id="edgesNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>But how does anyone <i>know</i> these distances?</h2>
+    <div class="fact" style="margin-top:0">Nobody has ever stretched a tape measure to a star. Instead astronomers use a <b>ladder</b>: each method is calibrated by the one below it, and each reaches further than the last. Tap a rung.</div>
+    <svg class="ladderbar" id="ladderbar" viewBox="0 0 720 118" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logarithmic distance scale from the Moon to the edge of the observable universe"></svg>
+    <div class="rungs" id="rungs"></div>
+    <div class="rdet" id="rdet"></div>
+    <div class="fact">⚠️ <b>Why it matters that it&rsquo;s a ladder:</b> an error on a low rung propagates all the way up. Sharpening the bottom rungs — especially parallax — is exactly what the Gaia spacecraft was built for, and it is central to today&rsquo;s unresolved <b>&ldquo;Hubble tension&rdquo;</b>: the expansion rate measured up the ladder disagrees with the rate predicted from the early universe by about 8%.</div>
+  </div>
+
+  <div class="foot">
+    Sizes and mean orbital distances are real astronomical values scaled uniformly. Distances use each planet's average distance from the Sun (orbits are ellipses, so the real distance varies). Computed on your device.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script>
+"use strict";
+var SUN_KM=1392700, AU=149597870;
+// name, real diameter (km), mean distance (AU)
+var BODIES=[
+ ['☿ Mercury',4879,0.387],['♀ Venus',12104,0.723],['🌍 Earth',12742,1.000],
+ ['♂ Mars',6779,1.524],['♃ Jupiter',139820,5.203],['♄ Saturn',116460,9.537],
+ ['♅ Uranus',50724,19.191],['♆ Neptune',30110,30.07]];
+var PRESETS=[['🥎 Softball',0.10],['🏀 Basketball',0.24],['⚽ 0.5 m ball',0.50],['🎈 1 m',1.00],['🎪 SCOB 3 m inflatable Sun',3.00]];
+var sunSize=3.00; // metres — defaults to the Science Centre's own inflatable Sun
+function sizeComp(mm){
+  if(mm<0.2)return 'a speck of dust';if(mm<0.6)return 'a grain of fine sand';if(mm<1.2)return 'a grain of sand';
+  if(mm<2.2)return 'a peppercorn';if(mm<4)return 'a pea';if(mm<7)return 'a blueberry';if(mm<13)return 'a marble';
+  // real diameters: ping-pong 40 mm, tennis 67 mm, grapefruit ~120 mm
+  if(mm<20)return 'a large marble';if(mm<30)return 'a walnut';if(mm<45)return 'a ping-pong ball';
+  if(mm<75)return 'a tennis ball';if(mm<130)return 'a grapefruit';return 'a beach ball';}
+function fmtSize(mm){return mm<1?(mm.toFixed(2)+' mm'):(mm<10?mm.toFixed(1)+' mm':(mm/10).toFixed(1)+' cm');}
+function fmtDist(m){return m<1?(m*100).toFixed(1)+' cm':(m<1000?m.toFixed(1)+' m':(m/1000).toFixed(2)+' km');}
+/* Turn a big model distance (metres) into an everyday reference — a journey people can picture,
+   rather than tens of thousands of kilometres. */
+function n1(x){return x<10?(Math.round(x*10)/10).toString():Math.round(x).toString();}
+function frac(x){ // x in 0..1 → words
+  if(x<0.16)return 'a tenth of the way';if(x<0.28)return 'a fifth of the way';if(x<0.42)return 'a third of the way';
+  if(x<0.6)return 'halfway';if(x<0.72)return 'two-thirds of the way';if(x<0.88)return 'four-fifths of the way';return 'most of the way';}
+function humanRef(m){
+  var km=m/1000, C=40075, MOON=384400;
+  if(m<1)return (m*100).toFixed(0)+' cm';
+  if(km<1)return Math.round(m)+' metres — a short walk';
+  if(km>=MOON)return n1(km/MOON)+'× the distance to the Moon';
+  if(km>=0.45*C){var l=km/C;                                    // express as "around the Earth"
+    if(l<0.95)return frac(l)+' around the Earth';
+    if(l<1.15)return 'once around the Earth';
+    return n1(l)+' times around the Earth';}
+  var A=[[10800,'Singapore to London'],[5300,'Singapore to Tokyo'],[1400,'Singapore to Bangkok'],[350,'Singapore to Kuala Lumpur'],[50,'the length of Singapore']];
+  for(var i=0;i<A.length;i++){if(km>=A[i][0]*0.7){var n=km/A[i][0];return (n>=0.85&&n<=1.2?'about ':n1(n)+'× ')+A[i][1];}}
+  return Math.round(km)+' km';
+}
+/* The three real "edges" of the solar system: name, colour class, mean distance (AU), what it is.
+   Oort Cloud bounds are approximate ranges — it has never been directly seen. */
+var EDGES=[
+ ['e1','Edge of the planets','Neptune',30.07,'The last major planet. Almost everyone stops here — but the Sun&rsquo;s reach goes far, far further.'],
+ ['e2','Edge of the Sun&rsquo;s wind','the heliopause',120,'Where the solar wind finally gives way to interstellar space. The two Voyager probes are the only human-made things ever to cross it (2012 &amp; 2018).'],
+ ['e3','Edge of the Sun&rsquo;s gravity','the outer Oort Cloud',100000,'A vast shell of icy comets still bound to the Sun — the true edge of its domain, roughly a third of the way to the next star. It has never been seen directly; we infer it from where long-period comets come from.']
+];
+function renderEdges(){
+  var host=document.getElementById('edges');if(!host)return;
+  host.innerHTML=EDGES.map(function(e,i){
+    var m=(e[3]*AU/SUN_KM)*sunSize;
+    return '<div class="edge '+e[0]+'"><div class="en">'+(i+1)+'</div><div>'+
+      '<div class="et">'+e[1]+' — '+e[2]+'</div>'+
+      '<div class="ed">'+e[4]+'</div>'+
+      '<div class="eref">At your Sun size, that&rsquo;s <b>'+humanRef(m)+'</b> <span class="eau">('+(e[3]>=1000?Math.round(e[3]).toLocaleString()+' AU ≈ '+n1(e[3]/63241)+' light-years':e[3]+' AU')+' from the Sun)</span></div>'+
+      '</div></div>';
+  }).join('');
+  var prox=(268770*AU/SUN_KM)*sunSize;
+  document.getElementById('edgesNote').innerHTML='🌟 For comparison, the <b>nearest star</b>, Proxima Centauri, is <b>'+humanRef(prox)+'</b> at this scale. So the Sun&rsquo;s comet cloud reaches nearly a third of the way there — the solar system is not the little huddle of planets it looks like, but a sphere almost touching its neighbours.';
+}
+function render(){
+  document.getElementById('presets').innerHTML=PRESETS.map(function(p){return '<button type="button" data-s="'+p[1]+'"'+(Math.abs(p[1]-sunSize)<1e-6?' class="on"':'')+'>'+p[0]+'</button>';}).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#presets button'),function(b){b.onclick=function(){sunSize=parseFloat(b.getAttribute('data-s'));render();};});
+  var sunMm=sunSize*1000;
+  document.getElementById('sunline').innerHTML='The Sun is a <b>'+(sunSize<1?fmtSize(sunMm):sunSize+' m ball')+'</b> — about '+sizeComp(sunMm)+"'s big cousin. Everything below is shrunk by the same amount.";
+  document.getElementById('rows').innerHTML=BODIES.map(function(b){
+    var mm=(b[1]/SUN_KM)*sunSize*1000;
+    var dist=(b[2]*AU/SUN_KM)*sunSize; // metres
+    return '<tr><td class="nm">'+b[0]+'</td><td>'+fmtSize(mm)+' <span class="cmp">('+sizeComp(mm)+')</span></td><td class="dist">'+fmtDist(dist)+'</td></tr>';
+  }).join('');
+  // fun facts at this scale
+  var nepM=(30.07*AU/SUN_KM)*sunSize;
+  var proximaM=(268770*AU/SUN_KM)*sunSize; // Proxima Centauri 4.24 ly ≈ 268,770 AU
+  var earthMm=(12742/SUN_KM)*sunSize*1000;
+  var fact='At this scale you would walk <b>'+fmtDist(nepM)+'</b> from the Sun to reach Neptune, the edge of the planets. Earth — everyone and everything we know — is just <b>'+fmtSize(earthMm)+'</b> ('+sizeComp(earthMm)+'). And the very nearest other star would be <b>'+humanRef(proximaM)+'</b> away — that empty gap is why space is mostly, well, space.';
+  if(Math.abs(sunSize-3)<1e-6){
+    var earthM=(1.000*AU/SUN_KM)*sunSize;
+    fact+='<br><br>🎪 <b>Use the real one.</b> This is the scale of SCOB&rsquo;s own 3-metre inflatable Sun, so you can do the whole demonstration with a prop the visitors are standing next to. '+
+      'Hold up a <b>'+fmtSize(earthMm)+'</b> ball — that is the Earth, and to be honest about it you would have to carry it <b>'+Math.round(earthM)+' m</b> away, roughly three football pitches from the inflatable. '+
+      'Nobody can put Neptune on the lawn: it belongs <b>'+(nepM/1000).toFixed(1)+' km</b> down the road. That mismatch — a Sun you can touch, planets you cannot fit on the site — is the whole point, and it lands far harder than any diagram.'+
+      '<br><br>And the closing line: at this scale the nearest other star sits <b>'+humanRef(proximaM)+'</b> away — while the Sun&rsquo;s own comet cloud already reaches <b>'+humanRef((100000*AU/SUN_KM)*sunSize)+'</b>. The solar system is far bigger than the planets make it look.';
+  }
+  document.getElementById('fact').innerHTML=fact;
+  renderEdges();
+}
+render();
+
+/* ============ Cosmic distance ladder ============
+   Ranges are expressed in log10(metres). 1 light-year = 9.4607e15 m. */
+var LY=9.4607e15, PC=3.0857e16;
+var RUNGS=[
+ {n:'Radar &amp; laser ranging',ic:'📡',lo:8.5,hi:13.2,r:'Moon → Kuiper Belt',
+  how:'Bounce a radio pulse off Venus (or a laser off the mirrors Apollo left on the Moon) and time the round trip. Distance = speed of light × time ÷ 2.',
+  why:'This is the only rung measured <b>directly</b>, and it is astonishingly precise — the Earth–Moon distance is known to a few millimetres. It fixes the length of the astronomical unit (149,597,870.7 km), which is the ruler every rung above depends on.',
+  cal:'Calibrated by: nothing above it — this is the foundation. Its ruler is the metre itself.'},
+ {n:'Trigonometric parallax',ic:'📐',lo:16.5,hi:20.5,r:'nearest stars → most of our galaxy',
+  how:'Watch a nearby star shift back and forth against the far background as Earth swings from one side of its orbit to the other. The tinier the wobble, the further the star.',
+  why:'Pure geometry — the same trick your two eyes use for depth. Even for Proxima Centauri, the nearest star, the shift is only 0.77 arcseconds: a 5-cent coin seen from 5 km away. Gaia now measures wobbles ~40,000× smaller than that, mapping over a billion stars.',
+  cal:'Calibrated by: the astronomical unit from radar ranging. Nearly every distance in this page&rsquo;s constellation stories comes from Gaia parallaxes.'},
+ {n:'Standard candles: main-sequence &amp; spectroscopic',ic:'🕯️',lo:18,hi:22,r:'star clusters across the Milky Way',
+  how:'A star&rsquo;s spectrum reveals what kind of star it truly is — and so how bright it really is. Compare that to how bright it looks, and the dimming gives the distance.',
+  why:'Brightness falls off as 1/distance², so &ldquo;true brightness ÷ apparent brightness&rdquo; is a distance. This is the first rung that does not need geometry at all, which is what lets us step beyond the reach of parallax.',
+  cal:'Calibrated by: nearby stars of each type whose distances parallax already pinned down.'},
+ {n:'Cepheid variable stars',ic:'💫',lo:19,hi:24,r:'nearby galaxies (out to ~100 million ly)',
+  how:'Cepheids pulse in brightness on a regular cycle. Henrietta Leavitt discovered in 1912 that the slower the pulse, the brighter the star — so timing the pulse tells you its true brightness.',
+  why:'These are luminous enough to pick out individually in other galaxies. Edwin Hubble found one in Andromeda in 1923 and settled a centuries-old argument by proving that the &ldquo;spiral nebulae&rdquo; are whole separate galaxies far outside our own.',
+  cal:'Calibrated by: parallaxes to Cepheids in our own galaxy (and in the Large Magellanic Cloud).'},
+ {n:'Type Ia supernovae',ic:'💥',lo:22.5,hi:26,r:'the distant universe (billions of ly)',
+  how:'A white dwarf that tips over a precise mass limit detonates — and because the trigger mass is always about the same, every one of these explosions peaks at nearly the same true brightness.',
+  why:'For a few weeks a single supernova outshines its entire host galaxy, so it can be seen billions of light-years away. Measuring these is how the accelerating expansion of the universe was discovered in 1998.',
+  cal:'Calibrated by: Cepheids found in galaxies that have also hosted a Type Ia supernova.'},
+ {n:'Redshift &amp; the Hubble–Lemaître law',ic:'🌌',lo:24,hi:26.7,r:'to the edge of the observable universe',
+  how:'Expanding space stretches light on its way to us, shifting it towards the red. The further the galaxy, the faster it recedes and the greater the stretch.',
+  why:'Redshift is easy to measure even for extremely faint objects, so this is how nearly all catalogued galaxy distances are found. It is the top rung — but it is only as trustworthy as the expansion rate handed up from the supernovae below.',
+  cal:'Calibrated by: Type Ia supernovae, which set the value of the Hubble constant.'}
+];
+var MARKS=[
+ [Math.log10(3.844e8),'Moon'],[Math.log10(1.496e11),'Sun'],[Math.log10(4.495e12),'Neptune'],
+ [Math.log10(4.246*LY),'Proxima'],[Math.log10(26000*LY),'galactic centre'],
+ [Math.log10(2.537e6*LY),'Andromeda'],[Math.log10(5.4e7*LY),'Virgo Cluster'],
+ [Math.log10(4.65e26),'edge of the observable universe']];
+var LO=8, HI=27, rungSel=0;
+function lx(v){return 14+(v-LO)/(HI-LO)*(720-28);}
+function drawLadder(){
+  var s='', yB=64;
+  s+='<rect x="14" y="'+yB+'" width="'+(720-28)+'" height="13" rx="3" fill="#08101f" stroke="#33406b"/>';
+  // decade ticks
+  for(var e=LO;e<=HI;e++){var x=lx(e);
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+yB+'" x2="'+x.toFixed(1)+'" y2="'+(yB+13)+'" stroke="#22325a" stroke-width="'+((e-LO)%3===0?1.1:0.5)+'"/>';}
+  // highlighted rung band
+  var R=RUNGS[rungSel], x1=lx(R.lo), x2=lx(R.hi);
+  s+='<rect x="'+x1.toFixed(1)+'" y="'+(yB-3)+'" width="'+(x2-x1).toFixed(1)+'" height="19" rx="4" fill="#f5c542" fill-opacity="0.28" stroke="#f5c542" stroke-width="1.4"/>';
+  s+='<text x="'+((x1+x2)/2).toFixed(1)+'" y="'+(yB-9)+'" fill="#f5c542" font-size="12" font-weight="bold" text-anchor="middle">'+R.ic+' '+R.n.replace(/&amp;/g,'&').replace(/:.*$/,'')+'</text>';
+  // landmark labels, alternating above/below to avoid collisions
+  MARKS.forEach(function(m,i){var x=lx(m[0]);
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+(yB+13)+'" x2="'+x.toFixed(1)+'" y2="'+(yB+21+(i%2)*13)+'" stroke="#4a5a8c" stroke-width="0.8"/>';
+    s+='<circle cx="'+x.toFixed(1)+'" cy="'+(yB+6.5)+'" r="2.6" fill="#5bd6e0"/>';
+    var anch=x<70?'start':(x>650?'end':'middle');
+    s+='<text x="'+x.toFixed(1)+'" y="'+(yB+32+(i%2)*13)+'" fill="#9fb0d6" font-size="10.5" text-anchor="'+anch+'">'+m[1]+'</text>';});
+  s+='<text x="14" y="20" fill="#9fb0d6" font-size="10.5">← each step along this bar is 10× further →</text>';
+  document.getElementById('ladderbar').innerHTML=s;
+}
+function fmtLy(logm){var ly=Math.pow(10,logm)/LY;
+  if(ly<1e-4)return (Math.pow(10,logm)/1.496e11).toFixed(1)+' AU';
+  if(ly<1)return (ly*63241).toFixed(0)+' AU';
+  if(ly<1e3)return ly.toFixed(0)+' ly';
+  if(ly<1e6)return (ly/1e3).toFixed(0)+' thousand ly';
+  if(ly<1e9)return (ly/1e6).toFixed(0)+' million ly';
+  return (ly/1e9).toFixed(0)+' billion ly';}
+function drawRungs(){
+  document.getElementById('rungs').innerHTML=RUNGS.map(function(r,i){
+    return '<button type="button" class="rung'+(i===rungSel?' on':'')+'" data-i="'+i+'"><span>'+r.ic+'</span><span>'+r.n+'</span><span class="rr">'+r.r+'</span></button>';}).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#rungs .rung'),function(b){
+    b.onclick=function(){rungSel=+b.getAttribute('data-i');drawRungs();drawLadder();drawDetail();};});
+}
+function drawDetail(){var r=RUNGS[rungSel];
+  document.getElementById('rdet').innerHTML='<span class="hd">'+r.ic+' '+r.n+'</span>'+
+    '<b>Reaches:</b> '+fmtLy(r.lo)+' → '+fmtLy(r.hi)+'<br><br>'+
+    '<b>How it works.</b> '+r.how+'<br><br>'+r.why+
+    '<span class="cal">🔗 '+r.cal+'</span>';}
+drawRungs();drawLadder();drawDetail();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

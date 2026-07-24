@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Point Your Phone — Find &amp; Identify the Sky — SCOB</title>
+<meta name="description" content="Point your phone at the sky: an arrow guides you to tonight's showpiece objects, or flip to Identify mode to name whatever bright object you're aiming at. Uses the phone's compass, on-device, works offline.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent;}
+.wrap{max-width:560px;margin:0 auto;padding:0 15px 40px;}
+header{padding:16px 0 4px;}
+h1{font-size:20px;margin:0;color:var(--gold);}
+.loc{font-size:12px;color:var(--mute);margin-top:3px;}
+.backrow{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12px;border:1px solid var(--cyan);border-radius:9px;padding:6px 12px;text-decoration:none;}
+.enable{width:100%;margin:14px 0 4px;padding:13px;background:var(--gold);color:#0b1733;border:0;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;}
+.hint{font-size:12.5px;color:var(--mute);margin:8px 0 4px;}
+.pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin:12px 0;}
+.tgt{background:var(--navy2);border:1px solid var(--line);border-radius:11px;padding:10px 11px;cursor:pointer;display:flex;align-items:center;gap:10px;}
+.tgt .thumb{flex:0 0 auto;width:40px;height:40px;border-radius:9px;background:rgba(6,10,26,.55);}
+.tgt .thumb svg{width:40px;height:40px;display:block;}
+.tgt.sel{border-color:var(--gold);background:var(--navy3);}
+.tgt .nm{font-weight:700;font-size:14px;}
+.tgt .sub{font-size:11.5px;color:var(--cyan);margin-top:2px;}
+.finder{display:none;text-align:center;background:var(--navy2);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin:12px 0;}
+.finder.on{display:block;}
+.dial{width:210px;height:210px;margin:6px auto 4px;position:relative;}
+.dial svg{width:100%;height:100%;}
+.guide{font-size:22px;font-weight:800;margin:8px 0 2px;}
+.guide.ok{color:var(--green);}
+.sub2{font-size:13px;color:var(--mute);}
+.altbar{margin:14px auto 4px;max-width:320px;}
+.altbar .track{position:relative;height:14px;border-radius:8px;background:linear-gradient(90deg,#16264d,#22366a);border:1px solid var(--line);}
+.altbar .mk{position:absolute;top:-5px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:10px solid var(--gold);transform:translateX(-7px);}
+.altbar .you{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--cyan);border-radius:1px;box-shadow:0 0 5px var(--cyan);}
+.altbar .lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:4px;}
+.altleg{font-size:10.5px;color:var(--mute);text-align:center;margin-top:5px;}
+.diag{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--mute);line-height:1.5;}
+.diag b{color:var(--cyan);}
+.big{font-size:15px;}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+.note{background:rgba(245,197,66,.09);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:12.5px;color:var(--gold);margin:10px 0;}
+/* mode toggle + identify mode */
+.modes{display:flex;gap:8px;margin:12px 0 4px;}
+.modes button{flex:1;background:var(--navy2);border:1px solid var(--line);color:var(--white);border-radius:11px;padding:11px 8px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;}
+.modes button.on{border-color:var(--gold);background:var(--navy3);color:var(--gold);}
+body.night .modes button.on{border-color:#ff9a9a;color:#ff9a9a;}
+body.m-identify .findonly{display:none!important;}
+body:not(.m-identify) .identonly{display:none!important;}
+.hit{background:var(--navy2);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;display:flex;gap:15px;align-items:center;}
+.hit .ic{flex:0 0 auto;width:74px;height:74px;border-radius:12px;background:rgba(6,10,26,.6);}
+.hit .ic svg{width:74px;height:74px;display:block;}
+.hit .lead{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);}
+.hit .nm{font-size:23px;font-weight:800;line-height:1.1;margin:2px 0;}
+.hit .sub{font-size:13px;color:var(--cyan);font-weight:700;}
+.hit .sepx{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.blurb{font-size:14px;margin:2px 2px 10px;color:#dfe6f5;}
+.idiag{font-size:12px;color:var(--mute);margin:8px 2px;}
+.idiag b{color:var(--cyan);}
+.near{display:flex;flex-direction:column;gap:8px;}
+.near .row{display:flex;gap:11px;align-items:center;background:var(--navy3);border:1px solid var(--line);border-radius:11px;padding:9px 11px;}
+.near .row .ic2{width:38px;height:38px;flex:0 0 auto;border-radius:8px;background:rgba(6,10,26,.55);}
+.near .row .ic2 svg{width:38px;height:38px;display:block;}
+.near .nm2{font-weight:700;font-size:14px;}.near .sub2b{font-size:12px;color:var(--mute);}
+body.night{background:#0a0402;}
+body.night h1,body.night .guide.ok{color:#ff9a9a;}
+body.night .tgt.sel{border-color:#ff9a9a;}
+body.night .enable{background:#ff9a9a;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📱 Point Your Phone</h1>
+    <div class="loc" id="loc">Find a target, or identify what you're aiming at — using your phone's compass. Science Centre Observatory, Jurong.</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="tonights-tour.html">🎟️ Tonight's Tour</a>
+    </div>
+  </header>
+
+  <div class="modes" id="modes">
+    <button type="button" data-mode="find" class="on">🎯 Find a target</button>
+    <button type="button" data-mode="identify">🔭 What am I looking at?</button>
+  </div>
+
+  <button type="button" class="enable" id="enable">🧭 Enable compass to start</button>
+  <div class="hint" id="status">On a phone, tap the button above and allow motion &amp; orientation access. No compass? Targets still show their direction &amp; height as text.</div>
+  <div class="note findonly" id="notdark" style="display:none"></div>
+
+  <div class="ident identonly" id="ident">
+    <div class="hit" id="hit" style="display:none">
+      <div class="ic" id="hitIc" aria-hidden="true"></div>
+      <div>
+        <div class="lead">You're pointing at</div>
+        <div class="nm" id="hitNm">—</div>
+        <div class="sub" id="hitSub"></div>
+        <div class="sepx" id="hitSep"></div>
+      </div>
+    </div>
+    <div class="blurb" id="hitBlurb"></div>
+    <div class="idiag" id="idiag"></div>
+    <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);margin:16px 0 6px">Also near where you're aiming</h3>
+    <div class="near" id="near"></div>
+  </div>
+
+  <div class="finder findonly" id="finder">
+    <div class="dial">
+      <svg viewBox="0 0 100 100" role="img" aria-label="Compass dial with an arrow pointing toward your chosen target">
+        <circle cx="50" cy="50" r="47" fill="none" stroke="#33406b" stroke-width="1.5"/>
+        <text x="50" y="12" text-anchor="middle" fill="#9fb0d6" font-size="7">N</text>
+        <text x="90" y="53" text-anchor="middle" fill="#9fb0d6" font-size="7">E</text>
+        <text x="50" y="95" text-anchor="middle" fill="#9fb0d6" font-size="7">S</text>
+        <text x="11" y="53" text-anchor="middle" fill="#9fb0d6" font-size="7">W</text>
+        <g id="arrow" transform="rotate(0 50 50)">
+          <polygon points="50,14 42,54 50,46 58,54" fill="#f5c542"/>
+          <circle cx="50" cy="50" r="4" fill="#f5c542"/>
+        </g>
+      </svg>
+    </div>
+    <div class="guide" id="guide">—</div>
+    <div class="sub2" id="sub2"></div>
+    <div class="altbar">
+      <div class="track"><div class="mk" id="altmk" style="left:25%"></div><div class="you" id="pitchmk" style="display:none"></div></div>
+      <div class="lbl"><span>horizon 0°</span><span id="altnum">—</span><span>zenith 90°</span></div>
+      <div class="altleg"><span style="color:var(--gold)">▲ target height</span> · <span style="color:var(--cyan)">▮ where your phone is aimed</span></div>
+    </div>
+    <div class="diag" id="diag"></div>
+  </div>
+
+  <div class="hint findonly">Tonight's showpieces above the horizon now — tap one:</div>
+  <div class="pick findonly" id="pick"></div>
+
+  <div class="foot">
+    Compass accuracy depends on your phone and needs a clear area away from metal &amp; magnets; if it drifts, wave the phone in a figure-8 to recalibrate. Directions are always shown as text too. Positions computed on-device.<br>
+    Companion pages: <a href="scob-dashboard-v3.html">dashboard</a> · <a href="tonights-tour.html">Tonight's Tour</a> · <a href="moon-tonight.html">Moon tonight</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro;
+var heading=null, target=null, sensorOn=false, list=[];
+var headingApprox=false, pitch=null;
+var MODE='find';
+function tick(){ if(MODE==='identify')renderIdentify(); else render(); }
+// ---- Identify mode: name the brightest object where the phone is aimed ----
+function idAngSep(a1,z1,a2,z2){var c=Math.sin(a1*Math.PI/180)*Math.sin(a2*Math.PI/180)+Math.cos(a1*Math.PI/180)*Math.cos(a2*Math.PI/180)*Math.cos((z1-z2)*Math.PI/180);return Math.acos(Math.max(-1,Math.min(1,c)))/(Math.PI/180);}
+function idCandidates(){
+  var now=new Date(), s=A.sky(now), out=[];
+  if(s.sunAlt>-1)out.push({sp:{name:'The Sun',kind:'star',blurb:'Our own star — never look at it through anything without a certified solar filter.'},alt:s.sunAlt,az:s.sunAz});
+  var mp=A.positionOf({kind:'moon',name:'The Moon'},now);if(mp.alt>0)out.push({sp:{name:'The Moon',kind:'moon',blurb:'Our nearest neighbour, about 384,000 km away.'},alt:mp.alt,az:mp.az});
+  A.SHOWPIECES.concat(A.activeComets?A.activeComets(now):[]).forEach(function(sp){if(sp.kind==='moon')return;var p=A.positionOf(sp,now);var minA=(sp.kind==='planet')?2:6;if(p.alt>minA)out.push({sp:sp,alt:p.alt,az:p.az,mag:p.mag});});
+  return out;
+}
+function renderIdentify(){
+  var hit=document.getElementById('hit'),near=document.getElementById('near'),idg=document.getElementById('idiag'),blurb=document.getElementById('hitBlurb');
+  if(heading==null){if(hit)hit.style.display='none';if(idg)idg.textContent='';if(near)near.innerHTML='';if(blurb)blurb.textContent='';return;}
+  var aimAz=heading, haveTilt=(pitch!=null&&!isNaN(pitch)), aimAlt=haveTilt?Math.max(0,Math.min(90,pitch)):null;
+  var list2=idCandidates();
+  list2.forEach(function(o){o.sep=haveTilt?idAngSep(aimAlt,aimAz,o.alt,o.az):Math.abs((((o.az-aimAz)%360)+540)%360-180);});
+  list2.sort(function(a,b){return a.sep-b.sep;});
+  if(idg)idg.innerHTML='Phone facing <b>'+Math.round(aimAz)+'° '+A.compass(aimAz)+'</b>'+(haveTilt?', aimed <b>'+Math.round(aimAlt)+'°</b> up':' (tilt unavailable — matching by direction only)')+(headingApprox?' <span style="color:#ff9a9a">· uncalibrated, wave in a figure-8</span>':'');
+  if(!list2.length){if(hit)hit.style.display='none';if(near)near.innerHTML='<div class="sub2b">Nothing bright is above the horizon right now.</div>';if(blurb)blurb.textContent='';return;}
+  var best=list2[0];
+  if(hit)hit.style.display='flex';
+  document.getElementById('hitIc').innerHTML=A.illus(best.sp,74);
+  document.getElementById('hitNm').textContent=best.sp.name;
+  document.getElementById('hitSub').textContent=Math.round(best.alt)+'° up in the '+A.compass(best.az)+(best.mag!=null?' · mag '+(best.mag>=0?'+':'')+best.mag.toFixed(1):'');
+  document.getElementById('hitSep').innerHTML=(best.sep>18)?('<span style="color:#ff9a9a">nearest bright object — about '+Math.round(best.sep)+'° from your aim</span>'):('about '+Math.round(best.sep)+'° from your aim '+(best.sep<6?'✔':''));
+  if(blurb)blurb.textContent=best.sp.blurb||'';
+  if(near)near.innerHTML=list2.slice(1,4).map(function(o){return '<div class="row"><div class="ic2">'+A.illus(o.sp,38)+'</div><div><div class="nm2">'+o.sp.name+'</div><div class="sub2b">'+Math.round(o.sep)+'° away · '+Math.round(o.alt)+'° up in the '+A.compass(o.az)+'</div></div></div>';}).join('');
+}
+function setMode(m){
+  MODE=(m==='identify')?'identify':'find';
+  document.body.classList.toggle('m-identify',MODE==='identify');
+  Array.prototype.forEach.call(document.querySelectorAll('#modes button'),function(b){b.classList.toggle('on',b.getAttribute('data-mode')===MODE);});
+  var st=document.getElementById('status'),loc=document.getElementById('loc');
+  if(MODE==='identify'){if(loc)loc.textContent='Hold your phone up toward a bright point of light — it names what you\'re aiming at. Science Centre Observatory, Jurong.';
+    if(st&&!sensorOn)st.textContent='On a phone, tap “Enable compass”, then aim the top of your phone at a star or planet to identify it.';}
+  else{if(loc)loc.textContent='Tap a target, then turn until the arrow points up — it steers you to it. Science Centre Observatory, Jurong.';
+    if(st&&!sensorOn)st.textContent='On a phone, tap the button above and allow motion & orientation access. No compass? Targets still show their direction & height as text.';}
+  tick();
+}
+function up(){ // showpieces above horizon now
+  var now=new Date();var s=A.sky(now);
+  var out=[];
+  A.SHOWPIECES.concat(A.activeComets?A.activeComets(now):[]).forEach(function(sp){var p=A.positionOf(sp,now);
+    var minA=(sp.kind==='moon'||sp.kind==='planet')?3:8;
+    var need=(sp.kind==='moon'||sp.kind==='planet')?90:(sp.kind==='star'||sp.kind==='double'?-3:-6);
+    if(p.alt>minA && s.sunAlt<need) out.push({sp:sp,az:p.az,alt:p.alt,mag:p.mag});});
+  out.sort(function(a,b){return b.alt-a.alt;});
+  return {list:out, sunAlt:s.sunAlt};
+}
+function renderPick(){
+  var u=up();list=u.list;
+  var nd=document.getElementById('notdark');
+  if(u.sunAlt>-6){nd.style.display='block';nd.textContent='☀️ The sky isn\'t dark yet (Sun is up or in twilight). The Moon & bright planets can still be found; deep-sky objects appear once it\'s fully dark.';}
+  else nd.style.display='none';
+  var host=document.getElementById('pick');
+  if(!list.length){host.innerHTML='<div class="tgt"><div class="nm">Nothing up right now</div><div class="sub">try again later tonight</div></div>';return;}
+  host.innerHTML=list.map(function(t,i){return '<div class="tgt'+(target&&target.sp.id===t.sp.id?' sel':'')+'" data-i="'+i+'"><div class="thumb" aria-hidden="true">'+A.illus(t.sp,40)+'</div><div><div class="nm">'+t.sp.name+'</div><div class="sub">'+A.compass(t.az)+' · '+Math.round(t.alt)+'° up</div></div></div>';}).join('');
+  Array.prototype.forEach.call(host.querySelectorAll('.tgt'),function(el){el.onclick=function(){var i=+el.getAttribute('data-i');if(isNaN(i))return;select(list[i]);};});
+}
+function select(t){target=t;document.getElementById('finder').classList.add('on');renderPick();render();
+  document.getElementById('finder').scrollIntoView({behavior:'smooth',block:'center'});}
+function refreshTargetPos(){ if(!target)return; var p=A.positionOf(target.sp,new Date()); target.az=p.az; target.alt=p.alt; target.mag=p.mag; }
+function render(){
+  if(!target)return;
+  refreshTargetPos();
+  var altpct=Math.max(0,Math.min(100,target.alt/90*100));
+  document.getElementById('altmk').style.left=altpct+'%';
+  document.getElementById('altnum').textContent=Math.round(target.alt)+'° up · '+A.compass(target.az);
+  var diag=document.getElementById('diag');
+  if(diag)diag.innerHTML=(heading==null?'compass: waiting for a reading…'
+    :'phone is facing <b>'+Math.round(heading)+'° '+A.compass(heading)+'</b>'+(headingApprox?' <span style="color:#ff9a9a">(uncalibrated — wave the phone in a figure-8)</span>':''))
+    +' &nbsp;·&nbsp; target is at <b>'+Math.round(target.az)+'° '+A.compass(target.az)+'</b>';
+  var g=document.getElementById('guide'),s2=document.getElementById('sub2'),arrow=document.getElementById('arrow');
+  if(heading==null){
+    arrow.setAttribute('transform','rotate('+target.az+' 50 50)');
+    g.className='guide';g.textContent='Face '+A.compass(target.az);
+    s2.innerHTML='Turn to face <b>'+A.compass(target.az)+'</b>, then look <b>'+Math.round(target.alt)+'°</b> above the horizon.<br><span style="font-size:11.5px">(Enable the compass for a live arrow.)</span>';
+    return;
+  }
+  var rel=((target.az-heading)%360+360)%360;
+  arrow.setAttribute('transform','rotate('+rel+' 50 50)');
+  var azdiff=((rel+180)%360)-180, azOk=Math.abs(azdiff)<8;
+  var haveTilt=(pitch!=null&&!isNaN(pitch)), pAltv=haveTilt?Math.max(0,Math.min(90,pitch)):null;
+  var pm=document.getElementById('pitchmk');
+  if(pm){if(haveTilt){pm.style.display='block';pm.style.left=(pAltv/90*100)+'%';}else pm.style.display='none';}
+  var altdiff=haveTilt?(target.alt-pAltv):null, altOk=haveTilt&&Math.abs(altdiff)<7;
+  if(!azOk){g.className='guide';g.textContent=(azdiff>0?'Turn RIGHT ':'Turn LEFT ')+Math.round(Math.abs(azdiff))+'°';s2.innerHTML='Then '+(haveTilt?'tilt to':'look')+' <b>'+Math.round(target.alt)+'°</b> up in the <b>'+A.compass(target.az)+'</b>.';}
+  else if(haveTilt&&!altOk){g.className='guide';g.textContent=(altdiff>0?'Raise phone ↑ ':'Lower phone ↓ ')+Math.round(Math.abs(altdiff))+'°';s2.innerHTML='Facing the right way — now tilt to <b>'+Math.round(target.alt)+'°</b> above the horizon.';}
+  else{g.className='guide ok';g.textContent=altOk?'✔ On target!':'✔ Facing it — now look up';s2.innerHTML=altOk?'Pointed right at <b>'+target.sp.name.replace(/\s*\(.*\)/,'')+'</b> — sight along the top of your phone.':'Raise your phone to about <b>'+Math.round(target.alt)+'°</b> above the horizon ('+(target.alt<25?'fairly low':target.alt<55?'partway up':'high overhead')+').';}
+}
+function setHeading(h,approx){if(h==null||isNaN(h))return;
+  // shortest-path low-pass smoothing to calm sensor jitter
+  if(heading==null||headingApprox!==!!approx){heading=((h%360)+360)%360;}
+  else{var d=(((h-heading)%360)+540)%360-180;heading=((heading+d*0.35)%360+360)%360;}
+  headingApprox=!!approx;tick();}
+// Lock onto ONE north-referenced source to avoid the heading jumping ~90°:
+//  - iOS: webkitCompassHeading (arrives only on the plain deviceorientation event).
+//  - Android: deviceorientationabsolute (heading = 360 - alpha). Once an absolute stream
+//    is seen we IGNORE the plain deviceorientation event entirely — its alpha uses a
+//    different, relative reference, and mixing the two is what caused the flicker.
+//  - Plain relative alpha is used only if no absolute source ever appears (flagged approx).
+// Phone's pointing elevation ≈ beta (front-back tilt): 0° = aimed at the horizon, 90° = straight up.
+function setPitch(b){if(b==null||isNaN(b))return;var v=Math.max(-30,Math.min(120,b));pitch=(pitch==null)?v:pitch+(v-pitch)*0.35;}
+var absSeen=false;
+function onAbsolute(e){if(e.alpha==null)return;absSeen=true;setPitch(e.beta);setHeading(360-e.alpha,false);}
+function onGeneric(e){
+  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)){setPitch(e.beta);setHeading(e.webkitCompassHeading,false);return;}
+  if(absSeen)return;
+  if(e.absolute===true&&e.alpha!=null){absSeen=true;setPitch(e.beta);setHeading(360-e.alpha,false);return;}
+  if(e.alpha!=null){setPitch(e.beta);setHeading(360-e.alpha,true);}
+}
+function addListeners(){
+  window.addEventListener('deviceorientationabsolute',onAbsolute,true);
+  window.addEventListener('deviceorientation',onGeneric,true);
+  sensorOn=true;
+  document.getElementById('status').textContent=(MODE==='identify')
+    ?'Compass on — aim the top edge of your phone straight at a star or planet, holding it upright, and it names what you\'re pointing at.'
+    :'Compass on. Hold the phone upright, tap a target, and turn until the arrow points straight up — then tilt up to its height.';}
+document.getElementById('enable').onclick=function(){
+  var st=document.getElementById('status');
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')addListeners();else st.textContent='Compass permission was declined — targets below still show direction & height as text.';}).catch(function(){st.textContent='Couldn\'t start the compass — using text directions instead.';});
+    } else { addListeners(); if(!('DeviceOrientationEvent' in window)) st.textContent='This device has no orientation sensor — use the text directions on each target.'; }
+  }catch(err){st.textContent='Compass unavailable — using text directions.';}
+};
+document.getElementById('enable').addEventListener('click',renderPick);
+renderPick();
+// mode toggle (🎯 Find / 🔭 Identify)
+Array.prototype.forEach.call(document.querySelectorAll('#modes button'),function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-mode'));});});
+// deep-links: ?mode=identify opens Identify mode · ?target=<id> pre-selects an object in Find mode (e.g. a scanned QR)
+(function(){try{
+  var qs=new URLSearchParams(location.search);
+  if(qs.get('mode')==='identify'){setMode('identify');return;}
+  var q=qs.get('target');if(!q)return;
+  var pick=null;for(var i=0;i<list.length;i++){if(list[i].sp.id===q){pick=list[i];break;}}
+  if(!pick){var all=A.SHOWPIECES.concat(A.activeComets?A.activeComets(new Date()):[]);
+    var sp=all.find(function(x){return x.id===q;});
+    if(sp){var p=A.positionOf(sp,new Date());pick={sp:sp,az:p.az,alt:p.alt,mag:p.mag};}}
+  if(pick){select(pick);var st=document.getElementById('status');
+    if(st&&pick.alt<8)st.textContent='“'+pick.sp.name+'” is only '+Math.round(pick.alt)+'° up right now — it may be behind buildings or trees. Its direction is shown below; try again when it climbs higher.';}
+}catch(e){}})();
+setInterval(function(){renderPick();tick();},9000);
+setInterval(tick,250);
+try{if(localStorage.getItem('scobNight')==='1'||(localStorage.getItem('scobNight')===null&&A.sunAltAt(new Date())<-1))document.body.classList.add('night');}catch(e){}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GoTo Alignment-Star Picker — SCOB</title>
+<meta name="description" content="Volunteer setup tool: suggests bright, well-placed alignment stars that are up right now for the Celestron GoTo mounts (SkyAlign / 2-star).">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 6px;}
+.ctrl input{background:#0e1a38;color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:13px;}
+.btn{background:var(--navy3);color:var(--cyan);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
+.note{background:rgba(245,197,66,.09);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--gold);margin:8px 0;}
+.sect{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);font-weight:800;margin:16px 0 8px;}
+.pick{background:var(--navy2);border:1px solid var(--gold);border-radius:14px;padding:14px 16px;margin:10px 0;display:flex;gap:14px;align-items:center;}
+.pick .n{flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:var(--gold);color:#0b1733;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.pick h3{margin:0;font-size:18px;}
+.pick .m{font-size:12.5px;color:var(--mute);margin-top:2px;}
+.pick .why{font-size:12px;color:var(--green);margin-top:3px;}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+th{color:var(--cyan);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;}
+td,th{padding:6px 8px;border-bottom:1px solid var(--line);}
+td b{color:var(--gold);}
+.empty{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--mute);}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎯 GoTo Alignment-Star Picker</h1>
+    <div class="loc">Volunteer setup aid — bright, well-placed stars that are up now for the deck CPC / C6 GoTo mounts. Science Centre Observatory, Jurong.</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="tracking-methods.html">🧭 Alignment methods</a>
+    </div>
+  </header>
+
+  <div class="ctrl">
+    <input type="date" id="d"><input type="time" id="t">
+    <button type="button" class="btn" id="now">● Now</button>
+  </div>
+  <div class="note" id="cond">—</div>
+
+  <div class="sect">Suggested trio — spread across the sky</div>
+  <div id="picks"></div>
+
+  <div class="sect">All bright stars usable now <small style="text-transform:none;color:var(--mute)">(20°–72° high)</small></div>
+  <div id="all"></div>
+
+  <div class="foot">
+    <b style="color:var(--white)">How to use:</b> for <b>SkyAlign</b>, centre any three of these (no names needed). For <b>Auto Two-Star / Two-Star</b>, pick two that are 40°–120° apart in compass direction and 20°–60° high. Centre each carefully, finishing with the same up/right nudges each time. See the <a href="tracking-methods.html">alignment methods</a> page for the full walkthrough.<br>
+    Positions computed on your device · SCOB has no GPS on its mounts, so key in date/time/location by hand at power-up.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+// Bright alignment stars: [name, RA(deg), Dec(deg), mag]
+var STARS=[
+ ['Sirius',101.29,-16.72,-1.46],['Canopus',95.99,-52.70,-0.74],['Rigil Kent (α Cen)',219.90,-60.83,-0.27],
+ ['Arcturus',213.92,19.18,-0.05],['Vega',279.23,38.78,0.03],['Capella',79.17,46.00,0.08],
+ ['Rigel',78.63,-8.20,0.13],['Procyon',114.83,5.22,0.34],['Achernar',24.43,-57.24,0.46],
+ ['Betelgeuse',88.79,7.41,0.50],['Hadar (β Cen)',210.96,-60.37,0.61],['Altair',297.70,8.87,0.76],
+ ['Acrux',186.65,-63.10,0.76],['Aldebaran',68.98,16.51,0.85],['Spica',201.30,-11.16,1.04],
+ ['Antares',247.35,-26.43,1.09],['Pollux',116.33,28.03,1.14],['Fomalhaut',344.41,-29.62,1.16],
+ ['Deneb',310.36,45.28,1.25],['Regulus',152.09,11.97,1.35],['Adhara',104.66,-28.97,1.50],
+ ['Castor',113.65,31.89,1.58],['Shaula',263.40,-37.10,1.62],['Gacrux',187.79,-57.11,1.63],
+ ['Bellatrix',81.28,6.35,1.64],['Elnath',81.57,28.61,1.65],['Alnilam',84.05,-1.20,1.69],
+ ['Alnair',332.06,-46.96,1.74],['Miaplacidus',138.30,-69.72,1.69],['Mirfak',51.08,49.86,1.79]
+];
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function dateFromInputs(){var dv=document.getElementById('d').value,tv=document.getElementById('t').value;if(!dv||!tv)return null;var p=dv.split('-').map(Number),q=tv.split(':').map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2],q[0]-8,q[1],0));}
+function setInputs(x){document.getElementById('d').value=x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate());document.getElementById('t').value=pad(x.getHours())+':'+pad(x.getMinutes());}
+function azsep(a,b){var d=Math.abs(a-b)%360;return d>180?360-d:d;}
+
+function build(){
+  var date=dateFromInputs();if(!date)return;
+  var s=A.sky(date);
+  var rows=STARS.map(function(st){var p=A.altazAt(st[1],st[2],date);return {name:st[0],mag:st[3],alt:p.alt,az:p.az};})
+    .filter(function(r){return r.alt>=20&&r.alt<=72;}).sort(function(a,b){return a.mag-b.mag;});
+  var cond=document.getElementById('cond');
+  cond.innerHTML = s.sunAlt>-3
+    ? '☀️ It\'s not dark enough yet to see alignment stars — wait until the sky darkens after sunset.'
+    : '🎯 '+rows.length+' bright stars are well-placed for alignment right now. The trio below is spread across the sky for the most reliable pointing model.';
+  // greedy pick a spread trio: brightest first, then add stars >50° apart in azimuth
+  var picks=[];
+  rows.forEach(function(r){ if(picks.length>=3)return; var ok=picks.every(function(p){return azsep(p.az,r.az)>50;}); if(ok&&r.alt>=22&&r.alt<=65)picks.push(r); });
+  // if fewer than 3 well-separated, relax separation
+  if(picks.length<3){rows.forEach(function(r){if(picks.length>=3)return;if(picks.indexOf(r)<0&&picks.every(function(p){return azsep(p.az,r.az)>30;}))picks.push(r);});}
+  var ph=document.getElementById('picks');
+  if(!picks.length){ph.innerHTML='<div class="empty">No bright stars are between 20° and 72° high right now — try a little later.</div>';}
+  else ph.innerHTML=picks.map(function(r,i){
+    var why=(i===0?'Brightest available':'~'+Math.round(azsep(picks[0].az,r.az))+'° around the sky from #1')+', '+Math.round(r.alt)+'° high — easy to centre.';
+    return '<div class="pick"><div class="n">'+(i+1)+'</div><div><h3>'+r.name+'</h3><div class="m">'+Math.round(r.alt)+'° high · '+A.compass(r.az)+' ('+Math.round(r.az)+'°) · mag '+r.mag.toFixed(1)+'</div><div class="why">'+why+'</div></div></div>';
+  }).join('');
+  var al=document.getElementById('all');
+  al.innerHTML='<table><tr><th>Star</th><th>Alt</th><th>Direction</th><th>Mag</th></tr>'+rows.map(function(r){
+    return '<tr><td><b>'+r.name+'</b></td><td>'+Math.round(r.alt)+'°</td><td>'+A.compass(r.az)+' ('+Math.round(r.az)+'°)</td><td>'+r.mag.toFixed(1)+'</td></tr>';}).join('')+'</table>';
+}
+document.getElementById('now').onclick=function(){setInputs(sgtNow());build();};
+['d','t'].forEach(function(id){document.getElementById(id).addEventListener('change',build);});
+setInputs(sgtNow());build();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

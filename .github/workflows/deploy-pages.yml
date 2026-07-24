@@ -1,0 +1,76 @@
+name: Deploy SCOB Night-Sky to GitHub Pages
+
+# Publishes the site to GitHub Pages on every push to the main branch.
+# One-time setup: repo → Settings → Pages → "Build and deployment" → Source: GitHub Actions.
+# After that, "publishing" is just your normal `git push` — this workflow does the rest.
+
+on:
+  push:
+    branches: [main]        # change to "master" if that's your default branch
+  workflow_dispatch:         # lets you trigger a deploy manually from the Actions tab
+
+# Permissions required by the official Pages deploy actions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deploys at once; a newer push cancels an in-progress one
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Astronomy regression test
+        run: |
+          if [ -f test-astro.js ]; then node test-astro.js; else echo "test-astro.js not present — skipping."; fi
+
+      - name: Page smoke tests
+        run: |
+          if [ -f test-pages.js ]; then node test-pages.js; else echo "test-pages.js not present — skipping."; fi
+
+      - name: Interactive-logic regression tests
+        run: |
+          if [ -f test-logic.js ]; then node test-logic.js; else echo "test-logic.js not present — skipping."; fi
+
+      - name: Pre-flight release check (optional gate)
+        run: |
+          if [ -f check-release.sh ]; then
+            chmod +x check-release.sh
+            ./check-release.sh
+          else
+            echo "check-release.sh not present — skipping the version/link consistency check."
+          fi
+
+      - name: Stage the live site (web files only)
+        run: |
+          mkdir -p _site
+          # Copy just the web assets — non-web files (deck .pptx, briefings, README,
+          # scripts, archive/) are NOT published. New .html/.js pages are picked up
+          # automatically; add patterns here if you introduce new asset types.
+          cp -v *.html          _site/ 2>/dev/null || true
+          cp -v *.js            _site/ 2>/dev/null || true
+          cp -v *.webmanifest   _site/ 2>/dev/null || true
+          cp -v icon-*.png      _site/ 2>/dev/null || true
+          # Make the bare site URL open the dashboard directly.
+          if [ -f scob-dashboard-v3.html ]; then cp -v scob-dashboard-v3.html _site/index.html; fi
+          echo "----- staged for publish -----"
+          ls -la _site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

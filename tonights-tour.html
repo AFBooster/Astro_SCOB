@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tonight's Tour — SCOB Night-Sky</title>
+<meta name="description" content="An auto-generated docent tour: what to show the public tonight, in order, with plain-language talking points and the right SCOB telescope for each object.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;display:inline-block;}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 6px;}
+.ctrl input{background:#0e1a38;color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:13px;}
+.btn{background:var(--navy3);color:var(--cyan);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
+.btn:hover{background:#22346a;}
+.cond{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0 4px;font-size:13.5px;}
+.cond b{color:var(--gold);}
+.intro{font-size:13.5px;color:var(--mute);margin:6px 0 14px;}
+.stop{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0;display:flex;gap:14px;}
+.num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#0b1733;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.stop h3{margin:0 0 2px;font-size:16px;color:var(--white);}
+.where{font-size:12.5px;color:var(--cyan);font-weight:700;margin-bottom:6px;}
+.say{font-size:14px;margin:6px 0;}
+.thumb{float:right;width:74px;height:74px;margin:0 0 8px 12px;border-radius:12px;background:#0b1020;border:1px solid var(--line);padding:3px;box-sizing:border-box;}
+.thumb svg{width:100%;height:100%;display:block;}
+.spk{font:inherit;font-size:12px;background:var(--navy2);border:1px solid var(--cyan);color:var(--cyan);border-radius:7px;padding:2px 9px;cursor:pointer;}
+.spk:hover{background:var(--cyan);color:#0b1733;}
+@media print{.thumb{background:#f4f4f8;border-color:#ccc;}.spk{display:none;}}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.chip{font-size:11.5px;background:var(--navy);border:1px solid var(--line);border-radius:7px;padding:3px 9px;color:var(--mute);}
+.chip b{color:var(--gold);}
+.scope{color:var(--green)!important;}
+.empty{background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--mute);font-size:13.5px;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+body.night{background:#0a0402;}
+body.night .stop,body.night .cond{background:#160b09;border-color:#3a1f1f;}
+body.night h1,body.night .num{color:#ff9a9a;}body.night .num{background:#ff9a9a;color:#160b09;}
+body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
+@media print{.backrow,.ctrl{display:none;}body{background:#fff;color:#000;}.stop,.cond{background:#fff;border-color:#bbb;}.num{background:#333;color:#fff;}.where,.chip b,h1{color:#000;}}
+@media(max-width:520px){body{font-size:14px;}.stop{padding:12px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎟️ Tonight's Tour</h1>
+    <div class="loc">A ready-to-read observing tour for the public · Science Centre Observatory, Jurong (1.33° N)</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+      <a href="sky-finder.html">📱 Point-your-phone finder</a>
+    </div>
+  </header>
+
+  <div class="ctrl">
+    <input type="date" id="d">
+    <input type="time" id="t" value="20:30">
+    <button type="button" class="btn" id="now">● Now</button>
+    <button type="button" class="btn" id="fri">↺ Next Fri 8:30pm</button>
+    <button type="button" class="btn" id="depth">💬 First-timer</button>
+    <button type="button" class="btn" id="playall" style="display:none">🔊 Play all</button>
+    <button type="button" class="btn" id="night">🌙 Night</button>
+    <button type="button" class="btn" id="print">🖨 Print</button>
+  </div>
+  <div class="cond" id="cond">—</div>
+  <div class="intro">Read down the list in order — each stop tells you where to point, what to say, and which scope suits it. Skip anything the queue can't see yet. Times & positions are for the moment above.</div>
+  <div id="tour"></div>
+
+  <div class="foot">
+    Companion pages: <a href="scob-dashboard-v3.html">dashboard</a> · <a href="sky-finder.html">point-your-phone finder</a> · <a href="moon-tonight.html">Moon tonight</a> · <a href="eyepiece-fov.html">eyepiece &amp; field of view</a>.<br>
+    Positions computed on your device (P. Schlyter method) · talking points are docent guidance, keep it conversational. · Science Centre Observatory, Singapore.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function nextFri(){var d=sgtNow();var add=(5-d.getDay()+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return d;}
+function dateFromInputs(){var dv=document.getElementById('d').value,tv=document.getElementById('t').value;if(!dv||!tv)return null;var p=dv.split('-').map(Number),q=tv.split(':').map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2],q[0]-8,q[1],0));}
+function setInputs(dtSGT){document.getElementById('d').value=dtSGT.getFullYear()+'-'+pad(dtSGT.getMonth()+1)+'-'+pad(dtSGT.getDate());document.getElementById('t').value=pad(dtSGT.getHours())+':'+pad(dtSGT.getMinutes());}
+function tl(h,m){var ap=h<12?'am':'pm';var hh=h%12||12;return hh+':'+pad(m)+ap;}
+function altWord(a){return a<20?'low':(a<50?'well up':'high overhead');}
+
+function sunCross(y,m,d,h0,h1,thr){var a=Date.UTC(y,m,d,h0-8,0,0),b=Date.UTC(y,m,d,h1-8,0,0);
+  var f=function(t){return A.sunAltAt(new Date(t))-thr;};if((f(a)>0)===(f(b)>0))return null;
+  for(var k=0;k<24;k++){var mid=(a+b)/2;if((f(mid)>0)===(f(a)>0))a=mid;else b=mid;}
+  var dt=new Date((a+b)/2+8*3600000);return tl(dt.getUTCHours(),dt.getUTCMinutes());}
+
+function build(){
+  var date=dateFromInputs();if(!date){return;}
+  if(typeof stopPlayAll==='function')stopPlayAll();
+  var dSGT=new Date(date.getTime()+8*3600000);
+  var y=dSGT.getUTCFullYear(),mo=dSGT.getUTCMonth(),da=dSGT.getUTCDate();
+  var s=A.sky(date);
+  // conditions line
+  var set=sunCross(y,mo,da,16,21,-0.833),dark=sunCross(y,mo,da,16,22,-18);
+  var phase=s.moon.illum<3?'New Moon':s.moon.illum>97?'Full Moon':(s.moon.illum<47?(s.moon.waxing?'waxing':'waning')+' crescent':s.moon.illum<53?(s.moon.waxing?'first':'last')+' quarter':(s.moon.waxing?'waxing':'waning')+' gibbous');
+  var cond=document.getElementById('cond');
+  var when=tl(dSGT.getUTCHours(),dSGT.getUTCMinutes());
+  cond.innerHTML='<b>'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dSGT.getUTCDay()]+', '+da+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo]+' '+y+' · '+when+' SGT</b><br>'
+    +'🌇 Sunset <b>'+(set||'—')+'</b> · 🌌 Fully dark <b>'+(dark||'—')+'</b> · 🌙 Moon <b>'+s.moon.illum+'% ('+phase+')</b>'
+    +(s.sunAlt>-6?'<br><span style="color:var(--gold)">Sky isn\'t dark yet — great time to talk about the Moon &amp; bright planets while you wait.</span>':'');
+
+  // assemble the tour
+  var items=[];
+  var SP=A.SHOWPIECES.concat(A.activeComets ? A.activeComets(date) : []);
+  function get(id){return SP.find(function(x){return x.id===id;});}
+  function pos(sp){return A.positionOf(sp,date);}
+  // 1) Moon opener
+  var moon=get('moon'),mp=pos(moon);if(mp.alt>5)items.push({sp:moon,p:mp,pr:0});
+  // 2) planets by brightness
+  SP.forEach(function(sp){if(sp.kind!=='planet')return;var p=pos(sp);var minA=(sp.planet==='Mercury')?3:8,needDark=(sp.planet==='Uranus'||sp.planet==='Neptune');if(p.alt>minA&&(!needDark||s.sunAlt<-8))items.push({sp:sp,p:p,pr:1+(p.mag||0)});});
+  // 3) deep-sky / doubles / stars when dark-ish, by altitude
+  SP.forEach(function(sp){if(sp.kind==='planet'||sp.kind==='moon')return;var p=pos(sp);
+    var need=(sp.kind==='star'||sp.kind==='double')?-6:-8;
+    if(p.alt>12 && s.sunAlt<need)items.push({sp:sp,p:p,pr:100-p.alt});});
+  items.sort(function(a,b){return a.pr-b.pr;});
+  items=items.slice(0,10);
+
+  var host=document.getElementById('tour');
+  if(!items.length){host.innerHTML='<div class="empty">Nothing is well placed for a public view at this moment. If the sky isn\'t dark yet, pick a time after full darkness; otherwise try a little later in the evening.</div>';return;}
+  TOURITEMS=items;
+  host.innerHTML=items.map(function(it,i){
+    var p=it.p,sp=it.sp;
+    var where='Look '+altWord(p.alt)+' in the <b>'+A.compass(p.az)+'</b> · '+Math.round(p.alt)+'° up';
+    var magchip=(p.mag!=null)?'<span class="chip">mag <b>'+(p.mag>=0?'+':'')+p.mag.toFixed(1)+'</b></span>':(sp.mag!=null?'<span class="chip">mag <b>'+sp.mag+'</b></span>':'');
+    return '<div class="stop"><div class="num">'+(i+1)+'</div><div>'
+      +'<div class="thumb" aria-hidden="true">'+A.illus(sp,74)+'</div>'
+      +'<h3>'+sp.name+'</h3>'
+      +'<div class="where">'+where+'</div>'
+      +'<div class="say">'+sayFor(sp)+'</div>'
+      +'<div class="meta"><span class="chip">👀 '+sp.look+'</span></div>'
+      +'<div class="meta">'+magchip+'<span class="chip scope">🔭 '+sp.scope+'</span>'+(TTS_OK?'<button type="button" class="spk" data-i="'+i+'" title="Read this aloud" aria-label="Read this aloud">🔊 Read</button>':'')+'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+var TOURITEMS=[];
+var TTS_OK=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+function speakStop(i){
+  if(!TTS_OK||!TOURITEMS[i])return;var sp=TOURITEMS[i].sp,p=TOURITEMS[i].p;
+  var txt=sp.name+'. '+'Look '+altWord(p.alt)+' in the '+A.compass(p.az)+', '+Math.round(p.alt)+' degrees up. '+sayFor(sp)+' '+(sp.look||'');
+  try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.rate=0.98;u.pitch=1;window.speechSynthesis.speak(u);}catch(e){}
+}
+document.getElementById('tour').addEventListener('click',function(e){var b=e.target.closest('.spk');if(!b)return;stopPlayAll();speakStop(+b.getAttribute('data-i'));});
+// v3.37: continuous hands-free walkthrough (folds in the old audio-tour page)
+var playing=false, playIdx=0;
+function highlightStop(i){Array.prototype.forEach.call(document.querySelectorAll('#tour .stop'),function(el,k){el.style.outline=(playing&&k===i)?'2px solid var(--gold)':'';el.style.outlineOffset='2px';});}
+function updatePlayBtn(){var b=document.getElementById('playall');if(b)b.textContent=playing?'⏸ Stop reading':'🔊 Play all';}
+function playChain(){
+  if(!playing||!TOURITEMS[playIdx]){playing=false;updatePlayBtn();highlightStop(-1);return;}
+  highlightStop(playIdx);
+  var stops=document.querySelectorAll('#tour .stop');if(stops[playIdx])stops[playIdx].scrollIntoView({behavior:'smooth',block:'center'});
+  var sp=TOURITEMS[playIdx].sp,p=TOURITEMS[playIdx].p;
+  var txt=sp.name+'. Look '+altWord(p.alt)+' in the '+A.compass(p.az)+', '+Math.round(p.alt)+' degrees up. '+sayFor(sp)+' '+(sp.look||'');
+  try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.rate=0.98;
+    u.onend=function(){if(!playing)return;if(playIdx<TOURITEMS.length-1){playIdx++;playChain();}else{playing=false;updatePlayBtn();highlightStop(-1);}};
+    window.speechSynthesis.speak(u);}catch(e){}
+}
+function stopPlayAll(){if(!playing)return;playing=false;if(TTS_OK)try{window.speechSynthesis.cancel();}catch(e){}updatePlayBtn();highlightStop(-1);}
+var pab=document.getElementById('playall');
+if(pab){pab.style.display=TTS_OK?'':'none';pab.onclick=function(){if(playing){stopPlayAll();}else if(TOURITEMS.length){playing=true;playIdx=0;updatePlayBtn();playChain();}};}
+document.addEventListener('visibilitychange',function(){if(document.hidden){stopPlayAll();if(TTS_OK)try{window.speechSynthesis.cancel();}catch(e){}}});
+var depthMode=(function(){try{return localStorage.getItem('scobDepth')||'simple';}catch(e){return'simple';}})();
+function sayFor(sp){var b=sp.blurb||'';if(depthMode!=='simple')return b;var m=b.match(/^[^.!?]*[.!?]/);return m?m[0]:b;}
+function depthLabel(){var el=document.getElementById('depth');if(el)el.textContent=depthMode==='simple'?'💬 First-timer':'💬 Enthusiast';}
+document.getElementById('depth').onclick=function(){depthMode=depthMode==='simple'?'full':'simple';try{localStorage.setItem('scobDepth',depthMode);}catch(e){}depthLabel();build();};
+depthLabel();
+document.getElementById('now').onclick=function(){setInputs(sgtNow());build();};
+document.getElementById('fri').onclick=function(){var f=nextFri();f.setHours(20,30,0,0);setInputs(f);build();};
+document.getElementById('print').onclick=function(){window.print();};
+document.getElementById('night').onclick=function(){document.body.classList.toggle('night');try{localStorage.setItem('scobNight',document.body.classList.contains('night')?'1':'0');}catch(e){}};
+['d','t'].forEach(function(id){document.getElementById(id).addEventListener('change',build);});
+try{if(localStorage.getItem('scobNight')==='1'||(localStorage.getItem('scobNight')===null&&A.sunAltAt(new Date())<-1))document.body.classList.add('night');}catch(e){}
+(function(){var f=nextFri();f.setHours(20,30,0,0);setInputs(f);build();})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

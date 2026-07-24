@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tracking &amp; Alignment Methods — SCOB Night-Sky</title>
+<meta name="description" content="How tracking mounts follow the sky, and how Celestron GoTo alignment works — SkyAlign, 1-star, 2-star, All-Star Polar Align — with Singapore-specific notes for the Science Centre Observatory.">
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.6;}
+.wrap{max-width:840px;margin:0 auto;padding:0 16px 40px;}
+header{padding:20px 0 8px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;display:inline-block;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:18px 18px;margin-top:15px;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.card h3{margin:16px 0 6px;font-size:14px;color:var(--cyan);}
+.card p{margin:8px 0;}
+.card .note{font-size:12.5px;color:var(--mute);}
+.sg{border-left:3px solid var(--gold);background:var(--navy3);border-radius:8px;padding:10px 12px;font-size:13.5px;margin:10px 0;}
+.sg b{color:var(--gold);}
+.method{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin:10px 0;}
+.method h3{margin:0 0 6px;font-size:14.5px;color:var(--white);}
+.method h3 .n{color:var(--gold);}
+.method .meta{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0 8px;}
+.method .chip{font-size:11.5px;background:var(--navy);border:1px solid var(--line);border-radius:7px;padding:2px 8px;color:var(--mute);}
+.method .chip b{color:var(--cyan);font-weight:700;}
+.method p{margin:6px 0;font-size:13.5px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+th{color:var(--cyan);text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;}
+td,th{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+td b{color:var(--gold);}
+.diagram{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0;}
+.diagram svg{width:100%;height:auto;display:block;}
+.diagram .cap{font-size:12px;color:var(--mute);text-align:center;margin-top:6px;}
+ol,ul{margin:8px 0;padding-left:22px;}
+li{margin:5px 0;font-size:13.5px;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.6;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+@media(max-width:520px){body{font-size:14px;} .card{padding:15px 13px;} td,th{padding:6px 5px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🧭 Tracking &amp; Alignment Methods</h1>
+    <div class="loc">How GoTo mounts learn the sky — with the Celestron methods used on SCOB's deck scopes · Science Centre Observatory, Jurong (1.33° N)</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+      <a href="telescope-types.html">🔭 Telescope types &amp; mounts</a>
+    </div>
+  </header>
+
+  <div class="card">
+    <h2>1 · Why telescopes must track</h2>
+    <p>The Earth turns once every 23 h 56 m, so the whole sky drifts westward at about <b style="color:var(--gold)">15° per hour</b> — at 200× magnification an untracked object crosses the eyepiece in seconds. A tracking mount cancels this drift by turning the telescope the opposite way at the <b style="color:var(--gold)">sidereal rate</b>.</p>
+    <p>There are two mechanical ways to do it:</p>
+    <div class="diagram">
+      <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="700" height="300" rx="10" fill="#0a1430"/>
+        <line x1="350" y1="18" x2="350" y2="282" stroke="#33406b" stroke-width="1"/>
+        <!-- EQ side -->
+        <text x="175" y="32" text-anchor="middle" font-size="15" fill="#f5c542" font-weight="700">Equatorial (one axis)</text>
+        <line x1="85" y1="200" x2="265" y2="90" stroke="#5bd6e0" stroke-width="4" stroke-linecap="round"/>
+        <text x="272" y="76" text-anchor="end" font-size="11" fill="#5bd6e0">to celestial pole ↗</text>
+        <rect x="137" y="136" width="76" height="18" rx="4" fill="#f4f6fb" transform="rotate(-31 175 145)"/>
+        <path d="M84 190 A26 26 0 1 1 110 216" fill="none" stroke="#f5c542" stroke-width="2" stroke-dasharray="5 4"/>
+        <polygon points="110,216 120,210 114,222" fill="#f5c542"/>
+        <text x="175" y="248" text-anchor="middle" font-size="11" fill="#f5c542">one motor turns the polar axis · 15°/hr</text>
+        <text x="175" y="270" text-anchor="middle" font-size="11" fill="#9fb0d6">star stays put · no field rotation</text>
+        <!-- Alt-az side -->
+        <text x="525" y="32" text-anchor="middle" font-size="15" fill="#f5c542" font-weight="700">Alt-azimuth GoTo (two axes)</text>
+        <line x1="525" y1="95" x2="525" y2="205" stroke="#5bd6e0" stroke-width="4" stroke-linecap="round"/>
+        <line x1="462" y1="150" x2="588" y2="150" stroke="#5bd6e0" stroke-width="4" stroke-linecap="round"/>
+        <rect x="487" y="141" width="76" height="18" rx="4" fill="#f4f6fb" transform="rotate(-18 525 150)"/>
+        <path d="M592 136 A55 55 0 0 0 562 100" fill="none" stroke="#f5c542" stroke-width="2" stroke-dasharray="5 4"/>
+        <polygon points="562,100 574,101 566,110" fill="#f5c542"/>
+        <path d="M478 214 A62 26 0 0 0 572 214" fill="none" stroke="#f5c542" stroke-width="2" stroke-dasharray="5 4"/>
+        <polygon points="572,214 561,209 563,221" fill="#f5c542"/>
+        <text x="525" y="248" text-anchor="middle" font-size="11" fill="#f5c542">two motors · speeds recomputed every second</text>
+        <text x="525" y="270" text-anchor="middle" font-size="11" fill="#9fb0d6">quick setup · field slowly rotates (imaging)</text>
+      </svg>
+      <div class="cap">An equatorial mount tilts one axis parallel to the Earth's axis and turns it at one constant rate. An alt-az GoTo (like SCOB's Celestron CPCs) computes fresh up-down / left-right speeds every second instead.</div>
+    </div>
+    <div class="sg"><b>Singapore quirk:</b> at latitude 1.33° N the celestial pole sits <b>on the horizon</b> — Polaris is hidden by buildings and haze. Classic polar alignment is impractical here, which is why the deck scopes run in <b>alt-azimuth mode</b>, and why camera-based or multi-star alignments (below) matter more than pole-finding.</div>
+  </div>
+
+  <div class="card">
+    <h2>2 · What "alignment" actually does</h2>
+    <p>A GoTo mount has encoders that report where its two axes point — but at power-up it has no idea how those axes relate to the sky. Alignment builds that missing link, the <b style="color:var(--gold)">pointing model</b>: a coordinate transform between "axis angles" and "sky positions" (RA/Dec).</p>
+    <ul>
+      <li><b style="color:var(--cyan)">Time + location</b> tell the mount where the celestial sphere is oriented right now. SCOB's Celestron mounts have <b style="color:var(--cyan)">no GPS module</b>, so these are keyed into the hand control at start-up — location stays saved (Singapore: 1°20′ N, 103°44′ E, UTC+8), but check the clock every session.</li>
+      <li><b style="color:var(--cyan)">Each centred star</b> pins the model down further: one star fixes roughly where the sky is; a second star fixes the remaining tilt; a third lets the computer solve for level/orientation errors without you naming anything.</li>
+      <li>Once the model is solved, <b>GoTo</b> (slew to any of 40,000 objects) and <b>tracking</b> (follow them) both fall out of the same math.</li>
+    </ul>
+    <p class="note">Rule of thumb: more alignment points, better pointing accuracy — but only if the stars are well separated in azimuth and not too close to the zenith or each other.</p>
+  </div>
+
+  <div class="card">
+    <h2>3 · Celestron alignment methods <span style="font-weight:400;font-size:12px;color:var(--mute)">(NexStar / CPC family — what SCOB's deck scopes use)</span></h2>
+
+    <div class="method">
+      <h3><span class="n">SkyAlign</span> — point at any 3 bright things</h3>
+      <div class="meta"><span class="chip">objects <b>3, unnamed</b></span><span class="chip">speed <b>~3–5 min</b></span><span class="chip">accuracy <b>good</b></span><span class="chip">skill <b>none needed</b></span></div>
+      <p>Enter date, time and location on the hand control (SCOB's mounts have no GPS — the saved Singapore location just needs confirming), then centre <b>any three bright objects</b> — you don't need to know their names; even a planet or the Moon can be one. The hand control measures the angles between them and searches its database for the only trio of bright objects that fits that triangle, identifying them automatically and solving the model.</p>
+      <p class="note">Best all-round choice for public sessions: no star names needed, works with the initial tube in any position. Pick objects spread widely apart and avoid two objects of similar brightness close together.</p>
+    </div>
+
+    <div class="method">
+      <h3><span class="n">Auto Two-Star Align</span> — you name one, it finds the second</h3>
+      <div class="meta"><span class="chip">stars <b>1 named + 1 auto</b></span><span class="chip">speed <b>~3 min</b></span><span class="chip">accuracy <b>good–high</b></span></div>
+      <p>Centre one star you can name; the mount then <b>chooses and slews to a suitable second star</b> itself — you just re-centre it. Faster than full two-star since the mount does the star-picking geometry for you.</p>
+      <p class="note">Handy in Singapore where the classic northern "first star" (Polaris) is unusable — pick anything bright you recognise (Vega, Altair, Antares…).</p>
+    </div>
+
+    <div class="method">
+      <h3><span class="n">Two-Star Align</span> — the classic</h3>
+      <div class="meta"><span class="chip">stars <b>2 named</b></span><span class="chip">speed <b>~4 min</b></span><span class="chip">accuracy <b>high</b></span></div>
+      <p>You choose and centre <b>two named stars</b> from the hand-control list. Two well-separated stars fully constrain the model, so this gives very reliable GoTos — the traditional method experienced operators still prefer.</p>
+      <p class="note">Choose stars 40°–120° apart in azimuth, ideally 20°–60° high, on the same side of the meridian for EQ mounts.</p>
+    </div>
+
+    <div class="method">
+      <h3><span class="n">One-Star Align</span> — quick &amp; rough</h3>
+      <div class="meta"><span class="chip">stars <b>1 named</b></span><span class="chip">speed <b>~1 min</b></span><span class="chip">accuracy <b>modest</b></span></div>
+      <p>Centre a single named star; the mount assumes its base is level and solves the rest from time and location. Pointing is approximate, but tracking near that part of the sky is fine.</p>
+      <p class="note">Great for a fast "Moon &amp; Saturn only" deck setup while the queue is forming — the target you aligned on tracks well; far-away GoTos will be sloppier.</p>
+    </div>
+
+    <div class="method">
+      <h3><span class="n">Solar System Align</span> — daytime &amp; twilight</h3>
+      <div class="meta"><span class="chip">objects <b>1 (Sun/Moon/planet)</b></span><span class="chip">speed <b>~1 min</b></span><span class="chip">accuracy <b>modest</b></span></div>
+      <p>Same idea as One-Star, but aligns on the <b>Moon, a planet, or the Sun</b> — the only bright things visible before dark. This is how a scope can track Venus at 7:15 pm before any stars appear.</p>
+      <p class="note">⚠️ Only select the Sun with a certified solar filter fitted — the hand control hides the Sun by default (enable it in the Utilities menu).</p>
+    </div>
+
+    <div class="method">
+      <h3><span class="n">Quick Align &amp; Last Alignment</span> — for scopes that don't move</h3>
+      <div class="meta"><span class="chip">stars <b>0</b></span><span class="chip">speed <b>seconds</b></span><span class="chip">accuracy <b>depends on setup</b></span></div>
+      <p><b>Quick Align</b> trusts time + location + a level, index-marked start position and skips stars entirely. <b>Last Alignment</b> restores the previous session's model — perfect for a mount that hasn't been moved, like a pier-mounted scope or a dome instrument re-powered mid-session.</p>
+    </div>
+
+    <div class="method">
+      <h3><span class="n">All-Star Polar Align (ASPA)</span> — polar alignment without Polaris</h3>
+      <div class="meta"><span class="chip">for <b>wedge / EQ mounts</b></span><span class="chip">speed <b>~5 min extra</b></span><span class="chip">accuracy <b>imaging-grade</b></span></div>
+      <p>For long-exposure imaging an alt-az fork needs an <b>equatorial wedge</b>, and the polar axis must physically point at the celestial pole. ASPA does this using <b>any bright star</b>: after a normal GoTo alignment the mount slews to where the star <i>should</i> be if the wedge were perfect, and you correct the difference with the wedge's mechanical knobs (not the hand control).</p>
+      <p class="note">In Singapore the pole sits on the horizon, so ASPA — which never needs to see Polaris — is effectively the <b>only</b> practical way to polar-align here.</p>
+    </div>
+
+    <h3 style="margin-top:18px">At a glance</h3>
+    <table>
+      <tr><th>Method</th><th>You centre</th><th>Speed</th><th>Accuracy</th><th>Use at SCOB when…</th></tr>
+      <tr><td><b>SkyAlign</b></td><td>3 unnamed objects</td><td>●●○</td><td>●●○</td><td>default for deck CPCs at public sessions</td></tr>
+      <tr><td><b>Auto Two-Star</b></td><td>1 named + 1 auto</td><td>●●●</td><td>●●●</td><td>operator knows one star; mount finds the rest</td></tr>
+      <tr><td><b>Two-Star</b></td><td>2 named stars</td><td>●●○</td><td>●●●</td><td>best GoTos for the whole night</td></tr>
+      <tr><td><b>One-Star</b></td><td>1 named star</td><td>●●●</td><td>●○○</td><td>fast setup for one bright target</td></tr>
+      <tr><td><b>Solar System</b></td><td>Moon / planet / Sun*</td><td>●●●</td><td>●○○</td><td>twilight starts, Venus &amp; Moon before dark</td></tr>
+      <tr><td><b>Quick / Last Align</b></td><td>nothing</td><td>●●●</td><td>●●○</td><td>scope hasn't moved since last time</td></tr>
+      <tr><td><b>ASPA</b></td><td>1 star + wedge knobs</td><td>●○○</td><td>imaging</td><td>long-exposure astrophotography on a wedge</td></tr>
+    </table>
+    <p class="note">* Sun only with a certified solar filter.</p>
+  </div>
+
+  <div class="card">
+    <h2>4 · Tracking rates — one speed doesn't fit all</h2>
+    <ul>
+      <li><b style="color:var(--gold)">Sidereal rate</b> (15.041″/s) — the default; matches the stars and deep-sky objects.</li>
+      <li><b style="color:var(--gold)">Lunar rate</b> — the Moon orbits eastward ~13°/day, so it drifts against the stars; lunar rate runs slightly slower to hold it centred.</li>
+      <li><b style="color:var(--gold)">Solar rate</b> — the Sun's daily motion, for (filtered!) solar observing.</li>
+      <li><b style="color:var(--gold)">King rate</b> — sidereal minus a whisker, compensating atmospheric refraction near the horizon; mostly of historical/imaging interest.</li>
+    </ul>
+    <p class="note">On the hand control: Menu → Tracking → Rate. Planets are close enough to sidereal that the normal rate is fine visually.</p>
+  </div>
+
+  <div class="card">
+    <h2>5 · How the other SCOB mounts handle it</h2>
+    <table>
+      <tr><th>Mount</th><th>Type</th><th>Alignment / tracking approach</th></tr>
+      <tr><td><b>Deck Celestron CPC 8–11" &amp; C6</b></td><td>alt-az GoTo fork</td><td>Manual date/time entry (no GPS module) + SkyAlign / two-star as above; both axes computer-driven; field rotation irrelevant for visual queues.</td></tr>
+      <tr><td><b>40 cm main telescope</b></td><td>English yoke equatorial (permanent)</td><td>Polar-aligned once during installation — the yoke's axis is fixed parallel to Earth's axis, so it tracks with a single constant-rate drive; no nightly alignment, only pointing calibration ("sync") on a known star.</td></tr>
+      <tr><td><b>German equatorial (imaging rigs)</b></td><td>GEM</td><td>Polar alignment (ASPA or drift method here at the equator) + 2–3 star model; meridian flips when crossing south.</td></tr>
+      <tr><td><b>Dobsonian (portable)</b></td><td>manual alt-az</td><td>No motors — the observer nudges the tube; "push-to" digital circles need a simple 2-star init. Great for teaching the sky's real motion.</td></tr>
+      <tr><td><b>Seestar S30 Pro</b></td><td>smart scope</td><td>Fully automatic plate-solving — the camera photographs the field and matches star patterns to its database — every time it slews; in EQ mode it also tracks on one axis to avoid field rotation during 30-s subs.</td></tr>
+    </table>
+    <div class="sg"><b>Why plate-solving wins at 1.33° N:</b> every camera-based plate-solving method (like the Seestar) works identically anywhere on Earth — no pole star required. That's why the newest SCOB workflow leans on them, while the equatorial classics rely on the one mount whose polar axis was set by surveyors: the 40 cm yoke.</div>
+  </div>
+
+  <div class="card">
+    <h2>6 · Operator tips for accurate GoTos</h2>
+    <ol>
+      <li>Enter the time to the second (no GPS on SCOB's mounts — read it off your phone as you key it in) — 1 minute of clock error ≈ ¼° of sky.</li>
+      <li>Pick alignment objects <b>well spread in azimuth</b> (≥ 40° apart), between ~20° and 60° altitude; avoid the zenith.</li>
+      <li>Finish every centring with the <b>same directions</b> (traditionally up &amp; right) so backlash in the gears is taken up consistently.</li>
+      <li>Use a reticle or defocus the star to a doughnut for precise centring.</li>
+      <li>If GoTos drift off during the night, don't re-align — <b>sync</b> on a nearby bright star to touch up the model locally.</li>
+      <li>Keep the tripod firm and untouched; one kicked leg invalidates the whole model (SkyAlign again — it's fast).</li>
+    </ol>
+  </div>
+
+  <div class="foot">
+    Companion pages: <a href="scob-dashboard-v3.html">SCOB night-sky dashboard</a> · <a href="telescope-types.html">telescope types, mounts &amp; magnification</a> · <a href="moon-tonight.html">Moon tonight</a>.<br>
+    Sources: alignment method descriptions — <a href="https://www.celestron.com/pages/skyalign-technology" target="_blank" rel="noopener">Celestron SkyAlign technology</a> &amp; Celestron NexStar/CPC hand-control documentation · community references — <a href="https://www.nexstarsite.com/AlignmentFAQ.htm" target="_blank" rel="noopener">NexStar Resource Site alignment guides</a> · sidereal/lunar/solar rate values — standard astronomical constants · SCOB instrument details — Science Centre Observatory, Singapore.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="version.js"></script>
+</body>
+</html>

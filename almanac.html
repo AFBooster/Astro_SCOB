@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sky Almanac — SCOB</title>
+<meta name="description" content="Tonight's sky almanac for the Science Centre Observatory: planets on show, the Milky Way-core window, meteor showers this month, and what's notable this month — computed on your device.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 8px;font-size:16px;color:var(--gold);}
+.big{font-size:17px;font-weight:700;}
+.sub{font-size:13px;color:var(--mute);}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
+.chip{background:var(--navy);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:13px;}
+ul{margin:6px 0;padding-left:20px;}li{margin:4px 0;font-size:13.5px;}
+.hl{color:var(--green);font-weight:700;}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📅 Sky Almanac</h1>
+    <div class="loc" id="loc">Tonight over Singapore. Science Centre Observatory, Jurong.</div>
+    <div class="bar"><a href="scob-dashboard-v3.html">← Dashboard</a><a href="sky-events.html">🌘 Sky events</a><a href="tonights-tour.html">📋 Tour</a><button type="button" id="showfilt" style="background:none;border:1px solid var(--cyan);color:var(--cyan);border-radius:9px;padding:7px 12px;font-weight:700;font-size:12.5px;cursor:pointer">👁 Visible only</button></div>
+  </header>
+
+  <div class="card"><h2>🌙 Moon tonight</h2><div id="moon" class="big">—</div><div class="sub" id="libr" style="margin-top:8px"></div></div>
+  <div class="card"><h2>🪐 Planets on show tonight</h2><div id="planets"></div></div>
+  <div class="card"><h2>🌌 Milky-Way core window</h2><div id="mw"></div><div class="sub" id="mwnote" style="margin-top:6px"></div></div>
+  <div class="card"><h2>☄️ Meteor showers this month</h2><div id="showers"></div></div>
+  <div class="card"><h2>🔭 This month in the sky</h2><div id="month" class="sub" style="font-size:14px;color:var(--white)"></div></div>
+
+  <div class="foot">
+    Positions, Moon phase and the Milky-Way window are computed on your device (P. Schlyter method) for the Science Centre Observatory. Meteor-shower peaks and monthly notes are the standard almanac dates; exact peak times vary year to year.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+var MOn=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function phaseName(ill,wax){if(ill<0.03)return'New Moon';if(ill>0.97)return'Full Moon';if(ill<0.47)return(wax?'Waxing':'Waning')+' Crescent';if(ill<0.53)return(wax?'First':'Last')+' Quarter';return(wax?'Waxing':'Waning')+' Gibbous';}
+// meteor showers: [name, peakMonth(1-12), peakDay, ZHR, parent]
+// [name, peakMonth, peakDay, ZHR, parent, radiantRA°, radiantDec°]
+var SHOWERS=[['Quadrantids',1,3,110,'asteroid 2003 EH1',230,49],['Lyrids',4,22,18,'Comet Thatcher',271,34],['Eta Aquariids',5,6,50,'Comet Halley',338,-1],['Delta Aquariids',7,30,25,'Comet 96P/Machholz',340,-16],['Perseids',8,12,100,'Comet Swift–Tuttle',48,58],['Orionids',10,21,20,'Comet Halley',95,16],['Leonids',11,17,15,'Comet Tempel–Tuttle',152,22],['Geminids',12,14,120,'asteroid 3200 Phaethon',112,33],['Ursids',12,22,10,'Comet Tuttle',217,76]];
+function radiantMaxAlt(dec){return 90-Math.abs(1.3342-dec);} // transit altitude of the radiant from SCOB
+var hideShow=(function(){try{var v=localStorage.getItem('scobShowHide');return v===null?true:v==='1';}catch(e){return true;}})();
+var MONTH=['Winter showpieces rule: Orion, the Pleiades and Sirius blaze in the east after dark, and the Orion Nebula is at its best.',
+'Orion and Canis Major stand high; Sirius flashes overhead. A fine month for the Orion Nebula and the Beehive rising in the east.',
+'Leo the lion climbs the east and the winter stars sink west — a hand-off from Orion to the spring galaxies of Leo and Virgo.',
+'Galaxy season: the Virgo Cluster rides high. The Southern Cross and the Pointers stand upright in the south.',
+'The Eta Aquariid meteors (Halley’s dust) peak; Scorpius and its red heart Antares rise in the east — Milky-Way season begins.',
+'Scorpius and Sagittarius dominate — the glowing core of the Milky Way, packed with clusters and nebulae, rides high over Singapore.',
+'Prime Milky-Way month: the galactic core is nearly overhead after dark. The Summer Triangle (Vega, Deneb, Altair) climbs the east.',
+'The Perseid meteors peak mid-month. Sagittarius’ star-clouds and the Lagoon and Swan nebulae are superb; Saturn returns to evening skies.',
+'The Summer Triangle is overhead; Sagittarius sinks west. A good month to catch the Milky Way before it fades, and outer planets at opposition.',
+'The Orionids (Halley’s dust) fall; Fomalhaut sits alone in the south and the winter stars begin returning before dawn.',
+'The Leonids peak; the Pleiades and Taurus rise in the evening, heralding Orion’s return to the eastern sky.',
+'The Geminids — the year’s best meteor shower — peak mid-month. Orion and the winter showpieces are back in force.'];
+function eveningDate(){var d=sgtNow();return new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),20-8,30,0));}
+function run(){
+  var ev=eveningDate(), sgt=new Date(ev.getTime()+8*3600000);
+  document.getElementById('loc').textContent='For '+sgt.getUTCDate()+' '+MOn[sgt.getUTCMonth()].slice(0,3)+' '+sgt.getUTCFullYear()+', around 8:30 pm — Science Centre Observatory, Jurong.';
+  // Moon
+  var s=A.sky(ev), dd=A.jd(ev)-2451543.5, mo=A.moon(dd), wax=(((mo.lon-mo.slon)%360)+360)%360<180, ill=s.moon.illum/100;
+  document.getElementById('moon').innerHTML=Math.round(ill*100)+'% lit · <b>'+phaseName(ill,wax)+'</b> <span class="sub">'+(s.moon.alt>0?'· up in the '+A.compass(s.moon.az):'· below the horizon at 8:30 pm')+'</span>';
+  if(A.libration){var lb=A.libration(ev);
+    var lonLimb=lb.lon>=0?'eastern (Mare Crisium) limb':'western (Grimaldi / Mare Orientale) limb';
+    var latLimb=lb.lat>=0?'northern (north polar) limb':'southern (south polar) limb';
+    var strong=(Math.abs(lb.lon)>6||Math.abs(lb.lat)>5.2)?' <span class="hl">— near maximum tonight: a fine chance to catch features right at the '+(Math.abs(lb.lon)>=Math.abs(lb.lat)*1.1?lonLimb.split(' ')[0]:latLimb.split(' ')[0])+' edge.</span>':'';
+    document.getElementById('libr').innerHTML='🌗 <b>Libration:</b> tipped '+Math.abs(lb.lon).toFixed(1)+'° toward the '+lonLimb+' and '+Math.abs(lb.lat).toFixed(1)+'° toward the '+latLimb+', turning a little extra terrain there into view.'+strong;}
+  // Planets
+  var pl=[];A.SHOWPIECES.forEach(function(sp){if(sp.kind!=='planet')return;var p=A.positionOf(sp,ev);var minA=(sp.planet==='Mercury')?3:8,need=(sp.planet==='Uranus'||sp.planet==='Neptune');if(p.alt>minA&&(!need||s.sunAlt<-8))pl.push({nm:sp.planet,alt:p.alt,az:p.az,mag:p.mag});});
+  pl.sort(function(a,b){return a.mag-b.mag;});
+  document.getElementById('planets').innerHTML=pl.length?('<div class="chips">'+pl.map(function(p){return '<span class="chip"><b>'+p.nm+'</b> · '+Math.round(p.alt)+'° '+A.compass(p.az)+' · mag '+(p.mag>=0?'+':'')+p.mag.toFixed(1)+'</span>';}).join('')+'</div>'):'<div class="sub">No planets well placed in the early evening tonight.</div>';
+  // Milky-Way core window (galactic centre RA 266.4°, Dec -28.9°)
+  var GCra=266.40, GCdec=-28.90, base=Date.UTC(sgt.getUTCFullYear(),sgt.getUTCMonth(),sgt.getUTCDate(),0,0,0)-8*3600000;
+  var start=null,end=null,maxAlt=-90,maxT=null;
+  for(var t=18*60;t<=30*60;t+=10){var dt=new Date(base+t*60000);var a=A.altazAt(GCra,GCdec,dt),su=A.sunAltAt(dt);
+    var okDark=su<-15, okHigh=a.alt>20;
+    if(a.alt>maxAlt&&okDark){maxAlt=a.alt;maxT=t;}
+    if(okDark&&okHigh){if(start===null)start=t;end=t;}}
+  function hm(t){t=((t%1440)+1440)%1440;var h=Math.floor(t/60),m=t%60;var ap=h<12?'am':'pm';return (h%12||12)+':'+pad(m)+ap;}
+  if(start!==null){document.getElementById('mw').innerHTML='<span class="hl">Up &amp; dark from '+hm(start)+' to '+hm(end)+'</span> — highest ~'+Math.round(maxAlt)+'° at '+hm(maxT)+', toward the south (Sagittarius).';
+    var mAlt=A.positionOf({kind:'moon'},new Date(base+(maxT||1320)*60000)).alt;
+    document.getElementById('mwnote').textContent=(ill>0.35&&mAlt>0)?('⚠ The '+Math.round(ill*100)+'% Moon is up during that window and will wash out the fainter core — best on the darker nights around New Moon.'):'Dark skies help: the core is faint, so the darker and moonless the better. From a city site look for the brightest star-clouds low in the south.';
+  } else {document.getElementById('mw').innerHTML='<span class="sub">The Milky-Way core doesn’t climb high enough after dark at this time of year — it’s best from about May to September over Singapore.</span>';document.getElementById('mwnote').textContent='';}
+  // Showers this month
+  renderShowers();
+  // month note
+  document.getElementById('month').textContent=MONTH[sgt.getUTCMonth()];
+}
+function showLabel(){var b=document.getElementById('showfilt');if(b)b.textContent=hideShow?'👁 Visible only':'👁 Showing all';}
+function renderShowers(){
+  var mth=sgtNow().getMonth()+1, all=SHOWERS.filter(function(x){return x[1]===mth;}), host=document.getElementById('showers');
+  if(!all.length){host.innerHTML='<div class="sub">No major shower peaks this month. Minor activity is always possible on dark nights.</div>';return;}
+  var rows=all.map(function(x){var ma=radiantMaxAlt(x[6]);return {x:x,ma:ma,vis:ma>=20};});
+  var shown=hideShow?rows.filter(function(r){return r.vis;}):rows, hidden=rows.length-shown.length;
+  function li(r){var x=r.x;return '<li><b>'+x[0]+'</b> — peaks ~'+MOn[mth-1].slice(0,3)+' '+x[2]+', up to <b>'+x[3]+'</b>/hr under dark skies · radiant reaches <b>'+Math.round(r.ma)+'°</b> here'+(r.vis?'':' <span style="color:var(--mute)">(low — few meteors from Singapore)</span>')+' · from '+x[4]+'</li>';}
+  var note=(hideShow&&hidden)?'<div class="sub" style="margin-top:6px">'+hidden+' shower'+(hidden===1?'':'s')+' with a radiant too low for Singapore hidden — <a href="#" id="showAllSh" style="color:var(--cyan)">show all</a>.</div>':'';
+  host.innerHTML=(shown.length?'<ul>'+shown.map(li).join('')+'</ul>':'<div class="sub">The shower'+(all.length===1?'':'s')+' peaking this month '+(all.length===1?'has':'have')+' a radiant too low to see well from Singapore. <a href="#" id="showAllSh" style="color:var(--cyan)">Show anyway</a>.</div>')+note;
+  var sa=document.getElementById('showAllSh');if(sa)sa.onclick=function(e){e.preventDefault();hideShow=false;try{localStorage.setItem('scobShowHide','0');}catch(x){}showLabel();renderShowers();};
+}
+document.getElementById('showfilt').onclick=function(){hideShow=!hideShow;try{localStorage.setItem('scobShowHide',hideShow?'1':'0');}catch(e){}showLabel();renderShowers();};
+showLabel();
+run();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

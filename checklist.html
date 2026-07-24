@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Setup Checklist — SCOB Night-Sky</title>
+<meta name="description" content="A printable pre-session setup and pack-down checklist for the Science Centre Observatory telescopes — the 40 cm main dome, the Celestron CPC / C6 deck scopes, and the Seestar smart scope.">
+<style>
+:root{--navy:#0b1733;--navy2:#13224a;--gold:#c8971a;--cyan:#0a7f8c;--ink:#1a2440;--mute:#5a6683;--line:#c9d2e6;}
+*{box-sizing:border-box;margin:0;}
+body{background:#eef1f8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 40px;}
+header h1{font-size:22px;color:#0b1733;margin:0;}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.bar button{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;}
+.bar .print{background:var(--gold);color:#fff;border-color:var(--gold);}
+.note{font-size:12.5px;color:var(--mute);background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:9px;padding:10px 12px;margin-bottom:14px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;break-inside:avoid;}
+.card h2{font-size:16px;color:#0b1733;display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.card .sub{font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+ul{list-style:none;}
+li{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:13.5px;border-top:1px dashed var(--line);}
+li:first-child{border-top:none;}
+li input{margin-top:3px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--cyan);cursor:pointer;}
+li label{cursor:pointer;}
+li b{color:#0b1733;}
+.foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px;}
+.foot a{color:var(--cyan);}
+@media print{
+  body{background:#fff;font-size:12px;}
+  .bar,.foot{display:none;}
+  .grid{grid-template-columns:repeat(2,1fr);gap:9px;}
+  .card{border:1px solid #999;border-radius:8px;padding:9px 11px;}
+  .note{border:1px solid #bbb;}
+  li input{-webkit-appearance:none;appearance:none;border:1.3px solid #444;border-radius:3px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>✅ Setup &amp; Pack-down Checklist</h1>
+    <div class="loc">A pre-session and pack-down run-through for each observing station. Science Centre Observatory, Jurong.</div>
+  </header>
+  <div class="bar">
+    <a href="scob-dashboard-v3.html">← Dashboard</a>
+    <a href="align-stars.html">GoTo alignment stars</a>
+    <a href="tonights-tour.html">Tonight's Tour</a>
+    <button id="reset" type="button">↺ Clear ticks</button>
+    <button class="print" id="print" type="button">🖨 Print checklist</button>
+  </div>
+  <div class="note">📝 This is a starting template — <b>adjust each list to SCOB's actual equipment, mounts and house procedures</b> before relying on it. Tick boxes reset each time the page is reloaded, so it's fresh for every session.</div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    Companion pages: <a href="scob-dashboard-v3.html">dashboard</a> · <a href="align-stars.html">GoTo alignment</a> · <a href="tonights-tour.html">Tonight's Tour</a> · <a href="eyepiece-fov.html">eyepiece &amp; field of view</a>.<br>
+    Volunteer guidance — a template, not a substitute for training. · Science Centre Observatory, Singapore.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script>
+"use strict";
+var LISTS=[
+ {t:"Before the gates open",ic:"🚦",sub:"All stations",items:[
+   "Open the <b>dashboard</b> — confirm tonight's go / no-go, Moon phase and the top targets.",
+   "Scan the <b>weather card</b>: cloud timeline, rain radar and PSI / haze.",
+   "Read the <b>run-sheet</b> — which object each dome takes at 7:30 / 8:30 / 9:30 pm.",
+   "Print the <b>briefing</b> and <b>object cards</b>; place a card by each scope.",
+   "Red torches only near the scopes; dim phone screens to protect night vision.",
+   "Brief greeters on tonight's highlights and the queue plan."]},
+ {t:"40 cm main dome",ic:"🔭",sub:"Main telescope",items:[
+   "Power on the mount; remove covers; check clamps and counterweights.",
+   "Open the dome slit and rotate to the target azimuth — confirm free rotation.",
+   "Boot the GoTo; set date, time and location.",
+   "Run a <b>2-star alignment</b> on two bright, well-separated stars (see the alignment-stars page).",
+   "Insert a low-power eyepiece first; focus sharply on a bright star.",
+   "Slew to the first run-sheet object, centre it, then hand over.",
+   "Keep a spare eyepiece and a dew wipe within reach."]},
+ {t:"CPC / C6 deck scopes",ic:"🛰️",sub:"Celestron alt-az",items:[
+   "Set the tripod level and firm; seat the scope; balance it.",
+   "Power on; run <b>SkyAlign</b> or a 2-star alignment on bright stars.",
+   "Start with a wide eyepiece (25–40 mm); focus on a star.",
+   "Fit a <b>dew shield / heater</b> if the air is humid.",
+   "Point at the first target; centre and check focus before the public looks.",
+   "Have a step stool ready for shorter visitors and kids."]},
+ {t:"Seestar S30",ic:"📷",sub:"Smart / EAA scope",items:[
+   "Check the charge; unfold; place on a stable flat spot with open sky.",
+   "Open the app; let it <b>auto-level</b> and calibrate the compass.",
+   "Pick a target from the Tour / finder; frame it.",
+   "Use the <b>dual-band filter</b> for emission nebulae; stack 30 s subs.",
+   "Cast the live view to a screen so the queue can watch it build.",
+   "Keep it clear of foot traffic, lights and knocks."]},
+ {t:"Pack-down",ic:"🌙",sub:"End of session",items:[
+   "Park the mounts; replace all covers and caps.",
+   "Close the dome slit; power everything down.",
+   "Return eyepieces to the case and <b>count them</b>.",
+   "Wipe down dewed optics before storing; never store wet.",
+   "Log any faults or low batteries for the next volunteer.",
+   "Do a final sweep for left-behind torches, tools and rubbish."]}
+];
+function esc(){}
+document.getElementById('grid').innerHTML=LISTS.map(function(g,gi){
+  return '<div class="card"><h2>'+g.ic+' '+g.t+'</h2><div class="sub">'+g.sub+'</div><ul>'+
+    g.items.map(function(it,i){var id='c'+gi+'_'+i;return '<li><input type="checkbox" id="'+id+'"><label for="'+id+'">'+it+'</label></li>';}).join('')+
+    '</ul></div>';
+}).join('');
+document.getElementById('print').addEventListener('click',function(){window.print();});
+document.getElementById('reset').addEventListener('click',function(){
+  Array.prototype.forEach.call(document.querySelectorAll('#grid input[type=checkbox]'),function(c){c.checked=false;});
+});
+</script>
+<script src="version.js"></script>
+</body>
+</html>

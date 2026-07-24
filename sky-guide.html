@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCOB Sky Guide — Science Centre Observatory</title>
+<meta name="description" content="Your pocket guide to tonight's sky over Singapore, from the Science Centre Observatory — see what's up, point your phone at the stars, hear the stories, and explore. Works on any phone.">
+<meta name="theme-color" content="#0b1733">
+<link rel="manifest" href="sky-guide.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sky Guide">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-tap-highlight-color:transparent;}
+.wrap{max-width:760px;margin:0 auto;padding:0 15px 44px;}
+.hero{background:radial-gradient(120% 90% at 70% 0%,#20315f 0%,#0b1733 62%);border-radius:0 0 22px 22px;padding:20px 18px 22px;position:relative;overflow:hidden;margin:0 -15px;}
+.hero .stars{position:absolute;inset:0;pointer-events:none;}
+.hero .stars i{position:absolute;background:#fff;border-radius:50%;}
+.brand{display:flex;align-items:center;gap:10px;position:relative;}
+.brand .logo{font-size:30px;}
+.brand h1{font-size:21px;font-weight:800;line-height:1.05;}
+.brand .sc{font-size:11.5px;color:var(--mute);letter-spacing:.3px;}
+.langs{position:absolute;top:0;right:0;display:flex;gap:5px;}
+.langs button{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--white);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;}
+.langs button.on{border-color:var(--gold);color:var(--gold);}
+.tonight{margin-top:18px;position:relative;}
+.tonight .state{font-size:13px;color:var(--cyan);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.tonight .lead{font-size:15px;color:var(--mute);margin:8px 0 4px;}
+.best{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:15px;padding:12px 14px;margin-top:6px;}
+.best .ic{flex:0 0 auto;width:66px;height:66px;border-radius:12px;background:rgba(6,10,26,.6);}
+.best .ic svg{width:66px;height:66px;display:block;}
+.best .bn{font-size:19px;font-weight:800;line-height:1.05;}
+.best .bb{font-size:12.5px;color:var(--mute);margin-top:2px;}
+.grp{margin-top:22px;}
+.grp h2{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);margin:0 2px 9px;}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.tile{display:flex;flex-direction:column;gap:5px;background:var(--navy2);border:1px solid var(--line);border-radius:15px;padding:14px;text-decoration:none;color:var(--white);transition:border-color .15s,transform .05s;}
+.tile:active{transform:scale(.98);}
+.tile:hover{border-color:var(--cyan);}
+.tile .em{font-size:26px;}
+.tile .tl{font-weight:700;font-size:14.5px;line-height:1.15;}
+.tile .ds{font-size:12px;color:var(--mute);}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;text-align:center;}
+.foot a{color:var(--cyan);}
+.caveat{font-size:11px;color:var(--mute);margin-top:10px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="stars" id="stars"></div>
+    <div class="brand">
+      <span class="logo">🔭</span>
+      <div><h1 id="title">SCOB Sky Guide</h1><div class="sc" id="scname">Science Centre Observatory · Singapore</div></div>
+      <div class="langs" id="langs"></div>
+    </div>
+    <div class="tonight">
+      <div class="state" id="state">—</div>
+      <div class="lead" id="lead"></div>
+      <div class="best" id="best" style="display:none"><div class="ic" id="bestIc" aria-hidden="true"></div><div><div class="bn" id="bestNm"></div><div class="bb" id="bestBb"></div></div></div>
+    </div>
+  </div>
+
+  <div id="groups"></div>
+
+  <div id="install" style="text-align:center;margin-top:24px"></div>
+
+  <div class="foot" id="foot"></div>
+  <div class="caveat" id="caveat"></div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro;
+var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
+var lang=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+if(['en','zh','ms','ta'].indexOf(lang)<0)lang='en';
+// UI strings
+var S={
+ en:{sc:'Science Centre Observatory · Singapore',day:'The Sun is up',twi:'Twilight — stars appearing',dark:'Dark skies — good viewing',
+   leadDay:'Come back after sunset for the stars. For now, here is the daytime Sun:',leadTwi:'The brightest stars and planets are coming out.',leadDark:'Here is the standout sight right now:',
+   see:'See the sky tonight',learn:'Learn & explore',fun:'Just for fun',open:'',
+   foot:'Free public stargazing on Friday evenings. Everything here is computed on your phone and works offline once loaded. Point your phone at the sky, or come look through our telescopes.',
+   caveat:'中文 / Bahasa Melayu / தமிழ் are provided to help — some wording is machine-assisted.'},
+ zh:{sc:'新加坡科学馆天文台',day:'太阳还在天上',twi:'暮光 — 星星渐现',dark:'天色已暗 — 适合观星',
+   leadDay:'日落后再回来看星星吧。现在先看看白天的太阳：',leadTwi:'最亮的恒星和行星正在出现。',leadDark:'现在最值得一看的是：',
+   see:'今晚观星',learn:'学习与探索',fun:'趣味天文',open:'',
+   foot:'每周五晚免费公众观星。所有内容都在您的手机上计算，加载后可离线使用。把手机对准天空，或来用我们的望远镜看看。',
+   caveat:'中文 / Bahasa Melayu / தமிழ் 供参考 — 部分翻译由机器辅助。'},
+ ms:{sc:'Balai Cerap Pusat Sains · Singapura',day:'Matahari masih di langit',twi:'Senja — bintang mula kelihatan',dark:'Langit gelap — sesuai untuk melihat',
+   leadDay:'Kembali selepas matahari terbenam untuk melihat bintang. Buat masa ini, lihat Matahari siang:',leadTwi:'Bintang dan planet paling terang sedang muncul.',leadDark:'Pemandangan paling menarik sekarang:',
+   see:'Lihat langit malam ini',learn:'Belajar & teroka',fun:'Untuk keseronokan',open:'',
+   foot:'Pemerhatian bintang awam percuma pada malam Jumaat. Semua ini dikira pada telefon anda dan berfungsi luar talian. Halakan telefon ke langit, atau lihat melalui teleskop kami.',
+   caveat:'中文 / Bahasa Melayu / தமிழ் disediakan sebagai bantuan — sebahagian terjemahan dibantu mesin.'},
+ ta:{sc:'அறிவியல் மைய வான்காணகம் · சிங்கப்பூர்',day:'சூரியன் இன்னும் வானில்',twi:'அந்திப்பொழுது — நட்சத்திரங்கள் தோன்றுகின்றன',dark:'இருள் வானம் — பார்வைக்கு ஏற்றது',
+   leadDay:'நட்சத்திரங்களைப் பார்க்க சூரிய அஸ்தமனத்திற்குப் பிறகு வாருங்கள். இப்போது பகல் சூரியன்:',leadTwi:'பிரகாசமான நட்சத்திரங்களும் கோள்களும் தோன்றுகின்றன.',leadDark:'இப்போது சிறந்த காட்சி:',
+   see:'இன்றிரவு வானத்தைப் பாருங்கள்',learn:'கற்று ஆராயுங்கள்',fun:'வேடிக்கைக்கு',open:'',
+   foot:'வெள்ளிக்கிழமை மாலைகளில் இலவச பொது நட்சத்திரப் பார்வை. அனைத்தும் உங்கள் தொலைபேசியில் கணக்கிடப்படுகிறது, இணையம் இல்லாமலும் இயங்கும். தொலைபேசியை வானத்தை நோக்கிக் காட்டுங்கள்.',
+   caveat:'中文 / Bahasa Melayu / தமிழ் உதவிக்காக — சில சொற்கள் இயந்திர மொழிபெயர்ப்பு.'}
+};
+// tiles: [emoji, href, {lang:label}, {lang:desc}]
+var TILES=[
+ ['see','🔭','tonights-tour.html',{en:"Tonight's highlights",zh:'今晚亮点',ms:'Sorotan malam ini',ta:'இன்றிரவின் சிறப்புகள்'},{en:'A guided tour — read aloud too',zh:'导览，可语音朗读',ms:'Lawatan — boleh dibacakan',ta:'சுற்றுலா — ஒலி வாசிப்புடன்'}],
+ ['see','📱','sky-finder.html',{en:'Point your phone',zh:'手机指星',ms:'Halakan telefon',ta:'தொலைபேசியைக் காட்டு'},{en:'Find a star — or identify one',zh:'找星，或识别星体',ms:'Cari atau kenal pasti bintang',ta:'கண்டறி அல்லது அடையாளம் காண்'}],
+ ['see','🤖','seestar.html',{en:'The Seestar robot scope',zh:'Seestar 智能望远镜',ms:'Teleskop robot Seestar',ta:'Seestar ரோபோ தொலைநோக்கி'},{en:'How it photographs nebulae',zh:'它如何拍摄星云',ms:'Bagaimana ia merakam nebula',ta:'நெபுலாக்களை எப்படிப் படம்பிடிக்கிறது'}],
+ ['see','📱','phone-astrophotography.html',{en:'Photograph the sky',zh:'用手机拍星空',ms:'Fotograf langit',ta:'வானத்தைப் படம் பிடி'},{en:'With the phone in your pocket',zh:'用你口袋里的手机',ms:'Dengan telefon anda',ta:'உங்கள் தொலைபேசியில்'}],
+ ['learn','✨','constellation-story.html',{en:'Constellation stories',zh:'星座故事',ms:'Kisah buruj',ta:'விண்மீன் கதைகள்'},{en:'The myths overhead tonight',zh:'今晚的星座传说',ms:'Mitos di langit',ta:'வானத்தின் தொன்மங்கள்'}],
+ ['learn','📅','almanac.html',{en:'Sky almanac',zh:'天象历',ms:'Almanak langit',ta:'வான் நாட்காட்டி'},{en:"This month's showers & more",zh:'本月流星雨等',ms:'Hujan meteor bulan ini',ta:'இம்மாத மழை மற்றும்'}],
+ ['learn','🌀','cosmic-extremes.html',{en:'Nebulae & black holes',zh:'星云与黑洞',ms:'Nebula & lohong hitam',ta:'நெபுலா & கருந்துளைகள்'},{en:'The universe at its most extreme',zh:'宇宙中最极端的天体',ms:'Objek paling ekstrem',ta:'பிரபஞ்சத்தின் தீவிரம்'}],
+ ['learn','🌏','singapore-sky.html',{en:'Singapore sees it all',zh:'新加坡尽览星空',ms:'Singapura lihat semua',ta:'சிங்கப்பூர் அனைத்தையும் காண்கிறது'},{en:'Why we get the whole sky',zh:'为何我们能看遍全天',ms:'Kenapa kita nampak seluruh langit',ta:'முழு வானமும் ஏன் தெரிகிறது'}],
+ ['learn','🌃','light-pollution.html',{en:'Where did the stars go?',zh:'星星去哪了？',ms:'Ke mana hilangnya bintang?',ta:'நட்சத்திரங்கள் எங்கே?'},{en:'City lights & the night sky',zh:'城市灯光与夜空',ms:'Cahaya bandar & langit',ta:'நகர விளக்குகளும் வானமும்'}],
+ ['fun','🪐','scale-model.html',{en:'Solar system to scale',zh:'太阳系比例',ms:'Sistem suria berskala',ta:'சூரியக் குடும்பம் அளவில்'},{en:'Shrink the Sun to a ball',zh:'把太阳缩成一个球',ms:'Kecilkan Matahari',ta:'சூரியனைச் சிறிதாக்கு'}],
+ ['fun','🎮','quiz.html',{en:'Constellation quiz',zh:'星座测验',ms:'Kuiz buruj',ta:'விண்மீன் வினாடி வினா'},{en:'Name the star pattern',zh:'猜猜是哪个星座',ms:'Namakan corak bintang',ta:'நட்சத்திர வடிவம்'}],
+ ['fun','☀️','solar.html',{en:'Daytime & the Sun',zh:'白天与太阳',ms:'Siang & Matahari',ta:'பகல் & சூரியன்'},{en:'Safe solar viewing',zh:'安全观测太阳',ms:'Lihat Matahari dengan selamat',ta:'பாதுகாப்பான சூரியப் பார்வை'}]
+];
+function T(k){return (S[lang]&&S[lang][k]!=null)?S[lang][k]:S.en[k];}
+function L(o){return o[lang]||o.en;}
+function starsBg(){var h=document.getElementById('stars'),n='';for(var i=0;i<40;i++){var sz=(Math.random()*2+0.5).toFixed(1);n+='<i style="width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;opacity:'+(0.25+Math.random()*0.6).toFixed(2)+'"></i>';}h.innerHTML=n;}
+function bestTonight(){
+  var now=new Date(), s=A.sky(now), best=null;
+  A.SHOWPIECES.forEach(function(sp){if(sp.kind!=='planet')return;var p=A.positionOf(sp,now);var need=(sp.planet==='Uranus'||sp.planet==='Neptune');if(p.alt>10&&!need){if(!best||p.mag<best.mag)best={sp:sp,mag:p.mag};}});
+  if(!best){var mp=A.positionOf({kind:'moon',name:'The Moon'},now);if(mp.alt>5&&s.moon.illum>15)best={sp:{name:'The Moon',kind:'moon',blurb:''},mag:-12};}
+  if(!best){var top=null;A.SHOWPIECES.concat(A.activeComets?A.activeComets(now):[]).forEach(function(sp){if(sp.kind==='planet'||sp.kind==='moon')return;var p=A.positionOf(sp,now);if(p.alt>25&&s.sunAlt<-8){if(!top||p.alt>top.alt)top={sp:sp,alt:p.alt};}});if(top)best={sp:top.sp,mag:99};}
+  return {s:s,best:best};
+}
+function render(){
+  document.documentElement.lang=lang;document.documentElement.setAttribute('translate','no');
+  document.getElementById('title').textContent='SCOB Sky Guide';
+  document.getElementById('scname').textContent=T('sc');
+  document.getElementById('langs').innerHTML=LANGS.map(function(l){return '<button type="button" data-l="'+l[0]+'"'+(l[0]===lang?' class="on"':'')+'>'+l[1]+'</button>';}).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobLang',lang);}catch(e){}render();};});
+  var r=bestTonight(), s=r.s;
+  var state=s.sunAlt>-0.5?T('day'):s.sunAlt>-6?T('twi'):T('dark');
+  document.getElementById('state').textContent=state;
+  document.getElementById('lead').textContent=s.sunAlt>-0.5?T('leadDay'):s.sunAlt>-6?T('leadTwi'):T('leadDark');
+  var b=document.getElementById('best');
+  if(r.best){b.style.display='flex';document.getElementById('bestIc').innerHTML=A.illus(r.best.sp,66);document.getElementById('bestNm').textContent=r.best.sp.name;document.getElementById('bestBb').textContent=(r.best.sp.blurb||'').split(/(?<=[.!?])\s/)[0]||'';}
+  else b.style.display='none';
+  var groups=[['see',T('see')],['learn',T('learn')],['fun',T('fun')]];
+  document.getElementById('groups').innerHTML=groups.map(function(g){
+    var items=TILES.filter(function(t){return t[0]===g[0];});
+    return '<div class="grp"><h2>'+g[1]+'</h2><div class="tiles">'+items.map(function(t){return '<a class="tile" href="'+t[2]+'"><span class="em">'+t[1]+'</span><span class="tl">'+L(t[3])+'</span><span class="ds">'+L(t[4])+'</span></a>';}).join('')+'</div></div>';
+  }).join('');
+  document.getElementById('foot').innerHTML=T('foot')+'<br><span class="scob-version" style="opacity:.7"></span>';
+  document.getElementById('caveat').textContent=T('caveat');
+  if(window.SCOB_VERSION){var sv=document.querySelector('.scob-version');if(sv&&!sv.innerHTML)sv.textContent='SCOB Night-Sky '+window.SCOB_VERSION;}
+  if(typeof renderInstall==='function')renderInstall();
+}
+// ---- install (Add to Home Screen) + a QR that opens this guide ----
+var IST={
+ install:{en:'⬇ Install this app',zh:'⬇ 安装此应用',ms:'⬇ Pasang apl ini',ta:'⬇ இந்த செயலியை நிறுவு'},
+ ios:{en:'On iPhone: tap Share ▸ “Add to Home Screen”.',zh:'在 iPhone 上：点按“分享” ▸ “加入主画面”。',ms:'Di iPhone: ketik Kongsi ▸ “Add to Home Screen”.',ta:'iPhone-இல்: பகிர் ▸ “Add to Home Screen”.'},
+ scan:{en:'Scan to open on your phone',zh:'扫码在手机上打开',ms:'Imbas untuk buka di telefon',ta:'தொலைபேசியில் திறக்க ஸ்கேன் செய்யவும்'}};
+function IT(k){return (IST[k]&&IST[k][lang])||IST[k].en;}
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;renderInstall();});
+window.addEventListener('appinstalled',function(){deferredPrompt=null;renderInstall();});
+function guideURL(){try{return new URL('sky-guide.html',location.href).href;}catch(e){return 'sky-guide.html';}}
+function makeGuideQR(){var box=document.getElementById('guideQR');if(!box)return;var url=guideURL();
+  if(typeof QRCode!=='undefined'&&/^https?:/.test(url)){box.innerHTML='';try{new QRCode(box,{text:url,width:122,height:122,colorDark:'#0b1733',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}}}
+function renderInstall(){
+  var el=document.getElementById('install');if(!el)return;
+  var standalone=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone;
+  var isIOS=/iP(hone|ad|od)/.test(navigator.userAgent);
+  var h='';
+  if(!standalone){
+    if(deferredPrompt)h+='<button type="button" id="a2hs" style="background:var(--gold);color:#0b1733;border:none;border-radius:12px;padding:12px 22px;font-size:15px;font-weight:800;cursor:pointer">'+IT('install')+'</button>';
+    else if(isIOS)h+='<div style="font-size:12.5px;color:var(--mute)">'+IT('ios')+'</div>';
+  }
+  h+='<div id="guideQR" style="width:134px;height:134px;margin:14px auto 5px;background:#fff;border-radius:10px;padding:6px;box-sizing:border-box"></div><div style="font-size:12px;color:var(--mute)">'+IT('scan')+'</div>';
+  el.innerHTML=h;
+  var b=document.getElementById('a2hs');if(b)b.onclick=function(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;renderInstall();});};
+  makeGuideQR();
+}
+function loadQRlib(cb){if(typeof QRCode!=='undefined')return cb();var inj=function(t){try{var s=document.createElement('script');s.textContent=t;document.head.appendChild(s);}catch(e){}};var c=null;try{c=localStorage.getItem('scobQRlib');}catch(e){}if(c){inj(c);if(typeof QRCode!=='undefined')return cb();}fetch('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js').then(function(r){return r.text();}).then(function(t){try{localStorage.setItem('scobQRlib',t);}catch(e){}inj(t);cb();}).catch(function(){cb();});}
+starsBg();render();renderInstall();
+loadQRlib(function(){makeGuideQR();});
+setInterval(function(){render();renderInstall();},120000);
+</script>
+<script src="version.js"></script>
+</body>
+</html>

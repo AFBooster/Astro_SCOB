@@ -1,0 +1,16 @@
+{
+  "name": "SCOB Sky Guide",
+  "short_name": "Sky Guide",
+  "description": "Your pocket guide to tonight's sky over Singapore, from the Science Centre Observatory.",
+  "start_url": "sky-guide.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1733",
+  "theme_color": "#0b1733",
+  "lang": "en",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

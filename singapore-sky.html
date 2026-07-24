@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Why Singapore Sees Almost the Whole Sky — SCOB</title>
+<meta name="description" content="From 1.3°N the Science Centre Observatory can see 99.99% of the entire celestial sphere over a year — the Southern Cross and the Big Dipper, the Magellanic Clouds and Andromeda. Almost no major observatory on Earth can say that.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;--orange:#ff9d3c;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--cyan);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.hero{background:linear-gradient(160deg,#16294f,#0d1a3a);border:1px solid var(--gold);border-radius:16px;padding:20px 18px;margin:14px 0;text-align:center;}
+.hero .big{font-size:52px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-1px;}
+.hero .sub{font-size:14px;color:var(--white);margin-top:8px;}
+.hero .fine{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.55;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.fact{font-size:13.5px;color:var(--mute);line-height:1.65;}
+.fact b{color:var(--white);}
+.fact p{margin:0 0 10px;}
+.fact p:last-child{margin-bottom:0;}
+svg.band{width:100%;height:auto;display:block;margin:4px 0 2px;}
+table{width:100%;border-collapse:collapse;margin-top:4px;}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line);}
+th.l{text-align:left;}
+td{padding:7px 4px;border-bottom:1px solid var(--line);font-size:13px;text-align:right;}
+td.l{text-align:left;}
+td .nm{font-weight:700;}
+td .hint{color:var(--mute);font-size:11.5px;display:block;}
+.y{color:var(--green);font-weight:700;}
+.n{color:var(--red);}
+.marg{color:var(--orange);font-weight:700;}
+.up{color:var(--gold);font-weight:700;}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.pair{border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;padding:11px 13px;margin-bottom:9px;background:var(--navy3);font-size:13.5px;}
+.pair b{color:var(--cyan);}
+.pair .p2{color:var(--mute);font-size:12.5px;margin-top:5px;line-height:1.55;}
+.warn{background:rgba(255,157,60,.12);border:1px solid var(--orange);border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13.5px;line-height:1.6;color:var(--mute);}
+.warn b{color:var(--orange);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌏 Singapore sees almost the whole sky</h1>
+    <div class="loc">The one thing about observing from 1.3° north that no darker, higher, more famous observatory can match. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="constellation-story.html">✨ Constellation stories</a>
+      <a href="almanac.html">📅 Almanac</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="big" id="pct">—</div>
+    <div class="sub">of the entire sky is visible from SCOB over the course of a year</div>
+    <div class="fine" id="heroFine"></div>
+  </div>
+
+  <div class="card">
+    <h2>Why — in one line</h2>
+    <div class="fact">
+      <p>Standing at the equator, the Earth&rsquo;s axis lies flat along your horizon. Both celestial poles sit on the horizon rather than up in the sky, so as the year turns, <b>everything</b> comes past — the far north and the far south alike. Move away from the equator and you tip a cap of sky permanently below your horizon, and it never comes back. From latitude φ, every star south of declination <b>φ − 90°</b> is lost to you forever.</p>
+      <p id="capLine"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The declination you can reach</h2>
+    <div class="fact" style="margin-bottom:8px">Each bar is the slice of sky a site can ever see. Ours runs almost the full width.</div>
+    <svg class="band" id="bandsvg" viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chart of the declination range visible from six observatories"></svg>
+    <div class="fact" id="bandNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Things you cannot see from both hemispheres — except here</h2>
+    <div id="pairs"></div>
+  </div>
+
+  <div class="card">
+    <h2>The evidence, object by object</h2>
+    <div class="fact" style="margin-bottom:8px">Highest each object <i>ever</i> climbs, at each site. Negative means it never rises at all. Computed live from each site&rsquo;s latitude — nothing here is a stored number.</div>
+    <div class="scroll"><table id="tbl"></table></div>
+    <div class="fact" id="tblNote" style="margin-top:10px"></div>
+  </div>
+
+  <div class="warn" id="honest"></div>
+
+  <div class="card">
+    <h2>What this is actually good for</h2>
+    <div class="fact">
+      <p><b>Say it to visitors.</b> Someone who has only stargazed in Europe or North America has never seen the Southern Cross, Omega Centauri, the Magellanic Clouds or Canopus, and never will from home. Someone from Australia or Chile has never seen Polaris or the Big Dipper. Standing on this deck, you can show them both halves of the sky in one night. That is a genuinely rare thing and it is worth saying out loud.</p>
+      <p><b>Say it to yourself when the sky is bad.</b> Jurong&rsquo;s light pollution is real and this page does not pretend otherwise. But light pollution is a problem you can partly work around — with the Moon, the planets, double stars, and brighter clusters. Latitude is not. An observatory at 51° north can build a perfect dark site and still never, on any night, in any century, see 47 Tucanae. We can see it from a car park.</p>
+      <p><b>It also explains our calendar.</b> Because everything is on the move past us, our showpiece list turns over faster than a high-latitude observatory&rsquo;s. Orion in February, Omega Centauri and the Southern Cross around May, the Milky Way core almost overhead from June to September, Andromeda late in the year. Nothing is permanent, and nothing is out of reach.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    Every figure on this page is computed in your browser from each site&rsquo;s latitude and each object&rsquo;s J2000 declination, using the standard result that an object of declination δ culminates at altitude <b>90° − |φ − δ|</b> and never rises when that is negative. The visible-sky fraction is the area of the spherical cap around the unreachable pole, (1 − cos|φ|)/2. Refraction (about half a degree at the horizon) is ignored, which is why one or two objects sit right on the boundary — see the notes above. Current altitudes come from the site's own astronomy engine.<br>
+    Object coordinates: standard J2000 positions. Site latitudes: SCOB 1.3342°N; Mauna Kea 19.83°N; Roque de los Muchachos, La Palma 28.76°N; Greenwich 51.48°N; Paranal 24.63°S; Sydney 33.87°S.<br>
+    Companion pages: <a href="constellation-story.html">constellation stories &amp; 3D depth</a> · <a href="light-pollution.html">why the Milky Way is hard to see here</a> · <a href="almanac.html">this month&rsquo;s sky</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, LAT=A.SCOB.LAT;
+
+/* Sites: name, latitude, short label */
+var SITES=[
+ ['SCOB, Singapore',1.3342,'SCOB'],
+ ['Mauna Kea, Hawai‘i',19.826,'Mauna Kea'],
+ ['La Palma, Canaries',28.762,'La Palma'],
+ ['Greenwich, London',51.478,'London'],
+ ['Paranal, Chile',-24.627,'Paranal'],
+ ['Sydney, Australia',-33.868,'Sydney']
+];
+/* name, RA, dec (J2000), one-line why it matters */
+var OBJ=[
+ ['Polaris',37.9529,89.2641,'the North Star — the whole northern hemisphere navigates by it'],
+ ['Dubhe · Big Dipper',165.932,61.751,'the most recognised pattern in the northern sky'],
+ ['Andromeda Galaxy (M31)',10.685,41.269,'the furthest thing visible to the unaided eye'],
+ ['Vega',279.234,38.784,'the summer triangle’s brightest corner'],
+ ['Sirius',101.287,-16.716,'the brightest star in the entire night sky'],
+ ['Galactic centre',266.417,-29.008,'the heart of our own Milky Way'],
+ ['Omega Centauri',201.697,-47.479,'the finest globular cluster there is — 10 million stars'],
+ ['Canopus',95.988,-52.696,'the second-brightest star in the sky'],
+ ['Eta Carinae Nebula',161.265,-59.685,'four times the size of the Orion Nebula'],
+ ['Acrux · Southern Cross',186.650,-63.099,'on the flags of five countries'],
+ ['Large Magellanic Cloud',80.894,-69.756,'a whole satellite galaxy, naked-eye from a dark sky'],
+ ['47 Tucanae',6.024,-72.081,'the second-finest globular cluster'],
+ ['Small Magellanic Cloud',13.187,-72.829,'the LMC’s smaller companion galaxy'],
+ ['Sigma Octantis',317.195,-88.956,'the south pole star — the one thing we just miss']
+];
+function maxAlt(lat,dec){return 90-Math.abs(lat-dec);}
+function capPct(lat){return (1-Math.cos(Math.abs(lat)*Math.PI/180))/2*100;}
+function f1(x){return (x>=0?'':'−')+Math.abs(x).toFixed(1);}
+
+/* ---------- hero ---------- */
+var invis=capPct(LAT), vis=100-invis;
+document.getElementById('pct').textContent=vis.toFixed(2)+'%';
+document.getElementById('heroFine').innerHTML=
+  'Only the last <b>'+invis.toFixed(3)+'%</b> — a circle of radius '+LAT.toFixed(2)+'° (about '+(2*LAT).toFixed(1)+'° across, five Moon-widths) centred on the south celestial pole — never clears our horizon. '+
+  'From London that unreachable patch is <b>'+capPct(51.478).toFixed(0)+'%</b> of the sky; from Sydney, <b>'+capPct(-33.868).toFixed(0)+'%</b>.';
+document.getElementById('capLine').innerHTML=
+  'For us that cutoff is declination <b>'+f1(LAT-90)+'°</b> — so low that the only thing of note beyond it is the south pole star itself. '+
+  'For London it is <b>'+f1(51.478-90)+'°</b>, which quietly deletes the Southern Cross, both Magellanic Clouds, Omega Centauri, Canopus and 47 Tucanae from the sky, permanently.';
+
+/* ---------- declination band chart ---------- */
+(function(){
+  var W=720,H=250,L=104,R=18,top=34,rowH=(H-top-40)/SITES.length;
+  function x(dec){return L+(dec+90)/180*(W-L-R);}
+  var s='';
+  for(var d=-90;d<=90;d+=30){
+    s+='<line x1="'+x(d).toFixed(1)+'" y1="'+(top-8)+'" x2="'+x(d).toFixed(1)+'" y2="'+(H-34)+'" stroke="#22325a" stroke-width="'+(d===0?1.4:0.7)+'"/>';
+    s+='<text x="'+x(d).toFixed(1)+'" y="'+(H-20)+'" fill="#9fb0d6" font-size="10.5" text-anchor="middle">'+(d>0?'+':'')+d+'°</text>';
+  }
+  s+='<text x="'+x(0).toFixed(1)+'" y="'+(top-16)+'" fill="#9fb0d6" font-size="10.5" text-anchor="middle">celestial equator</text>';
+  s+='<text x="'+(W/2).toFixed(0)+'" y="'+(H-4)+'" fill="#7d8db8" font-size="10.5" text-anchor="middle">declination — south celestial pole at left, north at right</text>';
+  SITES.forEach(function(st,i){
+    var lat=st[1], lo=lat>0?lat-90:-90, hi=lat>0?90:lat+90;
+    var y=top+i*rowH+rowH/2, home=(i===0);
+    s+='<rect x="'+x(-90).toFixed(1)+'" y="'+(y-9)+'" width="'+(x(90)-x(-90)).toFixed(1)+'" height="18" rx="4" fill="#ff6b6b" fill-opacity="0.13"/>';
+    s+='<rect x="'+x(lo).toFixed(1)+'" y="'+(y-9)+'" width="'+(x(hi)-x(lo)).toFixed(1)+'" height="18" rx="4" fill="'+(home?'#f5c542':'#5bd6e0')+'" fill-opacity="'+(home?0.85:0.45)+'"/>';
+    s+='<text x="'+(L-10)+'" y="'+(y+4)+'" fill="'+(home?'#f5c542':'#c6d2ee')+'" font-size="11.5" font-weight="'+(home?'bold':'normal')+'" text-anchor="end">'+st[2]+'</text>';
+    var pct=(100-capPct(lat)).toFixed(1)+'%';
+    s+='<text x="'+(x(hi)-6).toFixed(1)+'" y="'+(y+4)+'" fill="#08101f" font-size="10.5" font-weight="bold" text-anchor="end">'+pct+'</text>';
+  });
+  document.getElementById('bandsvg').innerHTML=s;
+  document.getElementById('bandNote').innerHTML='The pale red is sky that site can never see. Ours is a sliver you would need a magnifying glass to find.';
+})();
+
+/* ---------- the pairs ---------- */
+(function(){
+  var pairs=[
+   ['Polaris <i>and</i> the Southern Cross',
+    'Polaris climbs to '+maxAlt(LAT,89.2641).toFixed(1)+'° here and Acrux to '+maxAlt(LAT,-63.099).toFixed(1)+'°.',
+    'London never sees Acrux (it would have to reach '+f1(maxAlt(51.478,-63.099))+'°). Sydney never sees Polaris ('+f1(maxAlt(-33.868,89.2641))+'°). We get both on the same night.'],
+   ['The Big Dipper <i>and</i> the Magellanic Clouds',
+    'Dubhe reaches '+maxAlt(LAT,61.751).toFixed(1)+'°; the Large Magellanic Cloud reaches '+maxAlt(LAT,-69.756).toFixed(1)+'°.',
+    'Even Mauna Kea — 19.8° north, one of the great observatory sites on Earth — gets the LMC to just '+maxAlt(19.826,-69.756).toFixed(1)+'°, which is the horizon, not the sky. From London it is '+f1(maxAlt(51.478,-69.756))+'°: never.'],
+   ['Andromeda <i>and</i> Omega Centauri',
+    'The finest galaxy for the naked eye at '+maxAlt(LAT,41.269).toFixed(1)+'°, and the finest globular cluster at '+maxAlt(LAT,-47.479).toFixed(1)+'°.',
+    'These are the two showpieces of the two hemispheres, and there is no need to choose. Omega Centauri never rises in London ('+f1(maxAlt(51.478,-47.479))+'°); Andromeda barely lifts clear of the murk from Sydney ('+maxAlt(-33.868,41.269).toFixed(1)+'°).'],
+   ['Sirius <i>and</i> the galactic centre — both nearly overhead',
+    'Sirius culminates at '+maxAlt(LAT,-16.716).toFixed(1)+'° and the heart of the Milky Way at '+maxAlt(LAT,-29.008).toFixed(1)+'°.',
+    'This is the quieter advantage. Sitting on the celestial equator, we look at these through far less atmosphere than northern sites do — from London the galactic centre scrapes past at '+maxAlt(51.478,-29.008).toFixed(1)+'°, permanently in the haze.']
+  ];
+  document.getElementById('pairs').innerHTML=pairs.map(function(p){
+    return '<div class="pair"><b>'+p[0]+'</b><div class="p2">'+p[1]+'</div><div class="p2">'+p[2]+'</div></div>';}).join('');
+})();
+
+/* ---------- the table ---------- */
+(function(){
+  var now=new Date();
+  var h='<thead><tr><th class="l">Object</th><th>Now</th>'+SITES.map(function(s){return '<th>'+s[2]+'</th>';}).join('')+'</tr></thead><tbody>';
+  OBJ.forEach(function(o){
+    var aa=A.altazAt(o[1],o[2],now);
+    var nowCell=aa.alt>8?'<span class="up">'+Math.round(aa.alt)+'° '+A.compass(aa.az)+'</span>'
+              :(aa.alt>0?'<span class="marg">'+Math.round(aa.alt)+'° low</span>':'<span style="color:var(--mute)">down</span>');
+    h+='<tr><td class="l"><span class="nm">'+o[0]+'</span><span class="hint">'+o[3]+'</span></td><td>'+nowCell+'</td>';
+    SITES.forEach(function(s){
+      var m=maxAlt(s[1],o[2]);
+      var cls=m<0?'n':(m<10?'marg':'y');
+      h+='<td class="'+cls+'">'+(m<0?'never':f1(m)+'°')+'</td>';
+    });
+    h+='</tr>';
+  });
+  document.getElementById('tbl').innerHTML=h+'</tbody>';
+  var nMiss=OBJ.filter(function(o){return maxAlt(LAT,o[2])<0;}).length;
+  document.getElementById('tblNote').innerHTML=
+    'Green = comfortably observable. Orange = technically above the horizon but under 10°, which in practice means haze, buildings and disappointment. '+
+    'Of these fourteen landmark objects, SCOB can reach <b>'+(OBJ.length-nMiss)+' of '+OBJ.length+'</b>. '+
+    'The &ldquo;Now&rdquo; column is live, for this moment — reload it later and it will have changed.';
+})();
+
+/* ---------- the honest part ---------- */
+(function(){
+  var pol=maxAlt(LAT,89.2641), sig=maxAlt(LAT,-88.956);
+  document.getElementById('honest').innerHTML=
+    '<b>Now the honest part.</b> &ldquo;Visible&rdquo; and &ldquo;observable&rdquo; are not the same word, and this page would be dishonest without saying so.'+
+    '<br><br>&bull; <b>Polaris reaches '+pol.toFixed(1)+'°.</b> That is above the horizon and below the treeline. You can claim it; you will struggle to show it.'+
+    '<br><br>&bull; <b>The south pole star, Sigma Octantis, culminates at '+f1(sig)+'°</b> — it misses by about a third of a degree. Atmospheric refraction lifts objects near the horizon by roughly half a degree, so on paper it should just graze into view. In Jurong, through that much air and that much city light, at magnitude 5.4: no. It is the one thing the sky here withholds, and it is a lovely detail to hand a visitor.'+
+    '<br><br>&bull; <b>Everything near either pole is a horizon object.</b> Wide access does not mean easy access — the far north and far south of the sky are always low, always through maximum atmosphere.'+
+    '<br><br>&bull; <b>The real limit at SCOB is not latitude, it is the sky glow</b> — and unlike latitude, that is the same problem for every observatory near a city.';
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

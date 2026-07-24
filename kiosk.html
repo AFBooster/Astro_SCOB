@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tonight at the Observatory — SCOB Kiosk</title>
+<meta name="description" content="A full-screen visitor display for the Science Centre Observatory: what's up right now, with a QR code to explore the sky on your own phone.">
+<style>
+:root{--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;}
+*{box-sizing:border-box;margin:0;}
+html,body{height:100%;}
+body{background:radial-gradient(1200px 700px at 70% -10%,#16265a 0%,#0b1733 60%);color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100%;overflow-x:hidden;}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:28px 30px;min-height:100vh;display:flex;flex-direction:column;}
+.top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;}
+.brand{font-size:16px;letter-spacing:2px;color:var(--gold);font-weight:800;text-transform:uppercase;}
+.clock{font-size:28px;font-weight:800;color:var(--white);font-variant-numeric:tabular-nums;}
+.clock small{font-size:15px;color:var(--mute);font-weight:600;}
+h1{font-size:clamp(30px,5vw,58px);line-height:1.05;margin:14px 0 4px;color:var(--white);}
+.state{font-size:clamp(15px,2.4vw,24px);color:var(--gold);font-weight:700;margin-bottom:4px;}
+.moon{font-size:clamp(14px,2vw,20px);color:var(--mute);}
+.main{display:grid;grid-template-columns:1.55fr 1fr;gap:26px;margin-top:22px;flex:1;align-items:start;}
+@media(max-width:860px){.main{grid-template-columns:1fr;}}
+.sect{font-size:14px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:10px;}
+.cards{display:flex;flex-direction:column;gap:12px;}
+.card{background:rgba(19,34,74,.7);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;gap:16px;align-items:center;}
+.card .ico{font-size:34px;flex:0 0 auto;width:64px;text-align:center;}
+.card .ico svg{width:64px;height:64px;display:block;border-radius:12px;background:rgba(6,10,26,.55);}
+.card .nm{font-size:clamp(20px,3vw,28px);font-weight:800;color:var(--white);line-height:1.1;}
+.card .wh{font-size:clamp(13px,1.8vw,17px);color:var(--cyan);font-weight:700;margin:2px 0 3px;}
+.card .lk{font-size:clamp(12.5px,1.6vw,15px);color:var(--mute);}
+.qrpanel{background:rgba(19,34,74,.8);border:1px solid var(--line);border-radius:20px;padding:22px;text-align:center;position:sticky;top:20px;}
+.qrpanel h2{font-size:clamp(18px,2.4vw,24px);color:var(--gold);margin-bottom:4px;}
+.qrpanel p{font-size:14px;color:var(--mute);margin-bottom:14px;}
+#qr{width:230px;height:230px;margin:0 auto;background:#fff;border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:center;}
+#qr img,#qr canvas{width:100%!important;height:100%!important;}
+.qrurl{margin-top:12px;font-size:13px;color:var(--cyan);word-break:break-all;}
+.qrfallback{font-size:14px;color:var(--white);line-height:1.5;}
+.foot{margin-top:20px;font-size:12px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.foot a{color:var(--cyan);text-decoration:none;}
+.langbar{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 2px;}
+.langbar button{background:transparent;border:1px solid var(--line);color:var(--mute);border-radius:8px;padding:6px 13px;font-size:14px;font-weight:700;cursor:pointer;}
+.langbar button.on{background:var(--gold);color:#0b1733;border-color:var(--gold);}
+.updated{opacity:.7;}
+</style>
+</head>
+<body>
+<canvas class="stars" id="stars"></canvas>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">★ Science Centre Observatory · Singapore</div>
+    <div class="clock"><span id="clk">—</span> <small id="clkd"></small></div>
+  </div>
+
+  <div class="langbar" id="langbar"></div>
+  <h1 id="kTitle">Tonight at the Observatory</h1>
+  <div class="state" id="state">—</div>
+  <div class="moon" id="moon">—</div>
+
+  <div class="main">
+    <div>
+      <div class="sect" id="kUpnow">Up now — ask a guide to show you</div>
+      <div class="cards" id="cards"></div>
+    </div>
+    <div class="qrpanel">
+      <h2 id="kQrH">📱 Explore the sky yourself</h2>
+      <p id="kQrP">Scan to turn your phone into a sky finder — point it up and it guides you to tonight's objects.</p>
+      <div id="qr"><div class="qrfallback">Loading…</div></div>
+      <div class="qrurl" id="qrurl"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Everything computed live on this device · updates automatically. <a href="scob-dashboard-v3.html">Full dashboard →</a></span>
+    <span class="updated" id="upd"></span>
+  </div>
+  <span class="scob-version" style="display:none"></span>
+</div>
+
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+// QR points at the point-your-phone finder on whatever host this kiosk is served from.
+var QR_URL=(function(){try{return new URL('sky-finder.html',location.href).href;}catch(e){return 'sky-finder.html';}})();
+document.getElementById('qrurl').textContent=QR_URL.replace(/^https?:\/\//,'');
+// Offline-capable QR: load a known-good QR library, caching it in localStorage on the
+// first (online) load so it renders with NO internet on every load afterwards.
+function loadQRlib(cb){
+  if(typeof QRCode!=='undefined')return cb();
+  var inject=function(txt){try{var sc=document.createElement('script');sc.textContent=txt;document.head.appendChild(sc);}catch(e){}};
+  var cached=null;try{cached=localStorage.getItem('scobQRlib');}catch(e){}
+  if(cached){inject(cached);if(typeof QRCode!=='undefined')return cb();}
+  fetch('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
+    .then(function(r){return r.text();})
+    .then(function(txt){try{localStorage.setItem('scobQRlib',txt);}catch(e){}inject(txt);cb();})
+    .catch(function(){cb();});
+}
+function makeQR(){
+  var box=document.getElementById('qr');
+  if(typeof QRCode!=='undefined'&&/^https?:/.test(QR_URL)){
+    box.innerHTML='';
+    try{ new QRCode(box,{text:QR_URL,width:206,height:206,colorDark:'#0b1733',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); return; }catch(e){}
+  }
+  box.innerHTML='<div class="qrfallback">Open this on your phone:<br><b style="color:#0b1733">'+QR_URL.replace(/^https?:\/\//,'')+'</b></div>';
+}
+loadQRlib(makeQR);
+
+function tl(h,m){var ap=h<12?'am':'pm';var hh=h%12||12;return hh+':'+pad(m)+ap;}
+var WD=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+
+function tick(){var d=sgtNow();document.getElementById('clk').textContent=tl(d.getHours(),d.getMinutes());
+  document.getElementById('clkd').textContent=WD[d.getDay()]+' · '+d.getDate()+' '+MON[d.getMonth()];}
+
+function icoFor(sp){return sp.kind==='moon'?'🌙':sp.kind==='planet'?'🪐':(sp.kind==='double'?'✨':(sp.kind==='star'?'⭐':'🌌'));}
+function altKey(a){return a<20?'low':(a<50?'mid':'high');}
+// Visitor-facing strings. NOTE: Malay (ms) & Tamil (ta) are best-effort machine
+// translations — have a native speaker check them before public display.
+var STR={
+ en:{title:"Tonight at the Observatory",upnow:"Up now — ask a guide to show you",qrH:"📱 Explore the sky yourself",qrP:"Scan to turn your phone into a sky finder — point it up and it guides you to tonight's objects.",updated:"updated",day:"☀️ Daytime — the Sun is up (solar viewing only, with filters)",twi:"🌆 Twilight — the Moon & bright planets are coming out",gd:"🌌 Getting dark — deep-sky objects are appearing",dark:"🌌 Dark skies — a great time for faint objects",moon:"Moon",lit:"% lit",upIn:"up in the",below:"below the horizon",high:"high overhead",mid:"partway up",low:"low near the horizon",inthe:"in the",comeback:"Come back after dark",cbnote:"Objects appear once the sky darkens after sunset."},
+ zh:{title:"今晚的天文台",upnow:"现在可见 — 请向导览员观看",qrH:"📱 用手机自己探索星空",qrP:"扫描二维码，把手机变成寻星器 — 举起手机，它会指引你找到今晚的天体。",updated:"更新于",day:"☀️ 白天 — 太阳仍在天上（仅限加滤镜的太阳观测）",twi:"🌆 黄昏 — 月亮与明亮行星正在出现",gd:"🌌 天色渐暗 — 深空天体开始出现",dark:"🌌 夜空全暗 — 观测暗弱天体的好时机",moon:"月亮",lit:"% 照亮",upIn:"位于",below:"在地平线下",high:"高挂天顶",mid:"半空",low:"接近地平线",inthe:"",comeback:"天黑后再来",cbnote:"日落天黑后天体才会出现。"},
+ ms:{title:"Malam Ini di Balai Cerap",upnow:"Kelihatan sekarang — minta pemandu tunjukkan",qrH:"📱 Terokai langit sendiri",qrP:"Imbas untuk jadikan telefon anda pencari bintang — halakan ke langit dan ia memandu anda ke objek malam ini.",updated:"dikemas kini",day:"☀️ Siang — Matahari masih naik (cerapan suria dengan penapis sahaja)",twi:"🌆 Senja — Bulan & planet terang mula kelihatan",gd:"🌌 Mula gelap — objek langit dalam muncul",dark:"🌌 Langit gelap — masa sesuai untuk objek malap",moon:"Bulan",lit:"% terang",upIn:"di arah",below:"di bawah ufuk",high:"tinggi di atas kepala",mid:"separuh naik",low:"rendah dekat ufuk",inthe:"arah",comeback:"Datang semula selepas gelap",cbnote:"Objek muncul apabila langit gelap selepas matahari terbenam."},
+ ta:{title:"இன்றிரவு வான்காணகத்தில்",upnow:"இப்போது தெரிகிறது — வழிகாட்டியிடம் கேளுங்கள்",qrH:"📱 வானத்தை நீங்களே ஆராயுங்கள்",qrP:"உங்கள் தொலைபேசியை நட்சத்திரக் கண்டுபிடிப்பானாக மாற்ற ஸ்கேன் செய்யுங்கள் — மேலே காட்டினால் இன்றிரவின் பொருள்களுக்கு வழிகாட்டும்.",updated:"புதுப்பிக்கப்பட்டது",day:"☀️ பகல் — சூரியன் இன்னும் மேலே (வடிகட்டியுடன் மட்டுமே சூரியப் பார்வை)",twi:"🌆 அந்தி — நிலவும் பிரகாசக் கோள்களும் தோன்றுகின்றன",gd:"🌌 இருள் கவிகிறது — தொலைவான விண்பொருள்கள் தோன்றுகின்றன",dark:"🌌 இருண்ட வானம் — மங்கலான பொருள்களுக்கு ஏற்ற நேரம்",moon:"நிலா",lit:"% ஒளிர்வு",upIn:"திசையில்",below:"அடிவானத்திற்குக் கீழே",high:"வானின் உச்சியில்",mid:"பாதி உயரம்",low:"அடிவானத்திற்கு அருகில்",inthe:"திசை",comeback:"இருட்டிய பின் வாருங்கள்",cbnote:"சூரிய அஸ்தமனத்திற்குப் பின் வானம் இருண்டதும் பொருள்கள் தோன்றும்."}
+};
+var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
+var lang=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();if(!STR[lang])lang='en';
+function T(k){return (STR[lang]&&STR[lang][k])||STR.en[k];}
+// Object names per language (zh uses standard Chinese astronomical names; ms/ta are
+// best-effort — planet names are traditional, deep-sky are transliterated — review advised).
+var NAMES={
+ moon:{zh:'月亮',ms:'Bulan',ta:'சந்திரன்'},
+ venus:{zh:'金星',ms:'Zuhrah (Venus)',ta:'வெள்ளி'},
+ jupiter:{zh:'木星',ms:'Musytari (Jupiter)',ta:'வியாழன்'},
+ saturn:{zh:'土星',ms:'Zuhal (Saturn)',ta:'சனி'},
+ mars:{zh:'火星',ms:'Marikh (Mars)',ta:'செவ்வாய்'},
+ m45:{zh:'昴星团（七姊妹）',ms:'Gugusan Pleiades',ta:'கார்த்திகை (Pleiades)'},
+ m42:{zh:'猎户座大星云',ms:'Nebula Orion',ta:'ஓரையன் நெபுலா'},
+ m8:{zh:'礁湖星云',ms:'Nebula Lagun',ta:'லகூன் நெபுலா'},
+ m7:{zh:'托勒密星团',ms:'Gugusan Ptolemy',ta:'டோலமி நட்சத்திரக் கொத்து'},
+ omega:{zh:'半人马座ω星团',ms:'Omega Centauri',ta:'ஒமேகா சென்டாரி'},
+ m13:{zh:'武仙座球状星团 M13',ms:'Gugusan Hercules',ta:'ஹெர்குலிஸ் கொத்து'},
+ eta:{zh:'船底座η星云',ms:'Nebula Eta Carinae',ta:'ஈட்டா கரினே நெபுலா'},
+ m31:{zh:'仙女座星系',ms:'Galaksi Andromeda',ta:'ஆண்ட்ரோமெடா விண்மீன்திரள்'},
+ jewelbox:{zh:'宝盒星团',ms:'Kotak Permata',ta:'நகைப்பெட்டி கொத்து'},
+ acrux:{zh:'十字架二 (Acrux)',ms:'Acrux',ta:'அக்ரக்ஸ்'},
+ alphacen:{zh:'南门二 (半人马座α)',ms:'Alpha Centauri',ta:'அல்பா சென்டாரி'},
+ albireo:{zh:'辇道增七 (Albireo)',ms:'Albireo',ta:'அல்பிரியோ'},
+ antares:{zh:'心宿二 (Antares)',ms:'Antares',ta:'அந்தாரெஸ்'},
+ sirius:{zh:'天狼星',ms:'Sirius',ta:'சிரியஸ்'},
+ mercury:{zh:'水星',ms:'Utarid (Mercury)',ta:'புதன்'},
+ uranus:{zh:'天王星',ms:'Uranus',ta:'யுரேனஸ்'},
+ neptune:{zh:'海王星',ms:'Neptune',ta:'நெப்டியூன்'},
+ regulus:{zh:'轩辕十四 (Regulus)'},procyon:{zh:'南河三 (Procyon)'},arcturus:{zh:'大角星'},spica:{zh:'角宿一 (Spica)'},
+ vega:{zh:'织女星'},altair:{zh:'牛郎星（河鼓二）'},deneb:{zh:'天津四'},capella:{zh:'五车二'},
+ rigel:{zh:'参宿七'},betelgeuse:{zh:'参宿四'},fomalhaut:{zh:'北落师门'},
+ beehive:{zh:'蜂巢星团（鬼星团）'},dblcluster:{zh:'英仙座双星团'},m22:{zh:'人马座球状星团 M22'},
+ m17:{zh:'天鹅星云（欧米伽星云）'},m6:{zh:'蝴蝶星团'},m11:{zh:'野鸭星团'},m57:{zh:'环状星云'},m27:{zh:'哑铃星云'},tuc47:{zh:'杜鹃座47'}
+};
+function nameFor(sp){var en=sp.name.replace(/\s*\(.*\)/,'');if(lang==='en')return en;var n=NAMES[sp.id];return (n&&n[lang])||en;}
+function buildLangBar(){var lb=document.getElementById('langbar');if(!lb)return;
+  lb.innerHTML=LANGS.map(function(l){return '<button type="button" data-l="'+l[0]+'"'+(l[0]===lang?' class="on"':'')+'>'+l[1]+'</button>';}).join('');
+  Array.prototype.forEach.call(lb.querySelectorAll('button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobLang',lang);}catch(e){}applyLang();};});}
+function applyLang(){document.documentElement.lang=lang;document.documentElement.setAttribute('translate','no');
+  document.getElementById('kTitle').textContent=T('title');
+  document.getElementById('kUpnow').textContent=T('upnow');
+  document.getElementById('kQrH').textContent=T('qrH');
+  document.getElementById('kQrP').textContent=T('qrP');
+  buildLangBar();refresh();}
+function refresh(){
+  var now=new Date();var s=A.sky(now);
+  document.getElementById('state').textContent = s.sunAlt>-0.5?T('day'):s.sunAlt>-6?T('twi'):s.sunAlt>-12?T('gd'):T('dark');
+  document.getElementById('moon').textContent='🌙 '+T('moon')+': '+s.moon.illum+T('lit')+(s.moon.alt>2?' · '+T('upIn')+' '+A.compass(s.moon.az):' · '+T('below'));
+  var items=[];var get=function(id){return A.SHOWPIECES.find(function(x){return x.id===id;});};
+  var mp=A.positionOf(get('moon'),now);if(mp.alt>3)items.push({sp:get('moon'),p:mp,pr:0});
+  A.SHOWPIECES.forEach(function(sp){if(sp.kind!=='planet')return;var p=A.positionOf(sp,now);
+    var minA=(sp.planet==='Mercury')?3:8,needDark=(sp.planet==='Uranus'||sp.planet==='Neptune');
+    if(p.alt>minA&&(!needDark||s.sunAlt<-8))items.push({sp:sp,p:p,pr:1+(p.mag||0)});});
+  A.SHOWPIECES.concat(A.activeComets?A.activeComets(now):[]).forEach(function(sp){if(sp.kind==='planet'||sp.kind==='moon')return;var p=A.positionOf(sp,now);
+    var need=(sp.kind==='star'||sp.kind==='double')?-3:-8;if(p.alt>15&&s.sunAlt<need)items.push({sp:sp,p:p,pr:100-p.alt});});
+  items.sort(function(a,b){return a.pr-b.pr;});items=items.slice(0,5);
+  var host=document.getElementById('cards');
+  if(!items.length){host.innerHTML='<div class="card"><div class="ico">🌙</div><div><div class="nm">'+T('comeback')+'</div><div class="lk">'+T('cbnote')+'</div></div></div>';}
+  else host.innerHTML=items.map(function(it){var p=it.p,sp=it.sp;
+    var where=T(altKey(p.alt))+(T('inthe')?' '+T('inthe'):'')+' '+A.compass(p.az);
+    var hook=(lang==='en')?'<div class="lk">'+sp.look+'</div>':'';
+    return '<div class="card"><div class="ico" aria-hidden="true">'+A.illus(sp,64)+'</div><div><div class="nm">'+nameFor(sp)+'</div><div class="wh">'+where+'</div>'+hook+'</div></div>';}).join('');
+  document.getElementById('upd').textContent=T('updated')+' '+tl(sgtNow().getHours(),sgtNow().getMinutes());
+}
+
+// simple starfield backdrop
+(function(){var c=document.getElementById('stars');function size(){c.width=innerWidth;c.height=innerHeight;draw();}
+  function draw(){var x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);for(var i=0;i<140;i++){var r=Math.random()*1.3+0.2;x.globalAlpha=Math.random()*0.6+0.2;x.fillStyle='#cdd6f0';x.beginPath();x.arc(Math.random()*c.width,Math.random()*c.height,r,0,6.29);x.fill();}}
+  addEventListener('resize',size);size();})();
+
+tick();setInterval(tick,1000);
+applyLang();setInterval(refresh,30000);
+</script>
+<script src="version.js"></script>
+</body>
+</html>

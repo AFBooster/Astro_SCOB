@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Seestar — How the Little Robot Sees What the Eye Can't — SCOB</title>
+<meta name="description" content="Why SCOB's Seestar S30 smart telescope shows glowing colour nebulae and galaxies that vanish in the big domes' eyepieces — live stacking explained, with tonight's best Seestar target, for the Science Centre Observatory.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;--orange:#ff9d3c;--purple:#b79cff;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:840px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--purple);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.tonight{background:linear-gradient(160deg,#241a4f,#0d1533);border:1px solid var(--purple);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.tonight h2{margin:0 0 8px;font-size:16px;color:var(--purple);}
+.tonight .big{font-size:19px;font-weight:800;color:var(--gold);}
+.tonight .d{font-size:13.5px;color:var(--mute);margin-top:6px;line-height:1.6;}
+.tonight .d b{color:var(--white);}
+.fact{font-size:13.5px;color:var(--mute);line-height:1.65;}
+.fact b{color:var(--white);}
+.fact p{margin:0 0 10px;}
+.fact p:last-child{margin-bottom:0;}
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 4px;}
+@media(max-width:560px){.stack{grid-template-columns:1fr;}}
+.stbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#060a14;}
+.stbox svg{width:100%;height:auto;display:block;}
+.stbox .cap{padding:8px 11px;font-size:12px;color:var(--mute);line-height:1.5;background:var(--navy3);}
+.stbox .cap b{color:var(--white);}
+.range{display:flex;align-items:center;gap:10px;margin:10px 2px 2px;}
+.range input{flex:1;accent-color:var(--purple);height:22px;}
+.range .lbl{font-size:12px;color:var(--mute);white-space:nowrap;}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:4px;}
+@media(max-width:520px){.spec{grid-template-columns:1fr;}}
+.spec div{font-size:13px;color:var(--mute);border-bottom:1px solid var(--line);padding:6px 0;}
+.spec b{color:var(--white);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
+th.r,td.r{text-align:right;}
+td{padding:8px 5px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;}
+td .nm{font-weight:700;}
+td .hint{color:var(--mute);font-size:11.5px;display:block;}
+.up{color:var(--gold);font-weight:700;}
+.dn{color:var(--mute);}
+.tag{font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:6px;white-space:nowrap;}
+.tag.em{background:rgba(183,156,255,.16);color:var(--purple);}
+.tag.bb{background:rgba(91,214,224,.14);color:var(--cyan);}
+.pull{background:rgba(183,156,255,.1);border-left:4px solid var(--purple);border-radius:0 10px 10px 0;padding:11px 14px;margin:12px 0;font-size:13.5px;line-height:1.6;}
+.pull b{color:var(--purple);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🤖 The Seestar — seeing what the eye can't</h1>
+    <div class="loc">Why our little robot telescope shows glowing colour nebulae that vanish in the big domes' eyepieces. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="light-pollution.html">🌃 Why so few stars?</a>
+      <a href="phone-astrophotography.html">📱 Phone photos</a>
+    </div>
+  </header>
+
+  <div class="tonight" id="tonight"><h2>A good Seestar target right now</h2><div class="d">Working it out…</div></div>
+
+  <div class="card">
+    <h2>It cheats time — and that's the whole trick</h2>
+    <div class="fact">
+      <p>Look at a faint galaxy through a normal telescope and you see almost nothing: a grey smudge, no colour. That is not the telescope's fault and it is not yours. Your eye takes a fresh "exposure" about <b>fifteen times a second</b> and throws the last one away — it cannot save up light. And in dim light the colour-sensing cells in your eye switch off entirely, which is why the night world is grey.</p>
+      <p>The Seestar does the one thing your eye cannot: it <b>keeps adding light up</b>. It takes a ten-second exposure, then another, then another, and stacks them on top of each other. After five minutes it has collected thirty times as much light as a ten-second glimpse; after twenty minutes, a hundred and twenty times. Faint detail that was lost in the noise slowly climbs out of it, and because a camera <i>does</i> record colour, the reds of hydrogen and the blues of oxygen appear — colours no human eye has ever seen directly on these objects.</p>
+      <p>So the eyepiece and the Seestar are not rivals. The eyepiece shows you the <b>real photons arriving right now</b>, live, the actual ancient light on your retina. The Seestar shows you what is <b>really there</b> once you let the light pile up. Two honest answers to two different questions — and a good session shows a visitor both.</p>
+    </div>
+    <div class="stack">
+      <div class="stbox"><svg id="svgEye" viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simulated eyepiece view of a faint nebula"></svg><div class="cap" id="capEye"></div></div>
+      <div class="stbox"><svg id="svgStack" viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simulated stacked Seestar view of the same nebula"></svg><div class="cap" id="capStack"></div></div>
+    </div>
+    <div class="range"><span class="lbl">👁 One glance</span><input type="range" id="expo" min="0" max="100" value="0" aria-label="Slide to stack more exposures"><span class="lbl" id="expoLbl">20 min stack 🤖</span></div>
+    <div class="fact" style="font-size:12px">Drag to pile the exposures up. The noise (the grainy speckle) fades as the square root of time while the nebula stays put — that is exactly why stacking works. This is an illustration, not a real photo.</div>
+  </div>
+
+  <div class="card">
+    <h2>Why it beats the big domes on a city night — sometimes</h2>
+    <div class="fact">
+      <p>The Seestar's front lens is just <b>30 mm</b> across — smaller than the 40 cm dome by a factor of over a hundred in light-gathering area. On brightness alone it should lose badly. It wins on faint deep-sky objects anyway, for two reasons.</p>
+      <p><b>1. It has a built-in light-pollution filter.</b> Glowing nebulae emit at a few precise colours — the deep red of hydrogen, the blue-green of oxygen. Jurong's streetlights do not. The Seestar's dual-narrowband filter passes just those nebula colours and blocks almost everything else, so an emission nebula like the Lagoon or Eta Carinae can build up a clean image even under a bright suburban sky. This is the single biggest reason it works here.</p>
+      <p><b>2. Its field of view is huge.</b> At <b>150 mm focal length</b> the Seestar frames a patch of sky about <b>2.1° by 1.2°</b> — four Moon-widths across. The 40 cm Cassegrain, built for magnification, cannot fit the whole of Andromeda, the Veil, the North America Nebula or the Pleiades into a single view. The Seestar swallows them whole. Wide and faint is precisely the target class the big scopes are worst at, and it is the Seestar's home ground.</p>
+      <p><b>The honest limit:</b> galaxies (other than their bright cores) and reflection nebulae glow across <i>all</i> colours, so the filter cannot separate them from the sky, and the tiny 30 mm aperture then tells. And a planet is a small, bright point — the Seestar's short focal length makes it a speck. This is a wide-field deep-sky instrument, not a planet-killer. For Saturn's rings, go to the dome.</p>
+    </div>
+    <div class="spec">
+      <div>Aperture · focal ratio<br><b>30 mm · f/5</b></div>
+      <div>Focal length<br><b>150 mm</b></div>
+      <div>Sensor<br><b>Sony IMX662 (1/2.8″)</b></div>
+      <div>Field of view<br><b>≈ 2.1° × 1.2°</b> (2.46° diag)</div>
+      <div>Built-in filters<br><b>UV/IR, dark, dual-narrowband LP (OIII/Hα)</b></div>
+      <div>Also does<br><b>Sun (with its filter), Moon, scenery</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What to put it on tonight</h2>
+    <div class="fact" style="margin-bottom:8px">Great Seestar targets that are up now, computed live. Emission nebulae (its filter loves these) are marked, and so are the broadband targets where a dark, high sky matters more.</div>
+    <table id="tbl"><thead><tr><th>Target</th><th class="r">Up now</th><th class="r">Frame</th><th>Type</th></tr></thead><tbody></tbody></table>
+    <div class="fact" id="tblNote" style="margin-top:10px"></div>
+  </div>
+
+  <div class="pull" id="pull"></div>
+
+  <div class="card">
+    <h2>For the docent running it</h2>
+    <div class="fact">
+      <p><b>Start it early and leave it running.</b> The image is worthless in the first ten seconds and lovely after ten minutes — so the trick is to begin a target well before the queue arrives, and let it build while people are at the eyepiece. Have it already deep into a stack when the first visitor looks at the screen.</p>
+      <p><b>Use it to answer the disappointment.</b> When someone is let down that the nebula in the eyepiece was "just grey", walk them to the Seestar screen showing the same object in colour and explain the stacking — it turns a letdown into the best teaching moment of the night. Pair it with the <a href="light-pollution.html">light-pollution page</a>.</p>
+      <p><b>Level-set first.</b> Tell visitors up front it is a five-to-ten-minute build, not an instant photo, and that what they are watching is light being collected in real time. Managed expectations make it magic; a surprise grey screen makes it look broken.</p>
+      <p><b>Play to its strengths.</b> Point it at wide emission nebulae and big objects the domes can't frame — that is where it clearly beats them. Don't set it duelling the 40 cm on a planet or a tight galaxy; it will lose and the comparison misleads.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    Seestar S30 specifications from the manufacturer (ZWO): 30 mm f/5 triplet APO, 150 mm focal length, Sony IMX662 sensor, tele field of view 2.46° diagonal, built-in UV/IR-cut, dark and dual-narrowband (OIII 30 nm / Hα 20 nm) light-pollution filters plus a magnetic solar filter. The rectangular field (~2.1° × 1.2°) is derived from the sensor and focal length. The "good target now" suggestion and the up-now table are computed on your device from the site's astronomy engine. The stacking panels are an illustration of how noise falls with exposure time, not real imagery.<br>
+    Companion pages: <a href="light-pollution.html">why the sky here looks empty</a> · <a href="phone-astrophotography.html">shoot the sky with your phone</a> · <a href="telescope-types.html">telescope types &amp; the SCOB fleet</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro;
+var FOV_W=2.1, FOV_H=1.2;   // degrees, long x short
+
+/* Curated Seestar targets: name, RA, dec (J2000), size arcmin, emission?, note */
+var DSO=[
+ ['Orion Nebula (M42)',83.82,-5.39,85,true,'the showpiece emission nebula'],
+ ['Lagoon Nebula (M8)',270.92,-24.38,90,true,'huge, bright, filter loves it'],
+ ['Eta Carinae Nebula',161.27,-59.68,120,true,'4× the size of Orion'],
+ ['Trifid Nebula (M20)',270.60,-23.03,28,true,'pink + blue, near the Lagoon'],
+ ['Swan Nebula (M17)',275.20,-16.18,20,true,'bright bar of gas'],
+ ['Rosette Nebula',97.95,4.95,80,true,'a full ring of hydrogen'],
+ ['Carina wide field',161.0,-59.9,120,true,'sweeping star-forming region'],
+ ['Omega Centauri',201.70,-47.48,36,false,'the giant globular cluster'],
+ ['47 Tucanae',6.02,-72.08,30,false,'second-finest globular'],
+ ['Andromeda Galaxy (M31)',10.68,41.27,190,false,'needs a dark, high sky'],
+ ['Pleiades (M45)',56.87,24.11,110,false,'blue reflection — broadband'],
+ ['Southern Pleiades (IC2602)',160.5,-64.4,50,false,'bright open cluster'],
+ ['Sculptor Galaxy (NGC253)',11.89,-25.29,27,false,'bright edge-on galaxy'],
+ ['Helix Nebula',337.41,-20.84,16,true,'the "Eye of God" planetary']
+];
+var $=function(id){return document.getElementById(id);};
+
+/* ---------- stacking illustration ---------- */
+var SEED=20260721, NST=110;
+function rnd(){SEED=(SEED*1664525+1013904223)%4294967296;return SEED/4294967296;}
+var NEB=[], STAR=[];
+(function(){SEED=20260721;
+  for(var i=0;i<NST;i++)STAR.push({x:rnd()*300,y:rnd()*170,b:rnd()});
+})();
+function nebAt(x,y){ // a soft blob in the middle
+  var dx=(x-150)/78, dy=(y-85)/48, r=dx*dx+dy*dy;
+  return Math.max(0,1-r)*(0.55+0.45*Math.sin(dx*3)*Math.cos(dy*2.5));
+}
+function drawScene(id,frac){ // frac 0=one glance .. 1=long stack
+  SEED=99;
+  var noise=0.9*(1-Math.sqrt(frac))+0.02;      // noise ~ 1/sqrt(time)
+  var signal=0.12+0.88*frac;                    // nebula contrast builds up
+  var s='<rect width="300" height="170" fill="#05070e"/>';
+  // nebula as layered translucent ellipses, redder as signal builds
+  var layers=6;
+  for(var L=layers;L>0;L--){
+    var rr=L/layers, op=(signal*(1-rr*0.6))*0.5;
+    if(op<=0.01)continue;
+    var col=frac>0.15?'rgb('+Math.round(180+60*rr)+','+Math.round(60+40*(1-rr))+','+Math.round(90+80*rr)+')':'#3a3f52';
+    s+='<ellipse cx="150" cy="85" rx="'+(88*rr+18).toFixed(0)+'" ry="'+(52*rr+10).toFixed(0)+'" fill="'+col+'" opacity="'+op.toFixed(2)+'"/>';
+  }
+  // a couple of embedded stars
+  STAR.slice(0,18).forEach(function(st){var b=(0.4+st.b*0.6);s+='<circle cx="'+st.x.toFixed(0)+'" cy="'+st.y.toFixed(0)+'" r="'+(0.6+st.b*1.3).toFixed(1)+'" fill="#fff" opacity="'+(b*(0.5+0.5*frac)).toFixed(2)+'"/>';});
+  // noise speckle
+  var n=Math.round(noise*520);
+  for(var i=0;i<n;i++){var gx=rnd()*300,gy=rnd()*170,g=Math.round(60+rnd()*120);
+    s+='<rect x="'+gx.toFixed(0)+'" y="'+gy.toFixed(0)+'" width="1.4" height="1.4" fill="rgb('+g+','+g+','+(g+8)+')" opacity="'+(0.5*noise).toFixed(2)+'"/>';}
+  $(id).innerHTML=s;
+}
+function drawStackPair(){
+  var f=(+$('expo').value)/100;
+  drawScene('svgEye',0);
+  drawScene('svgStack',Math.max(0.04,f));
+  var mins=Math.round(f*20), fr=Math.max(1,Math.round(f*120));
+  $('capEye').innerHTML='<b>👁 The eyepiece</b> — one instant of light. A grey smudge; no colour. This is the honest live view.';
+  $('capStack').innerHTML='<b>🤖 The Seestar</b> — '+(mins<1?'just starting':mins+' min')+' of stacked light ('+fr+' frame'+(fr>1?'s':'')+'). The nebula climbs out of the noise, in colour.';
+  $('expoLbl').textContent=(mins<1?'building…':mins+' min stack')+' 🤖';
+}
+$('expo').addEventListener('input',drawStackPair);
+
+/* ---------- live target table + best-now ---------- */
+function frameFit(sizeMin){
+  var fw=FOV_W*60;
+  if(sizeMin<=fw*0.7)return ['fits','✓ frames well'];
+  if(sizeMin<=fw)return ['tight','◑ fills the frame'];
+  if(sizeMin<=fw*1.6)return ['over','↔ bigger than the frame'];
+  return ['over','✕ far too big — mosaic'];
+}
+function renderTable(){
+  var now=new Date(), s=A.sky(now), tb=$('tbl').querySelector('tbody'), rows='';
+  var scored=DSO.map(function(d){return {d:d,p:A.altazAt(d[1],d[2],now)};})
+                .sort(function(a,b){return b.p.alt-a.p.alt;});
+  scored.forEach(function(o){
+    var d=o.d, up=o.p.alt>20, mid=o.p.alt>8&&o.p.alt<=20;
+    var upCell=up?'<span class="up">'+Math.round(o.p.alt)+'° '+A.compass(o.p.az)+'</span>'
+             :(mid?'<span class="tag" style="color:var(--orange)">'+Math.round(o.p.alt)+'° low</span>':'<span class="dn">down</span>');
+    var ff=frameFit(d[3]);
+    var frameCell=(d[3]>=60?(d[3]/60).toFixed(1)+'°':d[3]+'′')+'<span class="hint">'+ff[1]+'</span>';
+    var tag=d[4]?'<span class="tag em">emission · filter helps</span>':'<span class="tag bb">broadband · wants dark sky</span>';
+    rows+='<tr><td><span class="nm">'+d[0]+'</span><span class="hint">'+d[5]+'</span></td><td class="r">'+upCell+'</td><td class="r">'+frameCell+'</td><td>'+tag+'</td></tr>';
+  });
+  tb.innerHTML=rows;
+  var upN=scored.filter(function(o){return o.p.alt>20;}).length;
+  $('tblNote').innerHTML='<b>'+upN+'</b> of these are usefully up right now. Emission nebulae are the safe bet under our sky — the built-in filter does the heavy lifting. The broadband targets (galaxies, reflection nebulae, clusters) reward a moonless night and a high, dark patch, so save them for when they are near the top of the sky.';
+}
+function bestNow(){
+  var now=new Date(), s=A.sky(now), box=$('tonight');
+  if(s.sunAlt>-6){
+    box.innerHTML='<h2>A good Seestar target right now</h2><div class="big">☀️ Daytime — point it at the Sun (with its filter)</div>'+
+      '<div class="d">The sky is not dark yet, so deep-sky stacking will not work. In Solar mode with the magnetic solar filter fitted, the Seestar will track and image the Sun and any sunspots — a safe daytime crowd-pleaser. Deep-sky targets appear below once the sky darkens.</div>';
+    return;
+  }
+  var cand=DSO.map(function(d){return {d:d,p:A.altazAt(d[1],d[2],now)};}).filter(function(o){return o.p.alt>20;});
+  // prefer emission nebulae (filter works under city sky), then highest
+  cand.sort(function(a,b){var ea=a.d[4]?1:0, eb=b.d[4]?1:0; if(ea!==eb)return eb-ea; return b.p.alt-a.p.alt;});
+  if(!cand.length){
+    box.innerHTML='<h2>A good Seestar target right now</h2><div class="big">Nothing prime is high yet — give it an hour</div>'+
+      '<div class="d">None of the marquee Seestar targets are above 20° at the moment. Check the table below for what is rising, or come back later in the session when Scorpius / Sagittarius (the Lagoon, Trifid and Swan nebulae) climb higher.</div>';
+    return;
+  }
+  var w=cand[0], d=w.d, ff=frameFit(d[3]);
+  box.innerHTML='<h2>A good Seestar target right now</h2><div class="big">'+(d[4]?'🌈 ':'✨ ')+d[0]+' — '+Math.round(w.p.alt)+'° up in the '+A.compass(w.p.az)+'</div>'+
+    '<div class="d">'+d[5].charAt(0).toUpperCase()+d[5].slice(1)+'. '+
+    (d[4]?'It is an <b>emission nebula</b>, so the Seestar’s narrowband filter cuts straight through Jurong’s sky-glow — one of the best things you can put it on tonight. '
+         :'It is a <b>broadband</b> target, so it shows best while it is high and the Moon is down. ')+
+    'At '+(d[3]>=60?(d[3]/60).toFixed(1)+'°':d[3]+'′')+' across it '+ff[1].replace(/^[^ ]+ /,'')+' the ~2.1° field. '+
+    'Start a stack now and let it build for ten minutes before the queue arrives.</div>';
+}
+function refresh(){bestNow();renderTable();}
+drawStackPair();refresh();
+setInterval(refresh,300000);
+</script>
+<script src="version.js"></script>
+</body>
+</html>

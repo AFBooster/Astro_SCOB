@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Where Did All the Stars Go? — SCOB</title>
+<meta name="description" content="Why the Milky Way is invisible from Jurong while the Moon and Saturn look superb — light pollution explained honestly for visitors to the Science Centre Observatory.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;--orange:#ff9d3c;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:840px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--orange);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.fact{font-size:13.5px;color:var(--mute);line-height:1.65;}
+.fact b{color:var(--white);}
+.fact p{margin:0 0 10px;}
+.fact p:last-child{margin-bottom:0;}
+.skies{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:620px){.skies{grid-template-columns:1fr;}}
+.sky{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#05080f;}
+.sky svg{width:100%;height:auto;display:block;}
+.sky .cap{padding:9px 11px;font-size:12.5px;color:var(--mute);line-height:1.5;background:var(--navy3);}
+.sky .cap b{color:var(--white);}
+.ctl{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;}
+.ctl button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.ctl button.on{border-color:var(--gold);color:var(--gold);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
+td{padding:8px 5px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;}
+td.v{font-weight:700;white-space:nowrap;}
+.y{color:var(--green);}
+.m{color:var(--orange);}
+.n{color:var(--red);}
+.fine{font-size:12px;color:var(--mute);margin-top:9px;line-height:1.55;}
+.pull{background:rgba(91,214,224,.1);border-left:4px solid var(--cyan);border-radius:0 10px 10px 0;padding:11px 14px;margin:12px 0;font-size:13.5px;line-height:1.6;}
+.pull b{color:var(--cyan);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌃 Where did all the stars go?</h1>
+    <div class="loc">Why you cannot see the Milky Way from Jurong — and why Saturn does not care. Science Centre Observatory.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="singapore-sky.html">🌏 Singapore’s sky</a>
+      <a href="tonights-tour.html">🎟️ Tonight’s tour</a>
+    </div>
+  </header>
+
+  <div class="card">
+    <h2>The same patch of sky, from two places</h2>
+    <div class="ctl" id="bortleBtns"></div>
+    <div class="skies">
+      <div class="sky"><svg id="skyDark" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simulated view of the sky from a dark site"></svg>
+        <div class="cap" id="capDark"></div></div>
+      <div class="sky"><svg id="skyCity" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simulated view of the same sky from Singapore"></svg>
+        <div class="cap" id="capCity"></div></div>
+    </div>
+    <div class="fine">Both panels show the same star field. The only difference is how much of it survives the background glow. This is an illustration of the effect, not a photograph.</div>
+  </div>
+
+  <div class="card">
+    <h2>What is actually happening</h2>
+    <div class="fact">
+      <p>Light pollution does not blot stars out. It <b>raises the floor</b>. Every streetlight, shop sign and floodlight in the west of Singapore throws light upward, the atmosphere scatters it, and the whole sky starts glowing faintly. A star is only visible when it is brighter than the background it sits on — so as the background brightens, the faintest stars stop standing out, one after another, from the bottom up.</p>
+      <p>That is why the effect is so uneven, and why the observatory still works. <b>The Moon is about 400,000 times brighter than the sky glow.</b> Jupiter, Saturn, Venus and the bright double stars are also far above the floor. Raising the floor does nothing to them at all. But the Milky Way is a broad, faint, low-contrast glow — almost exactly the same kind of light as the pollution itself — so it is the first thing to drown, and it drowns completely.</p>
+      <p id="magLine"></p>
+    </div>
+  </div>
+
+  <div class="pull" id="pull"></div>
+
+  <div class="card">
+    <h2>So what can we actually show you tonight?</h2>
+    <div class="fact" style="margin-bottom:9px">This is the honest version of the SCOB target list — what a bright suburban sky does and does not take away.</div>
+    <table>
+      <thead><tr><th>Target</th><th style="width:96px">From here</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><b>The Moon</b></td><td class="v y">Perfect</td><td>Utterly unaffected. Craters, mountains and the terminator look exactly as good from a city car park as from a desert. Our best object, most nights.</td></tr>
+        <tr><td><b>Planets</b> — Jupiter, Saturn, Venus, Mars</td><td class="v y">Perfect</td><td>Thousands of times brighter than the sky glow. Saturn's rings and Jupiter's belts are a matter of steady air, not dark skies.</td></tr>
+        <tr><td><b>Double &amp; coloured stars</b></td><td class="v y">Perfect</td><td>Splitting a pair depends on the telescope and the seeing, never on darkness. Albireo's gold-and-blue is as good here as anywhere.</td></tr>
+        <tr><td><b>Bright star clusters</b> — M13, Omega Centauri, the Pleiades</td><td class="v y">Good</td><td>Concentrated points of light punch through the glow. You lose the faint outer halo; the core is still spectacular.</td></tr>
+        <tr><td><b>The brightest nebulae</b> — Orion, Lagoon, Eta Carinae</td><td class="v m">Reduced</td><td>Visible, but a ghost of a dark-sky view. This is where a narrowband filter earns its keep, blocking the streetlight wavelengths while passing the nebula's own.</td></tr>
+        <tr><td><b>Galaxies</b> beyond Andromeda</td><td class="v n">Mostly lost</td><td>Large, faint and diffuse — the worst possible combination. Most are simply not there from Jurong, and no filter helps, because a galaxy emits across all wavelengths.</td></tr>
+        <tr><td><b>The Milky Way</b> to the naked eye</td><td class="v n">Gone</td><td>Needs a genuinely dark sky. From here the galactic centre is high overhead in mid-year and still invisible without a camera.</td></tr>
+      </tbody>
+    </table>
+    <div class="fine">A narrowband or light-pollution filter is not magic: it works on emission nebulae, which glow at a few specific wavelengths, and does essentially nothing for stars, planets, clusters or galaxies. Anyone who sells you one as a general cure is overselling it.</div>
+  </div>
+
+  <div class="card">
+    <h2>Three things worth telling a disappointed visitor</h2>
+    <div class="fact">
+      <p><b>1. Your eyes are still adapting.</b> Full dark adaptation takes 20–30 minutes and a single glance at a phone screen undoes most of it. The difference between arriving and half an hour later is larger than most people expect — this is why we ask for red light only.</p>
+      <p><b>2. It is recent, and it is reversible.</b> Nearly everyone alive in Singapore before the 1970s could see the Milky Way from here. Light pollution is unusual among environmental problems in that it stops the instant the light is switched off or aimed downward — nothing has to be cleaned up, and nothing is permanent.</p>
+      <p><b>3. The sky is still there.</b> Every object in the eyepiece tonight is the real thing, at the real distance, and the photons landing on your retina left Saturn about eighty minutes ago. A bright sky changes what is easy to see. It changes nothing at all about what is up there.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    The star-field panels are a simulation: an identical randomly-generated field is drawn twice, with stars fainter than each sky's limiting magnitude removed and a background glow applied. The limiting magnitudes come from the same table the dashboard uses for its deep-sky verdicts, and your Bortle choice here is shared with the dashboard. Bortle classes describe night-sky brightness on a scale from 1 (a genuinely dark site) to 9 (inner city); Singapore's built-up areas sit around 8 to 9.<br>
+    Companion pages: <a href="singapore-sky.html">why Singapore sees almost the whole sky</a> · <a href="phone-astrophotography.html">shooting the sky with a phone</a> · <a href="tonights-tour.html">tonight's tour</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+/* Shared with the dashboard: same key, same 7/8/9 choice, same limiting magnitudes. */
+var BORTLE=(function(){try{var v=+localStorage.getItem('scobBortle');return (v===7||v===8||v===9)?v:8;}catch(e){return 8;}})();
+function limitMag(b){return b>=9?8.5:(b>=8?9.5:10.5);}      // through the telescope
+function nakedEye(b){return b>=9?3.5:(b>=8?4.2:5.0);}       // unaided eye, honest for a bright suburb
+var DARK_NAKED=6.6, DARK_LIMIT=13.5;                        // a genuinely dark Bortle 2 site
+
+/* deterministic star field so both panels show the SAME sky */
+function field(n,seed){
+  var out=[],s=seed;
+  function rnd(){s=(s*1664525+1013904223)%4294967296;return s/4294967296;}
+  // Magnitude distribution: each magnitude step holds ~2.512x more stars than the last,
+  // which is why the visible count falls off a cliff as the sky brightens. K sets how far
+  // past naked-eye the field runs, so even the dark panel is a genuine subset, not "all of them".
+  var K=900;
+  for(var i=0;i<n;i++){
+    var m=1.0+Math.log(1+rnd()*K)/Math.log(2.512);
+    out.push({x:rnd()*320,y:rnd()*200,m:m});
+  }
+  return out;
+}
+var STARS=field(3000,20260721);
+function drawSky(id,limit,glow,mw){
+  var s='<rect width="320" height="200" fill="#04060d"/>';
+  if(mw){ // Milky Way band, drawn only when the sky is dark enough for it to register
+    s+='<defs><linearGradient id="mw'+id+'" x1="0" y1="0" x2="1" y2="1">'+
+       '<stop offset="0%" stop-color="#cfd8ff" stop-opacity="0"/><stop offset="50%" stop-color="#cfd8ff" stop-opacity="0.20"/>'+
+       '<stop offset="100%" stop-color="#cfd8ff" stop-opacity="0"/></linearGradient></defs>';
+    s+='<path d="M-20,150 C 80,110 200,80 340,30 L340,80 C200,130 80,160 -20,196 Z" fill="url(#mw'+id+')"/>';
+  }
+  if(glow>0){ // sky glow: brightest near the horizon where you look through the most city air
+    s+='<defs><linearGradient id="gl'+id+'" x1="0" y1="1" x2="0" y2="0">'+
+       '<stop offset="0%" stop-color="#4a5570" stop-opacity="'+(glow*0.92).toFixed(2)+'"/>'+
+       '<stop offset="100%" stop-color="#2b3550" stop-opacity="'+(glow*0.42).toFixed(2)+'"/></linearGradient></defs>';
+    s+='<rect width="320" height="200" fill="url(#gl'+id+')"/>';
+  }
+  var shown=0;
+  STARS.forEach(function(st){
+    if(st.m>limit)return;
+    shown++;
+    var r=Math.max(0.35,1.9-(st.m-1)*0.22);
+    var op=Math.max(0.35,Math.min(1,1.15-(st.m-limit+3.2)*0.16));
+    s+='<circle cx="'+st.x.toFixed(1)+'" cy="'+st.y.toFixed(1)+'" r="'+r.toFixed(2)+'" fill="#fff" opacity="'+op.toFixed(2)+'"/>';
+  });
+  $(id).innerHTML=s;
+  return shown;
+}
+function render(){
+  $('bortleBtns').innerHTML=[7,8,9].map(function(b){
+    return '<button type="button" data-b="'+b+'"'+(b===BORTLE?' class="on"':'')+'>Bortle '+b+(b===8?' — typical Jurong':(b===9?' — inner city':' — outer edge'))+'</button>';}).join('');
+  Array.prototype.forEach.call($('bortleBtns').querySelectorAll('button'),function(x){
+    x.onclick=function(){BORTLE=+x.getAttribute('data-b');
+      try{localStorage.setItem('scobBortle',BORTLE);}catch(e){}
+      render();};});
+
+  var nDark=drawSky('skyDark',DARK_NAKED,0,true);
+  var nCity=drawSky('skyCity',nakedEye(BORTLE),BORTLE>=9?0.85:(BORTLE>=8?0.62:0.42),false);
+  $('capDark').innerHTML='<b>A dark site</b> (Bortle 2 — a rural sky). Naked-eye limit about magnitude '+DARK_NAKED.toFixed(1)+'. The Milky Way is obvious. <b>'+nDark+'</b> stars in this patch.';
+  $('capCity').innerHTML='<b>Singapore, Bortle '+BORTLE+'.</b> Naked-eye limit about magnitude '+nakedEye(BORTLE).toFixed(1)+'. <b>'+nCity+'</b> stars — '+
+    Math.round(100-nCity/nDark*100)+'% of them have vanished into the glow.';
+
+  $('magLine').innerHTML='Astronomers measure this as a <b>limiting magnitude</b> — the faintest thing still detectable. '+
+    'Larger numbers mean fainter. At a dark site the unaided eye reaches about magnitude <b>'+DARK_NAKED.toFixed(1)+'</b>; '+
+    'from here it manages roughly <b>'+nakedEye(BORTLE).toFixed(1)+'</b>. That gap of '+(DARK_NAKED-nakedEye(BORTLE)).toFixed(1)+
+    ' magnitudes is a factor of about <b>'+Math.round(Math.pow(2.512,DARK_NAKED-nakedEye(BORTLE)))+'× in brightness</b> — which is why the count in the two panels differs so wildly. '+
+    'Through our telescopes the glow costs us less, because the aperture gathers so much more light: the practical limit tonight is around magnitude <b>'+limitMag(BORTLE).toFixed(1)+
+    '</b>, against roughly '+DARK_LIMIT.toFixed(1)+' for the same instrument under a dark sky.';
+
+  $('pull').innerHTML='<b>The one-sentence version for visitors:</b> light pollution does not hide the sky, it competes with it — so anything bright enough to beat a glowing sky (the Moon, the planets, double stars, tight clusters) is completely unharmed, and anything faint and spread out (the Milky Way, nebulae, galaxies) loses. That is the entire story, and it is why our tour tonight looks the way it does.';
+}
+render();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

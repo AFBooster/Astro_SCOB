@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sky Events from SCOB — Occultations &amp; ISS Transits</title>
+<meta name="description" content="Rare timed sky events seen from the Science Centre Observatory, Jurong: lunar occultations and close passes, and transits of the ISS or Tiangong across the Sun and Moon. Computed on your device.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.intro{font-size:13.5px;color:var(--mute);margin:12px 0;}
+.ev{background:var(--navy2);border:1px solid var(--line);border-radius:13px;padding:12px 14px;margin:10px 0;display:flex;gap:12px;align-items:flex-start;}
+.ev.vis{border-color:var(--green);background:rgba(95,211,138,.08);}
+.ev .dt{flex:0 0 auto;width:74px;text-align:center;}
+.ev .dt .d{font-size:20px;font-weight:800;color:var(--gold);}.ev .dt .mo{font-size:12px;color:var(--mute);text-transform:uppercase;}
+.ev .nm{font-size:16px;font-weight:700;}
+.ev .what{font-size:13px;margin-top:2px;}
+.ev .vt{color:var(--green);font-weight:700;}
+.ev .sub{font-size:12px;color:var(--mute);margin-top:3px;}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;margin-left:6px;}
+.tag.occ{background:rgba(245,197,66,.2);color:var(--gold);}.tag.near{background:var(--navy);color:var(--mute);border:1px solid var(--line);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+/* ---- transits pane (event card namespaced .ev -> .tev) ---- */
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;--orange:#ff9d3c;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--cyan);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.danger{background:rgba(255,107,107,.13);border:1px solid var(--red);border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13.5px;line-height:1.6;}
+.danger b{color:#ffb4b4;}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px;}
+.ctl .grp{display:flex;gap:6px;flex-wrap:wrap;}
+.ctl button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.ctl button.on{border-color:var(--gold);color:var(--gold);}
+.ctl .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);width:100%;margin-top:4px;}
+.go{background:var(--cyan)!important;border-color:var(--cyan)!important;color:#08101f!important;}
+.go[disabled]{opacity:.55;cursor:default;}
+.tle{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.5;}
+.tle b{color:var(--white);}
+.tle .stale{color:var(--orange);}
+.prog{height:6px;background:var(--navy3);border-radius:4px;overflow:hidden;margin-top:10px;display:none;}
+.prog i{display:block;height:100%;width:0;background:var(--cyan);transition:width .15s;}
+.tev{border:1px solid var(--line);border-left:5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--navy3);}
+.tev.hit{border-color:var(--gold);border-left-color:var(--gold);background:rgba(245,197,66,.09);}
+.tev.graze{border-color:var(--orange);border-left-color:var(--orange);}
+.tev.miss{opacity:.82;}
+.tev .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.tev .ttl{font-weight:800;font-size:15px;}
+.tev.hit .ttl{color:var(--gold);}
+.tev.graze .ttl{color:var(--orange);}
+.tev .when{font-size:13px;color:var(--white);font-weight:700;}
+.tev .kv{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:8px;font-size:12.5px;color:var(--mute);}
+.tev .kv b{color:var(--white);font-weight:700;}
+.tev .nb{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.55;border-top:1px dashed var(--line);padding-top:8px;}
+.disc{display:block;margin:10px auto 2px;}
+.none{font-size:13.5px;color:var(--mute);line-height:1.6;}
+.none b{color:var(--white);}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);margin:18px 0 8px;}
+.fact{font-size:13px;color:var(--mute);line-height:1.65;}
+.fact b{color:var(--white);}
+.fact p{margin:0 0 9px;}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+
+/* shared tab shell */
+.tabs{display:flex;gap:8px;margin:14px 0 4px;}
+.tabs button{flex:1;background:var(--navy2);border:1px solid var(--line);color:var(--white);border-radius:11px;padding:11px 8px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;}
+.tabs button.on{border-color:var(--gold);background:var(--navy3);color:var(--gold);}
+.pane{display:none;}
+.pane.active{display:block;}
+.controls{margin:10px 0 2px;}
+.ctlbtn{background:none;border:1px solid var(--cyan);color:var(--cyan);border-radius:9px;padding:7px 12px;font-weight:700;font-size:12.5px;cursor:pointer;}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔭 Sky Events from SCOB</h1>
+    <div class="loc">The rare, timed sights over Jurong — the Moon covering a star, or the space station crossing the Sun. Science Centre Observatory.</div>
+    <div class="bar"><a href="scob-dashboard-v3.html">← Dashboard</a><a href="almanac.html">📅 Almanac</a><a href="moon-tonight.html">🌕 Moon tonight</a></div>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <button type="button" data-tab="occ" class="on">🌘 Occultations &amp; close passes</button>
+    <button type="button" data-tab="tr">🛰️ ISS &amp; Tiangong transits</button>
+  </div>
+
+<section class="pane" id="pane-occ">
+  <div class="controls"><button type="button" id="filt" class="ctlbtn">👁 Visible only</button></div>
+  <div class="intro">An <b>occultation</b> is when the Moon covers a star or planet — the object blinks out at the Moon’s edge, then reappears. A <b>close pass</b> is a near-miss that’s still a lovely sight. Times are Singapore time (SGT). Whether an event is visible depends on the Moon being above the horizon here — many happen in daylight or with the Moon down.</div>
+  <div id="list"></div>
+</section>
+
+<section class="pane" id="pane-tr"><div class="danger">
+    ☀️ <b>Never point a telescope, finder, camera or your eye at the Sun without a certified full-aperture solar filter fitted over the front of the tube.</b> A solar transit lasts under a second; permanent blindness takes less. If in doubt, do it on the Moon instead — no filter, no risk, and it looks just as good.
+  </div>
+
+  <div class="card">
+    <h2>Search</h2>
+    <div class="ctl">
+      <div class="lbl">Spacecraft</div>
+      <div class="grp" id="satBtns"></div>
+      <div class="lbl">Cross the face of</div>
+      <div class="grp" id="bodyBtns"></div>
+      <div class="lbl">Look ahead</div>
+      <div class="grp" id="dayBtns"></div>
+    </div>
+    <div class="ctl" style="margin-top:12px">
+      <button type="button" class="go" id="run">🔍 Find transits</button>
+      <button type="button" id="refresh">🔄 Refresh orbit data</button>
+    </div>
+    <div class="prog" id="prog"><i id="progbar"></i></div>
+    <div class="tle" id="tle"></div>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="card">
+    <h2>What you are actually trying to catch</h2>
+    <div class="fact">
+      <p>A transit is not a pass. On an ordinary pass the station drifts across the sky for several minutes. A transit is the instant its <b>silhouette</b> crosses the disc of the Sun or the Moon — and because the station is moving at nearly 8 km per second, that takes <b>about half a second</b>. You will not see it happen in an eyepiece. You record video and find it afterwards, frame by frame.</p>
+      <p><b>The path is brutally narrow.</b> The station's shadow-line sweeps a strip only a few kilometres wide across the ground. Stand in Bishan instead of Jurong and the same event simply does not happen for you. Every prediction on this page is computed for the observatory's exact coordinates and is worthless a short drive away — which is also why these are so much rarer than passes: from any one fixed spot, a solar transit turns up only every month or two.</p>
+      <p><b>How to record one.</b> Set up at least 20 minutes early and get focus perfect on a sunspot or a lunar crater. Shoot the highest frame rate you can — at 30 fps a 0.6-second transit gives you about 18 frames; at 120 fps you get 70 and can make a real sequence. Start recording a full minute before the predicted time and keep going a minute after. Do not touch focus once the clock is running.</p>
+    </div>
+  </div></section>
+
+  <div class="foot">
+    <b>Occultations:</b> computed from the Moon’s <b>topocentric</b> (parallax-corrected) position for SCOB, scanning bright zodiac stars (Aldebaran, Regulus, Spica, Antares) and the planets; times ±a few minutes — check IOTA / Lunar Occultation Workbench before timing precisely.<br>
+    <b>Transits:</b> satellite orbits propagated on-device with satellite.js (SGP4) from CelesTrak elements; Sun/Moon from the site engine (Moon parallax-corrected). The ground path is only kilometres wide and elements age fast — refresh on the day. ☀️ Solar work needs a certified full-aperture filter.<br>
+    Companion pages: <a href="almanac.html">sky almanac</a> · <a href="moon-tonight.html">Moon tonight</a> · <a href="scob-dashboard-v3.html">dashboard</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+/* ===== Occultations pane ===== */
+(function(){
+var A=window.Astro;
+var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var hideInv=(function(){try{var v=localStorage.getItem('scobOccHide');return v===null?true:v==='1';}catch(e){return true;}})();
+function fLabel(){var b=document.getElementById('filt');if(b)b.textContent=hideInv?'👁 Visible only':'👁 Showing all';}
+function evHTML(r){var e=r.e,sgt=new Date(e.t+8*3600000);
+  var when=(sgt.getUTCHours()%12||12)+':'+String(sgt.getUTCMinutes()).padStart(2,'0')+(sgt.getUTCHours()<12?'am':'pm');
+  var what=e.occult?('<b>Occultation</b> of '+e.name+'<span class="tag occ">covered</span>'):('Close pass — '+e.sep.toFixed(1)+'° from '+e.name+'<span class="tag near">near miss</span>');
+  var visline;
+  if(!r.moonUp)visline='Moon is below the horizon here — not visible from Singapore.';
+  else if(r.observable)visline='<span class="vt">✔ '+(r.vis?'Visible from Singapore':'Above the horizon')+'</span> — Moon '+Math.round(e.alt)+'° up in the '+A.compass(e.az)+', '+(r.night?'dark sky':'twilight')+'.';
+  else visline='Moon '+Math.round(e.alt)+'° up, but in daylight — hard to catch.';
+  return '<div class="ev'+(r.observable?' vis':'')+'"><div class="dt"><div class="d">'+sgt.getUTCDate()+'</div><div class="mo">'+MO[sgt.getUTCMonth()]+'</div></div>'+
+    '<div><div class="nm">'+e.name+(e.mag!=null?' <span class="sub" style="display:inline">· mag '+(e.mag>=0?'+':'')+e.mag+'</span>':'')+'</div>'+
+    '<div class="what">'+what+'</div>'+
+    '<div class="sub">'+when+' SGT · '+visline+'</div></div></div>';
+}
+function run(){
+  var host=document.getElementById('list');
+  var rows=A.occultations(new Date(),150).map(function(e){var su=A.sunAltAt(new Date(e.t)),moonUp=e.alt>2,twi=su<0,night=su<-6;
+    return {e:e,moonUp:moonUp,twi:twi,night:night,vis:e.occult&&moonUp&&twi,observable:moonUp&&twi};});
+  if(!rows.length){host.innerHTML='<div class="intro">No close Moon–star/planet approaches found in the next few months.</div>';return;}
+  var shown=hideInv?rows.filter(function(r){return r.observable;}):rows, hidden=rows.length-shown.length, note;
+  if(hideInv){
+    note=shown.length
+      ?'<div class="intro">Showing the <b>'+shown.length+'</b> event'+(shown.length===1?'':'s')+' observable from Singapore (Moon above the horizon, in twilight or darkness).'+(hidden?' <a href="#" id="showall" style="color:var(--cyan)">Show all '+rows.length+' (incl. Moon-down / daytime)</a>.':'')+'</div>'
+      :'<div class="intro">None of the next five months’ events are observable from Singapore — they all fall with the Moon below the horizon or in daylight. <a href="#" id="showall" style="color:var(--cyan)">Show all '+rows.length+' anyway</a>.</div>';
+  } else note='<div class="intro">Showing <b>all '+rows.length+'</b> close approaches, including those with the Moon down or in daylight here. <a href="#" id="showvis" style="color:var(--cyan)">Visible-only</a>.</div>';
+  host.innerHTML=note+shown.map(evHTML).join('');
+  var sa=document.getElementById('showall');if(sa)sa.onclick=function(ev){ev.preventDefault();setHide(false);};
+  var sv=document.getElementById('showvis');if(sv)sv.onclick=function(ev){ev.preventDefault();setHide(true);};
+}
+function setHide(v){hideInv=v;try{localStorage.setItem('scobOccHide',v?'1':'0');}catch(e){}fLabel();run();}
+document.getElementById('filt').onclick=function(){setHide(!hideInv);};
+fLabel();run();
+})();
+/* ===== ISS/Tiangong transits pane ===== */
+(function(){
+var A=window.Astro;
+var SATS=[{n:'ISS',cat:25544,m:109,full:'International Space Station'},
+          {n:'Tiangong',cat:48274,m:55,full:'Tiangong space station'}];
+var satSel={ISS:true,Tiangong:false}, bodySel={sun:true,moon:true}, DAYS=30;
+var $=function(id){return document.getElementById(id);};
+
+function drawBtns(){
+  $('satBtns').innerHTML=SATS.map(function(s){return '<button type="button" data-s="'+s.n+'"'+(satSel[s.n]?' class="on"':'')+'>'+s.n+'</button>';}).join('');
+  $('bodyBtns').innerHTML='<button type="button" data-b="sun"'+(bodySel.sun?' class="on"':'')+'>☀️ the Sun</button><button type="button" data-b="moon"'+(bodySel.moon?' class="on"':'')+'>🌕 the Moon</button>';
+  $('dayBtns').innerHTML=[30,60,90].map(function(d){return '<button type="button" data-d="'+d+'"'+(d===DAYS?' class="on"':'')+'>'+d+' days</button>';}).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#satBtns button'),function(b){b.onclick=function(){var k=b.getAttribute('data-s');
+    if(satSel[k]&&Object.keys(satSel).filter(function(x){return satSel[x];}).length<2)return; satSel[k]=!satSel[k];drawBtns();};});
+  Array.prototype.forEach.call(document.querySelectorAll('#bodyBtns button'),function(b){b.onclick=function(){var k=b.getAttribute('data-b');
+    if(bodySel[k]&&!(bodySel.sun&&bodySel.moon))return; bodySel[k]=!bodySel[k];drawBtns();};});
+  Array.prototype.forEach.call(document.querySelectorAll('#dayBtns button'),function(b){b.onclick=function(){DAYS=+b.getAttribute('data-d');drawBtns();};});
+}
+drawBtns();
+
+/* ---------- time helpers (SGT = UTC+8) ---------- */
+var DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function p2(n){return n<10?'0'+n:''+n;}
+function sgt(ms){return new Date(ms+8*3600000);}
+function fmtDate(ms){var d=sgt(ms);return DAYN[d.getUTCDay()]+' '+d.getUTCDate()+' '+MON[d.getUTCMonth()]+' '+d.getUTCFullYear();}
+function fmtTime(ms){var d=sgt(ms);return p2(d.getUTCHours())+':'+p2(d.getUTCMinutes())+':'+p2(d.getUTCSeconds())+'.'+Math.floor((ms%1000)/100);}
+
+/* ---------- orbital elements (shared cache with the dashboard) ---------- */
+function loadScript(u){return new Promise(function(res,rej){var s=document.createElement('script');s.src=u;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+async function getTLE(cat,force){
+  var key='scobTLE_'+cat, cached=null;
+  try{cached=JSON.parse(localStorage.getItem(key)||'null');}catch(e){}
+  if(cached&&!force&&Date.now()-cached.ts<86400000)return cached;
+  try{
+    var r=await fetch('https://celestrak.org/NORAD/elements/gp.php?CATNR='+cat+'&FORMAT=TLE',{cache:'no-store'});
+    if(!r.ok)throw 0;
+    var L=(await r.text()).trim().split(/\r?\n/);
+    if(L.length<3||!/^1 /.test(L[1].trim()))throw 0;
+    var c={l1:L[1].trim(),l2:L[2].trim(),ts:Date.now()};
+    try{localStorage.setItem(key,JSON.stringify(c));}catch(e){}
+    return c;
+  }catch(e){return cached;}
+}
+function tleAgeNote(ages){
+  if(!ages.length){$('tle').innerHTML='<span class="stale">⚠ No orbital elements available — connect to the internet once to download them, then this page works offline.</span>';return;}
+  var mx=Math.max.apply(null,ages);
+  var txt=mx<1?'downloaded today':(mx===1?'1 day old':mx+' days old');
+  $('tle').innerHTML='Orbital elements '+(mx>=3?'<span class="stale"><b>'+txt+'</b> — refresh before trusting any prediction</span>':'<b>'+txt+'</b>')+
+    '. Source: CelesTrak. Predictions drift as the orbit decays and after each re-boost, so always re-check on the day.';
+}
+
+/* is the spacecraft in sunlight, or inside Earth's shadow? */
+function sunlit(pos,dt){
+  var dd=A.jd(dt)-2451543.5, s=A.sun(dd), eq=A.eclToEq(s.lon,0,dd);
+  var ra=eq.ra*A.RAD, dec=eq.dec*A.RAD;
+  var sv=[Math.cos(dec)*Math.cos(ra),Math.cos(dec)*Math.sin(ra),Math.sin(dec)];
+  var dot=pos.x*sv[0]+pos.y*sv[1]+pos.z*sv[2];
+  if(dot>0)return true;
+  var r2=pos.x*pos.x+pos.y*pos.y+pos.z*pos.z;
+  return Math.sqrt(Math.max(0,r2-dot*dot))>6371;
+}
+
+/* ---------- the search ---------- */
+var BUSY=false;
+async function run(force){
+  if(BUSY)return; BUSY=true;
+  var btn=$('run');btn.disabled=true;btn.textContent='⏳ Working…';
+  $('prog').style.display='block';$('progbar').style.width='0%';
+  $('out').innerHTML='';
+  var results=[],ages=[],failed=[];
+  try{
+    if(typeof satellite==='undefined')await loadScript('https://cdnjs.cloudflare.com/ajax/libs/satellite.js/5.0.0/satellite.min.js');
+  }catch(e){
+    $('out').innerHTML='<div class="card"><div class="none">⚠️ <b>Could not load the orbit propagator.</b> This page needs one online visit to cache satellite.js and the current orbital elements. Once cached it works offline.</div></div>';
+    $('prog').style.display='none';btn.disabled=false;btn.textContent='🔍 Find transits';BUSY=false;return;
+  }
+  var obs={latitude:A.SCOB.LAT*A.RAD,longitude:A.SCOB.LON*A.RAD,height:0.02};
+  var t0=Date.now(), t1=t0+DAYS*86400000;
+  var chosen=SATS.filter(function(s){return satSel[s.n];});
+  var bodies=['sun','moon'].filter(function(b){return bodySel[b];});
+  var totalUnits=chosen.length, unit=0;
+  for(var si=0;si<chosen.length;si++){
+    var st=chosen[si];
+    var tle=await getTLE(st.cat,force);
+    if(!tle){failed.push(st.n);unit++;continue;}
+    ages.push(Math.round((Date.now()-tle.ts)/86400000));
+    var rec=satellite.twoline2satrec(tle.l1,tle.l2);
+    // look angles for this spacecraft at an arbitrary instant
+    var look=function(ms){
+      var dt=new Date(ms), pv=satellite.propagate(rec,dt);
+      if(!pv||!pv.position)return null;
+      var la=satellite.ecfToLookAngles(obs,satellite.eciToEcf(pv.position,satellite.gstime(dt)));
+      return {alt:la.elevation*A.DEG,az:((la.azimuth*A.DEG)%360+360)%360,range:la.rangeSat,eci:pv.position};
+    };
+    // Stage 1 — coarse 60 s sweep to find the windows when it is above the horizon at all.
+    // A pass above 5° never lasts less than ~3 minutes, so 60 s sampling cannot miss one.
+    var windows=[],open=null;
+    for(var t=t0;t<=t1;t+=60000){
+      var L=look(t);
+      if(L&&L.alt>5){ if(!open)open={a:t-60000}; open.b=t+60000; }
+      else if(open){windows.push(open);open=null;}
+      if((t/60000)%2000===0){$('progbar').style.width=((unit+0.6*((t-t0)/(t1-t0)))/totalUnits*100).toFixed(1)+'%';await new Promise(function(r){setTimeout(r,0);});}
+    }
+    if(open)windows.push(open);
+    // Stage 2 — inside each window, hunt for close approaches to the chosen disc(s).
+    for(var wi=0;wi<windows.length;wi++){
+      var w=windows[wi];
+      for(var bi=0;bi<bodies.length;bi++){
+        var evs=A.transitScan(look,bodies[bi],w.a,w.b,{stepS:10,minAlt:10,maxSep:0.9,satMeters:st.m});
+        for(var ei=0;ei<evs.length;ei++){var E=evs[ei];E.sat=st;E.body=bodies[bi];
+          var Lp=look(E.t);E.lit=Lp?sunlit(Lp.eci,new Date(E.t)):null;results.push(E);}
+      }
+      if(wi%25===0){$('progbar').style.width=((unit+0.6+0.4*(wi/windows.length))/totalUnits*100).toFixed(1)+'%';await new Promise(function(r){setTimeout(r,0);});}
+    }
+    unit++;
+  }
+  results.sort(function(a,b){return a.t-b.t;});
+  tleAgeNote(ages);
+  render(results,failed);
+  $('prog').style.display='none';btn.disabled=false;btn.textContent='🔍 Find transits';BUSY=false;
+}
+
+/* ---------- a little picture of the chord across the disc ---------- */
+function discSVG(ev){
+  var R=44,cx=60,cy=60,S=R/ev.radius;              // pixels per degree
+  var off=Math.min(ev.sep*S,R*1.7);
+  var col=ev.body==='sun'?'#ffd34d':'#d9def0';
+  var s='<svg class="disc" width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Where the station crosses the disc">';
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+col+'" fill-opacity="'+(ev.body==='sun'?0.85:0.7)+'" stroke="'+col+'"/>';
+  var y=cy-off;
+  s+='<line x1="4" y1="'+y.toFixed(1)+'" x2="116" y2="'+y.toFixed(1)+'" stroke="#0b1733" stroke-width="1.4" stroke-dasharray="5 4"/>';
+  var dot=Math.max(1.6,(ev.issDeg*S)/2);
+  s+='<circle cx="'+cx+'" cy="'+y.toFixed(1)+'" r="'+dot.toFixed(1)+'" fill="#0b1733"/>';
+  s+='<polygon points="106,'+(y-4).toFixed(1)+' 116,'+y.toFixed(1)+' 106,'+(y+4).toFixed(1)+'" fill="#0b1733"/>';
+  return s+'</svg>';
+}
+function render(list,failed){
+  var out=$('out'),html='';
+  if(failed.length)html+='<div class="card"><div class="none">⚠️ No orbital elements for <b>'+failed.join(', ')+'</b> — that spacecraft was skipped.</div></div>';
+  var hits=list.filter(function(e){return e.kind!=='miss';});
+  var misses=list.filter(function(e){return e.kind==='miss';});
+  if(!hits.length){
+    html+='<div class="card"><h2>No transits in the next '+DAYS+' days</h2><div class="none">'+
+      'That is the normal answer. From one fixed point on the ground, a solar or lunar transit turns up perhaps every month or two per spacecraft — the ground track has to thread a corridor a few kilometres wide at exactly the moment the disc is in the right part of the sky.'+
+      (misses.length?' The near misses below came closest; if the orbit is re-boosted between now and then, one of them could shift into a hit — so re-run this page on the day.':' Try a longer search window, or add the other spacecraft.')+
+      '</div></div>';
+  } else {
+    html+='<div class="card"><h2>'+hits.length+' transit'+(hits.length>1?'s':'')+' in the next '+DAYS+' days</h2>';
+    hits.forEach(function(e){html+=evCard(e);});
+    html+='</div>';
+  }
+  if(misses.length){
+    html+='<div class="card"><h3 style="margin-top:0">Near misses — worth re-checking on the day</h3>';
+    misses.slice(0,8).forEach(function(e){html+=evCard(e);});
+    html+='<div class="none" style="margin-top:6px">These pass close to the disc but not across it. Orbital elements shift by more than this between now and then, so a near miss a few weeks out is genuinely uncertain — re-run the search on the morning of the event.</div></div>';
+  }
+  out.innerHTML=html;
+}
+function evCard(e){
+  var isSun=e.body==='sun', bodyName=isSun?'the Sun':'the Moon';
+  var cls=e.kind==='miss'?'miss':(e.kind==='graze'?'graze':'hit');
+  var ttl=e.kind==='miss'?'Near miss — '+e.sat.n+' passes close to '+bodyName
+        :(e.kind==='graze'?'Grazing transit — '+e.sat.n+' clips the edge of '+bodyName
+        :e.sat.n+' crosses '+bodyName);
+  var d=new Date(e.t);
+  var extra='';
+  if(e.kind!=='miss'){
+    var pct=(e.frac*100).toFixed(1);
+    extra='<div class="kv"><span>Duration <b>'+e.dur.toFixed(2)+' s</b></span>'+
+      '<span>Station size <b>'+(e.issDeg*3600).toFixed(0)+'″</b> ('+pct+'% of the disc)</span>'+
+      '<span>Offset from centre <b>'+(e.sep/e.radius*100).toFixed(0)+'%</b> of the radius</span></div>';
+  } else {
+    extra='<div class="kv"><span>Closest approach <b>'+e.sep.toFixed(2)+'°</b></span>'+
+      '<span>That is <b>'+(e.sep/e.radius).toFixed(1)+'×</b> the disc radius — it misses by '+((e.sep-e.radius)*60).toFixed(0)+'′</span></div>';
+  }
+  var note;
+  if(isSun){
+    note='☀️ <b>Full-aperture solar filter, no exceptions.</b> Be set up and focused on a sunspot at least 20 minutes early, then record video continuously from a minute before the time above. The Sun is '+Math.round(e.bodyAlt)+'° up in the '+A.compass(e.bodyAz)+'.';
+  } else {
+    var mo=A.sky(d).moon;
+    note='🌕 The Moon is <b>'+mo.illum+'% lit</b> and <b>'+Math.round(e.bodyAlt)+'°</b> up in the '+A.compass(e.bodyAz)+'. '+
+      (mo.illum<35?'That is a thin crescent — the station only shows up against the part that is actually lit, so a chord across the dark limb will give you nothing. '
+                  :'Plenty of lit disc to silhouette against. ')+
+      (e.lit===false?'The station is inside Earth&rsquo;s shadow at that moment, so it will be a clean black silhouette. '
+                    :(e.lit===true?'The station is in sunlight, so expect a bright speck rather than a dark one — still easy to spot against the disc. ':''))+
+      'No filter needed. Record video from a minute before the time above.';
+  }
+  return '<div class="tev '+cls+'">'+
+    '<div class="top"><span class="ttl">'+(isSun?'☀️ ':'🌕 ')+ttl+'</span><span class="when">'+fmtDate(e.t)+' · '+fmtTime(e.t)+' SGT</span></div>'+
+    (e.kind!=='miss'?discSVG(e):'')+
+    '<div class="kv"><span>Altitude <b>'+Math.round(e.alt)+'°</b></span><span>Azimuth <b>'+Math.round(e.az)+'° ('+A.compass(e.az)+')</b></span>'+
+    '<span>Range to station <b>'+Math.round(e.range)+' km</b></span></div>'+
+    extra+
+    '<div class="nb">'+note+'</div></div>';
+}
+$('run').onclick=function(){run(false);};
+$('refresh').onclick=function(){run(true);};
+tleAgeNote([]);
+(function(){var any=false;try{any=!!localStorage.getItem('scobTLE_25544');}catch(e){}
+  if(any)run(false);})();
+})();
+/* ===== tab switching + deep-link ===== */
+(function(){
+  var tabs=document.getElementById('tabs');
+  function show(which){
+    which=(which==='tr')?'tr':'occ';
+    var po=document.getElementById('pane-occ'),pt=document.getElementById('pane-tr');
+    if(po)po.classList.toggle('active',which==='occ');
+    if(pt)pt.classList.toggle('active',which==='tr');
+    Array.prototype.forEach.call(tabs.querySelectorAll('button'),function(b){b.classList.toggle('on',b.getAttribute('data-tab')===which);});
+    try{history.replaceState(null,'',location.pathname+(which==='tr'?'?tab=transits':''));}catch(e){}
+  }
+  Array.prototype.forEach.call(tabs.querySelectorAll('button'),function(b){b.addEventListener('click',function(){show(b.getAttribute('data-tab'));});});
+  var wantTransits=/[?&]tab=transits\b/.test(location.search||'')||/transit/i.test(location.hash||'');
+  show(wantTransits?'tr':'occ');
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

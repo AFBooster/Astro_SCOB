@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daytime / Solar Mode — SCOB</title>
+<meta name="description" content="Daytime solar-observing helper for the Science Centre Observatory: live Sun position, safe-viewing checklist and what to look for on the Sun.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;--orange:#ff9d3c;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--orange);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;}
+.warn{background:rgba(255,107,107,.16);border:1px solid var(--red);border-radius:12px;padding:12px 14px;margin:14px 0;font-size:14px;font-weight:700;color:#ffd0d0;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 8px;font-size:16px;color:var(--orange);}
+.sun{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.sundisc{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe08a,#ff9d3c 70%,#e8641a);box-shadow:0 0 26px rgba(255,157,60,.55);flex:0 0 auto;}
+.sunmeta .big{font-size:22px;font-weight:800;}
+.sunmeta .sub{font-size:13px;color:var(--mute);}
+ul{margin:6px 0;padding-left:20px;}
+li{margin:5px 0;font-size:13.5px;}
+.chk li{list-style:none;position:relative;padding-left:24px;}
+.chk li::before{content:"☑";position:absolute;left:0;color:var(--green);}
+.sunimg{margin:2px 0 12px;text-align:center;}
+.sunimg img{width:100%;max-width:300px;border-radius:12px;border:1px solid var(--line);background:#000;display:block;margin:0 auto;}
+.sunimg .sub{margin-top:7px;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>☀️ Daytime / Solar Mode</h1>
+    <div class="loc">For daytime public sessions — where the Sun is now, safe viewing, and what to look for. Science Centre Observatory, Jurong.</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Night dashboard</a>
+      <a href="telescope-types.html">🔭 Telescope guide</a>
+    </div>
+  </header>
+
+  <div class="warn">⚠️ NEVER point any telescope, finder or binoculars at the Sun without a certified full-aperture solar filter fitted over the front — even a moment's unfiltered view causes permanent, painless blindness. Cap or remove the finder scope.</div>
+
+  <div class="card">
+    <h2>The Sun right now</h2>
+    <div class="sun">
+      <div class="sundisc"></div>
+      <div class="sunmeta"><div class="big" id="sunpos">—</div><div class="sub" id="suntimes">—</div><div class="sub" id="sunadv" style="margin-top:4px"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Solar activity today</h2>
+    <div class="sunimg" id="sunimg">
+      <img id="sunimgEl" alt="Live white-light image of the Sun from NASA SDO/HMI, showing today's sunspots" src="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_HMIIC.jpg">
+      <div class="sub">☀️ Live white-light Sun (NASA SDO / HMI) — the dark specks are today's <b>sunspot groups</b>. Refreshes through the day.</div>
+    </div>
+    <div id="solac"><div class="sub" style="color:var(--mute)">Loading live space-weather…</div></div>
+    <div class="sub" id="solacNote" style="color:var(--mute);font-size:11.5px;margin-top:8px"></div>
+  </div>
+
+  <div class="card">
+    <h2>Safe-viewing checklist</h2>
+    <ul class="chk">
+      <li>Full-aperture solar filter (white-light or H-alpha) fitted &amp; secured on the front of the tube.</li>
+      <li>Finder scope capped or removed.</li>
+      <li>Inspect the filter for pinholes or scratches before every use — discard if damaged.</li>
+      <li>Never leave the scope unattended while pointed near the Sun.</li>
+      <li>For projection instead of filters: only with a suitable scope, and never let anyone look through the eyepiece.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>What to look for</h2>
+    <ul>
+      <li><b style="color:var(--gold)">White-light (filtered):</b> dark <b>sunspots</b> and spot groups drifting across the disc over days; bright <b>faculae</b> near the edge; the mottled <b>granulation</b> (the Sun's boiling surface) in steady seeing.</li>
+      <li><b style="color:var(--gold)">Hydrogen-alpha (H-α scope):</b> flame-like <b>prominences</b> arcing off the edge, dark thread-like <b>filaments</b>, bright <b>plages</b> and the textured chromosphere.</li>
+      <li>Sunspot numbers rise and fall over an ~11-year cycle — some days the disc is busy, others blank. Check <a href="https://www.spaceweather.com" target="_blank" rel="noopener">spaceweather.com</a> for today's activity.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>SCOB solar setup</h2>
+    <div style="font-size:13.5px">Use a white-light filter on the deck CPC / C6 for sunspots, or a dedicated H-α scope for prominences. Track with the mount's <b>Solar rate</b> (Menu → Tracking → Rate → Solar). Keep the queue moving — the view drifts, so re-centre often.</div>
+  </div>
+
+  <div class="foot">
+    Sun position computed on your device for the Science Centre Observatory. Live solar activity — sunspot regions, 10.7&nbsp;cm radio flux and X-ray flares — from the <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA Space Weather Prediction Center (SWPC)</a>; live white-light Sun image courtesy <a href="https://sdo.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA / SDO (HMI)</a>. This page is guidance only — solar observing is done entirely at your own risk with proper equipment.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+function tl(h,m){var ap=h<12?'am':'pm';var hh=h%12||12;return hh+':'+pad(m)+ap;}
+function crossMs(fn,thr,a,b){if((fn(a)>thr)===(fn(b)>thr))return null;for(var k=0;k<26;k++){var m=(a+b)/2;if((fn(m)>thr)===(fn(a)>thr))a=m;else b=m;}return (a+b)/2;}
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function upd(){
+  var now=new Date();var s=A.sky(now);
+  var d=sgtNow();var y=d.getFullYear(),mo=d.getMonth(),da=d.getDate();
+  var base=Date.UTC(y,mo,da,0,0,0)-8*3600000;
+  var sunF=function(t){return A.sunAltAt(new Date(t));};
+  var rise=crossMs(sunF,-0.833,base+22*3600000,base+26*3600000); // ~6-8am SGT
+  var set=crossMs(sunF,-0.833,base+34*3600000,base+38*3600000);   // ~6-8pm SGT
+  var tlm=function(t){if(t==null)return '—';var x=new Date(t+8*3600000);return tl(x.getUTCHours(),x.getUTCMinutes());};
+  if(s.sunAlt>0){
+    document.getElementById('sunpos').textContent=Math.round(s.sunAlt)+'° high in the '+A.compass(s.sunAz);
+    document.getElementById('sunadv').innerHTML=s.sunAlt<20?'<span style="color:var(--gold)">Low Sun — long path through the air softens the view; wait for it to climb for steadier detail.</span>':'Well placed for filtered solar viewing.';
+  }else{
+    document.getElementById('sunpos').textContent='Below the horizon';
+    document.getElementById('sunadv').innerHTML='<span style="color:var(--cyan)">The Sun is down — switch to the <a href="scob-dashboard-v3.html" style="color:var(--cyan)">night dashboard</a>.</span>';
+  }
+  document.getElementById('suntimes').textContent='🌅 Sunrise '+tlm(rise)+' · 🌇 Sunset '+tlm(set)+' SGT';
+}
+upd();setInterval(upd,30000);
+
+// ---- v3.16: live solar activity & sunspots (NOAA SWPC, fetched client-side, offline-safe) ----
+function flareLevel(cls){
+  if(!cls)return null;var L=String(cls).charAt(0).toUpperCase();
+  if(L==='X')return{t:'very high',c:'var(--red)'};
+  if(L==='M')return{t:'high',c:'var(--orange)'};
+  if(L==='C')return{t:'moderate',c:'var(--gold)'};
+  if(L==='A'||L==='B')return{t:'low / quiet',c:'var(--green)'};
+  return null;
+}
+function ymd(s){if(!s)return'';try{return new Date(String(s).replace(' ','T')).toISOString().slice(0,10);}catch(e){return String(s).slice(0,10);}}
+function loadSolarActivity(){
+  var host=document.getElementById('solac'),note=document.getElementById('solacNote');if(!host)return;
+  var J=function(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json();});};
+  Promise.allSettled([
+    J('https://services.swpc.noaa.gov/json/solar_regions.json'),
+    J('https://services.swpc.noaa.gov/products/summary/10cm-flux.json'),
+    J('https://services.swpc.noaa.gov/json/goes/primary/xray-flares-latest.json')
+  ]).then(function(res){
+    var reg=res[0].status==='fulfilled'?res[0].value:null;
+    var flux=res[1].status==='fulfilled'?res[1].value:null;
+    var flare=res[2].status==='fulfilled'?res[2].value:null;
+    if(!reg&&!flux&&!flare){host.innerHTML='<div class="sub" style="color:var(--gold)">⚠️ Needs a connection once to fetch live space-weather from NOAA SWPC — try again when online.</div>';return;}
+    var regDate='',nReg=0,nSpots=0,biggest=null;
+    if(reg&&reg.length){
+      var dates=reg.map(function(r){return r.observed_date;}).filter(Boolean).sort();
+      regDate=dates[dates.length-1];
+      reg.filter(function(r){return r.observed_date===regDate;}).forEach(function(r){
+        nReg++;var n=parseInt(r.number_spots,10);if(!isNaN(n))nSpots+=n;
+        if(!biggest||((parseInt(r.area,10)||0)>(parseInt(biggest.area,10)||0)))biggest=r;});
+    }
+    var fcls=(flare&&flare.length)?(flare[0].max_class||flare[0].current_class||''):'';
+    var ftime=(flare&&flare.length)?(flare[0].max_time||flare[0].time_tag||''):'';
+    var lvl=flareLevel(fcls);
+    var fluxVal=(flux&&flux.length)?flux[0].flux:null;
+    var head=lvl||(fluxVal!=null?(fluxVal>150?{t:'high',c:'var(--orange)'}:fluxVal>110?{t:'moderate',c:'var(--gold)'}:{t:'low / quiet',c:'var(--green)'}):{t:'—',c:'var(--white)'});
+    var html='<div class="big" style="color:'+head.c+'">'+head.t+'</div><div class="sub">overall Sun activity right now</div>';
+    html+='<ul style="margin-top:9px">';
+    if(reg)html+='<li><b>'+nReg+'</b> active sunspot region'+(nReg===1?'':'s')+' on the disc'+(nSpots?', <b>~'+nSpots+'</b> spots total':'')+(regDate?' <span class="sub">('+regDate+' UTC)</span>':'')+'</li>';
+    if(biggest&&biggest.region)html+='<li>Largest group: <b>AR'+biggest.region+'</b>'+(biggest.spot_class?' — McIntosh '+biggest.spot_class:'')+(biggest.mag_class?' · Hale '+biggest.mag_class:'')+'</li>';
+    if(fluxVal!=null)html+='<li>10.7&nbsp;cm solar radio flux: <b>'+Math.round(fluxVal)+'</b> sfu</li>';
+    if(fcls)html+='<li>Latest X-ray flare: <b>'+fcls+'</b>'+(ftime?' <span class="sub">('+ymd(ftime)+')</span>':'')+'</li>';
+    html+='</ul>';
+    if(!reg)html+='<div class="sub" style="color:var(--gold)">Sunspot-region list unavailable right now.</div>';
+    host.innerHTML=html;
+    if(note)note.textContent='Live from NOAA SWPC. Sunspot regions are reported once daily (UTC) so the count can lag ~a day; flux & flares update through the day.';
+  }).catch(function(){host.innerHTML='<div class="sub" style="color:var(--gold)">⚠️ Couldn’t load live space-weather — try again when online.</div>';});
+}
+loadSolarActivity();
+
+// live Sun image (NASA SDO/HMI): graceful offline fallback + gentle refresh through the session
+(function(){
+  var im=document.getElementById('sunimgEl'),box=document.getElementById('sunimg');if(!im)return;
+  var URL0='https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_HMIIC.jpg';
+  im.onerror=function(){if(box)box.innerHTML='<div class="sub" style="color:var(--gold)">☀️ The live Sun image (NASA SDO) needs a connection — the sunspot figures below still work once cached.</div>';};
+  function refresh(){im.src=URL0+'?'+Math.floor(Date.now()/900000);}   // 15-min cache bucket
+  refresh();setInterval(refresh,5*60000);
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

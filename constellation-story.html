@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Constellation of Tonight — SCOB</title>
+<meta name="description" content="The story of a constellation well-placed over Singapore tonight — its myth, how to star-hop to it, and a diagram of its shape. Computed on your device for the Science Centre Observatory.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.bar a,.bar button{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;background:none;cursor:pointer;}
+.bar button.alt{color:var(--white);border-color:var(--line);}
+.feat{background:var(--navy2);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;}
+.feat .nm{font-size:24px;font-weight:800;color:var(--white);}
+.feat .where{font-size:13px;color:var(--cyan);font-weight:700;margin:2px 0 12px;}
+.chart{background:radial-gradient(circle at 50% 40%,#0e1c3e,#070d1e);border:1px solid var(--line);border-radius:12px;margin:0 auto 12px;max-width:340px;}
+.chart svg{width:100%;height:auto;display:block;}
+.panrow{display:flex;align-items:center;gap:10px;margin:2px 4px 7px;}
+.panrow input[type=range]{flex:1;accent-color:var(--cyan);height:22px;}
+.panrow .pl{font-size:12px;color:var(--mute);white-space:nowrap;}
+.pancap{font-size:12.5px;color:var(--mute);margin:0 2px 6px;line-height:1.45;}
+.pancap b{color:var(--white);}
+.vrow{text-align:center;margin:2px 0 8px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
+.vbtn{background:var(--navy3);border:1px solid var(--cyan);color:var(--cyan);border-radius:9px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.vbtn.snap{border-color:var(--gold);color:var(--gold);}
+.galaxy{font-size:12.5px;color:var(--mute);background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:2px 0 8px;line-height:1.45;}
+.galaxy b{color:var(--gold);}
+.story{font-size:14.5px;margin:10px 0;}
+.hint{font-size:13px;color:var(--mute);}
+.tagline{color:var(--gold);font-weight:700;font-size:13px;margin-top:8px;}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);margin:14px 0 4px;}
+.others{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
+.others button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:6px 11px;font-size:12.5px;cursor:pointer;}
+.others button.up{border-color:var(--cyan);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>✨ Constellation of Tonight</h1>
+    <div class="loc">A star pattern well-placed over Singapore right now — its story and how to find it. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="sky-finder.html">📱 Point-your-phone finder</a>
+      <button type="button" id="now">● Now</button>
+      <button type="button" id="fri" class="alt">↺ Fri 8:30pm</button>
+      <button type="button" id="len" class="alt">📖 Full story</button>
+    </div>
+  </header>
+
+  <div class="feat" id="feat"></div>
+
+  <h3>Other constellations up now</h3>
+  <div class="others" id="others"></div>
+
+  <div class="foot">
+    Star positions computed on your device (P. Schlyter method) for the Science Centre Observatory. Constellation shapes use bright-star coordinates; the myths are the traditional Greek/Western sky-lore shared by docents.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+// bright-star asterisms: [name,[ [ra,dec,label],... ],[ [i,j],... ]]
+var CONST=[
+['Orion',[[88.79,7.41,'Betelgeuse'],[81.28,6.35,'Bellatrix'],[85.19,-1.94,'Alnitak'],[84.05,-1.20,'Alnilam'],[83.00,-0.30,'Mintaka'],[86.94,-9.67,'Saiph'],[78.63,-8.20,'Rigel'],[83.78,9.93,'Meissa']],[[0,1],[1,4],[4,3],[3,2],[2,5],[5,6],[6,4],[0,2],[0,7],[1,7]]],
+['Canis Major',[[101.29,-16.72,'Sirius'],[95.67,-17.96,'Mirzam'],[105.94,-15.63,'Muliphein'],[107.10,-26.39,'Wezen'],[104.66,-28.97,'Adhara'],[111.02,-29.30,'Aludra']],[[0,1],[0,2],[0,3],[3,4],[4,5],[3,1]]],
+['Taurus',[[68.98,16.51,'Aldebaran'],[81.57,28.61,'Elnath'],[84.41,21.14,'Tianguan'],[60.17,12.49,'Lambda Tauri'],[67.17,15.87,'Theta Tauri'],[56.87,24.11,'Pleiades']],[[0,1],[0,2],[0,4],[4,3],[3,5]]],
+['Gemini',[[113.65,31.89,'Castor'],[116.33,28.03,'Pollux'],[99.43,16.40,'Alhena'],[95.74,22.51,'Tejat'],[100.98,25.13,'Mebsuta'],[110.03,21.98,'Wasat'],[101.32,12.90,'Alzirr']],[[0,1],[0,4],[4,3],[1,5],[5,6],[5,2]]],
+['Leo',[[152.09,11.97,'Regulus'],[151.83,16.76,'Al Jabhah'],[154.99,19.84,'Algieba'],[154.17,23.42,'Adhafera'],[148.19,26.01,'Rasalas'],[146.46,23.77,'Ras Elased'],[177.26,14.57,'Denebola'],[168.53,20.52,'Zosma'],[168.56,15.43,'Chertan']],[[5,4],[4,3],[3,2],[2,1],[1,0],[0,8],[8,6],[6,7],[7,2]]],
+['Virgo',[[201.30,-11.16,'Spica'],[203.67,-0.60,'Heze'],[195.54,10.96,'Vindemiatrix'],[190.42,-1.45,'Porrima'],[193.90,3.40,'Auva'],[177.67,1.76,'Zavijava']],[[0,3],[3,5],[3,4],[4,2],[4,1]]],
+['Bootes',[[213.92,19.18,'Arcturus'],[221.25,27.07,'Izar'],[222.20,33.31,'Seginus'],[225.49,40.39,'Nekkar'],[218.02,38.31,'Delta Bootis']],[[0,1],[1,2],[2,3],[3,4],[4,1]]],
+['Scorpius',[[247.35,-26.43,'Antares'],[241.36,-19.81,'Graffias'],[240.08,-22.62,'Dschubba'],[239.71,-26.11,'Pi Scorpii'],[248.97,-28.22,'Tau Scorpii'],[252.97,-34.29,'Epsilon Scorpii'],[253.84,-38.05,'Mu Scorpii'],[253.50,-42.36,'Zeta Scorpii'],[258.04,-43.24,'Eta Scorpii'],[264.33,-42.99,'Sargas'],[266.90,-40.13,'Iota Scorpii'],[265.62,-39.03,'Kappa Scorpii'],[263.40,-37.10,'Shaula']],[[1,2],[2,3],[2,0],[0,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12]]],
+['Sagittarius',[[276.04,-34.38,'Kaus Australis'],[275.25,-29.83,'Kaus Media'],[276.99,-25.42,'Kaus Borealis'],[283.82,-26.30,'Nunki'],[285.65,-26.99,'Phi Sagittarii'],[285.65,-29.88,'Ascella'],[286.74,-27.67,'Tau Sagittarii']],[[2,1],[1,0],[0,5],[5,4],[4,3],[3,2],[4,6]]],
+['Crux',[[186.65,-63.10,'Acrux'],[187.79,-57.11,'Gacrux'],[191.93,-59.69,'Mimosa'],[183.79,-58.75,'Imai']],[[0,1],[2,3]]],
+['Centaurus',[[219.90,-60.83,'Rigil Kent.'],[210.96,-60.37,'Hadar'],[204.97,-53.47,'Epsilon Centauri'],[190.38,-48.96,'Muhlifain'],[211.67,-36.37,'Menkent']],[[0,1],[1,2],[2,3],[2,4]]],
+['Lyra',[[279.23,38.78,'Vega'],[282.52,33.36,'Sheliak'],[284.74,32.69,'Sulafat'],[283.63,36.90,'Delta Lyrae'],[281.19,37.61,'Zeta Lyrae']],[[0,4],[4,3],[3,2],[2,1],[1,4]]],
+['Cygnus',[[310.36,45.28,'Deneb'],[305.56,40.26,'Sadr'],[311.55,33.97,'Gienah'],[296.24,45.13,'Fawaris'],[292.68,27.96,'Albireo']],[[0,1],[1,2],[1,3],[1,4]]],
+['Aquila',[[297.70,8.87,'Altair'],[296.56,10.61,'Tarazed'],[298.83,6.41,'Alshain'],[291.37,3.11,'Delta Aql'],[286.35,13.86,'Okab']],[[1,0],[0,2],[0,3],[3,4]]],
+['Cassiopeia',[[10.13,56.54,'Schedar'],[2.29,59.15,'Caph'],[14.18,60.72,'Gamma Cas'],[21.45,60.24,'Ruchbah'],[28.60,63.67,'Segin']],[[1,0],[0,2],[2,3],[3,4]]],
+['Ursa Major',[[165.93,61.75,'Dubhe'],[165.46,56.38,'Merak'],[178.46,53.69,'Phecda'],[183.86,57.03,'Megrez'],[193.51,55.96,'Alioth'],[200.98,54.93,'Mizar'],[206.89,49.31,'Alkaid']],[[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]]]
+];
+var STORY={
+'Orion':{t:'The Hunter',m:'The great hunter of Greek myth, striding across the sky with his club and shield, facing the charging bull Taurus. His three belt stars are the most famous signpost in the whole sky, and his sword hangs below with the glowing Orion Nebula — a nursery of new-born stars.',f:'Unmistakable: three bright stars in a short, straight row (the Belt), with a fuzzy "sword" hanging beneath.',s:'Dec–Mar'},
+'Canis Major':{t:'The Great Dog',m:"Orion's larger hunting dog, forever following at his heels. It carries Sirius — the Dog Star — the brightest star in all the night sky, just 8.6 light-years away.",f:"Follow Orion's Belt down and to the left until you hit a dazzling, flashing star: Sirius.",s:'Jan–Mar'},
+'Taurus':{t:'The Bull',m:'The charging bull whose face is the V-shaped Hyades star cluster, glaring with the fiery red eye Aldebaran. On its shoulder rides the Pleiades — the Seven Sisters.',f:'Up and right from Orion to the orange star Aldebaran and the little misty dipper of the Pleiades.',s:'Dec–Feb'},
+'Gemini':{t:'The Twins',m:'Castor and Pollux, the inseparable twin brothers of Greek legend — one mortal, one immortal — placed together in the sky forever. Their heads are marked by the two bright stars of the same names.',f:'Two bright stars side by side, up and left of Orion.',s:'Jan–Mar'},
+'Leo':{t:'The Lion',m:'The mighty lion slain by Hercules as the first of his twelve labours. The backwards question-mark of stars — the "Sickle" — traces the lion’s mane and head.',f:'Look for a backwards question-mark (the Sickle) ending at the bright star Regulus, the lion’s heart.',s:'Mar–May'},
+'Virgo':{t:'The Maiden',m:'The harvest maiden holding an ear of wheat, linked to goddesses of the harvest across many cultures. Her brightest star, blue-white Spica, marks the wheat in her hand.',f:'From the Big Dipper’s handle, "arc to Arcturus" then "spike to Spica".',s:'Apr–Jun'},
+'Bootes':{t:'The Herdsman',m:'The herdsman or ploughman who drives the great bears around the pole. His kite-shaped outline is anchored by Arcturus, a giant orange star racing through the galaxy.',f:'"Arc to Arcturus" — follow the curve of the Big Dipper’s handle to a bright orange star.',s:'Apr–Jul'},
+'Scorpius':{t:'The Scorpion',m:'The scorpion that stung Orion to death; the gods set the two on opposite sides of the sky so they could never meet. Its heart is Antares, a red supergiant whose name means "rival of Mars".',f:'A big fish-hook or J of stars low in the south, with orange Antares glowing at the bend. Rides beautifully high from Singapore.',s:'May–Aug'},
+'Sagittarius':{t:'The Archer',m:'The archer centaur, drawing his bow at the heart of the scorpion. Its brightest stars form the unmistakable "Teapot" — and its steam is the glowing core of our Milky Way.',f:'Find the Teapot shape just east of Scorpius; the Milky Way pours out of its spout.',s:'Jun–Sep'},
+'Crux':{t:'The Southern Cross',m:'The smallest constellation of all, and the compass of the southern skies — sailors and navigators have used it to find south for centuries. It appears on several national flags.',f:'A compact cross of four stars low in the south, beside the two bright "Pointer" stars of Centaurus.',s:'Apr–Jul'},
+'Centaurus':{t:'The Centaur',m:'The wise centaur Chiron, teacher of heroes. It holds Alpha Centauri — the closest star system to our Sun, 4.3 light-years away — and the two Pointers that aim at the Southern Cross.',f:'Two brilliant stars low in the south (the Pointers) leading to the little Southern Cross.',s:'Apr–Jul'},
+'Lyra':{t:'The Lyre',m:'The lyre of Orpheus, whose music could charm rivers, rocks and even the god of the underworld. It is crowned by Vega, a brilliant blue-white star and a corner of the Summer Triangle.',f:'A small, neat parallelogram of stars hanging just below dazzling Vega, high overhead in mid-year.',s:'Jun–Sep'},
+'Cygnus':{t:'The Swan',m:'The swan flying south along the river of the Milky Way, wings outstretched. Also called the Northern Cross. Its tail star Deneb is one of the most luminous stars we can see.',f:'A large cross of stars overhead in mid-year, laid along the misty band of the Milky Way.',s:'Jul–Oct'},
+'Aquila':{t:'The Eagle',m:'The eagle of Zeus that carried his thunderbolts across the sky. Its eye is Altair, a fast-spinning star and the third corner of the Summer Triangle.',f:'Look for Altair — a bright star flanked by a fainter star on each side — south of Cygnus.',s:'Jul–Sep'},
+'Cassiopeia':{t:'The Queen',m:'The vain queen who boasted she was more beautiful than the sea-nymphs, and was set in the sky on her throne to circle the pole forever — sometimes upside-down as punishment.',f:'A distinctive W (or M) of five stars, low in the north.',s:'Sep–Dec'},
+'Ursa Major':{t:'The Great Bear',m:'The Great Bear of countless cultures. Its seven brightest stars form the Big Dipper (or Plough), whose two end stars point the way to the pole star, Polaris.',f:'The Dipper/Plough scoops low across the northern sky; its "pointer" stars lead up to Polaris.',s:'Feb–Jun'}
+};
+var LONG={
+'Orion':"The great hunter Orion boasted he could kill any beast on Earth — so the gods sent a lowly scorpion to humble him, and the two were set on opposite sides of the sky so they never rise together. His three belt stars point down to Sirius and up to the eye of Taurus, making Orion the sky's grandest signpost. The middle “star” of his sword is really the Orion Nebula, a vast glowing cloud 1,300 light-years away where new stars and planets are being born right now. Red Betelgeuse marks his shoulder — a dying supergiant so huge it would swallow Jupiter's orbit and could explode as a supernova any millennium — while blue Rigel, his foot, blazes some 120,000 times brighter than the Sun. To the ancient Egyptians the belt and nebula were tied to Osiris, god of rebirth and the afterlife.",
+'Canis Major':"Canis Major is Orion's greater hunting dog, forever chasing the hare Lepus at the hunter's feet. Its jewel is Sirius, the “Dog Star” — the brightest star in the whole night sky, not because it is unusually powerful but because at 8.6 light-years it is one of our nearest neighbours. The ancient Egyptians built their calendar around it: when Sirius first rose just before dawn, the life-giving flood of the Nile was about to begin, marking the new year. The Greeks and Romans blamed the star for the sweltering late-summer “dog days,” imagining its heat added to the Sun's. Sirius even hides a secret companion — a dense white dwarf, the burnt-out core of a once-larger star, first betrayed by the wobble it causes in its bright partner.",
+'Taurus':"Taurus the Bull charges from the sky with head lowered, his face the V-shaped Hyades cluster and his eye the fiery red giant Aldebaran. In Greek myth this is Zeus in disguise: he became a magnificent white bull to carry off the princess Europa — who gave her name to a whole continent. On the bull's shoulder rides the Pleiades, the Seven Sisters, a cluster of hot blue stars only about 100 million years old and among the first things Galileo turned his new telescope upon. Aldebaran looks like part of the Hyades but is a chance alignment, sitting less than half as far away. Taurus is one of the oldest constellations we can trace — bull imagery appears on Babylonian tablets and, some argue, on Ice-Age cave walls.",
+'Gemini':"Gemini honours the twins Castor and Pollux, sons of Leda but with different fathers — Castor mortal, Pollux immortal. When Castor was killed, the grief-stricken Pollux begged Zeus to let him share his own immortality, so the brothers were placed together in the sky, spending half their time among the stars and half in the underworld. They were patrons of sailors, said to appear as the glow of “St Elmo's fire” on a ship's mast in a storm. Pollux, the brighter twin, is an orange giant with a known planet; Castor is secretly a family of six stars bound together. It was here, in 1781, that William Herschel stumbled on Uranus, and in 1930 that Pluto was found just over the border in Gemini.",
+'Leo':"Leo is the great Nemean lion whose golden hide no weapon could pierce — Hercules had to strangle it with his bare hands as the first of his twelve labours, then wore its skin as armour ever after. Its curved “Sickle,” a backwards question-mark, traces the lion's mane and head, ending at Regulus, “the little king,” which lies almost exactly on the ecliptic and is regularly passed — even hidden — by the Moon and planets. Regulus spins so fast, once every 16 hours, that it is squashed into an egg shape. Beneath the lion lies a window onto the distant universe, strewn with faint galaxies millions of light-years off. And every November the Leonid meteor shower streams out of this constellation, occasionally in spectacular storms.",
+'Virgo':"Virgo, the second-largest constellation, is the maiden of the harvest, holding an ear of wheat marked by her brilliant blue-white star Spica. She has been linked to many goddesses — Demeter of the grain, and Astraea, goddess of justice, said to be the last immortal to leave the Earth as humanity turned wicked (the neighbouring scales of Libra are hers). The Sun sits in Virgo at the September equinox, the ancient time of harvest. Hidden here is the heart of the Virgo Cluster, a swarm of over a thousand galaxies whose gravity our own Local Group is slowly falling toward. Spica itself is two searingly hot stars whirling around each other every four days, so close that each is pulled into an egg shape by the other.",
+'Bootes':"Boötes the Herdsman drives the great bears around the pole, his kite-shaped figure anchored by brilliant orange Arcturus — the fourth-brightest star in the entire sky. Arcturus is an elderly giant racing through the galaxy at a steep angle, part of a stream of stars our Milky Way likely swallowed from a smaller galaxy long ago; over thousands of years it visibly drifts against its neighbours. In 1933 its light was used to “open” the Chicago World's Fair, in the belief it had left the star around the time of the previous fair. The name may come from an old word for “ox-driver,” and one myth credits him with inventing the plough, set among the stars as thanks. “Arc to Arcturus” — following the curve of the Big Dipper's handle — is every beginner's first star-hop.",
+'Scorpius':"Scorpius is one of the few constellations that truly looks like its namesake — a long, curving body of bright stars ending in a raised, stinging tail. This is the scorpion sent by the gods (some say by Artemis) to kill the boastful hunter Orion; the two were placed opposite each other so that Scorpius climbs in the east just as Orion flees below the west. Its heart is Antares, a colossal red supergiant some 700 times the Sun's width, whose name means “rival of Ares (Mars)” for its fierce red glow. From Singapore, Scorpius rides gloriously high overhead in mid-year, its tail curling through the richest star-clouds of the Milky Way. Far to the south, the Māori saw this same curve as the great fish-hook of the demigod Māui, with which he hauled the islands up from the sea.",
+'Sagittarius':"Sagittarius is the archer — usually a centaur — drawing his bow straight at the heart of the neighbouring scorpion. To modern eyes its brightest stars form a “Teapot,” and from its spout pours the brightest “steam” in the sky: the glowing central bulge of our own Milky Way. Hidden in that direction, 26,000 light-years away, lies Sagittarius A* — the supermassive black hole, four million times the Sun's mass, around which the entire galaxy turns. Because we look toward the galaxy's core here, the region is crowded with star clusters and glowing nebulae: the Lagoon, the Trifid, the Omega. From Singapore this whole treasure-house passes almost overhead, giving one of the finest Milky Way views anywhere on Earth.",
+'Crux':"Crux, the Southern Cross, is the smallest of all 88 constellations — yet one of the most celebrated. Its compact cross of four bright stars has guided southern navigators for centuries, since a line drawn through its long axis points the way to the invisible south celestial pole. It flies on the flags of Australia, New Zealand, Brazil, Papua New Guinea and Samoa. Beside it lies the Coalsack, one of the sky's most obvious dark nebulae — a cloud of dust blotting out the stars behind, which some southern peoples saw as the head of a great celestial emu. Tucked into the cross is the Jewel Box, a young cluster of blue-white stars set off by a single ruby-red giant. Long ago these stars were counted part of Centaurus and were even visible from Greece, before Earth's slow wobble carried the Cross out of northern skies.",
+'Centaurus':"Centaurus is the noble centaur — most say Chiron, wisest of his kind and tutor to heroes such as Jason, Achilles and Hercules. Unlike the wild, brawling centaurs, Chiron was gentle and learned in medicine and the stars; accidentally struck by a poisoned arrow and unable to die, he gave up his immortality to free Prometheus, and Zeus set him among the stars in honour. The centaur's front foot is Alpha Centauri — to the eye a single brilliant star, but really a triple system and the closest stars to our Sun, just 4.3 light-years away. Its faint member, Proxima Centauri, is the nearest star of all and holds a planet in its habitable zone. Alpha and Beta Centauri are the two bright “Pointers” that lead the eye straight to the Southern Cross.",
+'Lyra':"Lyra is the lyre of Orpheus, the greatest musician of myth, whose playing could charm wild beasts, still rivers and soften even the heart of Hades. When his wife Eurydice died, he walked into the underworld and won her back with his music — on one condition: not to look back until they reached the surface. He glanced too soon, and lost her forever; after his death the gods set his lyre in the sky. It is crowned by Vega, a brilliant blue-white star just 25 light-years away that was the pole star 12,000 years ago and will be again in 12,000 more, as Earth slowly wobbles like a top. Vega is ringed by a disc of dust — perhaps a solar system in the making — and anchors the Summer Triangle. Between two of Lyra's stars floats the Ring Nebula, the smoke-ring shroud of a dying star.",
+'Cygnus':"Cygnus the Swan flies south along the length of the Milky Way, wings spread wide — also known as the Northern Cross. In one tale it is Zeus in disguise; in another, the devoted friend of the reckless Phaethon, who dived again and again into a river to recover his body until the gods, moved by his loyalty, turned him into a swan. Its tail star Deneb is one of the most luminous stars we can see by eye, blazing perhaps 100,000 times brighter than the Sun from around 1,500 light-years away. At the swan's head is Albireo, a telescope favourite that splits into a golden and a sapphire-blue star. And here lies Cygnus X-1 — the first black hole ever identified, revealed by the X-rays screaming off gas as it is torn apart and swallowed.",
+'Aquila':"Aquila is the eagle of Zeus, the bird that carried the god's thunderbolts and, in one story, snatched up the youth Ganymede to be cup-bearer of the gods. Its eye is Altair, one of the closest bright stars at just 17 light-years, spinning so furiously — a full turn in about nine hours — that it bulges into an egg shape, flattened by a fifth at its equator. Altair forms the southern corner of the Summer Triangle with Vega and Deneb, flanked by a fainter star on each side. In Chinese star-lore Altair is the cowherd and Vega the weaver-girl, lovers separated by the river of the Milky Way and allowed to meet just once a year — the tale behind the Qixi “double seventh” festival, when magpies are said to form a bridge across the stars.",
+'Cassiopeia':"Cassiopeia was the vain queen of Aethiopia who boasted that she — or her daughter Andromeda — outshone the sea-nymphs in beauty. The insulted nymphs asked Poseidon to punish her, and he sent a sea-monster to ravage the coast, forcing the chaining of Andromeda to a rock (rescued at the last moment by Perseus). As a final humbling, Cassiopeia was bound to her throne in the sky and set to wheel around the pole, hanging upside-down for half of every night. Her five bright stars form an unmistakable W (or M) in the Milky Way, opposite the Big Dipper. In 1572 a brilliant “new star” flared here — a supernova studied by Tycho Brahe that helped shatter the old belief the heavens never change. From Singapore she skims low along the northern horizon.",
+'Ursa Major':"Ursa Major, the Great Bear, holds one of the most universally recognised star patterns on Earth — its seven brightest stars form the Big Dipper, or the Plough. In Greek myth she is Callisto, a nymph turned into a bear by a jealous goddess and later lifted into the sky by Zeus, her unusually long “tail” stretched by the pull of being swung up among the stars. The two stars at the end of the Dipper's bowl are the “Pointers,” aiming straight at Polaris, the North Star. At the bend of the handle sits Mizar with its faint companion Alcor — a naked-eye test of keen sight for centuries. Five of the Dipper's stars actually drift through space together as a family born from one cloud, and the Sun sits near the edge of that stream. So many cultures independently saw a bear here that the image may be tens of thousands of years old."
+};
+var storyMode=(function(){try{return localStorage.getItem('scobStoryLen')||'short';}catch(e){return'short';}})();
+var featNow=null;
+var when=null; // null = now
+function theDate(){ if(when) return when; return new Date(); }
+function meanAltAz(c,date){var sa=0,ca=0,sz=0,n=0;
+  c[1].forEach(function(st){var p=A.altazAt(st[0],st[1],date);sz+=p.alt;var r=p.az*Math.PI/180;sa+=Math.sin(r);ca+=Math.cos(r);n++;});
+  var az=((Math.atan2(sa,ca)*180/Math.PI)%360+360)%360;
+  return {alt:sz/n, az:az};}
+function drawConst(c){
+  var stars=c[1], lines=c[2];
+  var mR=stars.reduce(function(a,s){return a+s[0];},0)/stars.length;
+  var mD=stars.reduce(function(a,s){return a+s[1];},0)/stars.length;
+  var cd=Math.cos(mD*Math.PI/180);
+  var pts=stars.map(function(s){var dra=s[0]-mR;if(dra>180)dra-=360;if(dra<-180)dra+=360;
+    return {x:-dra*cd, y:-(s[1]-mD), nm:s[2]};});
+  var xs=pts.map(function(p){return p.x;}),ys=pts.map(function(p){return p.y;});
+  var minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);
+  var W=320,H=250,pad=38;
+  var scX=(W-2*pad)/((maxX-minX)||1), scY=(H-2*pad)/((maxY-minY)||1), sc=Math.min(scX,scY);
+  var ox=(W-(minX+maxX)*sc)/2, oy=(H-(minY+maxY)*sc)/2;
+  var P=function(p){return [p.x*sc+ox, p.y*sc+oy];};
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+c[0]+' star pattern">';
+  lines.forEach(function(g){var a=P(pts[g[0]]),b=P(pts[g[1]]);svg+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="#8ea3d8" stroke-width="1.3" opacity="0.75"/>';});
+  pts.forEach(function(p){var q=P(p);var big=/^(Betelgeuse|Rigel|Sirius|Aldebaran|Pollux|Castor|Regulus|Spica|Arcturus|Antares|Vega|Deneb|Altair|Acrux|Rigil|Dubhe|Denebola|Nunki|Kaus)/.test(p.nm);
+    svg+='<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+(big?3.4:2.2)+'" fill="#fff"/>';
+    var showLbl=p.nm && !/^(Lambda|Theta|Pi |Tau |Epsilon|Mu |Zeta|Eta |Iota|Kappa|Delta|Phi |Gamma|Al Jabhah|Ras|Adhafera|Rasalas|Menkent B|Graffias|Dschubba|Mebsuta|Tejat|Wasat|Alzirr|Mirzam|Muliphein|Heze|Auva|Zavijava|Sadr|Gienah|Fawaris|Sheliak|Sulafat|Tarazed|Alshain|Okab|Izar|Seginus|Nekkar|Tianguan|Elnath)/.test(p.nm);
+    if(showLbl)svg+='<text x="'+(q[0]+5).toFixed(1)+'" y="'+(q[1]-4).toFixed(1)+'" fill="#cbd5f5" font-size="9">'+p.nm+'</text>';});
+  return svg+'</svg>';
+}
+function altWord(a){return a<20?'low':(a<50?'well up':'high overhead');}
+// ---- 3D "fly around the constellation" — reveals the true distances (a line-of-sight illusion) ----
+// distances in light-years for the named bright stars; others default. (Approximate, for teaching.)
+var DIST={Betelgeuse:548,Bellatrix:250,Alnitak:1260,Alnilam:2000,Mintaka:1200,Saiph:650,Rigel:860,Meissa:1100,
+Sirius:8.6,Mirzam:500,Muliphein:404,Wezen:1600,Adhara:430,Aludra:2000,
+Aldebaran:65,Elnath:134,Tianguan:417,'Lambda Tauri':480,'Theta Tauri':150,Pleiades:444,
+Castor:51,Pollux:34,Alhena:109,Tejat:230,Mebsuta:900,Wasat:59,Alzirr:57,
+Regulus:79,'Al Jabhah':130,Algieba:130,Adhafera:274,Rasalas:125,'Ras Elased':250,Denebola:36,Zosma:58,Chertan:165,
+Spica:250,Heze:74,Vindemiatrix:109,Porrima:38,Auva:200,Zavijava:36,
+Arcturus:37,Izar:210,Seginus:85,Nekkar:225,'Delta Bootis':122,
+Antares:550,Graffias:404,Dschubba:400,'Pi Scorpii':590,'Tau Scorpii':470,'Epsilon Scorpii':65,'Mu Scorpii':500,'Zeta Scorpii':150,'Eta Scorpii':73,Sargas:270,'Iota Scorpii':1800,'Kappa Scorpii':480,Shaula:570,
+'Kaus Australis':143,'Kaus Media':305,'Kaus Borealis':78,Nunki:228,'Phi Sagittarii':231,Ascella:88,'Tau Sagittarii':122,
+Acrux:320,Gacrux:88,Mimosa:280,Imai:345,
+'Rigil Kent.':4.4,Hadar:390,'Epsilon Centauri':430,Menkent:59,Muhlifain:130,
+Vega:25,Sheliak:960,Sulafat:620,'Delta Lyrae':740,'Zeta Lyrae':154,
+Deneb:1550,Sadr:1800,Gienah:72,Fawaris:165,Albireo:430,
+Altair:17,Tarazed:461,Alshain:45,'Delta Aql':50,Okab:83,
+Schedar:228,Caph:54,'Gamma Cas':550,Ruchbah:99,Segin:410,
+Dubhe:123,Merak:79,Phecda:84,Megrez:58,Alioth:81,Mizar:83,Alkaid:104};
+function vec3(ra,dec,dist){var r=ra*Math.PI/180,d=dec*Math.PI/180;return [dist*Math.cos(d)*Math.cos(r),dist*Math.cos(d)*Math.sin(r),dist*Math.sin(d)];}
+// proper motion [mas/yr in RA (already ×cos dec), mas/yr in Dec] for the stars that actually move
+// noticeably (the nearby ones). Distant stars drift far too slowly to matter and default to ~0.
+var PM={Sirius:[-546,-1223],Arcturus:[-1093,-2000],'Rigil Kent.':[-3608,686],Vega:[201,287],Altair:[537,385],
+Pollux:[-626,-46],Castor:[-206,-148],Aldebaran:[63,-189],Regulus:[-249,6],Denebola:[-499,-114],Zosma:[143,-130],
+Spica:[-42,-31],Antares:[-12,-23],Menkent:[-521,-518],Muhlifain:[-188,-2],Hadar:[-34,-25],
+Dubhe:[-136,-35],Merak:[81,34],Phecda:[107,11],Megrez:[103,9],Alioth:[111,-9],Mizar:[121,-22],Alkaid:[-121,-15],
+Porrima:[-616,60],Alhena:[-2,-66],Caph:[523,-180],Ruchbah:[297,-49],Alshain:[46,-481],Gienah:[356,330],Wasat:[-191,-11]};
+var yearOff=0; // years from now (proper-motion time travel)
+function pmAdj(ra,dec,nm){var p=PM[nm];if(!p||!yearOff)return [ra,dec];
+  var dd=dec+p[1]*yearOff/3.6e6, cd=Math.cos(dec*Math.PI/180);if(Math.abs(cd)<1e-4)cd=1e-4;
+  return [ra+(p[0]/cd)*yearOff/3.6e6, dd];}
+function lightYear(d){var y=(new Date()).getFullYear()-Math.round(d);
+  return y>0?('AD '+y):(Math.abs(y)+' BC');}
+function draw3D(c,theta){
+  var stars=c[1],lines=c[2];
+  var P=stars.map(function(s){var dist=DIST[s[2]]||280,q=pmAdj(s[0],s[1],s[2]);return {p:vec3(q[0],q[1],dist),nm:s[2],dist:dist};});
+  var C=[0,0,0];P.forEach(function(o){C[0]+=o.p[0];C[1]+=o.p[1];C[2]+=o.p[2];});C=[C[0]/P.length,C[1]/P.length,C[2]/P.length];
+  var R=Math.hypot(C[0],C[1],C[2])||1;
+  function norm(a){var m=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/m,a[1]/m,a[2]/m];}
+  function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+  var wHat=[C[0]/R,C[1]/R,C[2]/R], up=[0,0,1], uHat=norm(cross(up,wHat));
+  var Cam=[C[0]-R*(Math.cos(theta)*wHat[0]+Math.sin(theta)*uHat[0]),C[1]-R*(Math.cos(theta)*wHat[1]+Math.sin(theta)*uHat[1]),C[2]-R*(Math.cos(theta)*wHat[2]+Math.sin(theta)*uHat[2])];
+  var f=norm([C[0]-Cam[0],C[1]-Cam[1],C[2]-Cam[2]]), rr=norm(cross(up,f)), uu=cross(f,rr);
+  var pj=P.map(function(o){var d=[o.p[0]-Cam[0],o.p[1]-Cam[1],o.p[2]-Cam[2]];var zc=Math.max(dot(d,f),1e-3);return {x:-dot(d,rr)/zc,y:dot(d,uu)/zc,o:o};});
+  var xs=pj.map(function(p){return p.x;}),ys=pj.map(function(p){return p.y;});
+  var minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);
+  var W=320,H=250,pad=52, sc=Math.min((W-2*pad)/((maxX-minX)||1e-3),(H-2*pad)/((maxY-minY)||1e-3));
+  var ox=(W-(minX+maxX)*sc)/2, oy=(H+(minY+maxY)*sc)/2;
+  function SX(p){return p.x*sc+ox;} function SY(p){return -p.y*sc+oy;}
+  var lo=Math.log(Math.min.apply(null,P.map(function(o){return o.dist;}))), hi=Math.log(Math.max.apply(null,P.map(function(o){return o.dist;})));
+  function tt(dist){return (Math.log(dist)-lo)/((hi-lo)||1);}
+  function col(dist){var t=tt(dist);return 'rgb('+Math.round(255-t*110)+','+Math.round(210-t*40)+','+Math.round(150+t*105)+')';}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="touch-action:none">';
+  lines.forEach(function(g){var a=pj[g[0]],b=pj[g[1]];svg+='<line x1="'+SX(a).toFixed(1)+'" y1="'+SY(a).toFixed(1)+'" x2="'+SX(b).toFixed(1)+'" y2="'+SY(b).toFixed(1)+'" stroke="#6f83c0" stroke-width="1" opacity="'+(0.7-0.4*(theta/1.05)).toFixed(2)+'"/>';});
+  pj.forEach(function(p){var r=(2.0+2.8*(1-tt(p.o.dist))).toFixed(1), lx=SX(p), ly=SY(p);
+    svg+='<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="'+r+'" fill="'+col(p.o.dist)+'"/>';
+    var big=/^(Betelgeuse|Rigel|Sirius|Aldebaran|Pollux|Castor|Regulus|Spica|Arcturus|Antares|Vega|Deneb|Altair|Acrux|Dubhe|Denebola|Nunki|Kaus|Alnilam|Mintaka)/.test(p.o.nm);
+    if(big){var endA=lx>W*0.6;svg+='<text x="'+(endA?lx-5:lx+5).toFixed(1)+'" y="'+(ly-4).toFixed(1)+'" fill="#cbd5f5" font-size="8.5" text-anchor="'+(endA?'end':'start')+'">'+p.o.nm+(theta>0.25?' · '+Math.round(p.o.dist)+'ly':'')+'</text>';}});
+  return svg+'</svg>';
+}
+// equatorial (J2000) → galactic (l,b)
+function radec2gal(ra,dec){var K=Math.PI/180, aN=192.85948*K, dN=27.12825*K, lN=122.93192, a=ra*K, d=dec*K;
+  var sb=Math.sin(dN)*Math.sin(d)+Math.cos(dN)*Math.cos(d)*Math.cos(a-aN);
+  var b=Math.asin(Math.max(-1,Math.min(1,sb)));
+  var y=Math.cos(d)*Math.sin(a-aN), x=Math.cos(dN)*Math.sin(d)-Math.sin(dN)*Math.cos(d)*Math.cos(a-aN);
+  var l=lN-Math.atan2(y,x)/K; l=((l%360)+360)%360;
+  return {l:l,b:b/K};}
+function galaxyInfo(c){
+  var cs=0,ss=0,bs=0,n=0,ds=[];
+  c[1].forEach(function(s){var g=radec2gal(s[0],s[1]),lr=g.l*Math.PI/180;cs+=Math.cos(lr);ss+=Math.sin(lr);bs+=g.b;n++;ds.push(DIST[s[2]]||280);});
+  var l=((Math.atan2(ss,cs)*180/Math.PI)%360+360)%360, b=bs/n, ab=Math.abs(b);
+  var dir=(l<30||l>330)?'straight in toward the <b>heart of the Milky Way</b>':(l>150&&l<210)?'<b>outward</b>, away from the centre (toward the galactic anticentre)':(l>=30&&l<=150)?'<b>along our own spiral arm</b>, the way the galaxy turns':'<b>along our arm</b>, the opposite way round';
+  var pl=ab<10?'and it sits right <b>in the plane</b> of the Milky Way — which is why this part of the sky is thick with stars':ab<30?'and just off the Milky Way&rsquo;s plane':'and steeply <b>out of the galactic plane</b> — a clear window out of our galaxy, which is why distant galaxies show through here';
+  var far=Math.max.apply(null,ds);
+  return {l:l,b:b,text:'Looking '+dir+', '+pl+'. Every star here lies in our own <b>Orion Arm</b> — the group spans about '+Math.round(far)+' light-years of a galaxy 100,000 ly wide.'};
+}
+// top-down map of the galactic plane: Sun at centre, stars at their true galactic positions
+function drawTop(c){
+  var stars=c[1],lines=c[2],K=Math.PI/180;
+  var P=stars.map(function(s){var d=DIST[s[2]]||280,q=pmAdj(s[0],s[1],s[2]),g=radec2gal(q[0],q[1]),lr=g.l*K,br=g.b*K;
+    return {x:d*Math.cos(br)*Math.cos(lr), y:d*Math.cos(br)*Math.sin(lr), d:d, nm:s[2]};});
+  var xs=P.map(function(p){return p.x;}).concat([0]), ys=P.map(function(p){return p.y;}).concat([0]);
+  var minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);
+  var W=320,H=250,pad=46;
+  var sc=Math.min((W-2*pad)/((maxX-minX)||1),(H-2*pad)/((maxY-minY)||1));
+  var ox=(W-(minX+maxX)*sc)/2, oy=(H+(minY+maxY)*sc)/2;
+  function SX(x){return x*sc+ox;} function SY(y){return -y*sc+oy;}
+  var lo=Math.log(Math.min.apply(null,P.map(function(p){return p.d;}))), hi=Math.log(Math.max.apply(null,P.map(function(p){return p.d;})));
+  function tt(d){return (Math.log(d)-lo)/((hi-lo)||1);}
+  function col(d){var t=tt(d);return 'rgb('+Math.round(255-t*110)+','+Math.round(210-t*40)+','+Math.round(150+t*105)+')';}
+  var maxR=Math.max.apply(null,P.map(function(p){return p.d;}));
+  var step=maxR<150?50:maxR<400?100:maxR<1200?250:maxR<3000?500:1000;
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(var rr2=step;rr2<=maxR*1.05;rr2+=step){svg+='<circle cx="'+SX(0).toFixed(1)+'" cy="'+SY(0).toFixed(1)+'" r="'+(rr2*sc).toFixed(1)+'" fill="none" stroke="#33406b" stroke-width="0.6" opacity="0.35"/>';}
+  svg+='<text x="'+(SX(0)+4).toFixed(1)+'" y="'+(SY(0)-step*sc+11).toFixed(1)+'" fill="#7d8db8" font-size="8">'+step+' ly</text>';
+  lines.forEach(function(g){var a=P[g[0]],b=P[g[1]];svg+='<line x1="'+SX(a.x).toFixed(1)+'" y1="'+SY(a.y).toFixed(1)+'" x2="'+SX(b.x).toFixed(1)+'" y2="'+SY(b.y).toFixed(1)+'" stroke="#6f83c0" stroke-width="0.9" opacity="0.45"/>';});
+  P.forEach(function(p){var r=(2.0+2.8*(1-tt(p.d))).toFixed(1), x=SX(p.x), y=SY(p.y);
+    svg+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r+'" fill="'+col(p.d)+'"/>';
+    var big=/^(Betelgeuse|Rigel|Sirius|Aldebaran|Pollux|Regulus|Spica|Arcturus|Antares|Vega|Deneb|Altair|Acrux|Dubhe|Alnilam)/.test(p.nm);
+    if(big){var e=x>W*0.6;svg+='<text x="'+(e?x-5:x+5).toFixed(1)+'" y="'+(y-4).toFixed(1)+'" fill="#cbd5f5" font-size="8" text-anchor="'+(e?'end':'start')+'">'+p.nm+'</text>';}});
+  // the Sun
+  svg+='<circle cx="'+SX(0).toFixed(1)+'" cy="'+SY(0).toFixed(1)+'" r="4.2" fill="#ffd34d" stroke="#ffb300"/>';
+  svg+='<text x="'+(SX(0)+7).toFixed(1)+'" y="'+(SY(0)+11).toFixed(1)+'" fill="#ffd34d" font-size="9" font-weight="bold">Sun</text>';
+  // arrow toward the galactic centre (+x)
+  svg+='<line x1="'+(W-58)+'" y1="'+(H-14)+'" x2="'+(W-14)+'" y2="'+(H-14)+'" stroke="#f5c542" stroke-width="1.2"/>'+
+       '<polygon points="'+(W-14)+','+(H-14)+' '+(W-21)+','+(H-17.5)+' '+(W-21)+','+(H-10.5)+'" fill="#f5c542"/>'+
+       '<text x="'+(W-60)+'" y="'+(H-18)+'" fill="#f5c542" font-size="8" text-anchor="end">galactic centre →</text>';
+  return svg+'</svg>';
+}
+var panFrac=0, LASTFEAT=null, FEATC=null, dragging=false, dragX=0, viewMode='pan';
+function updateChart(){var c=FEATC;if(!c)return;
+  var box=document.getElementById('chart3d'), pr=document.getElementById('panrow'), vb=document.getElementById('vmode'), cap=document.getElementById('pancap'), gx=document.getElementById('galaxy');
+  if(vb)vb.textContent=(viewMode==='top')?'↩ Back to the sky view':'🌌 View from above (the galaxy)';
+  if(pr)pr.style.display=(viewMode==='top')?'none':'flex';
+  if(box)box.innerHTML=(viewMode==='top')?drawTop(c):draw3D(c,panFrac*1.05);
+  var ds=c[1].map(function(s){return {nm:s[2],d:DIST[s[2]]||280};});ds.sort(function(a,b){return a.d-b.d;});
+  var near=ds[0], far=ds[ds.length-1];
+  if(cap)cap.innerHTML=(viewMode==='top')
+    ?'🌌 <b>Looking down on the Milky Way from above.</b> Our <b>Sun</b> is the yellow dot; the rings mark distance from us. See how the constellation&rsquo;s stars trail away in one direction — that line of sight is exactly what makes them look like a pattern from Earth.'
+    :((panFrac<0.06)
+      ?'👁 <b>Earth&rsquo;s view</b> — the flat pattern we see in the sky. Drag the picture sideways (or use the slider) to fly out and around it.'
+      :'🚀 <b>Flying out to the side.</b> The stars pull apart — they only <i>look</i> like neighbours from Earth. Here <b>'+near.nm+'</b> is ~'+Math.round(near.d)+' light-years away, but <b>'+far.nm+'</b> is ~'+Math.round(far.d)+' ly!');
+  var tcap=(yearOff===0)
+    ?'⏱ <b>Today.</b> Slide the time bar: the nearby stars drift and the pattern slowly warps — constellations aren&rsquo;t permanent.'
+    :'⏱ <b>'+(yearOff>0?'+':'−')+Math.abs(Math.round(yearOff/1000))+',000 years from now.</b> The nearby stars have drifted — the far ones barely move. Nobody then would recognise tonight&rsquo;s pattern.';
+  var glow='💡 <b>You&rsquo;re seeing the past:</b> light from <b>'+near.nm+'</b> left in <b>'+lightYear(near.d)+'</b>; light from <b>'+far.nm+'</b> set out in <b>'+lightYear(far.d)+'</b> and is only reaching your eye tonight.';
+  if(gx)gx.innerHTML=glow+'<br><br>'+tcap+'<br><br>🧭 <b>Where in the galaxy:</b> '+galaxyInfo(c).text;
+}
+/* ---- Save the current 3D / galaxy view as a shareable PNG ---- */
+function stripTags(h){var d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').replace(/\s+/g,' ').trim();}
+function wrapLines(ctx,text,maxW){var w=text.split(' '),out=[],ln='';
+  for(var i=0;i<w.length;i++){var t=ln?ln+' '+w[i]:w[i];
+    if(ctx.measureText(t).width>maxW&&ln){out.push(ln);ln=w[i];}else ln=t;}
+  if(ln)out.push(ln);return out;}
+function snapshot(){
+  var box=document.getElementById('chart3d'), btn=document.getElementById('snap');
+  if(!box||!FEATC)return;
+  var src=box.querySelector('svg');if(!src)return;
+  var restore=function(){if(btn)btn.textContent='📸 Save picture';};
+  if(btn)btn.textContent='📸 Saving…';
+  var vb=(src.getAttribute('viewBox')||'0 0 320 250').split(/[\s,]+/).map(Number);
+  var W=vb[2]||320, H=vb[3]||250, S=3, M=18, CW=W-2*M;
+  // The SVG has no external references, so rasterising it will not taint the canvas.
+  var clone=src.cloneNode(true);
+  clone.setAttribute('width',W);clone.setAttribute('height',H);
+  clone.removeAttribute('style');
+  clone.setAttribute('font-family','Helvetica, Arial, sans-serif');
+  var xml='<?xml version="1.0" encoding="UTF-8"?>'+new XMLSerializer().serializeToString(clone);
+  var img=new Image();
+  img.onerror=function(){restore();alert('Sorry — this browser could not export the picture. Try a screenshot instead.');};
+  img.onload=function(){
+    try{
+      var meas=document.createElement('canvas').getContext('2d');
+      meas.font='12px Helvetica, Arial, sans-serif';
+      var capTxt=stripTags(document.getElementById('pancap')&&document.getElementById('pancap').innerHTML);
+      var gx=document.getElementById('galaxy');
+      var glTxt=gx?stripTags(gx.innerHTML.split('<br>')[0]):'';
+      var l1=wrapLines(meas,capTxt,CW), l2=glTxt?wrapLines(meas,glTxt,CW):[];
+      var TOP=58, LH=16, capH=(l1.length+l2.length)*LH+(l2.length?10:0)+14, FOOT=30;
+      var LH_H=TOP+H+capH+FOOT;
+      var cv=document.createElement('canvas');cv.width=W*S;cv.height=LH_H*S;
+      var ctx=cv.getContext('2d');ctx.scale(S,S);
+      ctx.fillStyle='#0b1733';ctx.fillRect(0,0,W,LH_H);
+      var g=ctx.createRadialGradient(W/2,TOP+H*0.4,10,W/2,TOP+H*0.4,W*0.8);
+      g.addColorStop(0,'#0e1c3e');g.addColorStop(1,'#070d1e');
+      ctx.fillStyle=g;ctx.fillRect(0,TOP-6,W,H+12);
+      ctx.textBaseline='alphabetic';
+      ctx.fillStyle='#f5c542';ctx.font='bold 17px Helvetica, Arial, sans-serif';
+      ctx.fillText(FEATC[0],M,30);
+      ctx.fillStyle='#9fb0d6';ctx.font='12px Helvetica, Arial, sans-serif';
+      var sub=(viewMode==='top')?'Looking down on the Milky Way from above':
+        (panFrac<0.06?'The flat pattern as we see it from Earth':'Flown out to the side — the stars pull apart');
+      if(yearOff!==0)sub+=' · '+(yearOff>0?'+':'−')+Math.abs(Math.round(yearOff/1000))+',000 yr';
+      ctx.fillText(sub,M,47);
+      ctx.drawImage(img,0,TOP,W,H);
+      var y=TOP+H+18;
+      ctx.fillStyle='#c6d2ee';ctx.font='12px Helvetica, Arial, sans-serif';
+      l1.forEach(function(t){ctx.fillText(t,M,y);y+=LH;});
+      if(l2.length){y+=10;ctx.fillStyle='#9fb0d6';l2.forEach(function(t){ctx.fillText(t,M,y);y+=LH;});}
+      ctx.strokeStyle='#33406b';ctx.beginPath();ctx.moveTo(M,LH_H-24);ctx.lineTo(W-M,LH_H-24);ctx.stroke();
+      ctx.fillStyle='#7d8db8';ctx.font='10px Helvetica, Arial, sans-serif';
+      ctx.fillText('Science Centre Observatory, Singapore · SCOB Night-Sky '+(window.SCOB_VERSION||''),M,LH_H-10);
+      var fn='SCOB-'+FEATC[0].replace(/\s+/g,'-')+'-'+((viewMode==='top')?'galaxy-view':'depth-view')+'.png';
+      var save=function(url,revoke){var a=document.createElement('a');a.href=url;a.download=fn;
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        if(revoke)setTimeout(function(){URL.revokeObjectURL(url);},4000);restore();};
+      if(cv.toBlob)cv.toBlob(function(b){b?save(URL.createObjectURL(b),true):save(cv.toDataURL('image/png'),false);},'image/png');
+      else save(cv.toDataURL('image/png'),false);
+    }catch(e){restore();alert('Sorry — this browser could not export the picture. Try a screenshot instead.');}
+  };
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+}
+function attachChart(){
+  var box=document.getElementById('chart3d'), sl=document.getElementById('panner'), vb=document.getElementById('vmode');
+  var tm=document.getElementById('timer'), tn=document.getElementById('tnow');
+  var sn=document.getElementById('snap');if(sn)sn.onclick=snapshot;
+  if(tm)tm.oninput=function(){yearOff=(+tm.value)*1000;updateChart();};
+  if(tn)tn.onclick=function(){yearOff=0;if(tm)tm.value=0;updateChart();};
+  if(vb)vb.onclick=function(){viewMode=(viewMode==='top')?'pan':'top';updateChart();};
+  if(sl)sl.oninput=function(){panFrac=Math.max(0,Math.min(1,sl.value/100));updateChart();};
+  if(box){box.style.cursor='grab';
+    box.onpointerdown=function(e){if(viewMode==='top')return;dragging=true;dragX=e.clientX;try{box.setPointerCapture(e.pointerId);}catch(x){}};
+    box.onpointermove=function(e){if(!dragging||viewMode==='top')return;var dx=e.clientX-dragX;dragX=e.clientX;panFrac=Math.max(0,Math.min(1,panFrac+dx/260));if(sl)sl.value=Math.round(panFrac*100);updateChart();};
+    box.onpointerup=box.onpointercancel=function(){dragging=false;};}
+}
+function render(featName){
+  var date=theDate();
+  var scored=CONST.map(function(c){return {c:c,p:meanAltAz(c,date)};}).sort(function(a,b){return b.p.alt-a.p.alt;});
+  var up=scored.filter(function(o){return o.p.alt>15;});
+  var target=featName||featNow;
+  var pick=target?(scored.filter(function(o){return o.c[0]===target;})[0]||up[0]||scored[0]):(up[0]||scored[0]);
+  var c=pick.c, pos=pick.p, st=STORY[c[0]]||{t:'',m:'',f:'',s:''};
+  featNow=c[0];
+  if(featNow!==LASTFEAT){panFrac=0;}LASTFEAT=featNow;FEATC=c;
+  var body=(storyMode==='long'&&LONG[c[0]])?LONG[c[0]]:st.m;
+  var upNow=pos.alt>10;
+  var where=upNow?('Look '+altWord(pos.alt)+' in the <b>'+A.compass(pos.az)+'</b> · about '+Math.round(pos.alt)+'° up'):'<span style="color:var(--gold)">Below the horizon at this time — try another time or date.</span>';
+  document.getElementById('feat').innerHTML=
+    '<div class="nm">'+c[0]+' — <span style="color:var(--gold)">'+st.t+'</span></div>'+
+    '<div class="where">'+where+'</div>'+
+    '<div class="chart"><div id="chart3d"></div></div>'+
+    '<div class="panrow" id="panrow"><span class="pl">👁 Earth</span><input type="range" id="panner" min="0" max="100" value="'+Math.round(panFrac*100)+'" aria-label="Fly out to the side to reveal star distances"><span class="pl">🚀 Side</span></div>'+
+    '<div class="panrow" id="timerow"><span class="pl">⏪ −100k yr</span><input type="range" id="timer" min="-100" max="100" value="'+Math.round(yearOff/1000)+'" aria-label="Travel through time to see the pattern change"><span class="pl">+100k yr ⏩</span></div>'+
+    '<div class="vrow"><button type="button" class="vbtn" id="vmode">🌌 View from above (the galaxy)</button><button type="button" class="vbtn" id="tnow">⏱ Today</button><button type="button" class="vbtn snap" id="snap">📸 Save picture</button></div>'+
+    '<div class="pancap" id="pancap"></div>'+
+    '<div class="galaxy" id="galaxy"></div>'+
+    '<div class="story">'+body+'</div>'+
+    '<h3>How to find it</h3><div class="hint">'+st.f+'</div>'+
+    '<div class="tagline">Best on Singapore evenings: '+st.s+'</div>';
+  updateChart();attachChart();
+  var oh=document.getElementById('others');
+  oh.innerHTML=scored.map(function(o){var u=o.p.alt>15;return '<button type="button" class="'+(u?'up':'')+'" data-c="'+o.c[0]+'">'+o.c[0]+(u?' · '+Math.round(o.p.alt)+'°':'')+'</button>';}).join('');
+  Array.prototype.forEach.call(oh.querySelectorAll('button'),function(b){b.onclick=function(){render(b.getAttribute('data-c'));window.scrollTo({top:0,behavior:'smooth'});};});
+}
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function nextFri(){var d=sgtNow();var add=(5-d.getDay()+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);d.setHours(20,30,0,0);return new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),d.getHours()-8,d.getMinutes(),0));}
+function lenLabel(){var el=document.getElementById('len');if(el)el.textContent=storyMode==='long'?'📖 Short story':'📖 Full story';}
+document.getElementById('now').onclick=function(){when=null;featNow=null;render();};
+document.getElementById('fri').onclick=function(){when=nextFri();featNow=null;render();};
+document.getElementById('len').onclick=function(){storyMode=storyMode==='long'?'short':'long';try{localStorage.setItem('scobStoryLen',storyMode);}catch(e){}lenLabel();render(featNow);};
+lenLabel();
+/* Deep link: constellation-story.html?c=Orion — used by the dashboard sky map. */
+(function(){var m=location.search.match(/[?&]c=([^&]*)/), want=m?decodeURIComponent(m[1].replace(/\+/g,' ')).trim():'';
+  var hit=want?CONST.filter(function(c){return c[0].toLowerCase()===want.toLowerCase();})[0]:null;
+  render(hit?hit[0]:undefined);})();
+setInterval(function(){if(!when)render();},120000);
+</script>
+<script src="version.js"></script>
+</body>
+</html>

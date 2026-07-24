@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tonight's Highlights Card — SCOB</title>
+<meta name="description" content="Generate a shareable image of tonight's stargazing highlights over Singapore — Moon phase, the best planet and top targets — to post for the Science Centre Observatory.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.bar a,.bar button{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;background:none;cursor:pointer;}
+.bar button.alt{color:var(--white);border-color:var(--line);}
+.bar button.dl{background:var(--gold);color:#0b1733;border-color:var(--gold);}
+.cardwrap{margin:14px 0;text-align:center;}
+canvas{width:100%;max-width:460px;height:auto;border-radius:14px;border:1px solid var(--line);}
+.foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📣 Tonight's Highlights Card</h1>
+    <div class="loc">A ready-to-share image of what's up tonight — post it for the observatory. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="now">● Tonight</button>
+      <button type="button" id="fri" class="alt">↺ Next Fri</button>
+      <button type="button" id="dl" class="dl">⬇ Download image</button>
+    </div>
+  </header>
+  <div class="cardwrap"><canvas id="card" width="1080" height="1080"></canvas></div>
+  <div class="foot">
+    Computed on your device (P. Schlyter method) for the Science Centre Observatory, for about 8:30&nbsp;pm on the chosen night. Weather isn't included — check the <a href="scob-dashboard-v3.html">dashboard</a> before you promise clear skies!<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, pad=A.pad;
+var PCOL={Mercury:'#a9a49a',Venus:'#f6e9c8',Mars:'#d1603a',Jupiter:'#e6cda8',Saturn:'#ecdcae',Uranus:'#a9e7e4',Neptune:'#5b76d6'};
+var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var when=null, curLabel='';
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function target(mode){ // returns UTC Date for ~8:30pm SGT of tonight / next Fri
+  var d=sgtNow();
+  if(mode==='fri'){var add=(5-d.getDay()+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);}
+  return new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),20-8,30,0));
+}
+function phaseName(ill,wax){if(ill<0.03)return'New Moon';if(ill>0.97)return'Full Moon';
+  if(ill<0.47)return(wax?'Waxing':'Waning')+' Crescent';if(ill<0.53)return(wax?'First':'Last')+' Quarter';
+  return(wax?'Waxing':'Waning')+' Gibbous';}
+function moonEmoji(ill,wax){if(ill<0.04)return'🌑';if(ill>0.96)return'🌕';
+  if(ill<0.47)return wax?'🌒':'🌘';if(ill<0.53)return wax?'🌓':'🌗';return wax?'🌔':'🌖';}
+function build(mode){
+  var date=target(mode);
+  var sgt=new Date(date.getTime()+8*3600000);
+  curLabel=sgt.getUTCFullYear()+'-'+pad(sgt.getUTCMonth()+1)+'-'+pad(sgt.getUTCDate());
+  var s=A.sky(date);
+  var dd=A.jd(date)-2451543.5, mo=A.moon(dd), wax=(((mo.lon-mo.slon)%360)+360)%360<180;
+  var ill=s.moon.illum/100;   // sky() reports illumination as a percentage; convert to 0–1 fraction
+  // best planet
+  var best=null;
+  A.SHOWPIECES.forEach(function(sp){if(sp.kind!=='planet')return;var p=A.positionOf(sp,date);
+    var need=(sp.planet==='Uranus'||sp.planet==='Neptune')?99:5;
+    if(p.alt>need){if(!best||p.mag<best.mag)best={nm:sp.planet,mag:p.mag,alt:p.alt,az:p.az};}});
+  // top deep-sky / star targets
+  var tops=[];
+  A.SHOWPIECES.forEach(function(sp){if(sp.kind==='planet'||sp.kind==='moon')return;var p=A.positionOf(sp,date);if(p.alt>22)tops.push({nm:sp.name,alt:p.alt});});
+  tops.sort(function(a,b){return b.alt-a.alt;});tops=tops.slice(0,3);
+  draw(sgt,ill,wax,best,tops);
+}
+function draw(sgt,ill,wax,best,tops){
+  var cv=document.getElementById('card'),x=cv.getContext('2d'),W=1080;
+  var g=x.createLinearGradient(0,0,0,W);g.addColorStop(0,'#0a1233');g.addColorStop(1,'#0b1a3f');
+  x.fillStyle=g;x.fillRect(0,0,W,W);
+  // seeded starfield
+  var seed=20260715;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
+  for(var i=0;i<160;i++){var sx=rnd()*W,sy=rnd()*W*0.62,r=rnd()*1.8+0.3;x.globalAlpha=0.3+rnd()*0.6;x.fillStyle='#fff';x.beginPath();x.arc(sx,sy,r,0,7);x.fill();}
+  x.globalAlpha=1;
+  // header
+  x.textAlign='center';x.fillStyle='#f5c542';x.font='700 40px sans-serif';
+  x.fillText('TONIGHT AT THE OBSERVATORY',W/2,90);
+  x.fillStyle='#9fb0d6';x.font='400 26px sans-serif';
+  x.fillText('Science Centre Observatory · Singapore',W/2,130);
+  x.fillStyle='#fff';x.font='700 52px sans-serif';
+  x.fillText(DY[sgt.getUTCDay()]+', '+sgt.getUTCDate()+' '+MO[sgt.getUTCMonth()]+' '+sgt.getUTCFullYear(),W/2,205);
+  x.fillStyle='#5bd6e0';x.font='400 27px sans-serif';x.fillText('around 8:30 pm',W/2,245);
+  // Moon (emoji glyph) left, best planet (disc) right
+  x.font='150px sans-serif';x.textAlign='center';
+  x.fillText(moonEmoji(ill,wax),300,430);
+  x.fillStyle='#fff';x.font='700 34px sans-serif';x.fillText('The Moon',300,505);
+  x.fillStyle='#cbd5f5';x.font='400 28px sans-serif';x.fillText(Math.round(ill*100)+'% · '+phaseName(ill,wax),300,545);
+  // planet disc
+  if(best){var pc=PCOL[best.nm]||'#e6cda8',cx=780,cy=390,r=78;
+    var pg=x.createRadialGradient(cx-25,cy-25,10,cx,cy,r);pg.addColorStop(0,pc);pg.addColorStop(1,'#000');
+    x.fillStyle=pg;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();
+    if(best.nm==='Saturn'){x.strokeStyle='#e6d3a0';x.lineWidth=8;x.save();x.translate(cx,cy);x.rotate(-0.32);x.beginPath();x.ellipse(0,0,r+40,16,0,0,7);x.stroke();x.restore();}
+    x.fillStyle='#fff';x.font='700 34px sans-serif';x.fillText('Best planet',cx,505);
+    x.fillStyle='#cbd5f5';x.font='400 28px sans-serif';x.fillText(best.nm+' · mag '+(best.mag>=0?'+':'')+best.mag.toFixed(1),cx,545);
+  } else {
+    x.fillStyle='#9fb0d6';x.font='400 26px sans-serif';x.fillText('No bright planet up',780,470);
+  }
+  // targets
+  x.fillStyle='#f5c542';x.font='700 34px sans-serif';x.textAlign='center';x.fillText("Tonight's showpieces",W/2,660);
+  x.fillStyle='#eef2fb';x.font='400 36px sans-serif';
+  if(tops.length){tops.forEach(function(t,i){x.fillText('★  '+t.nm,W/2,720+i*56);});}
+  else{x.fillText('Wait for full darkness for deep-sky views',W/2,720);}
+  // footer band
+  x.fillStyle='rgba(255,255,255,.06)';x.fillRect(0,W-140,W,140);
+  x.fillStyle='#fff';x.font='700 32px sans-serif';x.fillText('Come and look through our telescopes 🔭',W/2,W-78);
+  x.fillStyle='#9fb0d6';x.font='400 25px sans-serif';x.fillText('Free public stargazing · point your phone at the sky with our finder',W/2,W-40);
+}
+document.getElementById('now').onclick=function(){when='now';build('now');};
+document.getElementById('fri').onclick=function(){when='fri';build('fri');};
+document.getElementById('dl').onclick=function(){var cv=document.getElementById('card');
+  cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='scob-tonight-'+curLabel+'.png';document.body.appendChild(a);a.click();a.remove();});};
+build('now');
+</script>
+<script src="version.js"></script>
+</body>
+</html>
