@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About &amp; Credits — SCOB Night-Sky</title>
+<meta name="description" content="What the SCOB Night-Sky app is, how it works on your device, the data sources behind every number, and credits for the astronomy references and cultural sky-lore it draws on.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--cyan);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.card p{font-size:14px;color:#e7edfa;margin:0 0 10px;}
+.card p:last-child{margin-bottom:0;}
+.card p.mute{color:var(--mute);font-size:13.5px;}
+.src{list-style:none;padding:0;margin:6px 0 0;}
+.src li{font-size:13px;color:var(--mute);padding:7px 0;border-top:1px solid var(--line);line-height:1.55;}
+.src li:first-child{border-top:0;}
+.src b{color:var(--white);}
+.src a{color:var(--cyan);}
+.privacy{background:rgba(95,211,138,.1);border:1px solid var(--green);border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13.5px;color:var(--mute);line-height:1.6;}
+.privacy b{color:#9be9b8;}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ℹ️ About this app</h1>
+    <div class="loc">SCOB Night-Sky — the planning &amp; visitor companion for the Science Centre Observatory, Jurong, Singapore (1.3342°N, 103.7357°E).</div>
+    <div class="bar"><a href="scob-dashboard-v3.html">← Dashboard</a><a href="sky-guide.html">🌟 Visitor Sky Guide</a></div>
+  </header>
+
+  <div class="card">
+    <h2>What it is</h2>
+    <p>A free, single web app that plans and explains the Friday-evening public stargazing sessions at the Science Centre Observatory. It has two faces: a detailed <b>dashboard</b> for volunteers and docents (tonight's targets, weather go/no-go, the telescopes, a printable session pack), and a friendly, multilingual <b>Sky Guide</b> for visitors.</p>
+    <p>Everything astronomical — the Moon, the planets, deep-sky target heights, the sky map, sunrise and twilight times, comets, satellite passes — is <b>computed live on your own device</b>. The only thing that needs the internet is the live weather forecast; once the page has loaded it works fully offline, which is why it keeps running in the dome with no signal.</p>
+  </div>
+
+  <div class="privacy">
+    🔒 <b>Private by design.</b> There are no accounts, no logins, and no tracking or analytics of any kind. Your choices (night mode, language, sky-brightness setting) are saved only in your own browser. The app only reaches out to the internet to fetch the live weather, rain radar and haze readings — nothing about you is sent anywhere.
+  </div>
+
+  <div class="card">
+    <h2>Where the numbers come from</h2>
+    <p class="mute">Every figure is traceable. The astronomy is computed on-device from published methods; the live environmental data comes from official Singapore and open sources.</p>
+    <ul class="src">
+      <li><b>Positions of the Sun, Moon &amp; planets</b> — the method of Paul Schlyter (<i>How to compute planetary positions</i>).</li>
+      <li><b>Jupiter &amp; Saturn detail</b> — Jean Meeus, <i>Astronomical Algorithms</i> (Galilean moons, ring tilt); Great Red Spot longitude tracked to the JUPOS drift trend.</li>
+      <li><b>Deep-sky catalogue</b> — AstroPixels Messier &amp; Caldwell catalogues, Fred Espenak.</li>
+      <li><b>Double &amp; carbon stars</b> — Washington Double Star catalog (WDS) and SIMBAD, compiled.</li>
+      <li><b>Comets</b> — orbital elements from the Minor Planet Center / aerith.net, solved on-device.</li>
+      <li><b>Satellites (ISS, Tiangong, Hubble)</b> — <a href="https://celestrak.org/" target="_blank" rel="noopener">CelesTrak</a> two-line elements, propagated on your device with <a href="https://github.com/shashwatak/satellite-js" target="_blank" rel="noopener">satellite.js</a> (SGP4).</li>
+      <li><b>Weather &amp; rain radar</b> — <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> and the Meteorological Service Singapore (<a href="https://www.weather.gov.sg/" target="_blank" rel="noopener">weather.gov.sg</a>).</li>
+      <li><b>Seeing &amp; transparency</b> — <a href="https://www.7timer.info/" target="_blank" rel="noopener">7Timer!</a> astro.</li>
+      <li><b>Haze / PSI</b> — National Environment Agency via <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg</a>.</li>
+      <li><b>Solar activity &amp; sunspots</b> — <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA Space Weather Prediction Center</a>.</li>
+      <li><b>Sky-events calendar</b> — Sea &amp; Sky astronomy calendar (seasky.org).</li>
+      <li><b>Light-pollution realism</b> — the Bortle dark-sky scale.</li>
+      <li><b>Extreme-object facts</b> (nebulae, neutron stars, black holes) — NASA and the ESA / Event Horizon Telescope Collaboration.</li>
+      <li><b>Seestar S30 specifications</b> — the manufacturer, ZWO.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Sky lore &amp; cultural star-names</h2>
+    <p>The constellation pages tell the traditional Greek myths and, for Singapore's own communities, how the <b>same stars</b> were named and pictured in three other living traditions:</p>
+    <ul class="src">
+      <li><b>Chinese</b> — the classical system of the Twenty-Eight Lunar Mansions and its asterisms (e.g. 北斗 the Northern Dipper, 參 the Three Stars, the Qixi Cowherd &amp; Weaving Girl).</li>
+      <li><b>Malay &amp; Javanese</b> — Nusantara sky-lore (e.g. Bintang Tiga Beradik, Bintang Pari, Gubug Penceng).</li>
+      <li><b>Indian</b> — the <i>nakshatra</i> tradition, with both Sanskrit and <b>Tamil</b> star-names (e.g. Krittika / Kārttikai, Jyeshtha / Kēṭṭai).</li>
+    </ul>
+    <p class="mute" style="margin-top:10px">These are living, shared traditions passed down in many forms, and different cultures grouped the stars differently — so the names are not always the exact same figure the Greeks drew. We've done our best to represent them accurately and respectfully; if you spot something to correct or add, please let the observatory team know.</p>
+  </div>
+
+  <div class="card">
+    <h2>The telescopes</h2>
+    <p>The Science Centre Observatory's fleet: a 40 cm (16") Cassegrain and a 15 cm (6") apochromatic refractor in the main dome; an 11" and a 7" in the second dome; portable Celestron CPC (8"–11") and C6 SCTs on the deck; and a ZWO Seestar S30 smart telescope. Every observing verdict in the app is tuned to these instruments, this site, and the roughly 7:30–10 pm session window.</p>
+  </div>
+
+  <div class="foot">
+    Built for the volunteers and visitors of the Science Centre Observatory, Singapore. Not an official Science Centre publication. With thanks to the open-source and open-data projects listed above, and to the astronomers and storytellers — across many cultures and centuries — who mapped this sky first.<br>
+    <a href="scob-dashboard-v3.html">← Back to the dashboard</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="version.js"></script>
+</body>
+</html>
