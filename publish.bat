@@ -42,6 +42,12 @@ echo ============================================================
 git add -A
 git commit -m "%MSG%"
 if errorlevel 1 echo   ^(Nothing new to commit - pushing any pending commits.^)
+
+REM --- integrate any changes pushed from elsewhere, so the push isn't rejected ---
+echo Syncing with GitHub before pushing...
+git pull --no-edit
+if errorlevel 1 goto :pullfail
+
 git push
 if errorlevel 1 goto :pushfail
 
@@ -61,6 +67,17 @@ exit /b 0
 echo.
 echo *** Local tests FAILED - fix the problem above before publishing. ***
 echo *** Nothing was committed or pushed. ***
+echo.
+pause
+exit /b 1
+
+:pullfail
+echo.
+echo *** git pull hit a merge conflict. ***
+echo   Your commit is saved locally - nothing was lost.
+echo   Open the files Git listed above, resolve the conflict markers
+echo   ^(^<^<^<^<^<^<^<  =======  ^>^>^>^>^>^>^>^), then run:
+echo       git add -A  ^&^&  git commit --no-edit  ^&^&  git push
 echo.
 pause
 exit /b 1
