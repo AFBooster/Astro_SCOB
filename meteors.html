@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meteor Showers — How They Work &amp; How They Fare Here — SCOB</title>
+<meta name="description" content="What a meteor shower really is, why the radiant and the after-midnight hours matter, and why Singapore's equator gives some showers (the Eta Aquariids, Orionids) a big edge while the famous Perseids underperform. Computed live for the Science Centre Observatory.">
+<style>
+:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;--green:#5fd38a;--red:#ff6b6b;--orange:#ff9d3c;}
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;}
+.wrap{max-width:840px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--orange);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
+.hero{background:linear-gradient(160deg,#3a2412,#1a1030);border:1px solid var(--orange);border-radius:14px;padding:16px;margin:13px 0;}
+.hero h2{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--orange);}
+.hero .big{font-size:20px;font-weight:800;color:var(--gold);line-height:1.2;}
+.hero .d{font-size:13.5px;color:var(--mute);margin-top:7px;line-height:1.6;}
+.hero .d b{color:var(--white);}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.card p{font-size:14px;color:#e7edfa;margin:0 0 10px;}
+.card p:last-child{margin-bottom:0;}
+.card p.mute{color:var(--mute);font-size:13.5px;}
+.wow{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:13.5px;line-height:1.6;}
+.wow b{color:var(--gold);}
+table{width:100%;border-collapse:collapse;margin-top:4px;}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
+th.r,td.r{text-align:right;}
+td{padding:8px 5px;border-bottom:1px solid var(--line);font-size:13px;}
+td .nm{font-weight:700;}
+td .pc{color:var(--mute);font-size:11.5px;}
+.rate{font-weight:800;}
+.r-exc{color:var(--green);}.r-good{color:var(--gold);}.r-fair{color:var(--orange);}.r-poor{color:var(--red);}
+.tips{list-style:none;padding:0;margin:4px 0 0;}
+.tips li{font-size:13.5px;color:#e7edfa;padding:7px 0 7px 24px;position:relative;line-height:1.55;}
+.tips li:before{content:"✦";position:absolute;left:0;color:var(--orange);}
+.tips li b{color:var(--white);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>☄️ Meteor showers — and how they fare from here</h1>
+    <div class="loc">What they really are, when to look, and why Singapore's equator changes the game. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="almanac.html">📅 This month's showers</a>
+      <a href="singapore-sky.html">🌏 Our sky</a>
+    </div>
+  </header>
+
+  <div class="hero" id="hero"><h2>The next shower</h2><div class="d">Working it out…</div></div>
+
+  <div class="card">
+    <h2>What is a meteor shower?</h2>
+    <p>A comet (or a crumbling asteroid) leaves a trail of grit strung along its orbit. Once or twice each year the Earth ploughs through one of these trails — <b>on the same dates every year</b>, because we cross the same point in our orbit — and for a few nights the sky fills with "shooting stars."</p>
+    <p>Almost every one is tiny: a grain of sand to a pea, hitting the air at up to 70 km per second and burning up in a streak about <b>100 km overhead</b>. Nothing reaches the ground. The dust is old — the Orionids and Eta Aquariids are both debris shed by Halley's Comet on passes centuries ago.</p>
+    <div class="wow">💡 A "meteoroid" is the grain in space; the "meteor" is the streak of light; a "meteorite" is the rare survivor that lands. Shower meteors essentially never become meteorites — they are far too small.</div>
+  </div>
+
+  <div class="card">
+    <h2>Why they seem to come from one point — the "radiant"</h2>
+    <p>All the grains in a trail move in <b>parallel</b>. But perspective makes parallel lines appear to spread from a single vanishing point — like railway tracks converging in the distance, or snow rushing at a car's windscreen. That point is the shower's <b>radiant</b>, and it's how showers get their names: the Perseids radiate from Perseus, the Geminids from Gemini.</p>
+    <p class="mute">You don't look <i>at</i> the radiant — meteors near it are foreshortened to short streaks. Look about two-thirds of the way up, 40–60° to the side of it, where they flare longest. Trace any meteor backwards: if the line hits the radiant, it belongs to the shower; if not, it's a random "sporadic."</p>
+  </div>
+
+  <div class="card">
+    <h2>Why after midnight is better</h2>
+    <p>Before midnight you're on the <b>trailing</b> side of the Earth — meteors have to catch up to you. After midnight you rotate onto the <b>leading</b> side, driving head-on into the stream, so you sweep up more of them and they arrive faster and brighter. The pre-dawn hours are almost always the best, and the radiant is usually higher then too.</p>
+    <div class="wow">💡 The quoted rate — the <b>ZHR</b>, or Zenithal Hourly Rate — is an ideal: what one observer would see under a perfectly dark sky with the radiant straight overhead. Real life is always less. Two things cut it most: a bright <b>Moon</b>, and a <b>low radiant</b> — which is where Singapore comes in.</p>
+  </div>
+
+  <div class="card">
+    <h2>Singapore's twist: some showers win, some lose</h2>
+    <p>The number you actually see falls off with the radiant's height — roughly as its <b>sine</b>. A radiant sitting at 30° up delivers about half its overhead rate; at 15°, only a quarter. From our near-equatorial latitude, <b>far-northern radiants stay low</b> — so the world-famous <b>Perseids and Quadrantids underperform here</b>, and the Ursids barely clear the horizon.</p>
+    <p>But the equator has its reward: showers with radiants near the celestial equator ride <b>high overhead</b> from Singapore. The <b>Eta Aquariids and Orionids — both Halley's Comet</b> — are genuinely better from here than from much of Europe or North America. Here's how the year's showers rank for us:</p>
+    <table id="tbl"><thead><tr><th>Shower</th><th class="r">Peak rate</th><th class="r">Radiant height here</th><th class="r">From SCOB</th></tr></thead><tbody></tbody></table>
+    <p class="mute" id="tblnote" style="margin-top:9px"></p>
+  </div>
+
+  <div class="card">
+    <h2>How to watch — no telescope needed</h2>
+    <ul class="tips">
+      <li><b>Use just your eyes.</b> A telescope's tiny field is the worst possible tool — meteors flash across the whole sky. Lie back and take in as much sky as you can.</li>
+      <li><b>Give your eyes 20–30 minutes</b> to adapt to the dark, and keep phone screens off — one glance resets you.</li>
+      <li><b>Look about two-thirds of the way up</b>, off to the side of the radiant, and away from the Moon and the worst of the city glow.</li>
+      <li><b>Be patient.</b> Even a good shower means one every few minutes, in bursts — not a constant rain. Give it an hour.</li>
+      <li><b>The Moon is the biggest spoiler.</b> A bright Moon can erase all but the brightest; the darkest showers are the ones peaking near New Moon.</li>
+      <li><b>City reality:</b> from Jurong you'll catch the bright ones, not the faint majority — but a brilliant fireball cuts through anything.</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    Peak dates and Zenithal Hourly Rates are standard almanac values (exact peaks shift a little year to year); the radiant height, "from SCOB" rating and the next-shower panel are computed on your device for the observatory (radiant transit altitude = 90° − |latitude − declination|, rate falling with the sine of altitude). Deeper data: <a href="https://www.imo.net/" target="_blank" rel="noopener">International Meteor Organization</a> · <a href="https://www.amsmeteors.org/" target="_blank" rel="noopener">American Meteor Society</a> · <a href="https://science.nasa.gov/solar-system/meteors-meteorites/" target="_blank" rel="noopener">NASA — meteors</a>.<br>
+    Companion pages: <a href="almanac.html">this month's showers</a> · <a href="singapore-sky.html">why Singapore sees almost the whole sky</a> · <a href="light-pollution.html">why the city sky is bright</a>.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, LAT=A.SCOB.LAT;
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* [name, peakMonth(1-12), peakDay, ZHR, parent, radiantRA°, radiantDec°] */
+var SHOWERS=[
+ ['Quadrantids',1,3,110,'asteroid 2003 EH1',230,49],
+ ['Lyrids',4,22,18,'Comet Thatcher',271,34],
+ ['Eta Aquariids',5,6,50,'Comet Halley',338,-1],
+ ['Delta Aquariids',7,30,25,'Comet 96P/Machholz',340,-16],
+ ['Perseids',8,12,100,'Comet Swift–Tuttle',48,58],
+ ['Orionids',10,21,20,'Comet Halley',95,16],
+ ['Leonids',11,17,15,'Comet Tempel–Tuttle',152,22],
+ ['Geminids',12,14,120,'asteroid 3200 Phaethon',112,33],
+ ['Ursids',12,22,10,'Comet Tuttle',217,76]];
+function maxAlt(dec){return 90-Math.abs(LAT-dec);}
+function rating(ma){
+  if(ma>=65)return['exc','excellent from here'];
+  if(ma>=45)return['good','good from here'];
+  if(ma>=25)return['fair','fair — radiant a bit low'];
+  return['poor','poor — radiant too low'];
+}
+function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+
+/* ---- the year's showers, rated for SCOB ---- */
+(function(){
+  var rows=SHOWERS.slice().sort(function(a,b){return maxAlt(b[6])-maxAlt(a[6]);});
+  var tb=document.getElementById('tbl').querySelector('tbody');
+  tb.innerHTML=rows.map(function(x){
+    var ma=maxAlt(x[6]),r=rating(ma);
+    return '<tr><td><span class="nm">'+x[0]+'</span><span class="pc">peaks '+MON[x[1]-1]+' '+x[2]+' · '+x[4]+'</span></td>'+
+      '<td class="r">~'+x[3]+'/hr</td>'+
+      '<td class="r">'+Math.round(ma)+'°</td>'+
+      '<td class="r rate r-'+r[0]+'">'+r[1].split(' ')[0]+'</td></tr>';
+  }).join('');
+  document.getElementById('tblnote').innerHTML='“Radiant height” is the highest the radiant ever climbs from Singapore. Notice the pattern: the equator-friendly <b>Eta Aquariids</b> and <b>Orionids</b> (both Halley’s dust) top the list, while the northern-hemisphere darlings — the Perseids, Quadrantids and Ursids — slide down it. “Peak rate” is the ideal dark-sky maximum; expect less under a bright Moon or city sky.';
+})();
+
+/* ---- live: the next shower and how it will fare ---- */
+(function(){
+  var now=sgtNow(), today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+  var best=null;
+  SHOWERS.forEach(function(x){
+    [0,1].forEach(function(yr){
+      var pk=Date.UTC(now.getUTCFullYear()+yr,x[1]-1,x[2]);
+      var days=Math.round((pk-today)/86400000);
+      if(days>=-2 && (best===null || days<best.days)) best={x:x,days:days,pk:pk};
+    });
+  });
+  var box=document.getElementById('hero');
+  if(!best){box.innerHTML='<h2>The next shower</h2><div class="big">See the table below</div>';return;}
+  var x=best.x, ma=maxAlt(x[6]), r=rating(ma);
+  // Moon at the peak (about 2am SGT that night) — the main spoiler
+  var peakNight=new Date(best.pk - 8*3600000 + 26*3600000); // ~2am SGT after the peak date
+  var mo=A.sky(peakNight).moon, moonWord=mo.illum<15?'a dark, New-Moon sky — ideal':mo.illum<50?'a '+mo.illum+'%-lit Moon — some interference':'a bright '+mo.illum+'%-lit Moon that will wash out the fainter ones';
+  var when=best.days<=0?'peaking now (night of '+MON[new Date(best.pk).getUTCMonth()]+' '+new Date(best.pk).getUTCDate()+')'
+         :best.days===1?'peaks tomorrow night':'peaks in '+best.days+' days — the night of '+MON[new Date(best.pk).getUTCMonth()]+' '+new Date(best.pk).getUTCDate();
+  box.innerHTML='<h2>The next shower</h2>'+
+    '<div class="big">☄️ The '+x[0]+' — '+when+'</div>'+
+    '<div class="d">Up to <b>'+x[3]+'/hr</b> under a perfect dark sky, from the dust of '+x[4]+'. '+
+    'Its radiant climbs to <b>'+Math.round(ma)+'°</b> here, so it should be <b>'+r[1]+'</b>. '+
+    'This year it peaks under <b>'+moonWord+'</b>. Best in the hours after midnight — lie back, no telescope needed.</div>';
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>
