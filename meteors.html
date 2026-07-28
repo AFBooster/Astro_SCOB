@@ -80,8 +80,8 @@ td .pc{display:block;margin-top:2px;color:var(--mute);font-size:11.5px;}
   <div class="card">
     <h2>Singapore's twist: some showers win, some lose</h2>
     <p>The number you actually see falls off with the radiant's height — roughly as its <b>sine</b>. A radiant sitting at 30° up delivers about half its overhead rate; at 15°, only a quarter. From our near-equatorial latitude, <b>far-northern radiants stay low</b> — so the world-famous <b>Perseids and Quadrantids underperform here</b>, and the Ursids barely clear the horizon.</p>
-    <p>But the equator has its reward: showers with radiants near the celestial equator ride <b>high overhead</b> from Singapore. The <b>Eta Aquariids and Orionids — both Halley's Comet</b> — are genuinely better from here than from much of Europe or North America. Here's how the year's showers rank for us:</p>
-    <table id="tbl"><thead><tr><th>Shower</th><th class="r">Peak rate</th><th class="r">Radiant height here</th><th class="r">From SCOB</th></tr></thead><tbody></tbody></table>
+    <p>But the equator has its reward: the showers whose radiants ride high in our <b>pre-dawn</b> sky. The <b>Orionids</b> and <b>Delta Aquariids</b> climb to around 70° here; the <b>Geminids</b> — the year's richest — ride high too; and even the <b>Eta Aquariids</b> (Halley's other shower), still rising as dawn breaks, are seen far better from our low latitude than from Europe or North America. Here's how the year's showers actually fare in Singapore's small hours — <b>soonest first</b>:</p>
+    <table id="tbl"><thead><tr><th>Shower</th><th class="r">Peak</th><th class="r">Rate</th><th class="r">Where to look (pre-dawn)</th></tr></thead><tbody></tbody></table>
     <p class="mute" id="tblnote" style="margin-top:9px"></p>
   </div>
 
@@ -118,53 +118,58 @@ var SHOWERS=[
  ['Leonids',11,17,15,'Comet Tempel–Tuttle',152,22],
  ['Geminids',12,14,120,'asteroid 3200 Phaethon',112,33],
  ['Ursids',12,22,10,'Comet Tuttle',217,76]];
-function maxAlt(dec){return 90-Math.abs(LAT-dec);}
-function rating(ma){
-  if(ma>=65)return['exc','excellent from here'];
-  if(ma>=45)return['good','good from here'];
-  if(ma>=25)return['fair','fair — radiant a bit low'];
-  return['poor','poor — radiant too low'];
-}
 function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+/* the radiant's best height & direction during the prime pre-dawn window (00:00–05:30 SGT)
+   on the peak morning — this is when meteors actually favour, and it's the honest number
+   (a radiant can transit high but only in daylight). */
+function lookAt(ra,dec,y,mo,d){
+  var mid=Date.UTC(y,mo-1,d), b={alt:-90,az:0};
+  for(var h=0;h<=5.5;h+=0.25){var t=new Date(mid+(h-8)*3600000);var p=A.altazAt(ra,dec,t);if(p.alt>b.alt)b={alt:p.alt,az:p.az};}
+  return b;
+}
+function rating(a){if(a>=55)return['exc','excellent'];if(a>=35)return['good','good'];if(a>=20)return['fair','fair'];return['poor','poor'];}
+/* the soonest upcoming peak for a shower (this year or next) */
+function nextPeak(x,ty,today){
+  for(var yr=0;yr<=1;yr++){var pk=Date.UTC(ty+yr,x[1]-1,x[2]);var days=Math.round((pk-today)/86400000);if(days>=-2)return {pk:pk,days:days,y:ty+yr};}
+  var pk2=Date.UTC(ty+1,x[1]-1,x[2]);return {pk:pk2,days:Math.round((pk2-today)/86400000),y:ty+1};
+}
 
-/* ---- the year's showers, rated for SCOB ---- */
+/* ---- the year's showers, ordered by how soon they peak, with the pre-dawn look ---- */
 (function(){
-  var rows=SHOWERS.slice().sort(function(a,b){return maxAlt(b[6])-maxAlt(a[6]);});
+  var now=sgtNow(), ty=now.getUTCFullYear(), today=Date.UTC(ty,now.getUTCMonth(),now.getUTCDate());
+  var rows=SHOWERS.map(function(x){var np=nextPeak(x,ty,today);return {x:x,days:np.days,pk:np.pk,look:lookAt(x[5],x[6],np.y,x[1],x[2])};});
+  rows.sort(function(a,b){return a.days-b.days;});
   var tb=document.getElementById('tbl').querySelector('tbody');
-  tb.innerHTML=rows.map(function(x){
-    var ma=maxAlt(x[6]),r=rating(ma);
-    return '<tr><td><span class="nm">'+x[0]+'</span><span class="pc">peaks '+MON[x[1]-1]+' '+x[2]+' · '+x[4]+'</span></td>'+
+  tb.innerHTML=rows.map(function(r){
+    var x=r.x, rt=rating(r.look.alt), pd=new Date(r.pk);
+    var when=r.days<=0?'now':(r.days===1?'tomorrow':'in '+r.days+' d');
+    var look=r.look.alt<5?'below horizon':A.compass(r.look.az)+' · '+Math.round(r.look.alt)+'°';
+    return '<tr><td><span class="nm">'+x[0]+'</span><span class="pc">'+MON[pd.getUTCMonth()]+' '+pd.getUTCDate()+' · '+x[4]+'</span></td>'+
+      '<td class="r">'+when+'</td>'+
       '<td class="r">~'+x[3]+'/hr</td>'+
-      '<td class="r">'+Math.round(ma)+'°</td>'+
-      '<td class="r rate r-'+r[0]+'">'+r[1].split(' ')[0]+'</td></tr>';
+      '<td class="r"><span class="rate r-'+rt[0]+'">'+look+'</span><span class="pc">'+rt[1]+' from here</span></td></tr>';
   }).join('');
-  document.getElementById('tblnote').innerHTML='“Radiant height” is the highest the radiant ever climbs from Singapore. Notice the pattern: the equator-friendly <b>Eta Aquariids</b> and <b>Orionids</b> (both Halley’s dust) top the list, while the northern-hemisphere darlings — the Perseids, Quadrantids and Ursids — slide down it. “Peak rate” is the ideal dark-sky maximum; expect less under a bright Moon or city sky.';
+  document.getElementById('tblnote').innerHTML='Ordered by how soon each shower peaks — the next one is at the top. “Where to look” is the compass direction and height of the radiant at its best in the small hours (roughly 3–5 am); look about 40–60° to the side of it. Notice the equator’s hand: the <b>Orionids</b> and <b>Delta Aquariids</b> ride high, while the northern-hemisphere darlings — Perseids, Quadrantids, Ursids — sit low. “Rate” is the ideal dark-sky maximum; a bright Moon or city sky always cuts it.';
 })();
 
-/* ---- live: the next shower and how it will fare ---- */
+/* ---- live hero: the next shower and how it will fare ---- */
 (function(){
-  var now=sgtNow(), today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+  var now=sgtNow(), ty=now.getUTCFullYear(), today=Date.UTC(ty,now.getUTCMonth(),now.getUTCDate());
   var best=null;
-  SHOWERS.forEach(function(x){
-    [0,1].forEach(function(yr){
-      var pk=Date.UTC(now.getUTCFullYear()+yr,x[1]-1,x[2]);
-      var days=Math.round((pk-today)/86400000);
-      if(days>=-2 && (best===null || days<best.days)) best={x:x,days:days,pk:pk};
-    });
-  });
+  SHOWERS.forEach(function(x){var np=nextPeak(x,ty,today);if(best===null||np.days<best.days)best={x:x,days:np.days,pk:np.pk,y:np.y};});
   var box=document.getElementById('hero');
   if(!best){box.innerHTML='<h2>The next shower</h2><div class="big">See the table below</div>';return;}
-  var x=best.x, ma=maxAlt(x[6]), r=rating(ma);
-  // Moon at the peak (about 2am SGT that night) — the main spoiler
-  var peakNight=new Date(best.pk - 8*3600000 + 26*3600000); // ~2am SGT after the peak date
-  var mo=A.sky(peakNight).moon, moonWord=mo.illum<15?'a dark, New-Moon sky — ideal':mo.illum<50?'a '+mo.illum+'%-lit Moon — some interference':'a bright '+mo.illum+'%-lit Moon that will wash out the fainter ones';
-  var when=best.days<=0?'peaking now (night of '+MON[new Date(best.pk).getUTCMonth()]+' '+new Date(best.pk).getUTCDate()+')'
-         :best.days===1?'peaks tomorrow night':'peaks in '+best.days+' days — the night of '+MON[new Date(best.pk).getUTCMonth()]+' '+new Date(best.pk).getUTCDate();
+  var x=best.x, pd=new Date(best.pk), look=lookAt(x[5],x[6],best.y,x[1],x[2]), r=rating(look.alt);
+  var peakNight=new Date(best.pk - 8*3600000 + 26*3600000);
+  var mo=A.sky(peakNight).moon, moonWord=mo.illum<15?'a dark, New-Moon sky — ideal':mo.illum<50?'a '+mo.illum+'%-lit Moon — some interference':'a bright '+mo.illum+'%-lit Moon that washes out the fainter ones';
+  var when=best.days<=0?'peaking now (night of '+MON[pd.getUTCMonth()]+' '+pd.getUTCDate()+')'
+         :best.days===1?'peaks tomorrow night':'peaks in '+best.days+' days — the night of '+MON[pd.getUTCMonth()]+' '+pd.getUTCDate();
+  var lookTxt=look.alt<5?'its radiant stays below the horizon here — a poor one for Singapore'
+            :'in the small hours, look <b>'+A.compass(look.az)+'</b>, where its radiant reaches about <b>'+Math.round(look.alt)+'°</b> up ('+r[1]+' from here)';
   box.innerHTML='<h2>The next shower</h2>'+
     '<div class="big">☄️ The '+x[0]+' — '+when+'</div>'+
-    '<div class="d">Up to <b>'+x[3]+'/hr</b> under a perfect dark sky, from the dust of '+x[4]+'. '+
-    'Its radiant climbs to <b>'+Math.round(ma)+'°</b> here, so it should be <b>'+r[1]+'</b>. '+
-    'This year it peaks under <b>'+moonWord+'</b>. Best in the hours after midnight — lie back, no telescope needed.</div>';
+    '<div class="d">Up to <b>'+x[3]+'/hr</b> under a perfect dark sky, from the dust of '+x[4]+'. '+lookTxt+'. '+
+    'This year it peaks under <b>'+moonWord+'</b>. Best after midnight — lie back, no telescope needed.</div>';
 })();
 </script>
 <script src="version.js"></script>
