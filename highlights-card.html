@@ -17,6 +17,8 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .bar a,.bar button{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;background:none;cursor:pointer;}
 .bar button.alt{color:var(--white);border-color:var(--line);}
 .bar button.dl{background:var(--gold);color:#0b1733;border-color:var(--gold);}
+.bar input{color:var(--white);background:var(--navy2);border:1px solid var(--line);border-radius:9px;padding:6px 9px;font-size:12.5px;font-family:inherit;}
+.bar input::-webkit-calendar-picker-indicator{filter:invert(.85);cursor:pointer;}
 .cardwrap{margin:14px 0;text-align:center;}
 canvas{width:100%;max-width:460px;height:auto;border-radius:14px;border:1px solid var(--line);}
 .foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
@@ -32,12 +34,14 @@ canvas{width:100%;max-width:460px;height:auto;border-radius:14px;border:1px soli
       <a href="scob-dashboard-v3.html">← Dashboard</a>
       <button type="button" id="now">● Tonight</button>
       <button type="button" id="fri" class="alt">↺ Next Fri</button>
+      <input type="date" id="d" aria-label="Session date">
+      <input type="time" id="t" value="20:30" aria-label="Session time">
       <button type="button" id="dl" class="dl">⬇ Download image</button>
     </div>
   </header>
   <div class="cardwrap"><canvas id="card" width="1080" height="1080"></canvas></div>
   <div class="foot">
-    Computed on your device (P. Schlyter method) for the Science Centre Observatory, for about 8:30&nbsp;pm on the chosen night. Weather isn't included — check the <a href="scob-dashboard-v3.html">dashboard</a> before you promise clear skies!<br><span class="scob-version" style="opacity:.75"></span>
+    Computed on your device (P. Schlyter method) for the Science Centre Observatory, for the date and time you pick above. Weather isn't included — check the <a href="scob-dashboard-v3.html">dashboard</a> before you promise clear skies!<br><span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 <script src="astro-core.js"></script>
@@ -49,20 +53,27 @@ var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 var DY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 var when=null, curLabel='';
 function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
-function target(mode){ // returns UTC Date for ~8:30pm SGT of tonight / next Fri
+function presetDate(mode){ // SGT wall-clock date for tonight / next Fri
   var d=sgtNow();
   if(mode==='fri'){var add=(5-d.getDay()+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);}
-  return new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),20-8,30,0));
+  return d;
 }
+function fmtTime12(hh,mm){var ap=hh>=12?'pm':'am';var h=hh%12;if(h===0)h=12;return h+':'+pad(mm)+' '+ap;}
+function setInputs(d,hhmm){document.getElementById('d').value=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());document.getElementById('t').value=hhmm;}
 function phaseName(ill,wax){if(ill<0.03)return'New Moon';if(ill>0.97)return'Full Moon';
   if(ill<0.47)return(wax?'Waxing':'Waning')+' Crescent';if(ill<0.53)return(wax?'First':'Last')+' Quarter';
   return(wax?'Waxing':'Waning')+' Gibbous';}
 function moonEmoji(ill,wax){if(ill<0.04)return'🌑';if(ill>0.96)return'🌕';
   if(ill<0.47)return wax?'🌒':'🌘';if(ill<0.53)return wax?'🌓':'🌗';return wax?'🌔':'🌖';}
-function build(mode){
-  var date=target(mode);
+function build(){
+  var dv=document.getElementById('d').value, tv=document.getElementById('t').value||'20:30';
+  if(!dv){return;}
+  var dp=dv.split('-'), tp=tv.split(':');
+  var Y=+dp[0],M=+dp[1],D=+dp[2],hh=+tp[0],mm=+tp[1];
+  var date=new Date(Date.UTC(Y,M-1,D,hh-8,mm,0)); // chosen SGT -> UTC
   var sgt=new Date(date.getTime()+8*3600000);
-  curLabel=sgt.getUTCFullYear()+'-'+pad(sgt.getUTCMonth()+1)+'-'+pad(sgt.getUTCDate());
+  curLabel=Y+'-'+pad(M)+'-'+pad(D);
+  var timeLabel=fmtTime12(hh,mm);
   var s=A.sky(date);
   var dd=A.jd(date)-2451543.5, mo=A.moon(dd), wax=(((mo.lon-mo.slon)%360)+360)%360<180;
   var ill=s.moon.illum/100;   // sky() reports illumination as a percentage; convert to 0–1 fraction
@@ -75,9 +86,9 @@ function build(mode){
   var tops=[];
   A.SHOWPIECES.forEach(function(sp){if(sp.kind==='planet'||sp.kind==='moon')return;var p=A.positionOf(sp,date);if(p.alt>22)tops.push({nm:sp.name,alt:p.alt});});
   tops.sort(function(a,b){return b.alt-a.alt;});tops=tops.slice(0,3);
-  draw(sgt,ill,wax,best,tops);
+  draw(sgt,ill,wax,best,tops,timeLabel);
 }
-function draw(sgt,ill,wax,best,tops){
+function draw(sgt,ill,wax,best,tops,timeLabel){
   var cv=document.getElementById('card'),x=cv.getContext('2d'),W=1080;
   var g=x.createLinearGradient(0,0,0,W);g.addColorStop(0,'#0a1233');g.addColorStop(1,'#0b1a3f');
   x.fillStyle=g;x.fillRect(0,0,W,W);
@@ -92,7 +103,7 @@ function draw(sgt,ill,wax,best,tops){
   x.fillText('Science Centre Observatory · Singapore',W/2,130);
   x.fillStyle='#fff';x.font='700 52px sans-serif';
   x.fillText(DY[sgt.getUTCDay()]+', '+sgt.getUTCDate()+' '+MO[sgt.getUTCMonth()]+' '+sgt.getUTCFullYear(),W/2,205);
-  x.fillStyle='#5bd6e0';x.font='400 27px sans-serif';x.fillText('around 8:30 pm',W/2,245);
+  x.fillStyle='#5bd6e0';x.font='400 27px sans-serif';x.fillText(timeLabel,W/2,245);
   // Moon (emoji glyph) left, best planet (disc) right
   x.font='150px sans-serif';x.textAlign='center';
   x.fillText(moonEmoji(ill,wax),300,430);
@@ -116,13 +127,15 @@ function draw(sgt,ill,wax,best,tops){
   // footer band
   x.fillStyle='rgba(255,255,255,.06)';x.fillRect(0,W-140,W,140);
   x.fillStyle='#fff';x.font='700 32px sans-serif';x.fillText('Come and look through our telescopes 🔭',W/2,W-78);
-  x.fillStyle='#9fb0d6';x.font='400 25px sans-serif';x.fillText('Ticketed event · point your phone at the sky with our finder',W/2,W-40);
+  x.fillStyle='#9fb0d6';x.font='400 25px sans-serif';x.fillText('Point your phone at the sky with our finder',W/2,W-40);
 }
-document.getElementById('now').onclick=function(){when='now';build('now');};
-document.getElementById('fri').onclick=function(){when='fri';build('fri');};
+document.getElementById('now').onclick=function(){setInputs(presetDate('now'),'20:30');build();};
+document.getElementById('fri').onclick=function(){setInputs(presetDate('fri'),'20:30');build();};
+document.getElementById('d').oninput=build;
+document.getElementById('t').oninput=build;
 document.getElementById('dl').onclick=function(){var cv=document.getElementById('card');
   cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='scob-tonight-'+curLabel+'.png';document.body.appendChild(a);a.click();a.remove();});};
-build('now');
+setInputs(presetDate('now'),'20:30');build();
 </script>
 <script src="version.js"></script>
 </body>
