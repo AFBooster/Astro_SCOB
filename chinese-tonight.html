@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b1733">
-<meta name="description" content="Which of the ancient Chinese Twenty-Eight Mansions are above the horizon tonight from the Science Centre Observatory, Singapore — computed on-device for the Friday session, with an all-sky chart and a ranked list.">
+<meta name="description" content="Which of the ancient Chinese Twenty-Eight Mansions are above the horizon tonight from the Science Centre Observatory, Singapore, and which mansion the Moon lodges in — computed on-device, in English or 中文.">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>The Chinese Sky Tonight — SCOB Night-Sky</title>
@@ -15,62 +16,55 @@
   --dragon:#5fd38a; --tortoise:#6ea8ff; --tiger:#dfe4ee; --bird:#ff7a6b; }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--navy);color:var(--white);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
 body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
 .zh{font-family:"Songti SC","STSong","Noto Serif SC",serif;}
 .wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+body.lang-zh .en-only{display:none;}
+body:not(.lang-zh) .zh-only{display:none;}
 header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
-.titlerow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-h1{font-size:clamp(19px,5.2vw,23px);margin:0;color:var(--gold);}
-.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
-.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;font-weight:700;white-space:nowrap;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
 .ctrlbar{display:flex;align-items:center;gap:9px;margin-top:11px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex-wrap:wrap;}
 .datein,.timein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;}
 .datein::-webkit-calendar-picker-indicator,.timein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
-.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
 .daynote{font-size:12.5px;color:var(--mute);}
-
 .card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
 .card h2{margin:0 0 10px;font-size:15px;color:var(--gold);}
-.card h2 .en{color:var(--mute);font-weight:400;font-size:12px;}
-
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
 .glance{font-size:clamp(15px,4.2vw,18px);line-height:1.5;}
 .glance b{color:var(--gold);}
-.glance .zh{color:inherit;}
 .forwhen{font-size:12.5px;color:var(--mute);margin-top:8px;}
-
+.moonlodge{margin-top:12px;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:11px;font-size:14.5px;}
+.moonlodge b{color:var(--gold);}
+.moonlodge .sub{font-size:12.5px;color:var(--mute);margin-top:3px;}
 .chips{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px;}
 @media(min-width:620px){.chips{grid-template-columns:repeat(4,1fr);}}
 .chip{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:10px 12px;background:var(--navy3);}
-.chip .z{font-size:18px;font-weight:700;}
-.chip .e{font-size:12px;color:var(--mute);}
+.chip .z{font-size:18px;font-weight:700;}.chip .e{font-size:12px;color:var(--mute);}
 .chip .st{font-size:13px;margin-top:5px;font-weight:700;}
-
 .domewrap{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
 @media(min-width:820px){.domewrap{grid-template-columns:minmax(0,440px) minmax(0,1fr);}}
 #dome{width:100%;height:auto;display:block;max-width:440px;margin:0 auto;border-radius:12px;background:radial-gradient(circle at 50% 50%,#16224a 0%,#0b1220 78%);}
 .domehint{font-size:12px;color:var(--mute);text-align:center;margin:8px 0 0;}
-
 .tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;}
 thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
 tbody td{padding:9px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
 tbody tr.hl{background:#20345f;}
-.cn2{font-size:16px;font-weight:600;}
-.pin{color:var(--mute);font-size:12px;}
-.west{color:var(--white);}
-.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:2px;}
+.cn2{font-size:16px;font-weight:600;}.pin{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:2px;}
 .altbar{height:7px;border-radius:4px;background:#22305a;position:relative;min-width:54px;}
 .altbar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;}
 .dir{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
-.state.rise{background:rgba(95,211,138,.16);color:#9be9b8;}
-.state.set{background:rgba(255,107,107,.15);color:#ffb4b4;}
+.state.rise{background:rgba(95,211,138,.16);color:#9be9b8;}.state.set{background:rgba(255,107,107,.15);color:#ffb4b4;}
 .state.mer{background:rgba(245,197,66,.15);color:#f7d984;}
 .belowhead{margin:16px 0 0;font-size:12.5px;color:var(--mute);cursor:pointer;user-select:none;}
 .below tbody tr{opacity:.55;}
-
 .foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
 .foot a{color:var(--cyan);}
 .btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
@@ -79,19 +73,19 @@ tbody tr.hl{background:#20345f;}
 </head>
 <body>
 <div class="wrap">
-
   <header>
     <div class="titlerow">
-      <h1>🐉 The Chinese Sky Tonight</h1>
-      <div class="loc">Science Centre Observatory, Jurong · which of the 28 mansions are up</div>
-      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <h1>🐉 <span class="en-only">The Chinese Sky Tonight</span><span class="zh-only zh">今夜的中國星空</span></h1>
+      <div class="loc"><span class="en-only">Science Centre Observatory · which mansions are up</span><span class="zh-only">科學館天文台 · 今夜哪些宿在天上</span></div>
+      <button type="button" id="langBtn" class="btnmini">中文</button>
+      <a class="backlink" href="scob-dashboard-v3.html">←<span class="en-only"> Dashboard</span><span class="zh-only"> 主頁</span></a>
     </div>
     <div class="ctrlbar">
       <input type="date" id="datePick" class="datein">
       <input type="time" id="timePick" class="timein" value="20:30">
-      <button type="button" id="nextFri" class="btnmini">↺ Next Fri 8:30pm</button>
-      <button type="button" id="nowBtn" class="btnmini">● Now</button>
-      <button type="button" id="nightBtn" class="btnmini">🌙 Night</button>
+      <button type="button" id="nextFri" class="btnmini">↺ <span class="en-only">Next Fri 8:30pm</span><span class="zh-only">下週五 20:30</span></button>
+      <button type="button" id="nowBtn" class="btnmini">● <span class="en-only">Now</span><span class="zh-only">此刻</span></button>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
       <span class="daynote" id="dayNote"></span>
     </div>
   </header>
@@ -99,225 +93,178 @@ tbody tr.hl{background:#20345f;}
   <div class="card">
     <div class="glance" id="glance">—</div>
     <div class="forwhen" id="forWhen"></div>
+    <div class="moonlodge" id="moonLodge"></div>
     <div class="chips" id="chips"></div>
   </div>
 
   <div class="card">
-    <h2>Tonight's sky <span class="en">— looking up (N top, E left)</span></h2>
+    <h2><span class="en-only">Tonight's sky</span><span class="zh-only">今夜星空</span> <small><span class="en-only">— looking up (N top, E left)</span><span class="zh-only">— 仰視（上北左東）</span></small></h2>
     <div class="domewrap">
       <div>
         <svg id="dome" viewBox="-26 -26 352 352" role="img" aria-label="All-sky chart of the Chinese mansions above the horizon now"></svg>
-        <p class="domehint">Centre = overhead · rim = horizon · rings at 30° &amp; 60° altitude. Only mansions above the horizon are drawn.</p>
+        <p class="domehint"><span class="en-only">Centre = overhead · rim = horizon · rings at 30° &amp; 60°. Only mansions above the horizon are drawn.</span><span class="zh-only">中心＝天頂 · 外圈＝地平 · 環線為30°、60°高度。只繪地平線以上之宿。</span></p>
       </div>
       <div class="tablescroll">
         <table>
-          <thead><tr><th>Mansion</th><th>Western star</th><th>Alt</th><th>Look</th><th>State</th></tr></thead>
+          <thead><tr><th><span class="en-only">Mansion</span><span class="zh-only">宿</span></th><th><span class="en-only">Marker star</span><span class="zh-only">距星</span></th><th><span class="en-only">Alt</span><span class="zh-only">高度</span></th><th><span class="en-only">Look</span><span class="zh-only">方位</span></th><th><span class="en-only">State</span><span class="zh-only">狀態</span></th></tr></thead>
           <tbody id="upBody"></tbody>
         </table>
         <div class="belowhead" id="belowHead"></div>
-        <div class="tablescroll below" id="belowWrap" style="display:none">
-          <table><tbody id="belowBody"></tbody></table>
-        </div>
+        <div class="tablescroll below" id="belowWrap" style="display:none"><table><tbody id="belowBody"></tbody></table></div>
       </div>
     </div>
   </div>
 
   <div class="btnrow">
-    <a href="chinese-sky.html">🐉 What the mansions mean</a>
-    <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+    <a href="chinese-sky.html">🐉 <span class="en-only">What the mansions mean</span><span class="zh-only">二十八宿釋義</span></a>
+    <a href="scob-dashboard-v3.html">←<span class="en-only"> Night-sky dashboard</span><span class="zh-only"> 觀星主頁</span></a>
   </div>
 
   <div class="foot">
-    <p>Altitudes and directions are computed on-device for SCOB (1.3342°N, 103.7357°E) at the chosen moment, from each mansion's standard <b>determinative (reference) star</b> — so the page works offline. Rising / setting is from the star's hour angle; "near the meridian" means it is close to its highest point due north/south. For what each mansion means, see <a href="chinese-sky.html">The Chinese Sky</a>.</p>
+    <p><span class="en-only">Altitudes, directions and the Moon's lodge are computed on-device for SCOB (1.3342°N, 103.7357°E) at the chosen moment (Moon position via the shared <code>astro-core.js</code> engine), so the page works offline. Each mansion is shown by its marker (determinative) star. For what each mansion means, see <a href="chinese-sky.html">The Chinese Sky</a>.</span><span class="zh-only">高度、方位與月宿皆於本機為 SCOB（1.3342°N，103.7357°E）依所選時刻推算（月位用共用 <code>astro-core.js</code> 引擎），離線亦可用。每宿以其距星表示。釋義見 <a href="chinese-sky.html">中國星空</a>。</span></p>
     <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
   </div>
 </div>
 
+<script src="chinese-sky-data.js"></script>
+<script src="astro-core.js"></script>
 <script>
 const SVGNS="http://www.w3.org/2000/svg";
 function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 const COL={dragon:"#5fd38a",tortoise:"#6ea8ff",tiger:"#dfe4ee",bird:"#ff7a6b"};
-const SYMS={dragon:{zh:"蒼龍",en:"Azure Dragon"},tortoise:{zh:"玄武",en:"Black Tortoise"},
-            tiger:{zh:"白虎",en:"White Tiger"},bird:{zh:"朱雀",en:"Vermilion Bird"}};
+const SYMS={dragon:{zh:"蒼龍",en:"Azure Dragon"},tortoise:{zh:"玄武",en:"Black Tortoise"},tiger:{zh:"白虎",en:"White Tiger"},bird:{zh:"朱雀",en:"Vermilion Bird"}};
 const SYMORDER=["dragon","tortoise","tiger","bird"];
+let lang=(function(){try{return localStorage.getItem("scobLangCS")||"en";}catch(e){return "en";}})();
+const L=(en,zh)=>lang==="zh"?zh:en;
 
-const M28=[
- {zh:"角",pin:"Jiǎo",en:"Horn",sym:"dragon",west:"Spica",ra:201.3,dec:-11.2},
- {zh:"亢",pin:"Kàng",en:"Neck",sym:"dragon",west:"κ Vir",ra:214.0,dec:-10.3},
- {zh:"氐",pin:"Dī",en:"Root",sym:"dragon",west:"Zubenelgenubi",ra:222.7,dec:-16.0},
- {zh:"房",pin:"Fáng",en:"Room",sym:"dragon",west:"π Sco",ra:239.7,dec:-26.1},
- {zh:"心",pin:"Xīn",en:"Heart",sym:"dragon",west:"Antares",ra:247.4,dec:-26.4},
- {zh:"尾",pin:"Wěi",en:"Tail",sym:"dragon",west:"μ¹ Sco",ra:253.1,dec:-38.0},
- {zh:"箕",pin:"Jī",en:"Basket",sym:"dragon",west:"Alnasl",ra:271.5,dec:-30.4},
- {zh:"斗",pin:"Dǒu",en:"Dipper",sym:"tortoise",west:"φ Sgr",ra:284.4,dec:-27.0},
- {zh:"牛",pin:"Niú",en:"Ox",sym:"tortoise",west:"Dabih",ra:305.3,dec:-14.8},
- {zh:"女",pin:"Nǚ",en:"Girl",sym:"tortoise",west:"Albali",ra:311.9,dec:-9.5},
- {zh:"虛",pin:"Xū",en:"Emptiness",sym:"tortoise",west:"Sadalsuud",ra:322.9,dec:-5.6},
- {zh:"危",pin:"Wēi",en:"Rooftop",sym:"tortoise",west:"Sadalmelik",ra:331.4,dec:-0.3},
- {zh:"室",pin:"Shì",en:"Encampment",sym:"tortoise",west:"Markab",ra:346.2,dec:15.2},
- {zh:"壁",pin:"Bì",en:"Wall",sym:"tortoise",west:"Algenib",ra:3.3,dec:15.2},
- {zh:"奎",pin:"Kuí",en:"Legs",sym:"tiger",west:"η And",ra:19.3,dec:23.4},
- {zh:"婁",pin:"Lóu",en:"Bond",sym:"tiger",west:"Sheratan",ra:28.7,dec:20.8},
- {zh:"胃",pin:"Wèi",en:"Stomach",sym:"tiger",west:"35 Ari",ra:42.4,dec:27.7},
- {zh:"昴",pin:"Mǎo",en:"Pleiades",sym:"tiger",west:"Pleiades",ra:56.2,dec:24.1},
- {zh:"畢",pin:"Bì",en:"Net",sym:"tiger",west:"Ain",ra:67.2,dec:19.2},
- {zh:"觜",pin:"Zī",en:"Beak",sym:"tiger",west:"Meissa",ra:83.8,dec:9.9},
- {zh:"參",pin:"Shēn",en:"Orion",sym:"tiger",west:"Alnitak",ra:85.2,dec:-1.9},
- {zh:"井",pin:"Jǐng",en:"Well",sym:"bird",west:"Tejat",ra:95.7,dec:22.5},
- {zh:"鬼",pin:"Guǐ",en:"Ghost",sym:"bird",west:"θ Cnc",ra:130.1,dec:18.1},
- {zh:"柳",pin:"Liǔ",en:"Willow",sym:"bird",west:"δ Hya",ra:133.0,dec:5.7},
- {zh:"星",pin:"Xīng",en:"Star",sym:"bird",west:"Alphard",ra:141.9,dec:-8.7},
- {zh:"張",pin:"Zhāng",en:"Ext. Net",sym:"bird",west:"υ¹ Hya",ra:145.8,dec:-14.8},
- {zh:"翼",pin:"Yì",en:"Wings",sym:"bird",west:"Alkes",ra:164.9,dec:-18.3},
- {zh:"軫",pin:"Zhěn",en:"Chariot",sym:"bird",west:"Gienah",ra:183.95,dec:-17.5}
-];
+// mansions (determinative) from shared data
+const M28=window.CSKY.map(m=>({n:m.n,zh:m.zh,pin:m.pin,en:m.en,sym:m.sym,west:m.westDet,dEN:m.dEN,dZH:m.dZH,
+  ra:m.stars[m.det][0],dec:m.stars[m.det][1]}));
+const HORN_RA=M28.find(m=>m.n===1).ra;            // base the RA sweep on the Horn's own star
+M28.forEach(m=>m.rs=(m.ra-HORN_RA+360)%360);
 
 const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI;
 const rev=x=>((x%360)+360)%360;
 const pad=n=>String(n).padStart(2,"0");
-const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const WD_EN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],WD_ZH=["日","一","二","三","四","五","六"];
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function sgtNow(){const n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
 function nextFridayYMD(){const d=sgtNow();const dow=d.getDay();let add=(5-dow+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return{y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};}
 function jd(date){return date.getTime()/86400000+2440587.5;}
 const CMP=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-const compass=az=>CMP[Math.round(az/22.5)%16];
-
-let liveMode=false, liveTimer=null;
+const CMPZH=["北","北北東","東北","東北東","東","東南東","東南","南南東","南","南南西","西南","西南西","西","西北西","西北","北北西"];
+const compass=az=>lang==="zh"?CMPZH[Math.round(az/22.5)%16]:CMP[Math.round(az/22.5)%16];
+let liveTimer=null;
 
 function compute(y,m,d,hh,mm){
-  const utc=Date.UTC(y,m,d,hh-8,mm,0);          // SGT -> UTC
+  const utc=Date.UTC(y,m,d,hh-8,mm,0);
   const LST=rev(280.46061837+360.98564736629*(jd(new Date(utc))-2451545.0)+LON);
-  M28.forEach(o=>{
-    let H=((LST-o.ra+540)%360)-180;              // hour angle, [-180,180]
-    const Hr=H*RAD, dr=o.dec*RAD, l=LAT*RAD;
+  M28.forEach(o=>{let H=((LST-o.ra+540)%360)-180;const Hr=H*RAD,dr=o.dec*RAD,l=LAT*RAD;
     o.alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
-    o.az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);
-    o.H=H;
-  });
+    o.az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);o.H=H;});
+  return LST;
+}
+function stateOf(o){if(o.alt>=60)return["mer",L("near overhead","近天頂")];
+  if(Math.abs(o.H)<12)return["mer",L("near highest","近中天")];
+  return o.H<0?["rise",L("rising · ","升 · ")+compass(o.az)]:["set",L("setting · ","落 · ")+compass(o.az)];}
+
+// Moon's lodge — which mansion the Moon rests in tonight (astro-core)
+function moonLodge(y,m,d,hh,mm,LST){
+  if(!window.Astro||!Astro.moon)return null;
+  const date=new Date(Date.UTC(y,m,d,hh-8,mm,0)), dS=jd(date)-2451543.5;
+  const mo=Astro.moon(dS), meq=Astro.eclToEq(mo.lon,mo.lat,dS);
+  const mrs=(meq.ra-HORN_RA+360)%360;
+  let lodge=M28[0];for(const x of M28){if(x.rs<=mrs)lodge=x;}   // last mansion the Moon has passed
+  let H=((LST-meq.ra+540)%360)-180;const Hr=H*RAD,dr=meq.dec*RAD,l=LAT*RAD;
+  const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+  let illum=null;try{const su=Astro.sun(dS);illum=Math.round((1-Math.cos(rev(mo.lon-su.lon)*RAD))/2*100);}catch(e){}
+  return{lodge,alt,illum};
 }
 
-function stateOf(o){
-  if(o.alt>=60) return ["mer","near overhead"];
-  if(Math.abs(o.H)<12) return ["mer","near highest"];
-  return o.H<0 ? ["rise","rising · "+compass(o.az)] : ["set","setting · "+compass(o.az)];
-}
-
-// ---- all-sky dome ----
-const dome=document.getElementById("dome");
-const ZC=150, ZR=140;
-function domePos(az,alt){const r=(90-alt)/90*ZR;return[ZC - r*Math.sin(az*RAD), ZC - r*Math.cos(az*RAD)];}
-function drawDome(){
-  dome.innerHTML="";
+const dome=document.getElementById("dome");const ZC=150,ZR=140;
+function domePos(az,alt){const r=(90-alt)/90*ZR;return[ZC-r*Math.sin(az*RAD),ZC-r*Math.cos(az*RAD)];}
+function drawDome(){dome.innerHTML="";
   [ZR,ZR*2/3,ZR/3].forEach((r,i)=>dome.appendChild(el("circle",{cx:ZC,cy:ZC,r,fill:"none",stroke:i===0?"#3a4c86":"#26335c","stroke-width":i===0?1.4:1})));
   dome.appendChild(el("circle",{cx:ZC,cy:ZC,r:1.6,fill:"#9fb0d6"}));
-  [["N",0],["E",90],["S",180],["W",270]].forEach(([lab,az])=>{
-    const[x,y]=domePos(az,-7);const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":12,"font-weight":700});t.textContent=lab;dome.appendChild(t);});
-  const up=M28.filter(o=>o.alt>0).sort((a,b)=>a.alt-b.alt);
-  up.forEach(o=>{
-    const[x,y]=domePos(o.az,o.alt);const g=el("g",{});
+  [[L("N","北"),0],[L("E","東"),90],[L("S","南"),180],[L("W","西"),270]].forEach(([lab,az])=>{const[x,y]=domePos(az,-7);
+    const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":12,"font-weight":700});t.textContent=lab;dome.appendChild(t);});
+  M28.filter(o=>o.alt>0).sort((a,b)=>a.alt-b.alt).forEach(o=>{const[x,y]=domePos(o.az,o.alt);const g=el("g",{});
     g.appendChild(el("circle",{cx:x,cy:y,r:4.5,fill:COL[o.sym],stroke:"#0b1733","stroke-width":.6}));
-    const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:COL[o.sym],"font-size":12,class:"zh"});t.textContent=o.zh;
-    g.appendChild(t);
-    g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));
-    dome.appendChild(g);
-  });
-}
+    const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:COL[o.sym],"font-size":12,class:"zh"});t.textContent=o.zh;g.appendChild(t);
+    g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));dome.appendChild(g);});}
 function hl(zh,on){document.querySelectorAll("#upBody tr").forEach(tr=>tr.classList.toggle("hl",on&&tr.dataset.zh===zh));}
 
-// ---- render ----
 function render(y,m,d,hh,mm){
-  compute(y,m,d,hh,mm);
+  const LST=compute(y,m,d,hh,mm);
   const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();
-  document.getElementById("forWhen").textContent=`For ${WD[wd]}, ${d} ${MON[m]} ${y} at ${(hh%12||12)}:${pad(mm)} ${hh<12?"am":"pm"} SGT`;
-  document.getElementById("dayNote").textContent = wd===5 ? "✓ Friday session night" : "";
-
+  document.getElementById("forWhen").textContent=L("For ","")+L(WD_EN[wd],"週"+WD_ZH[wd])+`, ${d} ${L(MON[m],(m+1)+"月")} ${y} · ${(hh%12||12)}:${pad(mm)} ${hh<12?"am":"pm"} SGT`;
+  document.getElementById("dayNote").textContent=wd===5?L("✓ Friday session night","✓ 週五開放夜"):"";
   const up=M28.filter(o=>o.alt>0);
-  // symbol summaries
-  const chips=document.getElementById("chips");chips.innerHTML="";
-  const summ={};
-  SYMORDER.forEach(k=>{
-    const all=M28.filter(o=>o.sym===k), u=all.filter(o=>o.alt>0);
-    const mean=u.length?u.reduce((s,o)=>s+o.alt,0)/u.length:0;
-    const meanH=u.length?u.reduce((s,o)=>s+o.H,0)/u.length:0;
-    summ[k]={n:u.length,mean,meanH};
-    let st = u.length===0 ? "below horizon"
-      : (mean>=55?"high overhead":meanH<-15?"rising, E":meanH>15?"setting, W":"near meridian");
+  // chips
+  const chips=document.getElementById("chips");chips.innerHTML="";const summ={};
+  SYMORDER.forEach(k=>{const all=M28.filter(o=>o.sym===k),u=all.filter(o=>o.alt>0);
+    const mean=u.length?u.reduce((s,o)=>s+o.alt,0)/u.length:0,meanH=u.length?u.reduce((s,o)=>s+o.H,0)/u.length:0;summ[k]={n:u.length,mean,meanH};
+    let st=u.length===0?L("below horizon","已落"):(mean>=55?L("high overhead","近天頂"):meanH<-15?L("rising, E","東升"):meanH>15?L("setting, W","西落"):L("near meridian","近中天"));
     const div=document.createElement("div");div.className="chip";div.style.borderLeftColor=COL[k];
-    div.innerHTML=`<div class="z zh" style="color:${COL[k]}">${SYMS[k].zh}</div>
-      <div class="e">${SYMS[k].en}</div>
-      <div class="st" style="color:${u.length?'#e7ecf7':'#7d8cb5'}">${u.length}/7 up · <span style="color:var(--mute);font-weight:400">${st}</span></div>`;
-    chips.appendChild(div);
-  });
-
+    div.innerHTML=`<div class="z zh" style="color:${COL[k]}">${SYMS[k].zh}</div><div class="e">${L(SYMS[k].en,"")}</div>
+      <div class="st" style="color:${u.length?'#e7ecf7':'#7d8cb5'}">${u.length}/7 ${L("up","")} · <span style="color:var(--mute);font-weight:400">${st}</span></div>`;chips.appendChild(div);});
   // glance
   const upSyms=SYMORDER.filter(k=>summ[k].n>0).sort((a,b)=>summ[b].mean-summ[a].mean);
   const g=document.getElementById("glance");
-  if(upSyms.length===0){ g.innerHTML="No mansions are above the horizon at this moment — try the session time."; }
-  else{
-    const top=upSyms[0], s=summ[top];
-    const high = s.mean>=55?"rides high overhead":s.mean>=30?"stands well up":"sits low";
-    const dir = s.meanH<-15?"climbing out of the east":s.meanH>15?"sinking toward the west":"near the meridian";
-    g.innerHTML=`Tonight <b>${up.length}</b> of the 28 mansions are up. The <b class="zh">${SYMS[top].zh}</b> <b>${SYMS[top].en}</b> ${high}, ${dir}.`;
-  }
-
-  // up table (highest first)
+  if(!upSyms.length){g.innerHTML=L("No mansions are above the horizon at this moment.","此刻無宿在地平線以上。");}
+  else{const top=upSyms[0],s=summ[top];
+    const dir=s.meanH<-15?L("climbing out of the east","自東方升起"):s.meanH>15?L("sinking toward the west","向西方沉落"):L("near the meridian","近中天");
+    g.innerHTML=L(`Tonight <b>${up.length}</b> of the 28 mansions are up. The <b class="zh">${SYMS[top].zh}</b> <b>${SYMS[top].en}</b> ${s.mean>=55?"rides high overhead":s.mean>=30?"stands well up":"sits low"}, ${dir}.`,
+      `今夜二十八宿中有 <b>${up.length}</b> 宿在天上。<b class="zh">${SYMS[top].zh}</b>${s.mean>=55?"高懸天頂":s.mean>=30?"高掛天上":"低懸天邊"}，${s.meanH<-15?"自東方升起":s.meanH>15?"向西方沉落":"近於中天"}。`);}
+  // moon lodge
+  const ml=moonLodge(y,m,d,hh,mm,LST);const mlEl=document.getElementById("moonLodge");
+  if(ml){const lo=ml.lodge;const upTxt=ml.alt>0?L(`up ${ml.alt.toFixed(0)}° now`,`此刻在天上 ${ml.alt.toFixed(0)}°`):L("below the horizon now","此刻已落");
+    mlEl.style.display="block";
+    mlEl.innerHTML=L(`🌙 Tonight the Moon lodges in <b class="zh">${lo.zh}</b> <b>${lo.pin} · ${lo.en}</b> — ${lo.dEN}
+      <div class="sub">The Moon is ~${ml.illum!=null?ml.illum+"% lit":""}, ${upTxt}. It shifts about one lodge east each night.</div>`,
+      `🌙 今夜月亮宿於 <b class="zh">${lo.zh}宿</b>（${lo.pin}）—— ${lo.dZH}
+      <div class="sub">月亮約${ml.illum!=null?ml.illum+"% 明":""}，${upTxt}。每夜東移約一宿。</div>`);
+  } else mlEl.style.display="none";
+  // up table
   const ub=document.getElementById("upBody");ub.innerHTML="";
-  up.sort((a,b)=>b.alt-a.alt).forEach(o=>{
-    const[cls,txt]=stateOf(o);const w=Math.round(o.alt/90*100);
+  up.sort((a,b)=>b.alt-a.alt).forEach(o=>{const[cls,txt]=stateOf(o);const w=Math.round(o.alt/90*100);
     const tr=document.createElement("tr");tr.dataset.zh=o.zh;
-    tr.innerHTML=`<td><span class="swatch" style="background:${COL[o.sym]}"></span>
-        <span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin} · ${o.en}</span></td>
-      <td class="west">${o.west}</td>
-      <td><div class="altbar"><i style="width:${w}%;background:${COL[o.sym]}"></i></div><span class="pin">${o.alt.toFixed(0)}°</span></td>
-      <td class="dir">${compass(o.az)}</td>
-      <td><span class="state ${cls}">${txt}</span></td>`;
-    ub.appendChild(tr);
-  });
-
-  // below horizon
+    tr.innerHTML=`<td><span class="swatch" style="background:${COL[o.sym]}"></span><span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin}${lang==="en"?" · "+o.en:""}</span></td>
+      <td class="west">${o.west}</td><td><div class="altbar"><i style="width:${w}%;background:${COL[o.sym]}"></i></div><span class="pin">${o.alt.toFixed(0)}°</span></td>
+      <td class="dir">${compass(o.az)}</td><td><span class="state ${cls}">${txt}</span></td>`;ub.appendChild(tr);});
+  // below
   const below=M28.filter(o=>o.alt<=0).sort((a,b)=>b.alt-a.alt);
-  const bh=document.getElementById("belowHead"), bw=document.getElementById("belowWrap"), bb=document.getElementById("belowBody");
-  bh.textContent=`▾ ${below.length} mansions below the horizon now`;
-  bb.innerHTML=below.map(o=>`<tr><td><span class="swatch" style="background:${COL[o.sym]}"></span>
-      <span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin} · ${o.en}</span></td>
-      <td class="west">${o.west}</td><td class="pin">${o.alt.toFixed(0)}°</td></tr>`).join("");
-
+  document.getElementById("belowHead").textContent=L(`▾ ${below.length} mansions below the horizon now`,`▾ 尚有 ${below.length} 宿在地平線下`);
+  document.getElementById("belowBody").innerHTML=below.map(o=>`<tr><td><span class="swatch" style="background:${COL[o.sym]}"></span><span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin}${lang==="en"?" · "+o.en:""}</span></td><td class="west">${o.west}</td><td class="pin">${o.alt.toFixed(0)}°</td></tr>`).join("");
   drawDome();
 }
 
-// ---- controls ----
-function readAndRender(){
-  const dv=document.getElementById("datePick").value, tv=document.getElementById("timePick").value||"20:30";
-  if(!dv)return;const p=dv.split("-").map(Number), t=tv.split(":").map(Number);
-  render(p[0],p[1]-1,p[2],t[0],t[1]);
-}
-function stopLive(){liveMode=false;if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
+let curY,curM,curD,curH,curMin;
+function readAndRender(){const dv=document.getElementById("datePick").value,tv=document.getElementById("timePick").value||"20:30";
+  if(!dv)return;const p=dv.split("-").map(Number),t=tv.split(":").map(Number);curY=p[0];curM=p[1]-1;curD=p[2];curH=t[0];curMin=t[1];render(curY,curM,curD,curH,curMin);}
+function stopLive(){if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
 document.getElementById("datePick").addEventListener("change",()=>{stopLive();readAndRender();});
 document.getElementById("timePick").addEventListener("change",()=>{stopLive();readAndRender();});
 document.getElementById("nextFri").addEventListener("click",()=>{stopLive();const f=nextFridayYMD();
-  document.getElementById("datePick").value=`${f.y}-${pad(f.m+1)}-${pad(f.d)}`;
-  document.getElementById("timePick").value="20:30";readAndRender();});
-document.getElementById("nowBtn").addEventListener("click",()=>{
-  const n=sgtNow();document.getElementById("datePick").value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
+  document.getElementById("datePick").value=`${f.y}-${pad(f.m+1)}-${pad(f.d)}`;document.getElementById("timePick").value="20:30";readAndRender();});
+document.getElementById("nowBtn").addEventListener("click",()=>{const n=sgtNow();
+  document.getElementById("datePick").value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
   document.getElementById("timePick").value=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
-  render(n.getFullYear(),n.getMonth(),n.getDate(),n.getHours(),n.getMinutes());
-  liveMode=true;if(liveTimer)clearInterval(liveTimer);
-  liveTimer=setInterval(()=>{const t=sgtNow();document.getElementById("timePick").value=`${pad(t.getHours())}:${pad(t.getMinutes())}`;
-    render(t.getFullYear(),t.getMonth(),t.getDate(),t.getHours(),t.getMinutes());},60000);
-});
-document.getElementById("belowHead").addEventListener("click",()=>{
-  const w=document.getElementById("belowWrap");w.style.display=w.style.display==="none"?"block":"none";});
+  curY=n.getFullYear();curM=n.getMonth();curD=n.getDate();curH=n.getHours();curMin=n.getMinutes();render(curY,curM,curD,curH,curMin);
+  stopLive();liveTimer=setInterval(()=>{const t=sgtNow();document.getElementById("timePick").value=`${pad(t.getHours())}:${pad(t.getMinutes())}`;
+    curY=t.getFullYear();curM=t.getMonth();curD=t.getDate();curH=t.getHours();curMin=t.getMinutes();render(curY,curM,curD,curH,curMin);},60000);});
+document.getElementById("belowHead").addEventListener("click",()=>{const w=document.getElementById("belowWrap");w.style.display=w.style.display==="none"?"block":"none";});
 
-// night mode
-function applyNight(on){document.body.classList.toggle("night",on);document.getElementById("nightBtn").textContent=on?"☀️ Day":"🌙 Night";try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+function applyLang(){document.body.classList.toggle("lang-zh",lang==="zh");document.documentElement.lang=lang==="zh"?"zh":"en";
+  document.getElementById("langBtn").textContent=lang==="zh"?"EN":"中文";if(curY!=null)render(curY,curM,curD,curH,curMin);}
+document.getElementById("langBtn").addEventListener("click",()=>{lang=lang==="zh"?"en":"zh";try{localStorage.setItem("scobLangCS",lang);}catch(e){}applyLang();});
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
 document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
 try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
 
-// init: next Friday 8:30 pm
-const f0=nextFridayYMD();
-document.getElementById("datePick").value=`${f0.y}-${pad(f0.m+1)}-${pad(f0.d)}`;
-render(f0.y,f0.m,f0.d,20,30);
-
+const f0=nextFridayYMD();document.getElementById("datePick").value=`${f0.y}-${pad(f0.m+1)}-${pad(f0.d)}`;
+document.body.classList.toggle("lang-zh",lang==="zh");document.getElementById("langBtn").textContent=lang==="zh"?"EN":"中文";
+curY=f0.y;curM=f0.m;curD=f0.d;curH=20;curMin=30;render(f0.y,f0.m,f0.d,20,30);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 <script src="version.js"></script>

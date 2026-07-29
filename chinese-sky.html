@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b1733">
-<meta name="description" content="The Chinese sky cross-referenced with the modern Western sky — the Four Symbols and the Twenty-Eight Mansions, with an interactive strip and traditional circular star chart. SCOB Night-Sky, Singapore Science Centre Observatory.">
+<meta name="description" content="The Chinese sky cross-referenced with the modern Western sky — the Four Symbols and the Twenty-Eight Mansions, with full star asterisms, an interactive strip and traditional circular chart, in English or 中文. SCOB Night-Sky, Singapore.">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>The Chinese Sky — SCOB Night-Sky</title>
@@ -20,24 +21,28 @@ body{margin:0;background:var(--navy);color:var(--white);
 body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
 .zh{font-family:"Songti SC","STSong","Noto Serif SC",serif;}
 .wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+/* language switch */
+.en-only,.zh-only{}
+body.lang-zh .en-only{display:none;}
+body:not(.lang-zh) .zh-only{display:none;}
 
 header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
-.titlerow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-h1{font-size:clamp(19px,5.2vw,23px);margin:0;color:var(--gold);}
-.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
-.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;font-weight:700;white-space:nowrap;}
-.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.btnmini.on{background:#20345f;color:var(--white);}
 
 .card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
-.card h2{margin:0 0 6px;font-size:15px;color:var(--gold);}
-.card h2 .en{color:var(--mute);font-weight:400;font-size:12px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
 .lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
 .essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
 .essay p:last-child{margin-bottom:0;}
 .essay b{color:var(--gold);font-weight:700;}
 .essay .term{color:var(--cyan);}
 
-/* ---- four symbols: wheel + cards ---- */
 .symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
 @media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
 #wheel{width:100%;height:auto;display:block;max-width:420px;margin:0 auto;}
@@ -45,76 +50,57 @@ h1{font-size:clamp(19px,5.2vw,23px);margin:0;color:var(--gold);}
 .animals{display:flex;flex-direction:column;gap:9px;}
 .acard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);
   border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
-.acard:active{transform:scale(.99);}
 .acard.active{background:#20345f;border-color:var(--gold);}
 .acard .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
 .acard .z{font-size:19px;font-weight:700;}
 .acard .e{font-size:14.5px;font-weight:700;}
 .acard .meta{font-size:11.5px;color:var(--mute);margin-left:auto;}
 .acard .desc{font-size:12.5px;color:var(--mute);margin:6px 0 0;max-height:0;overflow:hidden;transition:max-height .2s;}
-.acard.active .desc{max-height:160px;}
+.acard.active .desc{max-height:170px;}
 
-/* ---- map views ---- */
 .viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
 .vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);
-  border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;
-  -webkit-tap-highlight-color:transparent;}
+  border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
 .vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
-.mapview{display:none;}
-.mapview.show{display:block;}
+.mapview{display:none;}.mapview.show{display:block;}
 .stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
-#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;
-  background:radial-gradient(ellipse at 50% 0%, #16224400 0%, #0a0e1a 75%);background-color:#0c1530;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
 .scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
 @media(min-width:760px){.scrollhint{display:none;}}
 #circle{width:100%;height:auto;display:block;max-width:460px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
 .cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
-.spoke{stroke:#26335c;}
-.qdiv{stroke:#3a4c86;stroke-dasharray:3 3;opacity:.55;}
-.symarc{fill:none;stroke-width:5;}
-.rimchar{text-anchor:middle;dominant-baseline:central;font-size:14px;}
-.dirzh{text-anchor:middle;dominant-baseline:central;font-weight:700;}
-.dirbig{text-anchor:middle;dominant-baseline:central;font-size:10px;letter-spacing:.1em;}
-.skychar{text-anchor:middle;font-size:13px;}
-.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.spoke{stroke:#26335c;}.qdiv{stroke:#3a4c86;stroke-dasharray:3 3;opacity:.55;}
+.symarc{fill:none;stroke-width:5;}.rimchar{text-anchor:middle;dominant-baseline:central;font-size:14px;}
+.dirzh{text-anchor:middle;dominant-baseline:central;font-weight:700;}.dirbig{text-anchor:middle;dominant-baseline:central;font-size:10px;letter-spacing:.1em;}
+.skychar{text-anchor:middle;font-size:13px;}.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
 .wedgechar{text-anchor:middle;dominant-baseline:central;font-size:14px;font-weight:700;fill:#0b1733;pointer-events:none;}
 .dirlabel{text-anchor:middle;fill:var(--mute);font-size:11px;letter-spacing:.08em;}
 
-/* ---- tables ---- */
 .tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;}
-thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;
-  padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
-tbody td{padding:9px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
 tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-tbody tr:active{background:#1a2b56;}
-tbody tr.dim{opacity:.28;}
-tbody tr.hl{background:#20345f;}
-.cn2{font-size:16px;font-weight:600;}
-.pin{color:var(--mute);font-size:12px;}
-.role{color:var(--mute);}
-.west{color:var(--star);}
-.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.cn2{font-size:16px;font-weight:600;}.pin{color:var(--mute);font-size:12px;}
+.west{color:var(--star);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
 .num{color:var(--mute);font-variant-numeric:tabular-nums;font-size:12px;}
-@media(max-width:559px){ .col-num,.col-bayer{display:none;} }
+@media(max-width:559px){.col-num,.col-mean{display:none;}}
 
-/* ---- deep dive ---- */
-.grid2{display:grid;grid-template-columns:1fr;gap:16px;}
-@media(min-width:860px){.grid2{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
-.mansions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
-.mtile{cursor:pointer;border:1px solid var(--line);background:var(--navy3);border-radius:10px;
-  padding:9px 13px;display:flex;align-items:center;gap:8px;transition:.15s;-webkit-tap-highlight-color:transparent;}
-.mtile.active{border-color:var(--gold);background:#20345f;}
-.mtile .z{font-size:19px;color:var(--gold);font-weight:700;}
-.mtile .e{font-size:12px;color:var(--mute);line-height:1.2;}
-.mtile.active .e{color:var(--white);}
-#sky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+/* deep dive */
+.mpick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;}
+.mchip{cursor:pointer;border:1px solid var(--line);background:var(--navy3);border-radius:8px;
+  padding:7px 2px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.mchip .z{font-size:17px;font-weight:700;line-height:1;}
+.mchip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
 .starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
-.aline{stroke:#3a4c86;stroke-width:1;opacity:.5;}
-.mdesc{margin-top:8px;min-height:60px;}
-.mdesc h3{margin:0 0 3px;font-size:15px;}
-.mdesc h3 .z{color:var(--gold);}
-.mdesc p{margin:0;font-size:13px;color:var(--mute);}
+.aline{stroke:#5bd6e0;stroke-width:1.1;opacity:.45;}
+.mdesc h3{margin:0 0 4px;font-size:17px;}.mdesc h3 .z{color:var(--gold);}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0;}
 
 .foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
 .foot a{color:var(--cyan);}
@@ -127,29 +113,38 @@ tbody tr.hl{background:#20345f;}
 
   <header>
     <div class="titlerow">
-      <h1>🐉 The Chinese Sky</h1>
-      <div class="loc">Science Centre Observatory, Jurong · the 28 mansions vs the Western sky</div>
-      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
-      <button type="button" id="nightBtn" class="btnmini">🌙 Night</button>
+      <h1>🐉 <span class="en-only">The Chinese Sky</span><span class="zh-only zh">中國星空</span></h1>
+      <div class="loc"><span class="en-only">Science Centre Observatory, Jurong · 28 mansions vs the Western sky</span><span class="zh-only">新加坡科學館天文台 · 二十八宿與西方星空</span></div>
+      <button type="button" id="langBtn" class="btnmini">中文</button>
+      <a class="backlink" href="scob-dashboard-v3.html">←<span class="en-only"> Dashboard</span><span class="zh-only"> 主頁</span></a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
     </div>
   </header>
 
   <!-- intro -->
   <div class="card essay">
-    <p class="lede">Long before the Greek constellations reached China, the sky here was mapped as an <b>imperial court</b> — an emperor, his family and ministers, each a small group of stars called a <span class="term">star official</span> (<span class="zh">星官</span>).</p>
-    <p>Where Western astronomy is built on the <b>ecliptic</b> and its zodiac, the Chinese sky is <b>equatorial and pole-centred</b>: the unmoving north pole is the throne, and the whole sky wheels around it.</p>
-    <p><b>Why twenty-eight?</b> The Moon circles the stars in about <b>27.3 days</b>, resting each night against a new patch of sky — a <span class="zh">宿</span> <span class="term">xiù</span>, a "lodge". Rounded off, that gives 28 stations, one per night.</p>
-    <p><b>Why four animals?</b> The 28 lodges group into four sevens, one per direction and season. Joined up, each quarter forms a beast: the <b>Azure Dragon</b> of spring in the east, the <b>Vermilion Bird</b> of summer in the south, the <b>White Tiger</b> of autumn in the west, the <b>Black Tortoise</b> of winter in the north — so the season could be read from whichever ruled the dusk.</p>
+    <div class="en-only">
+      <p class="lede">Long before the Greek constellations reached China, the sky here was mapped as an <b>imperial court</b> — an emperor, his family and ministers, each a small group of stars called a <span class="term">star official</span> (<span class="zh">星官</span>).</p>
+      <p>Where Western astronomy is built on the <b>ecliptic</b> and its zodiac, the Chinese sky is <b>equatorial and pole-centred</b>: the unmoving north pole is the throne, and the whole sky wheels around it.</p>
+      <p><b>Why twenty-eight?</b> The Moon circles the stars in about <b>27.3 days</b>, resting each night against a new patch of sky — a <span class="zh">宿</span> <span class="term">xiù</span>, a “lodge”. Rounded off, that gives 28 stations, one per night.</p>
+      <p><b>Why four animals?</b> The 28 lodges group into four sevens, one per direction and season, each tracing a beast: the <b>Azure Dragon</b> of spring in the east, the <b>Vermilion Bird</b> of summer in the south, the <b>White Tiger</b> of autumn in the west, the <b>Black Tortoise</b> of winter in the north.</p>
+    </div>
+    <div class="zh-only zh">
+      <p class="lede">早在希臘星座傳入之前，中國先民已把天空繪成一座<b>天上的朝廷</b>——有天子、宗室與百官，每一組星各成一個<span class="term">星官</span>。</p>
+      <p>西方天文以<b>黃道</b>與十二宮為本；中國星空則<b>以赤道與北極為中心</b>：不動的北極即帝座，眾星環繞而行。</p>
+      <p><b>為何二十八？</b>月亮約<b>二十七日餘</b>繞天一周，每夜宿於一方天區，故稱<span class="zh">宿</span>——即「旅舍」。取其整數，遂分二十八宿，一夜一宿。</p>
+      <p><b>為何四象？</b>二十八宿每七宿為一組，配一方一季，連綴成獸：東方<b>蒼龍</b>主春，南方<b>朱雀</b>主夏，西方<b>白虎</b>主秋，北方<b>玄武</b>主冬。</p>
+    </div>
   </div>
 
   <!-- four symbols -->
   <div class="card">
-    <h2>The Four Symbols &amp; 28 Mansions <span class="en zh">四象 · 二十八宿</span></h2>
-    <p class="essay" style="margin:0 0 12px"><span style="color:var(--mute);font-size:13px">Tap an animal to light up its quarter across the wheel, the map and the table.</span></p>
+    <h2><span class="en-only">The Four Symbols &amp; 28 Mansions</span><span class="zh-only">四象與二十八宿</span> <small class="zh">四象 · 二十八宿</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px"><span class="en-only">Tap an animal to light up its quarter across the wheel, the map and the table.</span><span class="zh-only">點一象，可在星盤、星圖與星表中一併highlight其七宿。</span></p>
     <div class="symgrid">
       <div>
         <svg id="wheel" viewBox="-44 -44 488 488" role="img" aria-label="Wheel of the twenty-eight mansions"></svg>
-        <p class="whint" id="whint">The whole sky, divided four ways by season and direction.</p>
+        <p class="whint" id="whint"></p>
       </div>
       <div class="animals" id="animals"></div>
     </div>
@@ -157,198 +152,146 @@ tbody tr.hl{background:#20345f;}
 
   <!-- sky map -->
   <div class="card">
-    <h2>The sky map — all 28 mansions</h2>
+    <h2><span class="en-only">The sky map — all 28 mansions</span><span class="zh-only">星圖 — 二十八宿全圖</span></h2>
     <div class="viewtoggle">
-      <div class="vbtn" data-v="strip">Strip map</div>
-      <div class="vbtn active" data-v="circle">Circle chart</div>
+      <div class="vbtn" data-v="strip"><span class="en-only">Strip map</span><span class="zh-only">長卷圖</span></div>
+      <div class="vbtn active" data-v="circle"><span class="en-only">Circle chart</span><span class="zh-only">圓形星盤</span></div>
     </div>
-    <div class="stripscroll mapview" id="stripWrap">
-      <svg id="strip" viewBox="0 0 980 300" role="img" aria-label="Full-sky strip map of the 28 mansions"></svg>
-    </div>
-    <p class="scrollhint">← swipe the strip sideways →</p>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 300" role="img" aria-label="Full-sky strip map of the 28 mansions"></svg></div>
+    <p class="scrollhint"><span class="en-only">← swipe the strip sideways →</span><span class="zh-only">← 左右滑動 →</span></p>
     <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Traditional circular chart of the 28 mansions"></svg>
-    <p class="cap" id="cap">Tap any mansion for its Western star. Each is shown by its <em>determinative</em> (reference) star.</p>
+    <p class="cap" id="cap"></p>
   </div>
 
   <!-- table -->
   <div class="card">
-    <h2>Chinese mansion ↔ Western star <span class="en">— all 28</span></h2>
+    <h2><span class="en-only">Chinese mansion ↔ Western star</span><span class="zh-only">宿 ↔ 西方對應星</span> <small>— 28</small></h2>
     <div class="tablescroll">
       <table>
         <thead><tr>
-          <th class="col-num">#</th><th>Sym</th><th>Mansion</th><th>Western star</th><th class="col-bayer">Bayer</th><th>Mag</th>
+          <th class="col-num">#</th><th><span class="en-only">Sym</span><span class="zh-only">象</span></th>
+          <th><span class="en-only">Mansion</span><span class="zh-only">宿</span></th>
+          <th><span class="en-only">Marker star</span><span class="zh-only">距星</span></th>
+          <th class="col-mean"><span class="en-only">Meaning</span><span class="zh-only">主司</span></th>
+          <th><span class="en-only">Stars</span><span class="zh-only">星數</span></th>
         </tr></thead>
         <tbody id="tbody28"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- deep dive -->
+  <!-- deep dive: full asterism, all 28 -->
   <div class="card">
-    <h2>Zoom in: every star of a mansion <span class="en zh">蒼龍之心</span></h2>
-    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The determinative star is only the marker — each mansion is a whole official of several stars. Here are three of the Azure Dragon over Scorpius (房 Room · 心 Heart · 尾 Tail).</p>
-    <div class="grid2">
+    <h2><span class="en-only">Every star of a mansion</span><span class="zh-only">逐宿觀星</span> <small class="zh">星官全圖</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px"><span class="en-only">Pick any mansion to see its full star official drawn over the real stars.</span><span class="zh-only">選一宿，觀其星官全貌與對應實星。</span></p>
+    <div class="mpick" id="mpick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="Full asterism of the selected mansion"></svg></div>
       <div>
-        <div class="mansions" id="mansions"></div>
-        <svg id="sky" viewBox="0 0 460 380" role="img" aria-label="Star map of the Scorpius region"></svg>
         <div class="mdesc" id="mdesc"></div>
-      </div>
-      <div class="tablescroll">
-        <table>
-          <thead><tr><th>Chinese</th><th>Western</th><th class="col-bayer">Bayer</th><th>Mag</th><th>Role</th></tr></thead>
-          <tbody id="tbodyD"></tbody>
-        </table>
+        <div class="tablescroll" style="margin-top:12px"><table><tbody id="dtbody"></tbody></table></div>
       </div>
     </div>
   </div>
 
   <div class="btnrow">
-    <a href="chinese-tonight.html">🐉 Which mansions are up tonight?</a>
-    <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+    <a href="chinese-tonight.html">🐉 <span class="en-only">Which mansions are up tonight?</span><span class="zh-only">今夜哪些宿在天上？</span></a>
+    <a href="scob-dashboard-v3.html">←<span class="en-only"> Night-sky dashboard</span><span class="zh-only"> 觀星主頁</span></a>
   </div>
 
   <div class="foot">
-    <p>The 28 mansions are each shown by their standard <b>determinative (reference) star</b> at true coordinates; the Scorpius deep-dive lists a mansion's individual stars. Cultural notes are brief and illustrative. Identifications follow standard Chinese sky-culture references (as used in Stellarium) and Sun&nbsp;Xiaochun &amp; Jacob&nbsp;Kistemaker, <em>The Chinese Sky During the Han</em>.</p>
+    <p><span class="en-only">Member stars are shown to about <b>magnitude 5</b> — the practical limit under Jurong's city sky; a few fainter members (e.g. of the Girl and the Ox) are omitted. Star positions are Hipparcos J2000; mansion asterisms and line links follow the Stellarium Chinese sky culture; the marker (determinative) star and the cultural notes follow standard references and Sun&nbsp;Xiaochun &amp; Jacob&nbsp;Kistemaker, <em>The Chinese Sky During the Han</em>.</span><span class="zh-only">星官只繪至約<b>五等</b>——此為市區裕廊夜空之實際目視極限；女、牛等宿少數暗星從略。星位採依巴谷 J2000；星官連線依 Stellarium 中國星官；距星與釋義參據通行文獻及 Sun Xiaochun &amp; Jacob Kistemaker《The Chinese Sky During the Han》。</span></p>
     <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
   </div>
 </div>
 
+<script src="chinese-sky-data.js"></script>
 <script>
 const SVGNS="http://www.w3.org/2000/svg";
 function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 const COL={dragon:"#5fd38a",tortoise:"#6ea8ff",tiger:"#dfe4ee",bird:"#ff7a6b"};
+let lang = (function(){try{return localStorage.getItem("scobLangCS")||"en";}catch(e){return "en";}})();
+const L=(en,zh)=>lang==="zh"?zh:en;
 
 const SYMBOLS=[
-  {key:"dragon",zh:"蒼龍",en:"Azure Dragon",dir:"East",season:"Spring",elem:"Wood",start:135,
-   desc:"Ruler of the eastern sky and of spring. Seven mansions from the Horn to the Winnowing Basket; its heart is the red star Antares."},
-  {key:"tortoise",zh:"玄武",en:"Black Tortoise",dir:"North",season:"Winter",elem:"Water",start:225,
-   desc:"A tortoise entwined with a snake, ruling the north and deep winter. Holds the Dipper, the Ox and the Girl of the folk tale."},
-  {key:"tiger",zh:"白虎",en:"White Tiger",dir:"West",season:"Autumn",elem:"Metal",start:315,
-   desc:"Lord of the west and autumn, season of the harvest blade. Holds the Pleiades (Mǎo) and the great figure of Orion (Shēn)."},
-  {key:"bird",zh:"朱雀",en:"Vermilion Bird",dir:"South",season:"Summer",elem:"Fire",start:45,
-   desc:"A blazing phoenix ruling the south and high summer. Sweeps from the Well through the Ghost to the Chariot low in the south."}
+  {key:"dragon",zh:"蒼龍",en:"Azure Dragon",dir:["East","東"],season:["Spring","春"],elem:["Wood","木"],start:135,
+   desc:["Ruler of the eastern sky and of spring — seven mansions from the Horn to the Winnowing Basket, its heart the red star Antares.","東方之神，主春。七宿自角至箕，其心即大火（心宿二）。"]},
+  {key:"tortoise",zh:"玄武",en:"Black Tortoise",dir:["North","北"],season:["Winter","冬"],elem:["Water","水"],start:225,
+   desc:["A tortoise entwined with a snake, ruling the north and deep winter — the Dipper, the Ox and the Girl of the Qixi tale.","龜蛇合體，主北方與冬。含南斗、牽牛、織女（須女）。"]},
+  {key:"tiger",zh:"白虎",en:"White Tiger",dir:["West","西"],season:["Autumn","秋"],elem:["Metal","金"],start:315,
+   desc:["Lord of the west and autumn — the Pleiades (Mǎo) and the great figure of Orion (Shēn).","主西方與秋。含昴星團與參（獵戶）。"]},
+  {key:"bird",zh:"朱雀",en:"Vermilion Bird",dir:["South","南"],season:["Summer","夏"],elem:["Fire","火"],start:45,
+   desc:["A blazing phoenix ruling the south and high summer — from the Well through the Ghost to the Chariot.","主南方與夏。自東井、輿鬼至軫。"]}
 ];
 const SYM=Object.fromEntries(SYMBOLS.map(s=>[s.key,s]));
+const M=window.CSKY;                                   // full data
+const DET=M.map(m=>({n:m.n,zh:m.zh,pin:m.pin,en:m.en,sym:m.sym,westDet:m.westDet,dEN:m.dEN,dZH:m.dZH,
+  ra:m.stars[m.det][0],dec:m.stars[m.det][1],mag:m.stars[m.det][2],nstars:m.stars.length}));
+const HORN_RA=DET.find(d=>d.n===1).ra;            // base the RA sweep on the Horn's own star
+DET.forEach(d=>d.rs=(d.ra-HORN_RA+360)%360);
+let activeSym=null, mapView="circle";
 
-const M28=[
- {n:1,zh:"角",pin:"Jiǎo",en:"Horn",sym:"dragon",west:"Spica",bayer:"α Vir",mag:1.0,ra:201.3,dec:-11.2},
- {n:2,zh:"亢",pin:"Kàng",en:"Neck",sym:"dragon",west:"κ Vir",bayer:"κ Vir",mag:4.2,ra:214.0,dec:-10.3},
- {n:3,zh:"氐",pin:"Dī",en:"Root",sym:"dragon",west:"Zubenelgenubi",bayer:"α² Lib",mag:2.7,ra:222.7,dec:-16.0},
- {n:4,zh:"房",pin:"Fáng",en:"Room",sym:"dragon",west:"π Sco",bayer:"π Sco",mag:2.9,ra:239.7,dec:-26.1},
- {n:5,zh:"心",pin:"Xīn",en:"Heart",sym:"dragon",west:"Alniyat",bayer:"σ Sco",mag:2.9,ra:245.3,dec:-25.6},
- {n:6,zh:"尾",pin:"Wěi",en:"Tail",sym:"dragon",west:"μ¹ Sco",bayer:"μ¹ Sco",mag:3.0,ra:253.1,dec:-38.0},
- {n:7,zh:"箕",pin:"Jī",en:"Basket",sym:"dragon",west:"Alnasl",bayer:"γ² Sgr",mag:3.0,ra:271.5,dec:-30.4},
- {n:8,zh:"斗",pin:"Dǒu",en:"Dipper",sym:"tortoise",west:"φ Sgr",bayer:"φ Sgr",mag:3.2,ra:284.4,dec:-27.0},
- {n:9,zh:"牛",pin:"Niú",en:"Ox",sym:"tortoise",west:"Dabih",bayer:"β Cap",mag:3.1,ra:305.3,dec:-14.8},
- {n:10,zh:"女",pin:"Nǚ",en:"Girl",sym:"tortoise",west:"Albali",bayer:"ε Aqr",mag:3.8,ra:311.9,dec:-9.5},
- {n:11,zh:"虛",pin:"Xū",en:"Emptiness",sym:"tortoise",west:"Sadalsuud",bayer:"β Aqr",mag:2.9,ra:322.9,dec:-5.6},
- {n:12,zh:"危",pin:"Wēi",en:"Rooftop",sym:"tortoise",west:"Sadalmelik",bayer:"α Aqr",mag:3.0,ra:331.4,dec:-0.3},
- {n:13,zh:"室",pin:"Shì",en:"Encampment",sym:"tortoise",west:"Markab",bayer:"α Peg",mag:2.5,ra:346.2,dec:15.2},
- {n:14,zh:"壁",pin:"Bì",en:"Wall",sym:"tortoise",west:"Algenib",bayer:"γ Peg",mag:2.8,ra:3.3,dec:15.2},
- {n:15,zh:"奎",pin:"Kuí",en:"Legs",sym:"tiger",west:"η And",bayer:"η And",mag:4.4,ra:19.3,dec:23.4},
- {n:16,zh:"婁",pin:"Lóu",en:"Bond",sym:"tiger",west:"Sheratan",bayer:"β Ari",mag:2.6,ra:28.7,dec:20.8},
- {n:17,zh:"胃",pin:"Wèi",en:"Stomach",sym:"tiger",west:"35 Ari",bayer:"35 Ari",mag:4.6,ra:42.4,dec:27.7},
- {n:18,zh:"昴",pin:"Mǎo",en:"Pleiades",sym:"tiger",west:"Electra",bayer:"17 Tau",mag:3.7,ra:56.2,dec:24.1},
- {n:19,zh:"畢",pin:"Bì",en:"Net",sym:"tiger",west:"Ain",bayer:"ε Tau",mag:3.5,ra:67.2,dec:19.2},
- {n:20,zh:"觜",pin:"Zī",en:"Beak",sym:"tiger",west:"Meissa",bayer:"λ Ori",mag:3.5,ra:83.8,dec:9.9},
- {n:21,zh:"參",pin:"Shēn",en:"Orion",sym:"tiger",west:"Alnitak",bayer:"ζ Ori",mag:1.8,ra:85.2,dec:-1.9},
- {n:22,zh:"井",pin:"Jǐng",en:"Well",sym:"bird",west:"Tejat",bayer:"μ Gem",mag:2.9,ra:95.7,dec:22.5},
- {n:23,zh:"鬼",pin:"Guǐ",en:"Ghost",sym:"bird",west:"θ Cnc",bayer:"θ Cnc",mag:5.3,ra:130.1,dec:18.1},
- {n:24,zh:"柳",pin:"Liǔ",en:"Willow",sym:"bird",west:"δ Hya",bayer:"δ Hya",mag:4.1,ra:133.0,dec:5.7},
- {n:25,zh:"星",pin:"Xīng",en:"Star",sym:"bird",west:"Alphard",bayer:"α Hya",mag:2.0,ra:141.9,dec:-8.7},
- {n:26,zh:"張",pin:"Zhāng",en:"Ext. Net",sym:"bird",west:"υ¹ Hya",bayer:"υ¹ Hya",mag:4.1,ra:145.8,dec:-14.8},
- {n:27,zh:"翼",pin:"Yì",en:"Wings",sym:"bird",west:"Alkes",bayer:"α Crt",mag:4.1,ra:164.9,dec:-18.3},
- {n:28,zh:"軫",pin:"Zhěn",en:"Chariot",sym:"bird",west:"Gienah",bayer:"γ Crv",mag:2.6,ra:183.95,dec:-17.5}
-];
-M28.forEach(m=>m.rs=(m.ra-201.3+360)%360);
-
-let activeSym=null;
-let mapView="circle";
-
-// ---------- WHEEL ----------
+/* ---------- WHEEL ---------- */
 const wheel=document.getElementById("wheel");
 const CX=200,CY=200,R1=175,R2=120,RC=147;
 const polar=(r,deg)=>{const a=deg*Math.PI/180;return[CX+r*Math.cos(a),CY+r*Math.sin(a)];};
 function wedgePath(a1,a2){const[ox1,oy1]=polar(R1,a1),[ox2,oy2]=polar(R1,a2),[ix2,iy2]=polar(R2,a2),[ix1,iy1]=polar(R2,a1);
   return`M${ox1} ${oy1} A${R1} ${R1} 0 0 1 ${ox2} ${oy2} L${ix2} ${iy2} A${R2} ${R2} 0 0 0 ${ix1} ${iy1} Z`;}
-function drawWheel(){
-  wheel.innerHTML="";const step=90/7;
-  SYMBOLS.forEach(sym=>{
-    M28.filter(m=>m.sym===sym.key).forEach((m,i)=>{
-      const a1=sym.start+i*step,a2=sym.start+(i+1)*step,mid=(a1+a2)/2;
-      const on=!activeSym||activeSym===sym.key;
-      const p=el("path",{d:wedgePath(a1,a2),fill:COL[sym.key],stroke:"#0b1733","stroke-width":1,
-        opacity:on?(activeSym===sym.key?1:0.82):0.14});
-      p.style.cursor="pointer";
-      p.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${m.zh} ${m.pin} — “${m.en}” · ${sym.en}`;});
-      p.addEventListener("click",()=>setSym(sym.key));
-      wheel.appendChild(p);
-      const[tx,ty]=polar(RC,mid);const t=el("text",{x:tx,y:ty,class:"wedgechar zh"});t.textContent=m.zh;t.style.opacity=on?1:.3;
-      wheel.appendChild(t);
-    });
-  });
-  [["EAST 東",180],["NORTH 北",270],["WEST 西",0],["SOUTH 南",90]].forEach(([lab,ang])=>{
+function drawWheel(){wheel.innerHTML="";const step=90/7;
+  SYMBOLS.forEach(sym=>{DET.filter(m=>m.sym===sym.key).forEach((m,i)=>{
+    const a1=sym.start+i*step,a2=sym.start+(i+1)*step,mid=(a1+a2)/2,on=!activeSym||activeSym===sym.key;
+    const p=el("path",{d:wedgePath(a1,a2),fill:COL[sym.key],stroke:"#0b1733","stroke-width":1,opacity:on?(activeSym===sym.key?1:0.82):0.14});
+    p.style.cursor="pointer";
+    p.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${m.zh} ${m.pin} — ${L(m.en,m.dZH.slice(0,0)||m.en)} · ${L(sym.en,sym.zh)}`;});
+    p.addEventListener("click",()=>setSym(sym.key));wheel.appendChild(p);
+    const[tx,ty]=polar(RC,mid);const t=el("text",{x:tx,y:ty,class:"wedgechar zh"});t.textContent=m.zh;t.style.opacity=on?1:.3;wheel.appendChild(t);});});
+  [[L("EAST","東")+" 東",180],[L("NORTH","北")+" 北",270],[L("WEST","西")+" 西",0],[L("SOUTH","南")+" 南",90]].forEach(([lab,ang])=>{
     const[lx,ly]=polar(R1+24,ang);const t=el("text",{x:lx,y:ly,class:"dirlabel","dominant-baseline":"central"});t.textContent=lab;wheel.appendChild(t);});
   const c1=el("text",{x:CX,y:CY-9,"text-anchor":"middle","dominant-baseline":"central",fill:"#f5c542","font-size":22,class:"zh"});c1.textContent="四象";
-  const c2=el("text",{x:CX,y:CY+13,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});c2.textContent="28 mansions";
-  wheel.appendChild(c1);wheel.appendChild(c2);
-}
+  const c2=el("text",{x:CX,y:CY+13,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});c2.textContent=L("28 mansions","二十八宿");
+  wheel.appendChild(c1);wheel.appendChild(c2);}
 
-// animal cards
 const abox=document.getElementById("animals");
-SYMBOLS.forEach(s=>{const d=document.createElement("div");d.className="acard";d.dataset.k=s.key;d.style.borderLeftColor=COL[s.key];
+function drawCards(){abox.innerHTML="";SYMBOLS.forEach(s=>{const d=document.createElement("div");
+  d.className="acard"+(activeSym===s.key?" active":"");d.dataset.k=s.key;d.style.borderLeftColor=COL[s.key];
   d.innerHTML=`<div class="top"><span class="z zh" style="color:${COL[s.key]}">${s.zh}</span>
-    <span class="e">${s.en}</span><span class="meta">${s.dir} · ${s.season} · ${s.elem}</span></div>
-    <div class="desc">${s.desc}</div>`;
-  d.addEventListener("click",()=>setSym(s.key));abox.appendChild(d);});
+    <span class="e">${L(s.en,"")}</span><span class="meta">${L(s.dir[0],s.dir[1])} · ${L(s.season[0],s.season[1])} · ${L(s.elem[0],s.elem[1])}</span></div>
+    <div class="desc">${L(s.desc[0],s.desc[1])}</div>`;
+  d.addEventListener("click",()=>setSym(s.key));abox.appendChild(d);});}
 
-// ---------- STRIP ----------
+/* ---------- STRIP ---------- */
 const strip=document.getElementById("strip");
 const SW=980,SH=300,mL=44,mR=14,mT=18,mB=42,decMin=-45,decMax=32;
-const sx=rs=>mL+(rs/360)*(SW-mL-mR);
-const sy=dec=>mT+((decMax-dec)/(decMax-decMin))*(SH-mT-mB);
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((decMax-dec)/(decMax-decMin))*(SH-mT-mB);
 const srad=m=>Math.max(2,5.4-m*0.7);
-function drawStrip(){
-  strip.innerHTML="";
-  SYMBOLS.forEach(sym=>{
-    const ms=M28.filter(m=>m.sym===sym.key).map(m=>m.rs);
-    const lo=Math.min(...ms),hi=Math.max(...ms);
-    const x1=sx(Math.max(lo-6,0)),x2=sx(Math.min(hi+6,360));const on=!activeSym||activeSym===sym.key;
+function drawStrip(){strip.innerHTML="";
+  SYMBOLS.forEach(sym=>{const ms=DET.filter(m=>m.sym===sym.key).map(m=>m.rs);const lo=Math.min(...ms),hi=Math.max(...ms);
+    const x1=sx(Math.max(lo-6,0)),x2=sx(Math.min(hi+6,360)),on=!activeSym||activeSym===sym.key;
     strip.appendChild(el("rect",{x:x1,y:mT,width:x2-x1,height:SH-mT-mB,fill:COL[sym.key],opacity:on?(activeSym===sym.key?0.15:0.06):0.02}));
     const mid=(x1+x2)/2;
     const l1=el("text",{x:mid,y:SH-mB+17,"text-anchor":"middle",fill:COL[sym.key],"font-size":15,"font-weight":700,class:"zh",opacity:on?1:.3});l1.textContent=sym.zh;
-    const l2=el("text",{x:mid,y:SH-mB+31,"text-anchor":"middle",fill:"#9fb0d6","font-size":9.5,opacity:on?1:.3});l2.textContent=sym.en.toUpperCase();
-    strip.appendChild(l1);strip.appendChild(l2);
-  });
+    const l2=el("text",{x:mid,y:SH-mB+31,"text-anchor":"middle",fill:"#9fb0d6","font-size":9.5,opacity:on?1:.3});l2.textContent=L(sym.en.toUpperCase(),sym.zh);strip.appendChild(l1);strip.appendChild(l2);});
   strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
-  [30,0,-30].forEach(d=>{const t=el("text",{x:6,y:sy(d)+3,fill:"#7d8cb5","font-size":9});t.textContent=(d>0?"+":"")+d+"°";strip.appendChild(t);});
-  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
-  M28.forEach(m=>{
-    const on=!activeSym||activeSym===m.sym;const g=el("g",{});g.style.cursor="pointer";
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent=L("celestial equator","天赤道");strip.appendChild(eqt);
+  DET.forEach(m=>{const on=!activeSym||activeSym===m.sym;const g=el("g",{});g.style.cursor="pointer";
     const c=el("circle",{cx:sx(m.rs),cy:sy(m.dec),r:srad(m.mag),fill:COL[m.sym],stroke:"#0b1733","stroke-width":.5,opacity:on?1:.16});
     const ch=el("text",{x:sx(m.rs),y:sy(m.dec)-srad(m.mag)-4,class:"skychar zh",fill:COL[m.sym],opacity:on?1:.16});ch.textContent=m.zh;
     const act=()=>{capUpdate(m);c.setAttribute("r",srad(m.mag)+2);hlRow(m.n,true);};
-    g.addEventListener("mouseenter",act);
-    g.addEventListener("mouseleave",()=>{c.setAttribute("r",srad(m.mag));hlRow(null,false);capReset();});
-    g.addEventListener("click",act);
-    g.appendChild(c);g.appendChild(ch);strip.appendChild(g);
-  });
-}
+    g.addEventListener("mouseenter",act);g.addEventListener("mouseleave",()=>{c.setAttribute("r",srad(m.mag));hlRow(null,false);capReset();});
+    g.addEventListener("click",()=>{openMansion(m.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    g.appendChild(c);g.appendChild(ch);strip.appendChild(g);});}
 
-// ---------- CIRCLE ----------
+/* ---------- CIRCLE ---------- */
 const circle=document.getElementById("circle");
 const OCX=230,OCY=230,rOut=200,rIn=64;
 const rr=dec=>rIn+((30-dec)/75)*(rOut-rIn);
 const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
-function carc(r,a1,a2){const[x1,y1]=cpolar(r,a1),[x2,y2]=cpolar(r,a2);const large=((a2-a1+360)%360)>180?1:0;
-  return`M${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2}`;}
-const QSTART={dragon:135,tortoise:225,tiger:315,bird:45};
-const QCEN={dragon:180,tortoise:270,tiger:360,bird:90};
+function carc(r,a1,a2){const[x1,y1]=cpolar(r,a1),[x2,y2]=cpolar(r,a2),large=((a2-a1+360)%360)>180?1:0;return`M${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2}`;}
+const QSTART={dragon:135,tortoise:225,tiger:315,bird:45},QCEN={dragon:180,tortoise:270,tiger:360,bird:90};
 const DZH={dragon:"東",tortoise:"北",tiger:"西",bird:"南"},DEN={dragon:"EAST",tortoise:"NORTH",tiger:"WEST",bird:"SOUTH"};
-const symRs={};SYMBOLS.forEach(s=>{const a=M28.filter(m=>m.sym===s.key).map(m=>m.rs);symRs[s.key]=[Math.min(...a),Math.max(...a)];});
+const symRs={};SYMBOLS.forEach(s=>{const a=DET.filter(m=>m.sym===s.key).map(m=>m.rs);symRs[s.key]=[Math.min(...a),Math.max(...a)];});
 const mAngle=m=>{const[lo,hi]=symRs[m.sym];return QSTART[m.sym]+8+((m.rs-lo)/((hi-lo)||1))*74;};
-function drawCircle(){
-  circle.innerHTML="";
+function drawCircle(){circle.innerHTML="";
   circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
   circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
   circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rIn,fill:"none",stroke:"#22305a","stroke-width":1}));
@@ -357,151 +300,106 @@ function drawCircle(){
     circle.appendChild(el("path",{d:carc(rOut+7,QSTART[s.key]+2,QSTART[s.key]+88),class:"symarc",stroke:COL[s.key],opacity:on?(activeSym===s.key?1:.7):.2}));
     const[lx,ly]=cpolar(rOut+32,QCEN[s.key]);
     const dz=el("text",{x:lx,y:ly-6,class:"dirzh zh",fill:COL[s.key],"font-size":16,opacity:on?1:.3});dz.textContent=DZH[s.key];
-    const dd=el("text",{x:lx,y:ly+11,class:"dirbig",fill:"#9fb0d6",opacity:on?1:.3});dd.textContent=DEN[s.key];
-    circle.appendChild(dz);circle.appendChild(dd);});
+    const dd=el("text",{x:lx,y:ly+11,class:"dirbig",fill:"#9fb0d6",opacity:on?1:.3});dd.textContent=L(DEN[s.key],DZH[s.key]);circle.appendChild(dz);circle.appendChild(dd);});
   circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
-  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);
-  const eq=el("text",{x:OCX+rr(0)+3,y:OCY-3,fill:"#6d80ad","font-size":9});eq.textContent="equator";circle.appendChild(eq);
-  M28.forEach(m=>{const on=!activeSym||activeSym===m.sym;const th=mAngle(m);
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent=L("N. pole","北極");circle.appendChild(pl);
+  DET.forEach(m=>{const on=!activeSym||activeSym===m.sym;const th=mAngle(m);
     const[s1x,s1y]=cpolar(rIn,th),[s2x,s2y]=cpolar(rOut,th);
     circle.appendChild(el("line",{x1:s1x,y1:s1y,x2:s2x,y2:s2y,class:"spoke","stroke-width":1,opacity:on?.5:.12}));
     const[dx,dy]=cpolar(rr(m.dec),th);
     const dot=el("circle",{cx:dx,cy:dy,r:srad(m.mag),fill:COL[m.sym],stroke:"#0b1733","stroke-width":.5,opacity:on?1:.18});
-    const[cx3,cy3]=cpolar(rOut+16,th);
-    const ch=el("text",{x:cx3,y:cy3,class:"rimchar zh",fill:COL[m.sym],opacity:on?1:.2});ch.textContent=m.zh;
+    const[cx3,cy3]=cpolar(rOut+16,th);const ch=el("text",{x:cx3,y:cy3,class:"rimchar zh",fill:COL[m.sym],opacity:on?1:.2});ch.textContent=m.zh;
     const g=el("g",{});g.style.cursor="pointer";g.appendChild(dot);g.appendChild(ch);
     const act=()=>{capUpdate(m);dot.setAttribute("r",srad(m.mag)+2);hlRow(m.n,true);};
-    g.addEventListener("mouseenter",act);
-    g.addEventListener("mouseleave",()=>{dot.setAttribute("r",srad(m.mag));hlRow(null,false);capReset();});
-    g.addEventListener("click",act);
-    circle.appendChild(g);});
-}
+    g.addEventListener("mouseenter",act);g.addEventListener("mouseleave",()=>{dot.setAttribute("r",srad(m.mag));hlRow(null,false);capReset();});
+    g.addEventListener("click",()=>{openMansion(m.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    circle.appendChild(g);});}
 
-// caption + table
 function capUpdate(m){document.getElementById("cap").innerHTML=
-  `<b style="color:${COL[m.sym]}">${m.zh} ${m.pin}</b> · “${m.en}” &nbsp;→&nbsp; <span style="color:var(--star)">${m.west}</span> (${m.bayer}) · mag ${m.mag.toFixed(1)}`;}
+  `<b style="color:${COL[m.sym]}">${m.zh} ${m.pin}</b> · “${L(m.en,m.dZH)}” &nbsp;→&nbsp; <span style="color:var(--star)">${m.westDet}</span> · ${m.nstars} ${L("stars","星")}`;}
 function capReset(){document.getElementById("cap").textContent = mapView==="circle"
-  ? "A traditional circular chart: north pole at the centre, declination outward, the four palaces in quarters. Tap a mansion for detail."
-  : "Tap any mansion for its Western star. Each is shown by its determinative (reference) star.";}
+  ? L("A traditional circular chart: north pole at the centre, the four palaces in quarters. Tap a mansion for its full asterism.","傳統圓形星盤：北極居中，四象各據一方。點一宿觀其星官全圖。")
+  : L("Each dot is a mansion's marker (determinative) star. Tap for its full asterism below.","每點為一宿之距星。點選可於下方觀其星官全圖。");}
 
+/* ---------- 28-row table ---------- */
 const tb28=document.getElementById("tbody28");
-function drawTable28(){
-  tb28.innerHTML="";
-  M28.forEach(m=>{const tr=document.createElement("tr");tr.dataset.n=m.n;
-    if(activeSym&&activeSym!==m.sym)tr.classList.add("dim");
-    tr.innerHTML=`<td class="col-num num">${m.n}</td>
-      <td><span class="swatch" style="background:${COL[m.sym]}"></span></td>
-      <td><span class="cn2 zh" style="color:${COL[m.sym]}">${m.zh}</span> <span class="pin">${m.pin} · ${m.en}</span></td>
-      <td class="west">${m.west}</td><td class="col-bayer">${m.bayer}</td><td>${m.mag.toFixed(1)}</td>`;
-    tr.addEventListener("mouseenter",()=>hlRow(m.n,true));
-    tr.addEventListener("mouseleave",()=>hlRow(null,false));
-    tr.addEventListener("click",()=>setSym(m.sym));
-    tb28.appendChild(tr);});
-}
+function drawTable28(){tb28.innerHTML="";
+  DET.forEach(m=>{const tr=document.createElement("tr");tr.dataset.n=m.n;if(activeSym&&activeSym!==m.sym)tr.classList.add("dim");
+    tr.innerHTML=`<td class="col-num num">${m.n}</td><td><span class="swatch" style="background:${COL[m.sym]}"></span></td>
+      <td><span class="cn2 zh" style="color:${COL[m.sym]}">${m.zh}</span> <span class="pin">${m.pin}${lang==="en"?" · "+m.en:""}</span></td>
+      <td class="west">${m.westDet}</td><td class="col-mean" style="color:var(--mute);font-size:12px">${L(m.dEN,m.dZH)}</td><td>${m.nstars}</td>`;
+    tr.addEventListener("mouseenter",()=>hlRow(m.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+    tr.addEventListener("click",()=>{setSymNo();openMansion(m.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    tb28.appendChild(tr);});}
 function hlRow(n,on){document.querySelectorAll("#tbody28 tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
 
-// unified filter
-function setSym(k){activeSym=activeSym===k?null:k;
+function setSym(k){activeSym=activeSym===k?null:k;drawWheel();drawStrip();drawCircle();drawTable28();
   document.querySelectorAll(".acard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeSym));
-  document.getElementById("whint").textContent=activeSym?SYM[activeSym].desc:"The whole sky, divided four ways by season and direction.";
-  drawWheel();drawStrip();drawCircle();drawTable28();}
+  document.getElementById("whint").textContent=activeSym?L(SYM[activeSym].desc[0],SYM[activeSym].desc[1]):L("The whole sky, divided four ways by season and direction.","天分四象，各主一方一季。");}
+function setSymNo(){}
 
-// view toggle
-document.querySelectorAll(".vbtn").forEach(b=>b.addEventListener("click",()=>{
-  mapView=b.dataset.v;
+document.querySelectorAll(".vbtn").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
   document.querySelectorAll(".vbtn").forEach(x=>x.classList.toggle("active",x===b));
   document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
-  document.getElementById("circle").classList.toggle("show",mapView==="circle");
-  capReset();}));
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
 
-// ---------- DEEP DIVE ----------
-const MANSIONS={
-  fang:{zh:"房宿",pin:"Fáng",en:"Room",color:COL.dragon,
-    desc:"The Room — the emperor's audience hall. Its four stars were also read as four horses of the celestial chariot.",
-    stars:[
-      {cn:"房宿一",num:"1",west:"π Sco",bayer:"π Sco",id:1,mag:2.9,ra:239.7,dec:-26.1,anchor:true,role:"southernmost — the marker star"},
-      {cn:"房宿二",num:"2",west:"ρ Sco",bayer:"ρ Sco",id:2,mag:3.9,ra:239.2,dec:-29.2,role:"a court horse / minister"},
-      {cn:"房宿三",num:"3",west:"Dschubba",bayer:"δ Sco",id:3,mag:2.3,ra:240.1,dec:-22.6,role:"a court horse / minister"},
-      {cn:"房宿四",num:"4",west:"Acrab",bayer:"β Sco",id:4,mag:2.6,ra:241.4,dec:-19.8,role:"a court horse / minister"}]},
-  xin:{zh:"心宿",pin:"Xīn",en:"Heart",color:"#f5c542",
-    desc:"The Heart — the throne of the Azure Dragon. The central red star is the emperor; the stars either side are his sons.",
-    stars:[
-      {cn:"心宿一",num:"1",west:"Alniyat",bayer:"σ Sco",id:11,mag:2.9,ra:245.3,dec:-25.6,role:"the crown prince"},
-      {cn:"心宿二",num:"2",west:"Antares",bayer:"α Sco",id:12,mag:1.0,ra:247.4,dec:-26.4,anchor:true,role:"THE emperor — the great red star"},
-      {cn:"心宿三",num:"3",west:"Paikauhale",bayer:"τ Sco",id:13,mag:2.8,ra:249.0,dec:-28.2,role:"a younger prince"}]},
-  wei:{zh:"尾宿",pin:"Wěi",en:"Tail",color:COL.dragon,
-    desc:"The Tail — the dragon's tail, curling as the Scorpion's sting. Nine stars read as the imperial concubines; watched for coming rain.",
-    stars:[
-      {cn:"尾宿一",num:"1",west:"μ¹ Sco",bayer:"μ¹ Sco",id:21,mag:3.0,ra:253.1,dec:-38.0,anchor:true,role:"base of the tail — marker star"},
-      {cn:"尾宿二",num:"2",west:"Larawag",bayer:"ε Sco",id:22,mag:2.3,ra:252.5,dec:-34.3,role:"a concubine of the palace"},
-      {cn:"尾宿三",num:"3",west:"ζ² Sco",bayer:"ζ² Sco",id:23,mag:3.6,ra:253.5,dec:-42.4,role:"a concubine of the palace"},
-      {cn:"尾宿五",num:"5",west:"Sargas",bayer:"θ Sco",id:25,mag:1.9,ra:264.3,dec:-43.0,role:"a bright concubine"},
-      {cn:"尾宿八",num:"8",west:"Shaula",bayer:"λ Sco",id:28,mag:1.6,ra:263.4,dec:-37.1,role:"the sting — a favoured consort"},
-      {cn:"尾宿九",num:"9",west:"Lesath",bayer:"υ Sco",id:29,mag:2.7,ra:262.7,dec:-37.3,role:"the sting's tip"}]}
-};
-const ORDER=["fang","xin","wei"];
-let dall=[];ORDER.forEach(k=>MANSIONS[k].stars.forEach(s=>dall.push(s)));
-const raMin=Math.min(...dall.map(s=>s.ra))-4,raMax=Math.max(...dall.map(s=>s.ra))+4;
-const deMin=Math.min(...dall.map(s=>s.dec))-4,deMax=Math.max(...dall.map(s=>s.dec))+4;
-const DW=460,DH=380,dpad=26;
-const DX=ra=>dpad+(raMax-ra)/(raMax-raMin)*(DW-2*dpad);
-const DY=dec=>dpad+(deMax-dec)/(deMax-deMin)*(DH-2*dpad);
-const drad=m=>Math.max(1.6,5.2-m*0.9);
-const sky=document.getElementById("sky");
-let selected=null,tip=null;
-function drawMap(){
-  sky.innerHTML="";
-  if(selected){const st=MANSIONS[selected].stars;
-    for(let i=0;i<st.length-1;i++)sky.appendChild(el("line",{x1:DX(st[i].ra),y1:DY(st[i].dec),x2:DX(st[i+1].ra),y2:DY(st[i+1].dec),class:"aline"}));}
-  ORDER.forEach(k=>{const m=MANSIONS[k];m.stars.forEach(s=>{
-    const show=selected?(selected===k):s.anchor;const g=el("g",{});g.style.cursor="pointer";
-    const c=el("circle",{cx:DX(s.ra),cy:DY(s.dec),r:drad(s.mag),fill:(selected===k||(!selected&&s.anchor))?m.color:"#f4f6fb",opacity:show?1:0.14});
-    const act=()=>showTip(s,m);
-    c.addEventListener("mouseenter",act);c.addEventListener("mouseleave",hideTip);
-    c.addEventListener("click",e=>{e.stopPropagation();if(selected!==k)selectDetail(k);showTip(s,m);});
-    g.appendChild(c);
-    if(show&&(selected===k||s.mag<2.0||s.anchor)){const t=el("text",{x:DX(s.ra)+drad(s.mag)+3,y:DY(s.dec)+3,class:"starlabel"});t.textContent=s.west;g.appendChild(t);}
-    sky.appendChild(g);});});
-}
-function showTip(s,m){hideTip();const gx=DX(s.ra),gy=DY(s.dec);tip=el("g",{});
-  const w=142,h=40,tx=Math.min(gx+8,DW-w-4),ty=Math.max(gy-h-6,4);
-  tip.appendChild(el("rect",{x:tx,y:ty,width:w,height:h,rx:6,fill:"#050810",stroke:m.color,"stroke-width":1,opacity:.96}));
-  const t1=el("text",{x:tx+8,y:ty+16,fill:"#f4f6fb","font-size":11});t1.textContent=s.cn+" · "+s.west;
-  const t2=el("text",{x:tx+8,y:ty+31,fill:"#9fb0d6","font-size":10});t2.textContent=s.bayer+"  ·  mag "+s.mag;
-  tip.appendChild(t1);tip.appendChild(t2);sky.appendChild(tip);hlD(s.id,true);}
-function hideTip(){if(tip){tip.remove();tip=null;}hlD(null,false);}
-const mansionsBox=document.getElementById("mansions");
-ORDER.forEach(k=>{const m=MANSIONS[k];const d=document.createElement("div");d.className="mtile";d.dataset.k=k;
-  d.innerHTML=`<span class="z zh">${m.zh}</span><span class="e">${m.en}<br>${m.pin}</span>`;
-  d.addEventListener("click",()=>selectDetail(k,true));mansionsBox.appendChild(d);});
-function selectDetail(k,toggle){if(toggle&&selected===k)selected=null;else selected=k;
-  document.querySelectorAll(".mtile").forEach(t=>t.classList.toggle("active",t.dataset.k===selected));
-  drawMap();drawTableD();drawDesc();}
-const mdesc=document.getElementById("mdesc");
-function drawDesc(){if(!selected){mdesc.innerHTML=`<h3>Three mansions of the Azure Dragon</h3><p>Tap 房 Room · 心 Heart · 尾 Tail above to focus one.</p>`;return;}
-  const m=MANSIONS[selected];mdesc.innerHTML=`<h3><span class="z zh">${m.zh}</span> ${m.en} · ${m.pin}</h3><p>${m.desc}</p>`;}
-const tbodyD=document.getElementById("tbodyD");
-function drawTableD(){tbodyD.innerHTML="";ORDER.forEach(k=>{const m=MANSIONS[k];m.stars.forEach(s=>{
-  const tr=document.createElement("tr");tr.dataset.id=s.id;if(selected&&selected!==k)tr.classList.add("dim");
-  tr.innerHTML=`<td><span class="cn2 zh" style="color:${m.color}">${s.cn}</span><br><span class="pin">${m.pin} ${s.num}</span></td>
-    <td class="west">${s.west}</td><td class="col-bayer">${s.bayer}</td><td>${s.mag.toFixed(1)}</td><td class="role">${s.role}</td>`;
-  tr.addEventListener("click",()=>{if(selected!==k)selectDetail(k);});tbodyD.appendChild(tr);});});}
-function hlD(id,on){document.querySelectorAll("#tbodyD tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.id)===id));}
+/* ---------- DEEP DIVE: full asterism for any mansion ---------- */
+const mpick=document.getElementById("mpick");
+function drawPicker(){mpick.innerHTML="";
+  DET.forEach(m=>{const d=document.createElement("div");d.className="mchip"+(selMansion===m.n?" active":"");d.dataset.n=m.n;
+    d.style.borderLeftColor=COL[m.sym];
+    d.innerHTML=`<div class="z zh" style="color:${COL[m.sym]}">${m.zh}</div>`;
+    d.addEventListener("click",()=>openMansion(m.n));mpick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+let selMansion=5;
+function openMansion(n){selMansion=n;drawPicker();
+  document.querySelectorAll(".mchip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const m=M.find(x=>x.n===n), meta=DET.find(x=>x.n===n);
+  // scale to bounding box
+  const ras=m.stars.map(s=>s[0]),decs=m.stars.map(s=>s[1]);
+  // handle RA wrap for small asterisms
+  let ra0=Math.min(...ras),ra1=Math.max(...ras);if(ra1-ra0>180){/*wrap*/const shifted=ras.map(r=>r<180?r+360:r);ra0=Math.min(...shifted);ra1=Math.max(...shifted);}
+  const dc0=Math.min(...decs),dc1=Math.max(...decs);
+  const padr=Math.max((ra1-ra0)*0.18,1.2),padd=Math.max((dc1-dc0)*0.18,1.2);
+  const W=460,H=360,pd=34;
+  const raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+  const rawrap=(ra1-Math.min(...ras)>180);
+  const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};
+  const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+  const rad=mg=>Math.max(2,6-mg*0.75);
+  dsky.innerHTML="";
+  m.lines.forEach(([a,b])=>{dsky.appendChild(el("line",{x1:X(m.stars[a][0]),y1:Y(m.stars[a][1]),x2:X(m.stars[b][0]),y2:Y(m.stars[b][1]),class:"aline"}));});
+  m.stars.forEach((s,i)=>{const isDet=i===m.det, isBright=s[2]<1.6;
+    const g=el("g",{});
+    g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?COL[m.sym]:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+    if(isDet){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3,class:"starlabel",fill:COL[m.sym]});t.textContent=meta.westDet;g.appendChild(t);}
+    dsky.appendChild(g);});
+  const mdesc=document.getElementById("mdesc");
+  mdesc.innerHTML=`<h3><span class="z zh" style="font-size:22px">${m.zh}</span> <span style="color:var(--gold)">${m.pin}</span> ${lang==="en"?"· "+m.en:""}</h3>
+    <p class="mean">${L(meta.dEN,meta.dZH)}</p>
+    <p class="fact">${L("Marker star","距星")}: <b style="color:var(--white)">${meta.westDet}</b> · ${m.stars.length} ${L("stars shown","星")} · ${L(SYM[m.sym].en,SYM[m.sym].zh)} ${SYM[m.sym].zh}</p>`;
+  const dt=document.getElementById("dtbody");dt.innerHTML="";
+  m.stars.map((s,i)=>({s,i})).sort((a,b)=>a.s[2]-b.s[2]).forEach(({s,i})=>{const tr=document.createElement("tr");
+    tr.innerHTML=`<td style="width:26px">${i===m.det?'<span class="swatch" style="background:'+COL[m.sym]+'"></span>':(s[2]<1.6?'<span class="swatch" style="background:#f5c542"></span>':'')}</td>
+      <td>${i===m.det?'<b style="color:var(--white)">'+meta.westDet+'</b>':(L("star","星")+" "+(i+1))}</td>
+      <td class="num">${L("mag","等")} ${s[2].toFixed(1)}</td>`;dt.appendChild(tr);});}
 
-// ---------- night mode ----------
-function applyNight(on){document.body.classList.toggle("night",on);document.getElementById("nightBtn").textContent=on?"☀️ Day":"🌙 Night";try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+/* ---------- language + night ---------- */
+function applyLang(){document.body.classList.toggle("lang-zh",lang==="zh");
+  document.documentElement.lang=lang==="zh"?"zh":"en";
+  document.getElementById("langBtn").textContent=lang==="zh"?"EN":"中文";
+  drawWheel();drawCards();drawStrip();drawCircle();drawTable28();drawPicker();openMansion(selMansion);
+  setSym.length;document.getElementById("whint").textContent=activeSym?L(SYM[activeSym].desc[0],SYM[activeSym].desc[1]):L("The whole sky, divided four ways by season and direction.","天分四象，各主一方一季。");capReset();}
+document.getElementById("langBtn").addEventListener("click",()=>{lang=lang==="zh"?"en":"zh";try{localStorage.setItem("scobLangCS",lang);}catch(e){}applyLang();});
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
 document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
 try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
 
-// ---------- init: default view by screen size ----------
-if(window.matchMedia && window.matchMedia("(min-width:760px)").matches){
-  mapView="strip";
+/* ---------- init ---------- */
+if(window.matchMedia && window.matchMedia("(min-width:760px)").matches){mapView="strip";
   document.querySelectorAll(".vbtn").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
-  document.getElementById("stripWrap").classList.add("show");
-  document.getElementById("circle").classList.remove("show");
-}
-drawWheel();drawStrip();drawCircle();drawTable28();drawMap();drawTableD();drawDesc();capReset();
-
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+applyLang();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 <script src="version.js"></script>
