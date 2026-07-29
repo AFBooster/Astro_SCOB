@@ -34,6 +34,7 @@ const ASSETS = [
   'checklist.html',
   'constellation-story.html',
   'chinese-sky.html',
+  'chinese-tonight.html',
   'scale-model.html',
   'highlights-card.html',
   'qr-poster.html',
