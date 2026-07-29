@@ -168,13 +168,21 @@ function stateOf(o){if(o.alt>=60)return["mer",L("near overhead","近天頂")];
   if(Math.abs(o.H)<12)return["mer",L("near highest","近中天")];
   return o.H<0?["rise",L("rising · ","升 · ")+compass(o.az)]:["set",L("setting · ","落 · ")+compass(o.az)];}
 
+// Precess a J2000 star RA to the equator of `yr` (Newcomb approx) — so the marker
+// stars and the Moon are compared in the SAME frame (astro-core gives Moon of-date).
+function precessRA(ra,dec,yr){const T=yr-2000,a=ra*RAD,d=dec*RAD;
+  return ra+(3.07496+1.33621*Math.sin(a)*Math.tan(d))*T*15/3600;}
 // Moon's lodge — which mansion the Moon rests in tonight (astro-core)
 function moonLodge(y,m,d,hh,mm,LST){
   if(!window.Astro||!Astro.moon)return null;
   const date=new Date(Date.UTC(y,m,d,hh-8,mm,0)), dS=jd(date)-2451543.5;
   const mo=Astro.moon(dS), meq=Astro.eclToEq(mo.lon,mo.lat,dS);
-  const mrs=(meq.ra-HORN_RA+360)%360;
-  let lodge=M28[0];for(const x of M28){if(x.rs<=mrs)lodge=x;}   // last mansion the Moon has passed
+  const yr=y+m/12;                                            // epoch of date for precession
+  const bnd=M28.map(x=>({m:x,ra:rev(precessRA(x.ra,x.dec,yr))}));
+  const hornOD=bnd.find(b=>b.m.n===1).ra;
+  bnd.forEach(b=>b.k=(b.ra-hornOD+360)%360); bnd.sort((a,b)=>a.k-b.k);
+  const mrs=(meq.ra-hornOD+360)%360;
+  let lodge=bnd[0].m;for(const x of bnd){if(x.k<=mrs)lodge=x.m;}   // last mansion the Moon has passed (of-date)
   let H=((LST-meq.ra+540)%360)-180;const Hr=H*RAD,dr=meq.dec*RAD,l=LAT*RAD;
   const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
   let illum=null;try{const su=Astro.sun(dS);illum=Math.round((1-Math.cos(rev(mo.lon-su.lon)*RAD))/2*100);}catch(e){}
