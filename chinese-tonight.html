@@ -32,6 +32,8 @@ h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
 .datein,.timein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;}
 .datein::-webkit-calendar-picker-indicator,.timein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
 .daynote{font-size:12.5px;color:var(--mute);}
+#timeSlider{flex:1 1 100%;accent-color:var(--gold);height:8px;cursor:pointer;margin-top:6px;}
+.sctime{font-variant-numeric:tabular-nums;font-weight:700;color:var(--gold);font-size:13px;}
 .card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
 .card h2{margin:0 0 10px;font-size:15px;color:var(--gold);}
 .card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
@@ -87,6 +89,7 @@ tbody tr.hl{background:#20345f;}
       <button type="button" id="nowBtn" class="btnmini">● <span class="en-only">Now</span><span class="zh-only">此刻</span></button>
       <button type="button" id="nightBtn" class="btnmini">🌙</button>
       <span class="daynote" id="dayNote"></span>
+      <input type="range" id="timeSlider" min="0" max="1439" step="5" value="1230" aria-label="Time of night — drag to scrub through the night">
     </div>
   </header>
 
@@ -185,9 +188,11 @@ function moonLodge(y,m,d,hh,mm,LST){
   let lodge=bnd[0].m;for(const x of bnd){if(x.k<=mrs)lodge=x.m;}   // last mansion the Moon has passed (of-date)
   let H=((LST-meq.ra+540)%360)-180;const Hr=H*RAD,dr=meq.dec*RAD,l=LAT*RAD;
   const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+  const az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);
   let illum=null;try{const su=Astro.sun(dS);illum=Math.round((1-Math.cos(rev(mo.lon-su.lon)*RAD))/2*100);}catch(e){}
-  return{lodge,alt,illum};
+  return{lodge,alt,az,illum};
 }
+let curMoon=null;   // Moon marker for the dome
 
 const dome=document.getElementById("dome");const ZC=150,ZR=140;
 function domePos(az,alt){const r=(90-alt)/90*ZR;return[ZC-r*Math.sin(az*RAD),ZC-r*Math.cos(az*RAD)];}
@@ -196,10 +201,18 @@ function drawDome(){dome.innerHTML="";
   dome.appendChild(el("circle",{cx:ZC,cy:ZC,r:1.6,fill:"#9fb0d6"}));
   [[L("N","北"),0],[L("E","東"),90],[L("S","南"),180],[L("W","西"),270]].forEach(([lab,az])=>{const[x,y]=domePos(az,-7);
     const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":12,"font-weight":700});t.textContent=lab;dome.appendChild(t);});
+  const lodgeN=curMoon&&curMoon.lodge?curMoon.lodge.n:null;
   M28.filter(o=>o.alt>0).sort((a,b)=>a.alt-b.alt).forEach(o=>{const[x,y]=domePos(o.az,o.alt);const g=el("g",{});
+    if(o.n===lodgeN)g.appendChild(el("circle",{cx:x,cy:y,r:9,fill:"none",stroke:"#f5c542","stroke-width":1.5,opacity:.9}));
     g.appendChild(el("circle",{cx:x,cy:y,r:4.5,fill:COL[o.sym],stroke:"#0b1733","stroke-width":.6}));
     const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:COL[o.sym],"font-size":12,class:"zh"});t.textContent=o.zh;g.appendChild(t);
-    g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));dome.appendChild(g);});}
+    g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));dome.appendChild(g);});
+  // the Moon itself
+  if(curMoon&&curMoon.alt>0){const[mx,my]=domePos(curMoon.az,curMoon.alt);const g=el("g",{});
+    g.appendChild(el("circle",{cx:mx,cy:my,r:8,fill:"#f5c542",stroke:"#0b1733","stroke-width":1}));
+    g.appendChild(el("circle",{cx:mx+2.6,cy:my,r:6.4,fill:"#16224a"}));   // crescent shading
+    const lb=el("text",{x:mx,y:my-13,"text-anchor":"middle",fill:"#f5c542","font-size":11.5,"font-weight":700});lb.textContent=L("Moon","月");
+    g.appendChild(lb);dome.appendChild(g);}}
 function hl(zh,on){document.querySelectorAll("#upBody tr").forEach(tr=>tr.classList.toggle("hl",on&&tr.dataset.zh===zh));}
 
 function render(y,m,d,hh,mm){
@@ -225,8 +238,10 @@ function render(y,m,d,hh,mm){
     g.innerHTML=L(`Tonight <b>${up.length}</b> of the 28 mansions are up. The <b class="zh">${SYMS[top].zh}</b> <b>${SYMS[top].en}</b> ${s.mean>=55?"rides high overhead":s.mean>=30?"stands well up":"sits low"}, ${dir}.`,
       `今夜二十八宿中有 <b>${up.length}</b> 宿在天上。<b class="zh">${SYMS[top].zh}</b>${s.mean>=55?"高懸天頂":s.mean>=30?"高掛天上":"低懸天邊"}，${s.meanH<-15?"自東方升起":s.meanH>15?"向西方沉落":"近於中天"}。`);}
   // moon lodge
-  const ml=moonLodge(y,m,d,hh,mm,LST);const mlEl=document.getElementById("moonLodge");
-  if(ml){const lo=ml.lodge;const upTxt=ml.alt>0?L(`up ${ml.alt.toFixed(0)}° now`,`此刻在天上 ${ml.alt.toFixed(0)}°`):L("below the horizon now","此刻已落");
+  const ml=moonLodge(y,m,d,hh,mm,LST);curMoon=ml;const mlEl=document.getElementById("moonLodge");
+  if(ml){const lo=ml.lodge;
+    const upTxt=ml.alt>0?L(`up ${ml.alt.toFixed(0)}° in the ${compass(ml.az)} — look for the ◑ on the chart below`,`在${compass(ml.az)}方、高 ${ml.alt.toFixed(0)}° — 見下圖 ◑ 標記`)
+                        :L("below the horizon now — it rises later tonight","此刻尚在地平線下，稍後方升");
     mlEl.style.display="block";
     mlEl.innerHTML=L(`🌙 Tonight the Moon lodges in <b class="zh">${lo.zh}</b> <b>${lo.pin} · ${lo.en}</b> — ${lo.dEN}
       <div class="sub">The Moon is ~${ml.illum!=null?ml.illum+"% lit":""}, ${upTxt}. It shifts about one lodge east each night.</div>`,
@@ -248,9 +263,13 @@ function render(y,m,d,hh,mm){
 }
 
 let curY,curM,curD,curH,curMin;
+const timeSlider=document.getElementById("timeSlider");
+function syncSlider(hh,mm){timeSlider.value=hh*60+mm;}
 function readAndRender(){const dv=document.getElementById("datePick").value,tv=document.getElementById("timePick").value||"20:30";
-  if(!dv)return;const p=dv.split("-").map(Number),t=tv.split(":").map(Number);curY=p[0];curM=p[1]-1;curD=p[2];curH=t[0];curMin=t[1];render(curY,curM,curD,curH,curMin);}
+  if(!dv)return;const p=dv.split("-").map(Number),t=tv.split(":").map(Number);curY=p[0];curM=p[1]-1;curD=p[2];curH=t[0];curMin=t[1];syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);}
 function stopLive(){if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
+timeSlider.addEventListener("input",()=>{stopLive();const v=+timeSlider.value,hh=Math.floor(v/60),mm=v%60;
+  document.getElementById("timePick").value=`${pad(hh)}:${pad(mm)}`;curH=hh;curMin=mm;render(curY,curM,curD,hh,mm);});
 document.getElementById("datePick").addEventListener("change",()=>{stopLive();readAndRender();});
 document.getElementById("timePick").addEventListener("change",()=>{stopLive();readAndRender();});
 document.getElementById("nextFri").addEventListener("click",()=>{stopLive();const f=nextFridayYMD();
@@ -258,9 +277,9 @@ document.getElementById("nextFri").addEventListener("click",()=>{stopLive();cons
 document.getElementById("nowBtn").addEventListener("click",()=>{const n=sgtNow();
   document.getElementById("datePick").value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
   document.getElementById("timePick").value=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
-  curY=n.getFullYear();curM=n.getMonth();curD=n.getDate();curH=n.getHours();curMin=n.getMinutes();render(curY,curM,curD,curH,curMin);
+  curY=n.getFullYear();curM=n.getMonth();curD=n.getDate();curH=n.getHours();curMin=n.getMinutes();syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);
   stopLive();liveTimer=setInterval(()=>{const t=sgtNow();document.getElementById("timePick").value=`${pad(t.getHours())}:${pad(t.getMinutes())}`;
-    curY=t.getFullYear();curM=t.getMonth();curD=t.getDate();curH=t.getHours();curMin=t.getMinutes();render(curY,curM,curD,curH,curMin);},60000);});
+    curY=t.getFullYear();curM=t.getMonth();curD=t.getDate();curH=t.getHours();curMin=t.getMinutes();syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);},60000);});
 document.getElementById("belowHead").addEventListener("click",()=>{const w=document.getElementById("belowWrap");w.style.display=w.style.display==="none"?"block":"none";});
 
 function applyLang(){document.body.classList.toggle("lang-zh",lang==="zh");document.documentElement.lang=lang==="zh"?"zh":"en";
