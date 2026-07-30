@@ -67,7 +67,7 @@ h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
 #strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
 .scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
 @media(min-width:760px){.scrollhint{display:none;}}
-#circle{width:100%;height:auto;display:block;max-width:460px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+#circle{width:100%;height:auto;max-width:460px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
 .cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
 .spoke{stroke:#26335c;}.qdiv{stroke:#3a4c86;stroke-dasharray:3 3;opacity:.55;}
 .symarc{fill:none;stroke-width:5;}.rimchar{text-anchor:middle;dominant-baseline:central;font-size:14px;}
@@ -231,6 +231,7 @@ const DET=M.map(m=>({n:m.n,zh:m.zh,pin:m.pin,en:m.en,sym:m.sym,westDet:m.westDet
 const HORN_RA=DET.find(d=>d.n===1).ra;            // base the RA sweep on the Horn's own star
 DET.forEach(d=>d.rs=(d.ra-HORN_RA+360)%360);
 let activeSym=null, mapView="circle";
+const rev=x=>((x%360)+360)%360;   // used by the Western-constellation overlay
 
 /* ---------- WHEEL ---------- */
 const wheel=document.getElementById("wheel");
@@ -277,7 +278,7 @@ function drawWestern(){if(!window.WCONST)return;
 }
 const srad=m=>Math.max(2,5.4-m*0.7);
 function drawStrip(){strip.innerHTML="";
-  SDMIN=westOverlay?-62:-45; SDMAX=westOverlay?62:32;
+  SDMIN=westOverlay?-64:-45; SDMAX=westOverlay?64:32;
   if(westOverlay) drawWestern();
   SYMBOLS.forEach(sym=>{const ms=DET.filter(m=>m.sym===sym.key).map(m=>m.rs);const lo=Math.min(...ms),hi=Math.max(...ms);
     const x1=sx(Math.max(lo-6,0)),x2=sx(Math.min(hi+6,360)),on=!activeSym||activeSym===sym.key;
