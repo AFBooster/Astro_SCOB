@@ -305,6 +305,13 @@ try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
 const f0=nextFridayYMD();document.getElementById("datePick").value=`${f0.y}-${pad(f0.m+1)}-${pad(f0.d)}`;
 document.body.classList.toggle("lang-zh",lang==="zh");document.getElementById("langBtn").textContent=lang==="zh"?"EN":"中文";
 curY=f0.y;curM=f0.m;curD=f0.d;curH=20;curMin=30;render(f0.y,f0.m,f0.d,20,30);
+// ---------- accessibility: keyboard operation + labels ----------
+(function(){
+  const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  const lb=document.getElementById("langBtn");if(lb)lb.setAttribute("aria-label","Switch language · 切換語言");
+  const bh=document.getElementById("belowHead");if(bh){bh.setAttribute("tabindex","0");bh.setAttribute("role","button");}
+  document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.id==="belowHead"){e.preventDefault();e.target.click();}});
+})();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 <script src="version.js"></script>

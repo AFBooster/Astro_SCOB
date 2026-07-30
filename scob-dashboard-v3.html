@@ -838,6 +838,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
   <button type="button" data-mode="mobile">Mobile</button>
 </div>
 <script src="astro-core.js"></script>
+<script src="chinese-sky-data.js"></script>
 <script type="text/plain" id="sharedScript">
 "use strict";
 const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI; // SCOB, Jurong
@@ -885,6 +886,15 @@ function sunCross(y,m,d,h0,h1,thr){let a=Date.UTC(y,m,d,h0-8,0,0),b=Date.UTC(y,m
 function sunTimes(y,m,d){return{set:sunCross(y,m,d,16,21,-0.833),dark:sunCross(y,m,d,16,22,-18),rise:sunCross(y,m,d,28,32,-0.833)};}
 
 // ---- v3: tonight-at-a-glance summary ----
+// Which of the 28 Chinese lunar mansions the Moon is in (its "lodge"), from its RA.
+function moonLodgeNow(){
+  if(!window.CSKY||!MOONEQ)return null;
+  const yr=(GL?GL.y:new Date().getFullYear());
+  const pr=(ra,dec)=>{const T=yr-2000,a=ra*RAD,dd=dec*RAD;return ra+(3.07496+1.33621*Math.sin(a)*Math.tan(dd))*T*15/3600;};
+  const bnd=CSKY.map(mn=>{const s=mn.stars[mn.det];return{m:mn,ra:rev(pr(s[0],s[1]))};});
+  const horn=bnd.find(b=>b.m.n===1).ra;bnd.forEach(b=>b.k=rev(b.ra-horn));bnd.sort((a,b)=>a.k-b.k);
+  const mk=rev(MOONEQ.ra-horn);let lo=bnd[0].m;for(const b of bnd)if(b.k<=mk)lo=b.m;return lo;
+}
 function renderGlance(){
   const g=document.getElementById('glance');if(!g||!GL)return;
   const y=GL.y,m=GL.m,d=GL.d,dS=GL.dS,sLon=GL.sLon,sR=GL.sR,sunAlt=GL.sunAlt;
@@ -903,10 +913,12 @@ function renderGlance(){
   else if(WXV)head='❌ Likely a wash-out — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance.';
   else head='🔭 Dark sky at the chosen time · live forecast loads in the weather card.';
   g.style.display='block';
+  const ml=(window.CSKY?moonLodgeNow():null);
   g.innerHTML='<div class="gv">'+head+'</div><div class="gchips">'
     +'<span class="gc">🌇 Sunset <b>'+(st.set||'—')+'</b></span>'
     +'<span class="gc">🌌 Fully dark <b>'+(st.dark||'—')+'</b></span>'
     +'<span class="gc">🌙 Moon <b>'+pct+'% · '+(ma.alt>0?'up '+Math.round(ma.alt)+'°':'down')+'</b></span>'
+    +(ml?'<span class="gc" title="The Chinese lunar mansion the Moon is in tonight">🐉 Moon lodges in <b>'+ml.zh+'宿 '+ml.en+'</b></span>':'')
     +(bp?'<span class="gc">🪐 Best planet <b>'+bp+'</b></span>':'')
     +(tt?'<span class="gc">🔭 Top target <b>'+tt+'</b></span>':'')
     +(EVT.length?'<span class="gc">'+EVT[0][1]+' <b>'+EVT[0][2]+'</b></span>':'')

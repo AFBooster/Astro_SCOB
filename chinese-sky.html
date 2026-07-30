@@ -157,6 +157,7 @@ tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
       <div class="vbtn" data-v="strip"><span class="en-only">Strip map</span><span class="zh-only">長卷圖</span></div>
       <div class="vbtn active" data-v="circle"><span class="en-only">Circle chart</span><span class="zh-only">圓形星盤</span></div>
     </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false"><span class="en-only">🌌 Overlay Western constellations</span><span class="zh-only">🌌 疊加西方星座</span></button></div>
     <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 300" role="img" aria-label="Full-sky strip map of the 28 mansions"></svg></div>
     <p class="scrollhint"><span class="en-only">← swipe the strip sideways →</span><span class="zh-only">← 左右滑動 →</span></p>
     <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Traditional circular chart of the 28 mansions"></svg>
@@ -261,10 +262,23 @@ function drawCards(){abox.innerHTML="";SYMBOLS.forEach(s=>{const d=document.crea
 
 /* ---------- STRIP ---------- */
 const strip=document.getElementById("strip");
-const SW=980,SH=300,mL=44,mR=14,mT=18,mB=42,decMin=-45,decMax=32;
-const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((decMax-dec)/(decMax-decMin))*(SH-mT-mB);
+const SW=980,SH=300,mL=44,mR=14,mT=18,mB=42;
+let SDMIN=-45,SDMAX=32,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+// draw the Western constellation stick-figures on the RA×Dec strip (combined West+Chinese view)
+function drawWestern(){if(!window.WCONST)return;
+  WCONST.forEach(c=>{const stars=c[1],lines=c[2];
+    lines.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-HORN_RA)),x2=sx(rev(stars[b][0]-HORN_RA));
+      if(Math.abs(x1-x2)>SW*0.5)return; // skip the RA-seam wrap
+      strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.75}));});
+    stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-HORN_RA)),cy:sy(s[1]),r:1.4,fill:"#8fa0c8",opacity:.85})));
+    const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-HORN_RA)),0)/stars.length, cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+    const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});
+}
 const srad=m=>Math.max(2,5.4-m*0.7);
 function drawStrip(){strip.innerHTML="";
+  SDMIN=westOverlay?-62:-45; SDMAX=westOverlay?62:32;
+  if(westOverlay) drawWestern();
   SYMBOLS.forEach(sym=>{const ms=DET.filter(m=>m.sym===sym.key).map(m=>m.rs);const lo=Math.min(...ms),hi=Math.max(...ms);
     const x1=sx(Math.max(lo-6,0)),x2=sx(Math.min(hi+6,360)),on=!activeSym||activeSym===sym.key;
     strip.appendChild(el("rect",{x:x1,y:mT,width:x2-x1,height:SH-mT-mB,fill:COL[sym.key],opacity:on?(activeSym===sym.key?0.15:0.06):0.02}));
@@ -338,10 +352,18 @@ function setSym(k){activeSym=activeSym===k?null:k;drawWheel();drawStrip();drawCi
   document.getElementById("whint").textContent=activeSym?L(SYM[activeSym].desc[0],SYM[activeSym].desc[1]):L("The whole sky, divided four ways by season and direction.","天分四象，各主一方一季。");}
 function setSymNo(){}
 
-document.querySelectorAll(".vbtn").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
-  document.querySelectorAll(".vbtn").forEach(x=>x.classList.toggle("active",x===b));
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
   document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
   document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+// Western-constellation overlay: draw the Greek figures alongside the 28 mansions on the RA×Dec strip
+document.getElementById("westToggle").addEventListener("click",function(){
+  westOverlay=!westOverlay; this.classList.toggle("active",westOverlay); this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay && mapView!=="strip"){ mapView="strip";
+    document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+    document.getElementById("stripWrap").classList.add("show"); document.getElementById("circle").classList.remove("show"); }
+  drawStrip(); capReset();
+});
 
 /* ---------- DEEP DIVE: full asterism for any mansion ---------- */
 const mpick=document.getElementById("mpick");
@@ -405,6 +427,15 @@ if(window.matchMedia && window.matchMedia("(min-width:760px)").matches){mapView=
   document.querySelectorAll(".vbtn").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
   document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
 applyLang();
+// ---------- accessibility: keyboard operation + labels for the interactive controls ----------
+(function(){
+  const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  const lb=document.getElementById("langBtn");if(lb)lb.setAttribute("aria-label","Switch language · 切換語言");
+  function enhance(){document.querySelectorAll(".vbtn,.acard,.mchip").forEach(el=>{if(!el.hasAttribute("tabindex")){el.setAttribute("tabindex","0");el.setAttribute("role","button");}});}
+  enhance();
+  if(typeof MutationObserver!=="undefined"){["animals","mpick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.acard,.mchip")){e.preventDefault();t.click();}});
+})();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 <script src="version.js"></script>

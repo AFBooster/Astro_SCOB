@@ -1,0 +1,6 @@
+# Keep line endings sane across Windows/Git so files don't show as "modified"
+# just because of CR/LF differences.
+*.sh   text eol=lf
+*.bat  text eol=crlf
+# Stop the LICENSE file from flip-flopping between CRLF/LF on every checkout.
+LICENSE -text

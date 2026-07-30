@@ -14,6 +14,12 @@ REM ============================================================================
 setlocal
 cd /d "%~dp0"
 
+REM --- clear a stale git lock left by a crashed/earlier git process ---
+if exist ".git\index.lock" (
+  echo Removing stale .git\index.lock ...
+  del /f /q ".git\index.lock"
+)
+
 REM --- commit message: from the argument, else ask, else a default ---
 set "MSG=%~1"
 if "%MSG%"=="" set /p "MSG=Describe what changed (then press Enter): "
