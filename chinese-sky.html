@@ -276,10 +276,18 @@ function drawWestern(){if(!window.WCONST)return;
     const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-HORN_RA)),0)/stars.length, cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
     const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});
 }
+// draw the full 28-mansion asterisms (member stars + line links) so both systems show as figures
+function drawMansionFig(){
+  CSKY.forEach(mn=>{const col=COL[mn.sym];
+    mn.lines.forEach(([a,b])=>{const x1=sx(rev(mn.stars[a][0]-HORN_RA)),x2=sx(rev(mn.stars[b][0]-HORN_RA));
+      if(Math.abs(x1-x2)>SW*0.5)return;
+      strip.appendChild(el("line",{x1,y1:sy(mn.stars[a][1]),x2,y2:sy(mn.stars[b][1]),stroke:col,"stroke-width":1.3,opacity:.6}));});
+    mn.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-HORN_RA)),cy:sy(s[1]),r:1.8,fill:col,opacity:.9})));});
+}
 const srad=m=>Math.max(2,5.4-m*0.7);
 function drawStrip(){strip.innerHTML="";
   SDMIN=westOverlay?-64:-45; SDMAX=westOverlay?64:32;
-  if(westOverlay) drawWestern();
+  if(westOverlay){ drawWestern(); drawMansionFig(); }
   SYMBOLS.forEach(sym=>{const ms=DET.filter(m=>m.sym===sym.key).map(m=>m.rs);const lo=Math.min(...ms),hi=Math.max(...ms);
     const x1=sx(Math.max(lo-6,0)),x2=sx(Math.min(hi+6,360)),on=!activeSym||activeSym===sym.key;
     strip.appendChild(el("rect",{x:x1,y:mT,width:x2-x1,height:SH-mT-mB,fill:COL[sym.key],opacity:on?(activeSym===sym.key?0.15:0.06):0.02}));
@@ -363,7 +371,9 @@ document.getElementById("westToggle").addEventListener("click",function(){
   if(westOverlay && mapView!=="strip"){ mapView="strip";
     document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
     document.getElementById("stripWrap").classList.add("show"); document.getElementById("circle").classList.remove("show"); }
-  drawStrip(); capReset();
+  drawStrip();
+  if(westOverlay) document.getElementById("cap").innerHTML=L("🌌 Greek constellations (grey) over the 28 mansions (coloured) — the same sky, two traditions. Stars shared by both coincide exactly; the mansions form a belt near the ecliptic, so far-north/south constellations have no mansion.","🌌 西方星座（灰）疊於二十八宿（彩）——同一星空，兩種傳統。兩者共有之星完全重合；諸宿沿黃道成帶，故遠離黃道之星座無對應之宿。");
+  else capReset();
 });
 
 /* ---------- DEEP DIVE: full asterism for any mansion ---------- */
