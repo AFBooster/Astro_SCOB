@@ -200,7 +200,7 @@ tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
   </div>
 
   <div class="foot">
-    <p><span class="en-only">Member stars are shown to about <b>magnitude 5</b> — the practical limit under Jurong's city sky; a few fainter members (e.g. of the Girl and the Ox) are omitted. Star positions are Hipparcos J2000; mansion asterisms and line links follow the Stellarium Chinese sky culture; the marker (determinative) star and the cultural notes follow standard references and Sun&nbsp;Xiaochun &amp; Jacob&nbsp;Kistemaker, <em>The Chinese Sky During the Han</em>.</span><span class="zh-only">星官只繪至約<b>五等</b>——此為市區裕廊夜空之實際目視極限；女、牛等宿少數暗星從略。星位採依巴谷 J2000；星官連線依 Stellarium 中國星官；距星與釋義參據通行文獻及 Sun Xiaochun &amp; Jacob Kistemaker《The Chinese Sky During the Han》。</span></p>
+    <p><span class="en-only">The plotted asterism shows member stars to about <b>magnitude 5</b> (Jurong's practical city-sky limit) at Hipparcos J2000 positions, with line links from the Stellarium Chinese sky culture. The star roster and the paired <b>Chinese ↔ Western star names</b> follow the <b>Hong Kong Space Museum</b> bilingual list (via Wikipedia's <em>List of Chinese star names</em>; after Yi&nbsp;Shitong 1981 and Chen&nbsp;Meidong 1996); cultural notes after Sun&nbsp;Xiaochun &amp; Jacob&nbsp;Kistemaker, <em>The Chinese Sky During the Han</em>.</span><span class="zh-only">星圖繪至約<b>五等</b>（市區裕廊夜空之實際目視極限），星位採依巴谷 J2000，連線依 Stellarium 中國星官。星表與<b>中文 ↔ 西名對照</b>據<b>香港太空館</b>中西星名對照（見維基《List of Chinese star names》；本於伊世同 1981、陳美東 1996）；釋義參 Sun Xiaochun &amp; Jacob Kistemaker《The Chinese Sky During the Han》。</span></p>
     <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
   </div>
 </div>
@@ -369,22 +369,25 @@ function openMansion(n){selMansion=n;drawPicker();
   const rad=mg=>Math.max(2,6-mg*0.75);
   dsky.innerHTML="";
   m.lines.forEach(([a,b])=>{dsky.appendChild(el("line",{x1:X(m.stars[a][0]),y1:Y(m.stars[a][1]),x2:X(m.stars[b][0]),y2:Y(m.stars[b][1]),class:"aline"}));});
-  const shortLbl=w=>{if(w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;}; // Bayer/designation for the chart
+  const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;}; // Bayer/designation
   m.stars.forEach((s,i)=>{const isDet=i===m.det, isBright=s[2]<1.6;
     const g=el("g",{});
     g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?COL[m.sym]:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
-    const lbl=isDet?(shortLbl(s[4])||s[4]):shortLbl(s[4]);
-    if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?COL[m.sym]:"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}
+    // chart labels the Chinese mansion-star name in 中文 mode, the Western designation in English mode
+    let lbl = lang==="zh" ? (s[5]||"") : shortLbl(s[4]);
+    if(isDet && !lbl) lbl = lang==="zh" ? (m.official[m.detOff]?m.official[m.detOff].cn:"") : (shortLbl(s[4])||s[4]);
+    if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel"+(lang==="zh"?" zh":""),fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}
     dsky.appendChild(g);});
   const mdesc=document.getElementById("mdesc");
+  const dm=m.official[m.detOff]||{cn:"",w:m.stars[m.det][4]};
   mdesc.innerHTML=`<h3><span class="z zh" style="font-size:22px">${m.zh}</span> <span style="color:var(--gold)">${m.pin}</span> ${lang==="en"?"· "+m.en:""}</h3>
     <p class="mean">${L(meta.dEN,meta.dZH)}</p>
-    <p class="fact">${L("Marker star","距星")}: <b style="color:var(--white)">${m.stars[m.det][4]}</b> · ${m.stars.length} ${L("stars","星")} · ${L(SYM[m.sym].en,SYM[m.sym].zh)} ${SYM[m.sym].zh}</p>`;
+    <p class="fact">${L("Marker star","距星")}: <b class="zh" style="color:var(--white)">${dm.cn}</b> <span style="color:var(--mute)">${dm.w}</span> · ${m.official.length} ${L("stars","星")} · ${L(SYM[m.sym].en,SYM[m.sym].zh)} ${SYM[m.sym].zh}</p>`;
   const dt=document.getElementById("dtbody");dt.innerHTML="";
-  m.stars.map((s,i)=>({s,i})).sort((a,b)=>a.s[2]-b.s[2]).forEach(({s,i})=>{const tr=document.createElement("tr");
-    tr.innerHTML=`<td style="width:24px">${i===m.det?'<span class="swatch" style="background:'+COL[m.sym]+'"></span>':(s[2]<3?'<span class="swatch" style="background:#f5c542"></span>':'')}</td>
-      <td class="west">${s[4]}${i===m.det?' <span class="pin">'+L("· marker","· 距星")+'</span>':''}</td>
-      <td class="num">${L("mag","等")} ${s[2].toFixed(1)}</td>`;dt.appendChild(tr);});}
+  m.official.forEach((o,i)=>{const tr=document.createElement("tr");if(i===m.detOff)tr.classList.add("hl");
+    tr.innerHTML=`<td style="width:18px">${i===m.detOff?'<span class="swatch" style="background:'+COL[m.sym]+'"></span>':''}</td>
+      <td><span class="cn2 zh" style="color:var(--gold)">${o.cn}</span></td>
+      <td class="west">${o.w}${i===m.detOff?' <span class="pin">'+L("· marker","· 距星")+'</span>':''}</td>`;dt.appendChild(tr);});}
 
 /* ---------- language + night ---------- */
 function applyLang(){document.body.classList.toggle("lang-zh",lang==="zh");
