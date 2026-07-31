@@ -190,13 +190,12 @@ body.night{filter:grayscale(100%) sepia(100%) hue-rotate(-44deg) saturate(380%) 
    and the time-scrubber — giving the map and cards back most of the screen. Desktop only. */
 header{transition:padding .24s ease;}
 /* the two collapsible groups animate their height + fade, so the header slides shut smoothly
-   (rather than snapping via display:none, which jumps the page content). */
-.hdr-top,.hdr-bot{overflow:hidden;transition:max-height .24s ease,opacity .2s ease;}
+   (rather than snapping via display:none, which jumps the page content). The exact height is
+   driven from JS (measured per collapse) so there's no dead time and open content never clips. */
+.hdr-top,.hdr-bot{overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .22s ease;}
 .hdr-top{max-height:140px;}
 .hdr-bot{max-height:360px;}
 #desktopRoot header.hdr-min{padding-top:10px;padding-bottom:10px;}
-#desktopRoot header.hdr-min .hdr-top,
-#desktopRoot header.hdr-min .hdr-bot{max-height:0;opacity:0;}
 #desktopRoot header.hdr-min .ctrlbar{margin-top:0;padding:8px 14px;}
 #desktopRoot header.hdr-min .ctrlbar .btnmini{display:none;}
 #desktopRoot header.hdr-min .ctrlbar #nowBtn{display:inline-block;}
@@ -869,12 +868,19 @@ const IS_MOBILE=!!document.getElementById('mobileRoot');
 // Hysteresis (collapse >64px, expand <16px) stops any flicker at the boundary.
 if(!IS_MOBILE){(function(){
   const hdr=document.querySelector('#desktopRoot header'); if(!hdr) return;
+  const groups=[].slice.call(hdr.querySelectorAll('.hdr-top,.hdr-bot'));
   let min=false;
-  function onScroll(){
-    const y=window.pageYOffset||document.documentElement.scrollTop||0;
-    if(!min && y>64){min=true;hdr.classList.add('hdr-min');}
-    else if(min && y<16){min=false;hdr.classList.remove('hdr-min');}
-  }
+  // Open: animate to the group's real height, then release the cap (max-height:none) so later
+  // content growth — e.g. the glance/weather filling in — is never clipped.
+  function openG(g){g.style.maxHeight=g.scrollHeight+'px';g.style.opacity='1';
+    const done=e=>{if(e.propertyName!=='max-height')return;g.style.maxHeight='none';g.removeEventListener('transitionend',done);};
+    g.addEventListener('transitionend',done);}
+  // Close: pin the current (exact) height, force a reflow, then collapse to 0 — no dead time.
+  function closeG(g){g.style.maxHeight=g.scrollHeight+'px';g.getBoundingClientRect();
+    requestAnimationFrame(()=>{g.style.maxHeight='0px';g.style.opacity='0';});}
+  function set(m){if(m===min)return;min=m;hdr.classList.toggle('hdr-min',m);groups.forEach(m?closeG:openG);}
+  function onScroll(){const y=window.pageYOffset||document.documentElement.scrollTop||0;
+    if(!min&&y>72)set(true);else if(min&&y<20)set(false);}
   window.addEventListener('scroll',onScroll,{passive:true});
   onScroll();
 })();}
