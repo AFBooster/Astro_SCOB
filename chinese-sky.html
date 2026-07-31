@@ -93,9 +93,12 @@ tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
   padding:7px 2px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
 .mchip .z{font-size:17px;font-weight:700;line-height:1;}
 .mchip.active{border-color:var(--gold);background:#20345f;}
+.encpick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.encchip{flex:1 1 28%;min-width:118px;padding:9px 6px;}
+.encchip .z{font-size:18px;}.encchip .pin{display:block;margin-top:2px;}
 .ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
 @media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
-#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+#dsky,#esky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
 .starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
 .aline{stroke:#5bd6e0;stroke-width:1.1;opacity:.45;}
 .mdesc h3{margin:0 0 4px;font-size:17px;}.mdesc h3 .z{color:var(--gold);}
@@ -195,13 +198,30 @@ tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
     </div>
   </div>
 
+  <!-- three enclosures -->
+  <div class="card" id="encCard">
+    <h2><span class="en-only">The Three Enclosures</span><span class="zh-only">三垣</span> <small class="zh">紫微 · 太微 · 天市</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px"><span class="en-only">Beyond the ecliptic belt of the 28 mansions lie three great walled “cities” of the northern sky. Tap one to light it up on the pole-map and read its story — with the same Chinese ↔ Western star names.</span><span class="zh-only">二十八宿沿黃道成帶，北天更有三座「城垣」。點一垣，觀其於北天星圖之位、讀其故事——並附中文 ↔ 西名對照。</span></p>
+    <div class="encpick" id="encpick"></div>
+    <div class="ddgrid">
+      <div>
+        <svg id="esky" viewBox="0 0 480 480" role="img" aria-label="North-pole map of the Three Enclosures"></svg>
+        <p class="cap" id="ecap"></p>
+      </div>
+      <div>
+        <div class="mdesc" id="edesc"></div>
+        <div class="tablescroll" style="margin-top:12px"><table><tbody id="etbody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
   <div class="btnrow">
     <a href="chinese-tonight.html">🐉 <span class="en-only">Which mansions are up tonight?</span><span class="zh-only">今夜哪些宿在天上？</span></a>
     <a href="scob-dashboard-v3.html">←<span class="en-only"> Night-sky dashboard</span><span class="zh-only"> 觀星主頁</span></a>
   </div>
 
   <div class="foot">
-    <p><span class="en-only">The plotted asterism shows member stars to about <b>magnitude 5</b> (Jurong's practical city-sky limit) at Hipparcos J2000 positions, with line links from the Stellarium Chinese sky culture. The star roster and the paired <b>Chinese ↔ Western star names</b> follow the <b>Hong Kong Space Museum</b> bilingual list (via Wikipedia's <em>List of Chinese star names</em>; after Yi&nbsp;Shitong 1981 and Chen&nbsp;Meidong 1996); cultural notes after Sun&nbsp;Xiaochun &amp; Jacob&nbsp;Kistemaker, <em>The Chinese Sky During the Han</em>.</span><span class="zh-only">星圖繪至約<b>五等</b>（市區裕廊夜空之實際目視極限），星位採依巴谷 J2000，連線依 Stellarium 中國星官。星表與<b>中文 ↔ 西名對照</b>據<b>香港太空館</b>中西星名對照（見維基《List of Chinese star names》；本於伊世同 1981、陳美東 1996）；釋義參 Sun Xiaochun &amp; Jacob Kistemaker《The Chinese Sky During the Han》。</span></p>
+    <p><span class="en-only">The plotted asterisms — the 28 mansions and the Three Enclosures 三垣 — show member stars to about <b>magnitude 5</b> (Jurong's practical city-sky limit) at Hipparcos J2000 positions, with line links from the Stellarium Chinese sky culture. The star roster and the paired <b>Chinese ↔ Western star names</b> follow the <b>Hong Kong Space Museum</b> bilingual list (via Wikipedia's <em>List of Chinese star names</em>; after Yi&nbsp;Shitong 1981 and Chen&nbsp;Meidong 1996); cultural notes after Sun&nbsp;Xiaochun &amp; Jacob&nbsp;Kistemaker, <em>The Chinese Sky During the Han</em>.</span><span class="zh-only">所繪星官——二十八宿與三垣——繪至約<b>五等</b>（市區裕廊夜空之實際目視極限），星位採依巴谷 J2000，連線依 Stellarium 中國星官。星表與<b>中文 ↔ 西名對照</b>據<b>香港太空館</b>中西星名對照（見維基《List of Chinese star names》；本於伊世同 1981、陳美東 1996）；釋義參 Sun Xiaochun &amp; Jacob Kistemaker《The Chinese Sky During the Han》。</span></p>
     <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
   </div>
 </div>
@@ -422,11 +442,68 @@ function openMansion(n){selMansion=n;drawPicker();
       <td><span class="cn2 zh" style="color:var(--gold)">${o.cn}</span></td>
       <td class="west">${o.w}${i===m.detOff?' <span class="pin">'+L("· marker","· 距星")+'</span>':''}</td>`;dt.appendChild(tr);});}
 
+/* ---------- THREE ENCLOSURES: north-pole map + per-enclosure detail ---------- */
+const ENC=window.CENC||[], ENCL=window.CENCLOSURES||[];
+const ECOL={ziwei:"#c79bff",taiwei:"#77aaff",tianshi:"#4fd3a6"};
+const esky=document.getElementById("esky");
+const ECX=240,ECY=246,eOut=196,eDecRim=-20;
+const erR=dec=>((90-dec)/(90-eDecRim))*eOut;                       // colatitude → radius
+const eproj=(ra,dec)=>{const A=(ra-90)*Math.PI/180,r=erR(dec);return[ECX+r*Math.cos(A),ECY+r*Math.sin(A)];};
+const emag=m=>Math.max(1.8,5-m*0.62);
+const eInner=w=>{const p=(w||"").match(/\(([^)]+)\)/);return p?p[1]:(w||"");};
+let selEncl=(function(){try{return localStorage.getItem("scobEncl")||"ziwei";}catch(e){return "ziwei";}})();
+
+function drawEnclPicker(){const p=document.getElementById("encpick");p.innerHTML="";
+  ENCL.forEach(e=>{const d=document.createElement("div");d.className="mchip encchip"+(selEncl===e.id?" active":"");d.dataset.id=e.id;
+    d.style.borderLeftColor=ECOL[e.id];
+    d.innerHTML=`<div class="z zh" style="color:${ECOL[e.id]}">${e.zh}</div><div class="pin">${lang==="en"?e.en.replace(" Enclosure",""):e.pin}</div>`;
+    d.addEventListener("click",()=>openEnclosure(e.id));p.appendChild(d);});}
+
+function drawEnclMap(){esky.innerHTML="";
+  [60,30,0].forEach(dc=>esky.appendChild(el("circle",{cx:ECX,cy:ECY,r:erR(dc),fill:"none",
+    stroke:dc===0?"#3a4c82":"#22305a","stroke-width":dc===0?1:.7,"stroke-dasharray":dc===0?"":"3 4",opacity:.75})));
+  esky.appendChild(el("circle",{cx:ECX,cy:ECY,r:2.4,fill:"#9fb0d6"}));
+  const pl=el("text",{x:ECX,y:ECY-7,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent=L("N. pole","北極");esky.appendChild(pl);
+  const eqt=el("text",{x:ECX,y:ECY+erR(0)-6,"text-anchor":"middle",fill:"#7d8cb5","font-size":9});eqt.textContent=L("celestial equator","天赤道");esky.appendChild(eqt);
+  ENC.forEach(a=>{const on=selEncl===a.g,col=ECOL[a.g];
+    a.lines.forEach(([p,q])=>{const A=eproj(a.stars[p][0],a.stars[p][1]),B=eproj(a.stars[q][0],a.stars[q][1]);
+      esky.appendChild(el("line",{x1:A[0],y1:A[1],x2:B[0],y2:B[1],stroke:col,"stroke-width":1.3,opacity:on?.85:.12}));});
+    const single=a.stars.length===1;
+    a.stars.forEach(s=>{const[px,py]=eproj(s[0],s[1]);const g=el("g",{});g.style.cursor="pointer";
+      g.appendChild(el("circle",{cx:px,cy:py,r:emag(s[2]),fill:single?"#f5c542":col,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.18}));
+      g.addEventListener("mouseenter",()=>ecapStar(a,s));g.addEventListener("mouseleave",ecapReset);
+      g.addEventListener("click",()=>openEnclosure(a.g));esky.appendChild(g);
+      if(single){const t=el("text",{x:px+emag(s[2])+3,y:py+3.5,class:"starlabel"+(lang==="zh"?" zh":""),fill:on?"#f5c542":"#5b6a92",opacity:on?1:.3});
+        t.textContent=lang==="zh"?s[5]:eInner(s[4]);esky.appendChild(t);}});
+    if(!single){const cx=a.stars.reduce((t,s)=>t+eproj(s[0],s[1])[0],0)/a.stars.length,cy=a.stars.reduce((t,s)=>t+eproj(s[0],s[1])[1],0)/a.stars.length;
+      const t=el("text",{x:cx,y:cy,"text-anchor":"middle",class:"zh",fill:col,"font-size":11,"font-weight":700,opacity:on?.95:.14,"paint-order":"stroke",stroke:"#0c1530","stroke-width":2.6});
+      t.textContent=lang==="zh"?a.n:a.en;esky.appendChild(t);}});}
+
+function ecapStar(a,s){document.getElementById("ecap").innerHTML=
+  `<b class="zh" style="color:var(--gold)">${s[5]}</b> &nbsp;<span style="color:var(--star)">${s[4]}</span> · <span class="zh">${a.n}</span> ${lang==="en"?a.en:""}`;}
+function ecapReset(){document.getElementById("ecap").textContent=L(
+  "A north-pole star-map: the pole at the centre, the equator at the rim. The Purple Enclosure hugs the pole; the Supreme Palace and Heavenly Market lie further out. Tap an enclosure to light it up.",
+  "北天星圖：北極居中、赤道為緣。紫微垣近北極，太微、天市在外。點一垣以highlight。");}
+
+function openEnclosure(id){selEncl=id;try{localStorage.setItem("scobEncl",id);}catch(e){}
+  drawEnclPicker();drawEnclMap();
+  const e=ENCL.find(x=>x.id===id)||ENCL[0];
+  document.getElementById("edesc").innerHTML=
+    `<h3><span class="z zh" style="font-size:22px;color:${ECOL[id]}">${e.zh}</span> <span style="color:var(--gold)">${e.pin}</span> ${lang==="en"?"· "+e.en:""}</h3>
+     <p class="mean">${L(e.dEN,e.dZH)}</p>
+     <p class="fact">${L("Western sky","西方星空")}: ${e.west}</p>`;
+  const tb=document.getElementById("etbody");tb.innerHTML="";
+  ENC.filter(a=>a.g===id).forEach(a=>{const hr=document.createElement("tr");
+    hr.innerHTML=`<td colspan="2" style="padding-top:9px"><span class="cn2 zh" style="color:${ECOL[id]}">${a.n}</span> <span class="pin">${a.en}</span></td>`;tb.appendChild(hr);
+    a.stars.forEach(s=>{const tr=document.createElement("tr");
+      tr.innerHTML=`<td style="width:44%"><span class="cn2 zh" style="color:var(--gold)">${s[5]}</span></td><td class="west">${s[4]}</td>`;tb.appendChild(tr);});});
+  ecapReset();}
+
 /* ---------- language + night ---------- */
 function applyLang(){document.body.classList.toggle("lang-zh",lang==="zh");
   document.documentElement.lang=lang==="zh"?"zh":"en";
   document.getElementById("langBtn").textContent=lang==="zh"?"EN":"中文";
-  drawWheel();drawCards();drawStrip();drawCircle();drawTable28();drawPicker();openMansion(selMansion);
+  drawWheel();drawCards();drawStrip();drawCircle();drawTable28();drawPicker();openMansion(selMansion);openEnclosure(selEncl);
   setSym.length;document.getElementById("whint").textContent=activeSym?L(SYM[activeSym].desc[0],SYM[activeSym].desc[1]):L("The whole sky, divided four ways by season and direction.","天分四象，各主一方一季。");capReset();}
 document.getElementById("langBtn").addEventListener("click",()=>{lang=lang==="zh"?"en":"zh";try{localStorage.setItem("scobLangCS",lang);}catch(e){}applyLang();});
 function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
@@ -442,10 +519,10 @@ applyLang();
 (function(){
   const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
   const lb=document.getElementById("langBtn");if(lb)lb.setAttribute("aria-label","Switch language · 切換語言");
-  function enhance(){document.querySelectorAll(".vbtn,.acard,.mchip").forEach(el=>{if(!el.hasAttribute("tabindex")){el.setAttribute("tabindex","0");el.setAttribute("role","button");}});}
+  function enhance(){document.querySelectorAll(".vbtn,.acard,.mchip,.encchip").forEach(el=>{if(!el.hasAttribute("tabindex")){el.setAttribute("tabindex","0");el.setAttribute("role","button");}});}
   enhance();
-  if(typeof MutationObserver!=="undefined"){["animals","mpick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
-  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.acard,.mchip")){e.preventDefault();t.click();}});
+  if(typeof MutationObserver!=="undefined"){["animals","mpick","encpick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.acard,.mchip,.encchip")){e.preventDefault();t.click();}});
 })();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>

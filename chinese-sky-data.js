@@ -3,6 +3,40 @@ window.CSKY=[{"n":1,"zh":"角","pin":"Jiǎo","en":"Horn","sym":"dragon","det":0,
 
 /* Western constellation stick-figures [name,[[ra,dec,star],...],[[lineIdx,...]]] — for the combined West+Chinese overlay (from constellation-story.html). */
 window.WCONST=[["Orion",[[88.79,7.41,"Betelgeuse"],[81.28,6.35,"Bellatrix"],[85.19,-1.94,"Alnitak"],[84.05,-1.2,"Alnilam"],[83,-0.3,"Mintaka"],[86.94,-9.67,"Saiph"],[78.63,-8.2,"Rigel"],[83.78,9.93,"Meissa"]],[[0,1],[1,4],[4,3],[3,2],[2,5],[5,6],[6,4],[0,2],[0,7],[1,7]]],["Canis Major",[[101.29,-16.72,"Sirius"],[95.67,-17.96,"Mirzam"],[105.94,-15.63,"Muliphein"],[107.1,-26.39,"Wezen"],[104.66,-28.97,"Adhara"],[111.02,-29.3,"Aludra"]],[[0,1],[0,2],[0,3],[3,4],[4,5],[3,1]]],["Taurus",[[68.98,16.51,"Aldebaran"],[81.57,28.61,"Elnath"],[84.41,21.14,"Tianguan"],[60.17,12.49,"Lambda Tauri"],[67.17,15.87,"Theta Tauri"],[56.87,24.11,"Pleiades"]],[[0,1],[0,2],[0,4],[4,3],[3,5]]],["Gemini",[[113.65,31.89,"Castor"],[116.33,28.03,"Pollux"],[99.43,16.4,"Alhena"],[95.74,22.51,"Tejat"],[100.98,25.13,"Mebsuta"],[110.03,21.98,"Wasat"],[101.32,12.9,"Alzirr"]],[[0,1],[0,4],[4,3],[1,5],[5,6],[5,2]]],["Leo",[[152.09,11.97,"Regulus"],[151.83,16.76,"Al Jabhah"],[154.99,19.84,"Algieba"],[154.17,23.42,"Adhafera"],[148.19,26.01,"Rasalas"],[146.46,23.77,"Ras Elased"],[177.26,14.57,"Denebola"],[168.53,20.52,"Zosma"],[168.56,15.43,"Chertan"]],[[5,4],[4,3],[3,2],[2,1],[1,0],[0,8],[8,6],[6,7],[7,2]]],["Virgo",[[201.3,-11.16,"Spica"],[203.67,-0.6,"Heze"],[195.54,10.96,"Vindemiatrix"],[190.42,-1.45,"Porrima"],[193.9,3.4,"Auva"],[177.67,1.76,"Zavijava"]],[[0,3],[3,5],[3,4],[4,2],[4,1]]],["Bootes",[[213.92,19.18,"Arcturus"],[221.25,27.07,"Izar"],[222.2,33.31,"Seginus"],[225.49,40.39,"Nekkar"],[218.02,38.31,"Delta Bootis"]],[[0,1],[1,2],[2,3],[3,4],[4,1]]],["Scorpius",[[247.35,-26.43,"Antares"],[241.36,-19.81,"Graffias"],[240.08,-22.62,"Dschubba"],[239.71,-26.11,"Pi Scorpii"],[248.97,-28.22,"Tau Scorpii"],[252.97,-34.29,"Epsilon Scorpii"],[253.84,-38.05,"Mu Scorpii"],[253.5,-42.36,"Zeta Scorpii"],[258.04,-43.24,"Eta Scorpii"],[264.33,-42.99,"Sargas"],[266.9,-40.13,"Iota Scorpii"],[265.62,-39.03,"Kappa Scorpii"],[263.4,-37.1,"Shaula"]],[[1,2],[2,3],[2,0],[0,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12]]],["Sagittarius",[[276.04,-34.38,"Kaus Australis"],[275.25,-29.83,"Kaus Media"],[276.99,-25.42,"Kaus Borealis"],[283.82,-26.3,"Nunki"],[285.65,-26.99,"Phi Sagittarii"],[285.65,-29.88,"Ascella"],[286.74,-27.67,"Tau Sagittarii"]],[[2,1],[1,0],[0,5],[5,4],[4,3],[3,2],[4,6]]],["Crux",[[186.65,-63.1,"Acrux"],[187.79,-57.11,"Gacrux"],[191.93,-59.69,"Mimosa"],[183.79,-58.75,"Imai"]],[[0,1],[2,3]]],["Centaurus",[[219.9,-60.83,"Rigil Kent."],[210.96,-60.37,"Hadar"],[204.97,-53.47,"Epsilon Centauri"],[190.38,-48.96,"Muhlifain"],[211.67,-36.37,"Menkent"]],[[0,1],[1,2],[2,3],[2,4]]],["Lyra",[[279.23,38.78,"Vega"],[282.52,33.36,"Sheliak"],[284.74,32.69,"Sulafat"],[283.63,36.9,"Delta Lyrae"],[281.19,37.61,"Zeta Lyrae"]],[[0,4],[4,3],[3,2],[2,1],[1,4]]],["Cygnus",[[310.36,45.28,"Deneb"],[305.56,40.26,"Sadr"],[311.55,33.97,"Gienah"],[296.24,45.13,"Fawaris"],[292.68,27.96,"Albireo"]],[[0,1],[1,2],[1,3],[1,4]]],["Aquila",[[297.7,8.87,"Altair"],[296.56,10.61,"Tarazed"],[298.83,6.41,"Alshain"],[291.37,3.11,"Delta Aql"],[286.35,13.86,"Okab"]],[[1,0],[0,2],[0,3],[3,4]]],["Cassiopeia",[[10.13,56.54,"Schedar"],[2.29,59.15,"Caph"],[14.18,60.72,"Gamma Cas"],[21.45,60.24,"Ruchbah"],[28.6,63.67,"Segin"]],[[1,0],[0,2],[2,3],[3,4]]],["Ursa Major",[[165.93,61.75,"Dubhe"],[165.46,56.38,"Merak"],[178.46,53.69,"Phecda"],[183.86,57.03,"Megrez"],[193.51,55.96,"Alioth"],[200.98,54.93,"Mizar"],[206.89,49.31,"Alkaid"]],[[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]]]];
+
+/* Three Enclosures 三垣 — the circumpolar & zodiacal "cities" of the sky, framing the 28 mansions.
+   Asterism entry mirrors mansions: star = [ra,dec,mag,HIP,westernName,chineseName]. g = enclosure id.
+   Names: Wikipedia / HK Space Museum bilingual list (Yi Shitong 1981; Chen Meidong 1996). SCOB Night-Sky */
+window.CENC=[
+  {n:"紫微右垣",en:"Purple Right Wall",g:"ziwei",stars:[[211.097,64.376,3.7,68756,"α Dra (Thuban)","右樞"],[188.371,69.788,3.9,61281,"κ Dra","少尉"],[172.851,69.331,3.8,56211,"λ Dra (Giausar)","上輔"],[143.62,69.83,4.5,46977,"24 UMa","少輔"],[73.513,66.343,4.3,22783,"α Cam","少衛"],[49.997,65.652,4.7,15520,"BK Cam","上丞"]],lines:[[0,1],[1,2],[2,3],[4,5]]},
+  {n:"紫微左垣",en:"Purple Left Wall",g:"ziwei",stars:[[231.232,58.966,3.3,75458,"ι Dra (Edasich)","左樞"],[240.472,58.565,4,78527,"θ Dra","上宰"],[245.998,61.514,2.7,80331,"η Dra (Athebyne)","少宰"],[257.197,65.715,3.2,83895,"ζ Dra (Aldhibah)","上弼"],[283.599,71.297,4.8,92782,"υ Dra","少弼"]],lines:[[0,1],[1,2],[2,3],[3,4]]},
+  {n:"北斗",en:"Big Dipper",g:"ziwei",stars:[[165.932,61.751,1.8,54061,"α UMa (Dubhe)","天樞"],[165.46,56.382,2.3,53910,"β UMa (Merak)","天璇"],[178.458,53.695,2.4,58001,"γ UMa (Phecda)","天璣"],[183.857,57.033,3.3,59774,"δ UMa (Megrez)","天權"],[193.507,55.96,1.8,62956,"ε UMa (Alioth)","玉衡"],[200.981,54.925,2.2,65378,"ζ UMa (Mizar)","開陽"],[206.885,49.313,1.9,67301,"η UMa (Alkaid)","搖光"]],lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]]},
+  {n:"北极",en:"North Pole",g:"ziwei",stars:[[230.182,71.834,3,75097,"γ UMi (Pherkad)","太子"],[222.676,74.156,2.1,72607,"β UMi (Kochab)","帝"],[216.881,75.696,4.3,70692,"5 UMi","庶子"],[212.212,77.548,4.8,69112,"4 UMi","後宮"]],lines:[[0,1],[1,2],[2,3]]},
+  {n:"辅",en:"Alcor",g:"ziwei",stars:[[201.306,54.988,4,65477,"80 UMa (Alcor)","輔"]],lines:[]},
+  {n:"太微右垣",en:"Supreme Right Wall",g:"taiwei",stars:[[177.674,1.765,3.6,57757,"β Vir (Zavijava)","右執法"],[170.284,6.029,4,55434,"σ Leo","西上將"],[170.981,10.53,4,55642,"ι Leo","西次將"],[168.56,15.43,3.3,54879,"θ Leo (Chertan)","西上相"],[168.527,20.524,2.6,54872,"δ Leo (Zosma)","西次相"]],lines:[[0,1],[1,2],[2,3],[3,4]]},
+  {n:"太微左垣",en:"Supreme Left Wall",g:"taiwei",stars:[[184.976,-0.667,3.9,60129,"η Vir (Zaniah)","左執法"],[190.415,-1.449,2.7,61941,"γ Vir (Porrima)","東上將"],[193.901,3.397,3.4,63090,"δ Vir (Minelauva)","東次將"],[195.544,10.959,2.9,63608,"ε Vir (Vindemiatrix)","東上相"],[197.497,17.529,4.3,64241,"α Com (Diadem)","東次相"]],lines:[[0,1],[1,2],[2,3],[3,4]]},
+  {n:"五帝座",en:"Five Emperors",g:"taiwei",stars:[[177.265,14.572,2.1,57632,"β Leo (Denebola)","五帝座一"]],lines:[]},
+  {n:"大角",en:"Great Horn",g:"taiwei",stars:[[213.915,19.182,-0.1,69673,"α Boo (Arcturus)","大角"]],lines:[]},
+  {n:"天市右垣",en:"Market Right Wall",g:"tianshi",stars:[[247.555,21.49,2.8,80816,"β Her (Kornephoros)","河中"],[245.48,19.153,3.7,80170,"γ Her","河間"],[239.113,15.662,3.9,78072,"γ Ser","鄭"],[236.547,15.422,3.6,77233,"β Ser","周"],[233.701,10.539,3.8,76276,"δ Ser","秦"],[236.067,6.426,2.6,77070,"α Ser (Unukalhai)","蜀"],[237.704,4.478,3.7,77622,"ε Ser","巴"],[243.586,-3.694,2.7,79593,"δ Oph (Yed Prior)","梁"],[244.58,-4.693,3.2,79882,"ε Oph (Yed Posterior)","楚"],[249.29,-10.567,2.5,81377,"ζ Oph (Han)","韓"]],lines:[[0,1],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9]]},
+  {n:"天市左垣",en:"Market Left Wall",g:"tianshi",stars:[[258.758,24.839,3.1,84379,"δ Her (Sarin)","魏"],[262.685,26.111,4.4,85693,"λ Her (Maasym)","趙"],[266.615,27.721,3.4,86974,"μ Her","九河"],[271.886,28.762,3.8,88794,"ο Her","中山"],[286.353,13.863,3,93747,"ζ Aql (Okab)","吳越"],[284.055,4.204,4.6,92946,"θ Ser (Alya)","徐"],[275.328,-2.899,3.2,89962,"η Ser","東海"],[269.757,-9.774,3.3,88048,"ν Oph","燕"],[264.397,-15.399,3.5,86263,"ξ Ser","南海"],[257.595,-15.725,2.4,84012,"η Oph (Sabik)","宋"]],lines:[[0,1],[1,2],[2,3],[4,5],[5,6],[6,7],[7,8],[8,9]]},
+  {n:"织女",en:"Weaving Maiden",g:"tianshi",stars:[[281.085,39.67,4.7,91919,"ε¹ Lyr","織女二"],[279.235,38.784,0,91262,"α Lyr (Vega)","織女一"],[281.193,37.605,4.3,91971,"ζ¹ Lyr","織女三"]],lines:[[0,1],[1,2]]},
+  {n:"河鼓",en:"Drum at the River",g:"tianshi",stars:[[298.828,6.407,3.7,98036,"β Aql (Alshain)","河鼓一"],[297.696,8.868,0.8,97649,"α Aql (Altair)","河鼓二"],[296.565,10.613,2.7,97278,"γ Aql (Tarazed)","河鼓三"]],lines:[[0,1],[1,2]]},
+  {n:"帝座",en:"Emperors Seat",g:"tianshi",stars:[[258.662,14.39,2.8,84345,"α Her (Rasalgethi)","帝座"]],lines:[]},
+];
+window.CENCLOSURES=[
+  {id:"ziwei",zh:"紫微垣",pin:"Zǐwēi Yuán",en:"Purple Forbidden Enclosure",
+   west:"around the north celestial pole — Draco, Ursa Minor & Ursa Major",
+   dEN:"The innermost court: the emperor’s own palace, wheeling forever around the pole and never setting. Its twin walls (in Draco and Camelopardalis) fence in the throne; the Big Dipper 北斗 turns beside it as the celestial clock, and 北極 marks the pivot of heaven itself.",
+   dZH:"天之中央、紫微宮 — 天帝所居，環繞北極，終年不落。左右兩垣如宮牆，北斗為帝車、定四時，北極為天之樞紐。"},
+  {id:"taiwei",zh:"太微垣",pin:"Tàiwēi Yuán",en:"Supreme Palace Enclosure",
+   west:"Leo, Virgo & Coma Berenices",
+   dEN:"The government quarter: the hall of ministers, generals and law-officers who administer the realm. Its walls are the great courtiers flanking the throne; 五帝座 (Denebola) is the seat of the Five Emperors, and 大角 (Arcturus) blazes nearby as the Great Horn of the dragon.",
+   dZH:"天庭 — 朝廷政府之所，三公九卿、將相列於兩垣。五帝座為天子之位，大角為蒼龍之角、近在其側。"},
+  {id:"tianshi",zh:"天市垣",pin:"Tiānshì Yuán",en:"Heavenly Market Enclosure",
+   west:"Hercules, Ophiuchus & Serpens",
+   dEN:"The marketplace of heaven: its two walls are named for the feudal states and rivers of ancient China, ringing a celestial bazaar. 帝座 (Rasalgethi) is the throne set among the crowd; overhead the summer markers 織女 (Vega) and 河鼓 (Altair) — the Weaving Maid and the Cowherd — face each other across the Milky Way.",
+   dZH:"天上之市集 — 兩垣以列國、河川為名，環成市廛。帝座居中，織女、河鼓（牛郎）隔天河相望，為夏夜之標。"}
+];
 /* Lookup: given a star's J2000 RA/Dec, return its Chinese mansion-star name (e.g. 心宿二 in the
    Heart mansion) if it is one of the 28-mansion members, else null. Used to cross-link tools. */
 window.chineseStarAt=function(ra,dec){
@@ -10,6 +44,10 @@ window.chineseStarAt=function(ra,dec){
   for(var i=0;i<CSKY.length;i++){var m=CSKY[i];for(var j=0;j<m.stars.length;j++){var s=m.stars[j];
     if(!s[5])continue;var dr=Math.abs(((s[0]-ra+540)%360)-180),dd=Math.abs(s[1]-dec);
     if(dr<0.45&&dd<0.45){var d=dr*dr+dd*dd;if(!best||d<best.d)best={d:d,cn:s[5],west:s[4],mzh:m.zh,men:m.en};}}}
+  var CENC=window.CENC||[];  /* also scan the Three-Enclosures asterisms (e.g. 天樞 in 北斗) */
+  for(var a=0;a<CENC.length;a++){var e=CENC[a];for(var k=0;k<e.stars.length;k++){var t=e.stars[k];
+    if(!t[5])continue;var er=Math.abs(((t[0]-ra+540)%360)-180),ed=Math.abs(t[1]-dec);
+    if(er<0.45&&ed<0.45){var d2=er*er+ed*ed;if(!best||d2<best.d)best={d:d2,cn:t[5],west:t[4],mzh:e.n,men:e.en,encl:true};}}}
   return best;
 };
 /* Lookup by proper name (e.g. "Antares") -> its Chinese mansion-star name, for tools that key by name. */
@@ -18,5 +56,9 @@ window.chineseStarByName=function(name){
   for(var i=0;i<CSKY.length;i++){var m=CSKY[i];for(var j=0;j<m.stars.length;j++){var s=m.stars[j];
     if(!s[5])continue;var out=s[4].replace(/\s*\(.*/,'').trim(),inn=(s[4].match(/\(([^)]+)\)/)||[])[1]||'';
     if(out===nm||inn===nm)return {cn:s[5],west:s[4],mzh:m.zh,men:m.en};}}
+  var CENC=window.CENC||[];  /* fall through to Three-Enclosures stars (Vega→織女一, Arcturus→大角, …) */
+  for(var a=0;a<CENC.length;a++){var e=CENC[a];for(var k=0;k<e.stars.length;k++){var t=e.stars[k];
+    if(!t[5])continue;var o2=t[4].replace(/\s*\(.*/,'').trim(),i2=(t[4].match(/\(([^)]+)\)/)||[])[1]||'';
+    if(o2===nm||i2===nm)return {cn:t[5],west:t[4],mzh:e.n,men:e.en,encl:true};}}
   return null;
 };
