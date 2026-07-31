@@ -204,7 +204,7 @@ function altazOf(ra,dec,LST){let H=((LST-ra+540)%360)-180;const Hr=H*RAD,dr=dec*
   const az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);
   return{alt,az};}
 // ---- Three Enclosures 三垣: bright signpost stars, coords pulled from the shared CENC data ----
-const ECOL={ziwei:"#c79bff",taiwei:"#77aaff",tianshi:"#4fd3a6"};
+const ECOL={ziwei:"#c78bff",taiwei:"#ff86c0",tianshi:"#ff9d5c"};   // distinct from the mansions' green/blue/white/coral
 const ENCL=window.CENCLOSURES||[];
 function findEnc(proper){const C=window.CENC||[];for(const a of C)for(const s of a.stars){
   const inn=(s[4].match(/\(([^)]+)\)/)||[])[1]; if(inn===proper||s[4]===proper)return{ra:s[0],dec:s[1]};}return null;}
@@ -281,7 +281,7 @@ function drawDome(){dome.innerHTML="";
     g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));
     g.setAttribute("data-loc","1");g.addEventListener("click",()=>locate('m',o.zh,o.en,o.ra,o.dec));dome.appendChild(g);});
   // Three-Enclosure landmark stars — diamonds, coloured by enclosure
-  ENCUP.filter(o=>o.alt>0).forEach(o=>{const[x,y]=domePos(o.az,o.alt);const c=ECOL[o.id],r=5,g=el("g",{});
+  ENCUP.filter(o=>o.alt>0).forEach(o=>{const[x,y]=domePos(o.az,o.alt);const c=ECOL[o.id],r=5.5,g=el("g",{});
     g.appendChild(el("path",{d:`M ${x} ${y-r} L ${x+r} ${y} L ${x} ${y+r} L ${x-r} ${y} Z`,fill:c,stroke:"#0b1733","stroke-width":.7}));
     const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:c,"font-size":11,class:"zh"});t.textContent=o.zh;g.appendChild(t);
     g.setAttribute("data-loc","1");g.addEventListener("click",()=>locate('e',o.zh,o.en,o.ra,o.dec));dome.appendChild(g);});
