@@ -188,14 +188,16 @@ body.night{filter:grayscale(100%) sepia(100%) hue-rotate(-44deg) saturate(380%) 
 /* Collapse the sticky header once the user scrolls: the full header (title, day-note, glance
    status, dark-bar) shows on the initial view, but on scroll it minimises to just the date, time
    and the time-scrubber — giving the map and cards back most of the screen. Desktop only. */
-header{transition:padding .18s ease;}
-#desktopRoot header.hdr-min{padding-top:9px;padding-bottom:10px;}
-#desktopRoot header.hdr-min > .menuopen,
-#desktopRoot header.hdr-min .titlerow,
-#desktopRoot header.hdr-min .daynote,
-#desktopRoot header.hdr-min #glance,
-#desktopRoot header.hdr-min #darkbar{display:none!important;}
-#desktopRoot header.hdr-min .ctrlbar{margin-top:0;padding:7px 12px;}
+header{transition:padding .24s ease;}
+/* the two collapsible groups animate their height + fade, so the header slides shut smoothly
+   (rather than snapping via display:none, which jumps the page content). */
+.hdr-top,.hdr-bot{overflow:hidden;transition:max-height .24s ease,opacity .2s ease;}
+.hdr-top{max-height:140px;}
+.hdr-bot{max-height:360px;}
+#desktopRoot header.hdr-min{padding-top:10px;padding-bottom:10px;}
+#desktopRoot header.hdr-min .hdr-top,
+#desktopRoot header.hdr-min .hdr-bot{max-height:0;opacity:0;}
+#desktopRoot header.hdr-min .ctrlbar{margin-top:0;padding:8px 14px;}
 #desktopRoot header.hdr-min .ctrlbar .btnmini{display:none;}
 #desktopRoot header.hdr-min .ctrlbar #nowBtn{display:inline-block;}
 #desktopRoot header.hdr-min .cdwrap .l{display:none;}
@@ -505,10 +507,12 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
 <div id="desktopRoot" style="display:none">
 <div class="wrap">
   <header>
+    <div class="hdr-top">
     <button type="button" class="menuopen js-menu" style="margin-bottom:10px">☰ Menu</button>
     <div class="titlerow">
       <h1>SCOB Night-Sky · desktop</h1>
       <div class="loc">Science Centre Observatory, Jurong · session Fri 7:30–10:00 pm</div>
+    </div>
     </div>
     <div class="ctrlbar">
       <input type="date" id="datePick" class="datein">
@@ -522,9 +526,11 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
       <div class="cdwrap"><span class="l">Countdown to chosen time</span><span class="v" id="cd">—</span></div>
       <input type="range" id="timeSlider" min="0" max="1439" step="5" value="1230" aria-label="Time of night">
     </div>
+    <div class="hdr-bot">
     <div class="daynote" id="dayNote"></div>
     <div id="glance"></div>
     <div id="darkbar" class="darkbar"></div>
+    </div>
   </header>
 
   <div class="grid">
