@@ -87,6 +87,12 @@ tbody tr.hl{background:#20345f;}
 .encstar b{color:var(--gold);font-weight:600;}
 .enchint{font-size:12px;color:var(--mute);margin:11px 0 0;}
 .enchint a{color:var(--cyan);}
+.encstar{cursor:pointer;transition:border-color .12s;}
+.encstar:hover{border-color:var(--gold);}
+.domenote{font-size:13px;color:var(--white);text-align:center;margin:6px 0 0;padding:8px 11px;background:var(--navy3);border:1px solid var(--gold);border-radius:10px;line-height:1.45;}
+.domenote b{color:var(--gold);}
+#upBody tr{cursor:pointer;} #belowBody tr{cursor:pointer;}
+#dome g[data-loc]{cursor:pointer;}
 </style>
 </head>
 <body>
@@ -122,7 +128,8 @@ tbody tr.hl{background:#20345f;}
     <div class="domewrap">
       <div>
         <svg id="dome" viewBox="-26 -26 352 352" role="img" aria-label="All-sky chart of the Chinese mansions above the horizon now"></svg>
-        <p class="domehint"><span class="en-only">Centre = overhead · rim = horizon · rings at 30° &amp; 60°. Only mansions above the horizon are drawn.</span><span class="zh-only">中心＝天頂 · 外圈＝地平 · 環線為30°、60°高度。只繪地平線以上之宿。</span></p>
+        <p class="domehint"><span class="en-only">Centre = overhead · rim = horizon · rings at 30° &amp; 60°. ● mansions · ◆ Three-Enclosure landmarks. <b>Tap any mansion, star or row to pin it with a gold ring.</b></span><span class="zh-only">中心＝天頂 · 外圈＝地平 · 環線為30°、60°。● 宿 · ◆ 三垣地標。<b>點任一宿、星或列，以金環標示其位。</b></span></p>
+        <p class="domenote" id="domeNote" style="display:none"></p>
       </div>
       <div class="tablescroll">
         <table>
@@ -181,6 +188,7 @@ const CMP=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","W
 const CMPZH=["北","北北東","東北","東北東","東","東南東","東南","南南東","南","南南西","西南","西南西","西","西北西","西北","北北西"];
 const compass=az=>lang==="zh"?CMPZH[Math.round(az/22.5)%16]:CMP[Math.round(az/22.5)%16];
 let liveTimer=null;
+let ENCUP=[], SEL=null, curLST=0;   // enclosure landmarks (with alt/az), the pinned object, current LST
 
 function compute(y,m,d,hh,mm){
   const utc=Date.UTC(y,m,d,hh-8,mm,0);
@@ -205,18 +213,32 @@ const ENCLAND=[
   {id:"taiwei", items:[{zh:"大角",en:"Arcturus",find:"Arcturus"},{zh:"五帝座",en:"Denebola",find:"Denebola"}]},
   {id:"tianshi",items:[{zh:"織女",en:"Vega",find:"Vega"},{zh:"河鼓",en:"Altair",find:"Altair"},{zh:"帝座",en:"Rasalgethi",find:"Rasalgethi"}]}
 ].map(e=>({id:e.id,items:e.items.map(it=>{const s=findEnc(it.find);return s?Object.assign({},it,{ra:s.ra,dec:s.dec}):null;}).filter(Boolean)}));
-function renderEnclosures(LST){const box=document.getElementById("encNow");if(!box)return;box.innerHTML="";
+function renderEnclosures(LST){const box=document.getElementById("encNow");if(!box)return;box.innerHTML="";ENCUP=[];
   ENCLAND.forEach(e=>{const meta=ENCL.find(x=>x.id===e.id)||{};
-    const rows=e.items.map(it=>{const aa=altazOf(it.ra,it.dec,LST);return Object.assign({},it,{alt:aa.alt,az:aa.az});});
+    const rows=e.items.map(it=>{const aa=altazOf(it.ra,it.dec,LST);const o=Object.assign({},it,{id:e.id,alt:aa.alt,az:aa.az});ENCUP.push(o);return o;});
     const upN=rows.filter(r=>r.alt>0).length;
     const stars=rows.map(r=>{const up=r.alt>0;const pos=up?`${r.alt.toFixed(0)}° ${compass(r.az)}`:L("below","地平下");
-      return `<span class="encstar ${up?'up':'down'}"><span class="zh">${r.zh}</span> <b>${r.en}</b> · ${pos}</span>`;}).join("");
+      return `<span class="encstar ${up?'up':'down'}" data-type="e" data-zh="${r.zh}" data-en="${r.en}" data-ra="${r.ra}" data-dec="${r.dec}"><span class="zh">${r.zh}</span> <b>${r.en}</b> · ${pos}</span>`;}).join("");
     const stat=upN?L(upN+" up","在天上 "+upN):L("all below now","此刻皆落");
     const div=document.createElement("div");div.className="encrow";div.style.borderLeftColor=ECOL[e.id];
     div.innerHTML=`<div class="eh"><span class="z zh" style="color:${ECOL[e.id]}">${meta.zh||""}</span> `+
       `<span class="en">${lang==="en"?(meta.en||"").replace(" Enclosure",""):(meta.pin||"")}</span>`+
       `<span class="stat" style="color:${upN?'#e7ecf7':'#7d8cb5'}">${stat}</span></div><div class="encstars">${stars}</div>`;
     box.appendChild(div);});}
+// ---- pin-to-locate: click a mansion / enclosure star / table row → gold ring on the dome ----
+function locate(type,zh,en,ra,dec){const same=SEL&&SEL.type===type&&SEL.zh===zh;
+  SEL=same?null:{type,zh,en:en||"",ra:+ra,dec:+dec};drawDome();updateDomeNote();
+  if(SEL){const d=document.getElementById("dome");if(d&&d.scrollIntoView)d.scrollIntoView({behavior:"smooth",block:"center"});}}
+function updateDomeNote(){const el=document.getElementById("domeNote");if(!el)return;
+  if(!SEL){el.style.display="none";return;}el.style.display="block";
+  const aa=altazOf(SEL.ra,SEL.dec,curLST);const nm=`<b class="zh">${SEL.zh}</b>${SEL.en?" <b>"+SEL.en+"</b>":""}`;
+  el.innerHTML=aa.alt>0
+    ?L(`📍 ${nm} — the gold ring on the chart · ${aa.alt.toFixed(0)}° up in the ${compass(aa.az)}. Tap again to clear.`,
+       `📍 ${nm} —— 圖上金環處 · 在${compass(aa.az)}方、高 ${aa.alt.toFixed(0)}°。再點一次清除。`)
+    :L(`📍 ${nm} is below the horizon right now — try a later time. Tap again to clear.`,
+       `📍 ${nm} 此刻在地平線下 —— 可選較晚時刻。再點一次清除。`);}
+["upBody","belowBody","encNow"].forEach(id=>{const n=document.getElementById(id);if(n)n.addEventListener("click",function(e){
+  const t=e.target.closest("[data-ra]");if(!t)return;locate(t.dataset.type,t.dataset.zh,t.dataset.en||"",t.dataset.ra,t.dataset.dec);});});
 function stateOf(o){if(o.alt>=60)return["mer",L("near overhead","近天頂")];
   if(Math.abs(o.H)<12)return["mer",L("near highest","近中天")];
   return o.H<0?["rise",L("rising · ","升 · ")+compass(o.az)]:["set",L("setting · ","落 · ")+compass(o.az)];}
@@ -256,17 +278,30 @@ function drawDome(){dome.innerHTML="";
     if(o.n===lodgeN)g.appendChild(el("circle",{cx:x,cy:y,r:9,fill:"none",stroke:"#f5c542","stroke-width":1.5,opacity:.9}));
     g.appendChild(el("circle",{cx:x,cy:y,r:4.5,fill:COL[o.sym],stroke:"#0b1733","stroke-width":.6}));
     const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:COL[o.sym],"font-size":12,class:"zh"});t.textContent=o.zh;g.appendChild(t);
-    g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));dome.appendChild(g);});
+    g.addEventListener("mouseenter",()=>hl(o.zh,true));g.addEventListener("mouseleave",()=>hl(o.zh,false));
+    g.setAttribute("data-loc","1");g.addEventListener("click",()=>locate('m',o.zh,o.en,o.ra,o.dec));dome.appendChild(g);});
+  // Three-Enclosure landmark stars — diamonds, coloured by enclosure
+  ENCUP.filter(o=>o.alt>0).forEach(o=>{const[x,y]=domePos(o.az,o.alt);const c=ECOL[o.id],r=5,g=el("g",{});
+    g.appendChild(el("path",{d:`M ${x} ${y-r} L ${x+r} ${y} L ${x} ${y+r} L ${x-r} ${y} Z`,fill:c,stroke:"#0b1733","stroke-width":.7}));
+    const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:c,"font-size":11,class:"zh"});t.textContent=o.zh;g.appendChild(t);
+    g.setAttribute("data-loc","1");g.addEventListener("click",()=>locate('e',o.zh,o.en,o.ra,o.dec));dome.appendChild(g);});
   // the Moon itself
   if(curMoon&&curMoon.alt>0){const[mx,my]=domePos(curMoon.az,curMoon.alt);const g=el("g",{});
     g.appendChild(el("circle",{cx:mx,cy:my,r:8,fill:"#f5c542",stroke:"#0b1733","stroke-width":1}));
     g.appendChild(el("circle",{cx:mx+2.6,cy:my,r:6.4,fill:"#16224a"}));   // crescent shading
     const lb=el("text",{x:mx,y:my-13,"text-anchor":"middle",fill:"#f5c542","font-size":11.5,"font-weight":700});lb.textContent=L("Moon","月");
-    g.appendChild(lb);dome.appendChild(g);}}
+    g.appendChild(lb);dome.appendChild(g);}
+  // pulsing gold ring on the currently-pinned object (mansion or enclosure landmark)
+  if(SEL){const aa=altazOf(SEL.ra,SEL.dec,curLST);if(aa.alt>0){const[sx,sy]=domePos(aa.az,aa.alt);
+    const ring=el("circle",{cx:sx,cy:sy,r:11,fill:"none",stroke:"#f5c542","stroke-width":2});
+    ring.appendChild(el("animate",{attributeName:"r",values:"9;15;9",dur:"1.4s",repeatCount:"indefinite"}));
+    ring.appendChild(el("animate",{attributeName:"opacity",values:"1;.35;1",dur:"1.4s",repeatCount:"indefinite"}));
+    dome.appendChild(ring);}}
+}
 function hl(zh,on){document.querySelectorAll("#upBody tr").forEach(tr=>tr.classList.toggle("hl",on&&tr.dataset.zh===zh));}
 
 function render(y,m,d,hh,mm){
-  const LST=compute(y,m,d,hh,mm);
+  const LST=compute(y,m,d,hh,mm);curLST=LST;
   renderEnclosures(LST);
   const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();
   document.getElementById("forWhen").textContent=L("For ","")+L(WD_EN[wd],"週"+WD_ZH[wd])+`, ${d} ${L(MON[m],(m+1)+"月")} ${y} · ${(hh%12||12)}:${pad(mm)} ${hh<12?"am":"pm"} SGT`;
@@ -312,14 +347,15 @@ function render(y,m,d,hh,mm){
   const ub=document.getElementById("upBody");ub.innerHTML="";
   up.sort((a,b)=>b.alt-a.alt).forEach(o=>{const[cls,txt]=stateOf(o);const w=Math.round(o.alt/90*100);
     const tr=document.createElement("tr");tr.dataset.zh=o.zh;
+    tr.dataset.type="m";tr.dataset.en=o.en;tr.dataset.ra=o.ra;tr.dataset.dec=o.dec;
     tr.innerHTML=`<td><span class="swatch" style="background:${COL[o.sym]}"></span><span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin}${lang==="en"?" · "+o.en:""}</span></td>
       <td class="west">${o.west}</td><td><div class="altbar"><i style="width:${w}%;background:${COL[o.sym]}"></i></div><span class="pin">${o.alt.toFixed(0)}°</span></td>
       <td class="dir">${compass(o.az)}</td><td><span class="state ${cls}">${txt}</span></td>`;ub.appendChild(tr);});
   // below
   const below=M28.filter(o=>o.alt<=0).sort((a,b)=>b.alt-a.alt);
   document.getElementById("belowHead").textContent=L(`▾ ${below.length} mansions below the horizon now`,`▾ 尚有 ${below.length} 宿在地平線下`);
-  document.getElementById("belowBody").innerHTML=below.map(o=>`<tr><td><span class="swatch" style="background:${COL[o.sym]}"></span><span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin}${lang==="en"?" · "+o.en:""}</span></td><td class="west">${o.west}</td><td class="pin">${o.alt.toFixed(0)}°</td></tr>`).join("");
-  drawDome();
+  document.getElementById("belowBody").innerHTML=below.map(o=>`<tr data-type="m" data-zh="${o.zh}" data-en="${o.en}" data-ra="${o.ra}" data-dec="${o.dec}"><td><span class="swatch" style="background:${COL[o.sym]}"></span><span class="cn2 zh" style="color:${COL[o.sym]}">${o.zh}</span> <span class="pin">${o.pin}${lang==="en"?" · "+o.en:""}</span></td><td class="west">${o.west}</td><td class="pin">${o.alt.toFixed(0)}°</td></tr>`).join("");
+  drawDome();updateDomeNote();
 }
 
 let curY,curM,curD,curH,curMin;
