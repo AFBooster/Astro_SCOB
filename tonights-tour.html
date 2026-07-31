@@ -78,6 +78,7 @@ body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
   </div>
 </div>
 <script src="astro-core.js"></script>
+<script src="chinese-sky-data.js"></script>
 <script>
 "use strict";
 var A=window.Astro, pad=A.pad;
@@ -129,6 +130,8 @@ function build(){
   TOURITEMS=items;
   host.innerHTML=items.map(function(it,i){
     var p=it.p,sp=it.sp;
+    var cx=(window.chineseStarAt?window.chineseStarAt(sp.ra,sp.dec):null);
+    var cnChip=cx?'<span class="chip" title="Traditional Chinese name — see the Chinese Sky page">🐉 <b>'+cx.cn+'</b> · '+cx.men+' mansion</span>':'';
     var where='Look '+altWord(p.alt)+' in the <b>'+A.compass(p.az)+'</b> · '+Math.round(p.alt)+'° up';
     var magchip=(p.mag!=null)?'<span class="chip">mag <b>'+(p.mag>=0?'+':'')+p.mag.toFixed(1)+'</b></span>':(sp.mag!=null?'<span class="chip">mag <b>'+sp.mag+'</b></span>':'');
     return '<div class="stop"><div class="num">'+(i+1)+'</div><div>'
@@ -136,7 +139,7 @@ function build(){
       +'<h3>'+sp.name+'</h3>'
       +'<div class="where">'+where+'</div>'
       +'<div class="say">'+sayFor(sp)+'</div>'
-      +'<div class="meta"><span class="chip">👀 '+sp.look+'</span></div>'
+      +'<div class="meta"><span class="chip">👀 '+sp.look+'</span>'+cnChip+'</div>'
       +'<div class="meta">'+magchip+'<span class="chip scope">🔭 '+sp.scope+'</span>'+(TTS_OK?'<button type="button" class="spk" data-i="'+i+'" title="Read this aloud" aria-label="Read this aloud">🔊 Read</button>':'')+'</div>'
       +'</div></div>';
   }).join('');

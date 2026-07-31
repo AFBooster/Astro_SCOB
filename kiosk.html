@@ -80,6 +80,7 @@ h1{font-size:clamp(30px,5vw,58px);line-height:1.05;margin:14px 0 4px;color:var(-
 </div>
 
 <script src="astro-core.js"></script>
+<script src="chinese-sky-data.js"></script>
 <script>
 "use strict";
 var A=window.Astro, pad=A.pad;
@@ -187,7 +188,9 @@ function refresh(){
   else host.innerHTML=items.map(function(it){var p=it.p,sp=it.sp;
     var where=T(altKey(p.alt))+(T('inthe')?' '+T('inthe'):'')+' '+A.compass(p.az);
     var hook=(lang==='en')?'<div class="lk">'+sp.look+'</div>':'';
-    return '<div class="card"><div class="ico" aria-hidden="true">'+A.illus(sp,64)+'</div><div><div class="nm">'+nameFor(sp)+'</div><div class="wh">'+where+'</div>'+hook+'</div></div>';}).join('');
+    var cx=(window.chineseStarAt?window.chineseStarAt(sp.ra,sp.dec):null);
+    var cnLine=cx?'<div class="lk">🐉 '+cx.cn+' · '+(lang==='zh'?cx.mzh+'宿':cx.men+' mansion')+'</div>':'';
+    return '<div class="card"><div class="ico" aria-hidden="true">'+A.illus(sp,64)+'</div><div><div class="nm">'+nameFor(sp)+'</div><div class="wh">'+where+'</div>'+cnLine+hook+'</div></div>';}).join('');
   document.getElementById('upd').textContent=T('updated')+' '+tl(sgtNow().getHours(),sgtNow().getMinutes());
 }
 

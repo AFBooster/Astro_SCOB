@@ -1776,7 +1776,9 @@ document.getElementById('wxBtn').addEventListener('click',function(){loadWeather
   function build(el){
     if(el.dataset.verdict!==undefined){const v=el.dataset.verdict,dd=LBL[v]||(/% lit/.test(v)?"The percentage of the Moon's disc lit up right now — the brighter it is, the more it washes out faint targets.":"Observing verdict for this target at the chosen time.");tip.innerHTML='<div class="tt">'+v+'</div><div>'+dd+'</div>';return;}
     if(el.dataset.planet){const n=el.dataset.planet,d=PDESC[n]||['',''];tip.innerHTML=svgPlanet(n)+'<div class="tt">'+n+'</div><div class="ty">'+d[0]+'</div><div>'+d[1]+'</div>';}
-    else{const t=el.dataset.type||'',nm=el.dataset.name||'',k=kindOf(t,nm),d=DESC[k];tip.innerHTML=svgFor(k,nm)+'<div class="tt">'+nm+'</div><div class="ty">'+t+' · '+d[0]+'</div><div>'+d[1]+'</div>';}}
+    else{const t=el.dataset.type||'',nm=el.dataset.name||'',k=kindOf(t,nm),d=DESC[k];
+      const cx=window.chineseStarByName?window.chineseStarByName(nm):null;
+      tip.innerHTML=svgFor(k,nm)+'<div class="tt">'+nm+'</div><div class="ty">'+t+' · '+d[0]+'</div><div>'+d[1]+'</div>'+(cx?'<div style="color:var(--gold);margin-top:3px">🐉 '+cx.cn+' · '+cx.men+' mansion</div>':'');}}
   function place(x,y){const w=tip.offsetWidth,h=tip.offsetHeight;let L=x+14,T=y+14;if(L+w>innerWidth-6)L=x-w-14;if(L<6)L=6;if(T+h>innerHeight-6)T=y-h-14;if(T<6)T=6;tip.style.left=L+'px';tip.style.top=T+'px';}
   function show(el,x,y){build(el);tip.style.display='block';shown=true;place(x,y);}
   function hide(){tip.style.display='none';shown=false;tip._for=null;}
