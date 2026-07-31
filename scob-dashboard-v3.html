@@ -185,6 +185,21 @@ body.night{filter:grayscale(100%) sepia(100%) hue-rotate(-44deg) saturate(380%) 
   body.briefing-open #briefBar{display:none!important}
   body.briefing-open #briefing{max-width:none;border-radius:0;padding:0}
 }
+/* Collapse the sticky header once the user scrolls: the full header (title, day-note, glance
+   status, dark-bar) shows on the initial view, but on scroll it minimises to just the date, time
+   and the time-scrubber — giving the map and cards back most of the screen. Desktop only. */
+header{transition:padding .18s ease;}
+#desktopRoot header.hdr-min{padding-top:9px;padding-bottom:10px;}
+#desktopRoot header.hdr-min > .menuopen,
+#desktopRoot header.hdr-min .titlerow,
+#desktopRoot header.hdr-min .daynote,
+#desktopRoot header.hdr-min #glance,
+#desktopRoot header.hdr-min #darkbar{display:none!important;}
+#desktopRoot header.hdr-min .ctrlbar{margin-top:0;padding:7px 12px;}
+#desktopRoot header.hdr-min .ctrlbar .btnmini{display:none;}
+#desktopRoot header.hdr-min .ctrlbar #nowBtn{display:inline-block;}
+#desktopRoot header.hdr-min .cdwrap .l{display:none;}
+#desktopRoot header.hdr-min .cdwrap{gap:6px;}
 </style>
 <style id="mobileCSS">
 :root{ color-scheme: dark;
@@ -843,6 +858,20 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
 "use strict";
 const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI; // SCOB, Jurong
 const IS_MOBILE=!!document.getElementById('mobileRoot');
+// Desktop: minimise the tall sticky header once the user scrolls, so the sky map and cards get the
+// screen back. Keeps the date, time and the time-scrubber; hides title, day-note, glance & dark-bar.
+// Hysteresis (collapse >64px, expand <16px) stops any flicker at the boundary.
+if(!IS_MOBILE){(function(){
+  const hdr=document.querySelector('#desktopRoot header'); if(!hdr) return;
+  let min=false;
+  function onScroll(){
+    const y=window.pageYOffset||document.documentElement.scrollTop||0;
+    if(!min && y>64){min=true;hdr.classList.add('hdr-min');}
+    else if(min && y<16){min=false;hdr.classList.remove('hdr-min');}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();}
 const rev=x=>((x%360)+360)%360;
 const pad=n=>String(n).padStart(2,'0');
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
