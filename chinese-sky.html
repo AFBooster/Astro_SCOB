@@ -465,19 +465,36 @@ function drawEnclMap(){esky.innerHTML="";
   esky.appendChild(el("circle",{cx:ECX,cy:ECY,r:2.4,fill:"#9fb0d6"}));
   const pl=el("text",{x:ECX,y:ECY-7,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent=L("N. pole","北極");esky.appendChild(pl);
   const eqt=el("text",{x:ECX,y:ECY+erR(0)-6,"text-anchor":"middle",fill:"#7d8cb5","font-size":9});eqt.textContent=L("celestial equator","天赤道");esky.appendChild(eqt);
+  // stars + lines for every enclosure (selected bright; the others stay faint, for context)
+  const specs=[];   // name labels — only for the SELECTED enclosure, de-crowded with leader lines
   ENC.forEach(a=>{const on=selEncl===a.g,col=ECOL[a.g];
     a.lines.forEach(([p,q])=>{const A=eproj(a.stars[p][0],a.stars[p][1]),B=eproj(a.stars[q][0],a.stars[q][1]);
-      esky.appendChild(el("line",{x1:A[0],y1:A[1],x2:B[0],y2:B[1],stroke:col,"stroke-width":1.3,opacity:on?.85:.12}));});
-    const single=a.stars.length===1;
-    a.stars.forEach(s=>{const[px,py]=eproj(s[0],s[1]);const g=el("g",{});g.style.cursor="pointer";
-      g.appendChild(el("circle",{cx:px,cy:py,r:emag(s[2]),fill:single?"#f5c542":col,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.18}));
+      esky.appendChild(el("line",{x1:A[0],y1:A[1],x2:B[0],y2:B[1],stroke:col,"stroke-width":1.3,opacity:on?.85:.1}));});
+    const single=a.stars.length===1;let sx=0,sy=0;
+    a.stars.forEach(s=>{const[px,py]=eproj(s[0],s[1]);sx+=px;sy+=py;const g=el("g",{});g.style.cursor="pointer";
+      g.appendChild(el("circle",{cx:px,cy:py,r:emag(s[2]),fill:single?"#f5c542":col,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.16}));
       g.addEventListener("mouseenter",()=>ecapStar(a,s));g.addEventListener("mouseleave",ecapReset);
-      g.addEventListener("click",()=>openEnclosure(a.g));esky.appendChild(g);
-      if(single){const t=el("text",{x:px+emag(s[2])+3,y:py+3.5,class:"starlabel"+(lang==="zh"?" zh":""),fill:on?"#f5c542":"#5b6a92",opacity:on?1:.3});
-        t.textContent=lang==="zh"?s[5]:eInner(s[4]);esky.appendChild(t);}});
-    if(!single){const cx=a.stars.reduce((t,s)=>t+eproj(s[0],s[1])[0],0)/a.stars.length,cy=a.stars.reduce((t,s)=>t+eproj(s[0],s[1])[1],0)/a.stars.length;
-      const t=el("text",{x:cx,y:cy,"text-anchor":"middle",class:"zh",fill:col,"font-size":11,"font-weight":700,opacity:on?.95:.14,"paint-order":"stroke",stroke:"#0c1530","stroke-width":2.6});
-      t.textContent=lang==="zh"?a.n:a.en;esky.appendChild(t);}});}
+      g.addEventListener("click",()=>openEnclosure(a.g));esky.appendChild(g);});
+    if(on){const[ax,ay]=single?eproj(a.stars[0][0],a.stars[0][1]):[sx/a.stars.length,sy/a.stars.length];
+      specs.push({ax,ay,col:single?"#f5c542":col,text:lang==="zh"?a.n:(single?eInner(a.stars[0][4]):a.en)});}});
+  drawEnclLabels(specs);}
+// Fan the selected enclosure's names out from their asterisms: offset each label radially outward,
+// resolve vertical collisions within the left/right halves, draw a leader back to the star it names,
+// and flip the text anchor so nothing runs off the edge.
+function drawEnclLabels(specs){const FS=10.5;
+  const estW=t=>{let w=0;for(const ch of t)w+=(ch.charCodeAt(0)>0x2e80?FS:FS*0.56);return w;};
+  specs.forEach(s=>{const ang=Math.atan2(s.ay-ECY,s.ax-ECX);s.right=Math.cos(ang)>=0;
+    s.lx=s.ax+Math.cos(ang)*17;s.ly=s.ay+Math.sin(ang)*17;});
+  [true,false].forEach(side=>{const grp=specs.filter(s=>s.right===side).sort((a,b)=>a.ly-b.ly);
+    for(let i=1;i<grp.length;i++)if(grp[i].ly-grp[i-1].ly<13)grp[i].ly=grp[i-1].ly+13;});
+  specs.forEach(s=>{s.ly=Math.max(16,Math.min(466,s.ly));const w=estW(s.text);
+    let anchor=s.right?"start":"end",tx=s.lx+(s.right?3:-3);
+    if(anchor==="start"&&tx+w>474){anchor="end";tx=s.lx-3;}
+    if(anchor==="end"&&tx-w<6){anchor="start";tx=s.lx+3;}
+    esky.appendChild(el("line",{x1:s.ax,y1:s.ay,x2:s.lx,y2:s.ly,stroke:s.col,"stroke-width":.6,opacity:.5}));
+    const t=el("text",{x:tx,y:s.ly+3.5,"text-anchor":anchor,class:(lang==="zh"?"zh":""),fill:s.col,
+      "font-size":FS,"font-weight":700,"paint-order":"stroke",stroke:"#0c1530","stroke-width":2.8});
+    t.textContent=s.text;esky.appendChild(t);});}
 
 function ecapStar(a,s){document.getElementById("ecap").innerHTML=
   `<b class="zh" style="color:var(--gold)">${s[5]}</b> &nbsp;<span style="color:var(--star)">${s[4]}</span> · <span class="zh">${a.n}</span> ${lang==="en"?a.en:""}`;}
