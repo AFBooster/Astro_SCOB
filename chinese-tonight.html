@@ -74,6 +74,19 @@ tbody tr.hl{background:#20345f;}
 .foot a{color:var(--cyan);}
 .btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
 .btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+.encnow{display:flex;flex-direction:column;gap:9px;}
+.encrow{padding:10px 12px;background:var(--navy3);border:1px solid var(--line);border-left-width:4px;border-radius:11px;}
+.encrow .eh .z{font-size:17px;font-weight:700;}
+.encrow .eh .en{font-size:13px;color:var(--mute);}
+.encrow .eh .stat{float:right;font-size:12px;font-weight:700;}
+.encstars{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px;}
+.encstar{border:1px solid #2b3a66;border-radius:999px;padding:3px 10px;font-size:12.5px;color:var(--mute);white-space:nowrap;}
+.encstar.up{color:var(--white);}
+.encstar.down{opacity:.5;}
+.encstar .zh{color:var(--white);}
+.encstar b{color:var(--gold);font-weight:600;}
+.enchint{font-size:12px;color:var(--mute);margin:11px 0 0;}
+.enchint a{color:var(--cyan);}
 </style>
 </head>
 <body>
@@ -120,6 +133,12 @@ tbody tr.hl{background:#20345f;}
         <div class="tablescroll below" id="belowWrap" style="display:none"><table><tbody id="belowBody"></tbody></table></div>
       </div>
     </div>
+  </div>
+
+  <div class="card" id="encCard">
+    <h2><span class="en-only">The Three Enclosures now</span><span class="zh-only">三垣此刻</span> <small><span class="en-only">— the sky's great landmarks</span><span class="zh-only">— 北天地標</span></small></h2>
+    <div id="encNow" class="encnow"></div>
+    <p class="enchint"><span class="en-only">The bright signposts of the Three Enclosures 三垣 — the Big Dipper, Vega, Altair, Arcturus — and where to find them right now. <a href="chinese-sky.html">See the full pole-map →</a></span><span class="zh-only">三垣之亮星地標——北斗、織女、河鼓、大角——及其此刻方位。<a href="chinese-sky.html">見北天全圖 →</a></span></p>
   </div>
 
   <div class="btnrow">
@@ -171,6 +190,33 @@ function compute(y,m,d,hh,mm){
     o.az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);o.H=H;});
   return LST;
 }
+// alt/az of any J2000 star at the given local sidereal time (same frame as the mansions above)
+function altazOf(ra,dec,LST){let H=((LST-ra+540)%360)-180;const Hr=H*RAD,dr=dec*RAD,l=LAT*RAD;
+  const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+  const az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);
+  return{alt,az};}
+// ---- Three Enclosures 三垣: bright signpost stars, coords pulled from the shared CENC data ----
+const ECOL={ziwei:"#c79bff",taiwei:"#77aaff",tianshi:"#4fd3a6"};
+const ENCL=window.CENCLOSURES||[];
+function findEnc(proper){const C=window.CENC||[];for(const a of C)for(const s of a.stars){
+  const inn=(s[4].match(/\(([^)]+)\)/)||[])[1]; if(inn===proper||s[4]===proper)return{ra:s[0],dec:s[1]};}return null;}
+const ENCLAND=[
+  {id:"ziwei",  items:[{zh:"北斗",en:"Big Dipper",find:"Alioth"},{zh:"北極",en:"Kochab",find:"Kochab"}]},
+  {id:"taiwei", items:[{zh:"大角",en:"Arcturus",find:"Arcturus"},{zh:"五帝座",en:"Denebola",find:"Denebola"}]},
+  {id:"tianshi",items:[{zh:"織女",en:"Vega",find:"Vega"},{zh:"河鼓",en:"Altair",find:"Altair"},{zh:"帝座",en:"Rasalgethi",find:"Rasalgethi"}]}
+].map(e=>({id:e.id,items:e.items.map(it=>{const s=findEnc(it.find);return s?Object.assign({},it,{ra:s.ra,dec:s.dec}):null;}).filter(Boolean)}));
+function renderEnclosures(LST){const box=document.getElementById("encNow");if(!box)return;box.innerHTML="";
+  ENCLAND.forEach(e=>{const meta=ENCL.find(x=>x.id===e.id)||{};
+    const rows=e.items.map(it=>{const aa=altazOf(it.ra,it.dec,LST);return Object.assign({},it,{alt:aa.alt,az:aa.az});});
+    const upN=rows.filter(r=>r.alt>0).length;
+    const stars=rows.map(r=>{const up=r.alt>0;const pos=up?`${r.alt.toFixed(0)}° ${compass(r.az)}`:L("below","地平下");
+      return `<span class="encstar ${up?'up':'down'}"><span class="zh">${r.zh}</span> <b>${r.en}</b> · ${pos}</span>`;}).join("");
+    const stat=upN?L(upN+" up","在天上 "+upN):L("all below now","此刻皆落");
+    const div=document.createElement("div");div.className="encrow";div.style.borderLeftColor=ECOL[e.id];
+    div.innerHTML=`<div class="eh"><span class="z zh" style="color:${ECOL[e.id]}">${meta.zh||""}</span> `+
+      `<span class="en">${lang==="en"?(meta.en||"").replace(" Enclosure",""):(meta.pin||"")}</span>`+
+      `<span class="stat" style="color:${upN?'#e7ecf7':'#7d8cb5'}">${stat}</span></div><div class="encstars">${stars}</div>`;
+    box.appendChild(div);});}
 function stateOf(o){if(o.alt>=60)return["mer",L("near overhead","近天頂")];
   if(Math.abs(o.H)<12)return["mer",L("near highest","近中天")];
   return o.H<0?["rise",L("rising · ","升 · ")+compass(o.az)]:["set",L("setting · ","落 · ")+compass(o.az)];}
@@ -221,6 +267,7 @@ function hl(zh,on){document.querySelectorAll("#upBody tr").forEach(tr=>tr.classL
 
 function render(y,m,d,hh,mm){
   const LST=compute(y,m,d,hh,mm);
+  renderEnclosures(LST);
   const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();
   document.getElementById("forWhen").textContent=L("For ","")+L(WD_EN[wd],"週"+WD_ZH[wd])+`, ${d} ${L(MON[m],(m+1)+"月")} ${y} · ${(hh%12||12)}:${pad(mm)} ${hh<12?"am":"pm"} SGT`;
   document.getElementById("dayNote").textContent=wd===5?L("✓ Friday session night","✓ 週五開放夜"):"";

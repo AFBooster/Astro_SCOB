@@ -2,5 +2,7 @@
 # just because of CR/LF differences.
 *.sh   text eol=lf
 *.bat  text eol=crlf
-# Stop the LICENSE file from flip-flopping between CRLF/LF on every checkout.
-LICENSE -text
+# Normalise LICENSE to LF so it stops showing as "modified" on every checkout.
+# (The previous "-text" marked it binary, so Git compared raw bytes and CRLF≠LF
+#  churned forever; "text eol=lf" makes Git normalise and treat them as identical.)
+LICENSE text eol=lf
