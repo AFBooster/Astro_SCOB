@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="Which of the 27 Indian Nakshatras (lunar mansions) are above the horizon tonight from the Science Centre Observatory, Singapore, which nakshatra the Moon lodges in, and the day's panchāṅga — computed on-device, in English with Sanskrit names.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Indian Sky Tonight — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; --saffron:#ff9d3c; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.sa{font-family:"Noto Sans Devanagari","Nirmala UI","Kohinoor Devanagari","Mangal",sans-serif;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.ctrlbar{display:flex;align-items:center;gap:9px;margin-top:11px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex-wrap:wrap;}
+.datein,.timein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;}
+.datein::-webkit-calendar-picker-indicator,.timein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
+.daynote{font-size:12.5px;color:var(--mute);}
+#timeSlider{flex:1 1 100%;accent-color:var(--gold);height:8px;cursor:pointer;margin-top:6px;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 10px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.glance{font-size:clamp(15px,4.2vw,18px);line-height:1.5;}
+.glance b{color:var(--gold);}
+.forwhen{font-size:12.5px;color:var(--mute);margin-top:8px;}
+.moonlodge{margin-top:12px;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:11px;font-size:14.5px;}
+.moonlodge b{color:var(--gold);}
+.moonlodge .sub{font-size:12.5px;color:var(--mute);margin-top:3px;}
+.panch{margin-top:9px;padding:10px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;}
+.panch b{color:var(--cyan);}
+.panch .row{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:5px;}
+.panch .lbl{color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+.panch .sub{font-size:12px;color:var(--mute);margin-top:6px;}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+@media(min-width:620px){.chips{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:820px){.chips{grid-template-columns:repeat(9,1fr);}}
+.chip{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:9px 10px;background:var(--navy3);}
+.chip .z{font-size:15px;font-weight:700;}.chip .e{font-size:10.5px;color:var(--mute);}
+.chip .st{font-size:12.5px;margin-top:4px;font-weight:700;}
+.domewrap{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
+@media(min-width:820px){.domewrap{grid-template-columns:minmax(0,440px) minmax(0,1fr);}}
+#dome{width:100%;height:auto;display:block;max-width:440px;margin:0 auto;border-radius:12px;background:radial-gradient(circle at 50% 50%,#16224a 0%,#0b1220 78%);}
+.domehint{font-size:12px;color:var(--mute);text-align:center;margin:8px 0 0;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:9px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:2px;}
+.altbar{height:7px;border-radius:4px;background:#22305a;position:relative;min-width:54px;}
+.altbar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;}
+.dir{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.state.rise{background:rgba(95,211,138,.16);color:#9be9b8;}.state.set{background:rgba(255,107,107,.15);color:#ffb4b4;}
+.state.mer{background:rgba(245,197,66,.15);color:#f7d984;}
+.belowhead{margin:16px 0 0;font-size:12.5px;color:var(--mute);cursor:pointer;user-select:none;}
+.below tbody tr{opacity:.55;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+.signs{display:flex;flex-wrap:wrap;gap:7px;}
+.signstar{border:1px solid #2b3a66;border-radius:999px;padding:4px 11px;font-size:12.5px;color:var(--white);white-space:nowrap;cursor:pointer;transition:border-color .12s;}
+.signstar:hover{border-color:var(--gold);}
+.signstar b{color:var(--gold);font-weight:600;}.signstar .rom{color:var(--mute);}
+.enchint{font-size:12px;color:var(--mute);margin:11px 0 0;}
+.domenote{font-size:13px;color:var(--white);text-align:center;margin:6px 0 0;padding:8px 11px;background:var(--navy3);border:1px solid var(--gold);border-radius:10px;line-height:1.45;}
+.domenote b{color:var(--gold);}
+#upBody tr,#belowBody tr{cursor:pointer;} #dome g[data-loc]{cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🪷 The Indian Sky Tonight</h1>
+      <div class="loc">Science Centre Observatory · which nakshatras are up &amp; the Moon's lodge</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+    </div>
+    <div class="ctrlbar">
+      <input type="date" id="datePick" class="datein">
+      <input type="time" id="timePick" class="timein" value="20:30">
+      <button type="button" id="nextFri" class="btnmini">↺ Next Fri 8:30pm</button>
+      <button type="button" id="nowBtn" class="btnmini">● Now</button>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+      <span class="daynote" id="dayNote"></span>
+      <input type="range" id="timeSlider" min="0" max="1439" step="5" value="1230" aria-label="Time of night — drag to scrub through the night">
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="glance" id="glance">—</div>
+    <div class="forwhen" id="forWhen"></div>
+    <div class="moonlodge" id="moonLodge"></div>
+    <div class="panch" id="panch"></div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="card">
+    <h2>Tonight's sky <small>— looking up (N top, E left)</small></h2>
+    <div class="domewrap">
+      <div>
+        <svg id="dome" viewBox="-26 -26 352 352" role="img" aria-label="All-sky chart of the nakshatra stars above the horizon now"></svg>
+        <p class="domehint">Centre = overhead · rim = horizon · rings at 30° &amp; 60°. ● nakshatra junction stars · ◑ the Moon (ringed = its nakshatra). <b>Tap any star or row to pin it with a gold ring.</b></p>
+        <p class="domenote" id="domeNote" style="display:none"></p>
+      </div>
+      <div class="tablescroll">
+        <table>
+          <thead><tr><th>Nakshatra</th><th>Junction star</th><th>Alt</th><th>Look</th><th>State</th></tr></thead>
+          <tbody id="upBody"></tbody>
+        </table>
+        <div class="belowhead" id="belowHead"></div>
+        <div class="tablescroll below" id="belowWrap" style="display:none"><table><tbody id="belowBody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Bright signpost stars now <small>— the easiest nakshatras to find</small></h2>
+    <div id="signNow" class="signs"></div>
+    <p class="enchint">The brightest nakshatra junction stars currently above the horizon — Spica (Chitrā), Arcturus (Svāti), Antares (Jyeṣṭhā), Aldebaran (Rohiṇī) and more — and where to look right now. <a href="indian-sky.html">See what each nakshatra means →</a></p>
+  </div>
+
+  <div class="btnrow">
+    <a href="indian-sky.html">🪷 What the nakshatras mean</a>
+    <a href="chinese-tonight.html">🐉 Compare: Chinese sky tonight</a>
+    <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+  </div>
+
+  <div class="foot">
+    <p>Altitudes, directions, the Moon's nakshatra and the pañchāṅga are computed on-device for SCOB (1.3342°N, 103.7357°E) at the chosen moment (Sun &amp; Moon via the shared <code>astro-core.js</code> engine), so the page works offline. Each nakshatra is shown by its junction star (yogatārā). The 🌙 lodge is the Moon's <b>real</b> sidereal position among the stars, using the Lahiri (Chitrapakṣa) ayanāṁśa; the pañchāṅga gives the classical tithi, vāra, yoga and karaṇa. Positions are accurate to within a fraction of a degree — fine for finding things, not for ritual muhūrta. For what each nakshatra means, see <a href="indian-sky.html">The Indian Sky</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="astro-core.js"></script>
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const NAK=window.NAK, LORDS=window.NLORDS;
+const LC={}; LORDS.forEach(l=>LC[l.key]=l.col);
+const LORDBY={}; LORDS.forEach(l=>LORDBY[l.key]=l);
+
+// nakshatra junction stars from shared data
+const N27=NAK.map(k=>({n:k.n,sa:k.sa,iast:k.iast,en:k.en,lord:k.lord,gana:k.gana,deity:k.deity,west:k.stars[k.det][4],
+  ra:k.stars[k.det][0],dec:k.stars[k.det][1],mag:k.stars[k.det][2]}));
+
+const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI;
+const rev=x=>((x%360)+360)%360;
+const pad=n=>String(n).padStart(2,"0");
+const WD_EN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function sgtNow(){const n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function nextFridayYMD(){const d=sgtNow();const dow=d.getDay();let add=(5-dow+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return{y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};}
+function jd(date){return date.getTime()/86400000+2440587.5;}
+const CMP=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+const compass=az=>CMP[Math.round(az/22.5)%16];
+let liveTimer=null, SEL=null, curLST=0, curMoon=null;
+
+function compute(y,m,d,hh,mm){
+  const utc=Date.UTC(y,m,d,hh-8,mm,0);
+  const LST=rev(280.46061837+360.98564736629*(jd(new Date(utc))-2451545.0)+LON);
+  N27.forEach(o=>{let H=((LST-o.ra+540)%360)-180;const Hr=H*RAD,dr=o.dec*RAD,l=LAT*RAD;
+    o.alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+    o.az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);o.H=H;});
+  return LST;
+}
+function altazOf(ra,dec,LST){let H=((LST-ra+540)%360)-180;const Hr=H*RAD,dr=dec*RAD,l=LAT*RAD;
+  const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+  const az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);
+  return{alt,az};}
+
+// ---- Moon's nakshatra + full panchanga (astro-core) ----
+function panchanga(y,m,d,hh,mm,LST){
+  if(!window.Astro||!Astro.moon)return null;
+  const date=new Date(Date.UTC(y,m,d,hh-8,mm,0)), dS=jd(date)-2451543.5;
+  const mo=Astro.moon(dS), su=Astro.sun(dS), meq=Astro.eclToEq(mo.lon,mo.lat,dS);
+  const yr=y+m/12, ayan=window.ayanamsa(yr);
+  const sidMoon=rev(mo.lon-ayan), sidSun=rev(su.lon-ayan);
+  const nk=window.nakOfLon(sidMoon);                          // Moon's nakshatra
+  const elong=rev(mo.lon-su.lon);
+  // tithi
+  const ti=Math.floor(elong/12);                             // 0..29
+  const paksha=ti<15?"Śukla":"Kṛṣṇa", tiName=(ti%15===14)?(ti<15?"Pūrṇimā":"Amāvāsyā"):window.NTITHI[ti%15];
+  const tiNum=(ti%15)+1;
+  // yoga (sidereal sum)
+  const yoga=window.NYOGA[Math.floor(rev(sidSun+sidMoon)/(360/27))%27];
+  // karana (half-tithi)
+  const kn=Math.floor(elong/6);                              // 0..59
+  let karana; if(kn===0)karana="Kiṃstughna"; else if(kn<=56)karana=window.NKARANA[(kn-1)%7]; else karana=["Śakuni","Chatuṣpāda","Nāga"][kn-57];
+  // Moon alt/az + illum
+  const H=((LST-meq.ra+540)%360)-180, Hr=H*RAD, dr=meq.dec*RAD, l=LAT*RAD;
+  const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+  const az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);
+  const illum=Math.round((1-Math.cos(elong*RAD))/2*100);
+  return{nak:NAK[nk.index], pada:nk.pada, ra:meq.ra, dec:meq.dec, alt, az, illum, paksha, tiName, tiNum, yoga, karana, sidMoon};
+}
+
+const dome=document.getElementById("dome");const ZC=150,ZR=140;
+function domePos(az,alt){const r=(90-alt)/90*ZR;return[ZC-r*Math.sin(az*RAD),ZC-r*Math.cos(az*RAD)];}
+function drawDome(){dome.innerHTML="";
+  [ZR,ZR*2/3,ZR/3].forEach((r,i)=>dome.appendChild(el("circle",{cx:ZC,cy:ZC,r,fill:"none",stroke:i===0?"#3a4c86":"#26335c","stroke-width":i===0?1.4:1})));
+  dome.appendChild(el("circle",{cx:ZC,cy:ZC,r:1.6,fill:"#9fb0d6"}));
+  [["N",0],["E",90],["S",180],["W",270]].forEach(([lab,az])=>{const[x,y]=domePos(az,-7);
+    const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":12,"font-weight":700});t.textContent=lab;dome.appendChild(t);});
+  const lodgeN=curMoon&&curMoon.nak?curMoon.nak.n:null;
+  N27.filter(o=>o.alt>0).sort((a,b)=>a.alt-b.alt).forEach(o=>{const[x,y]=domePos(o.az,o.alt);const g=el("g",{});
+    if(o.n===lodgeN)g.appendChild(el("circle",{cx:x,cy:y,r:9,fill:"none",stroke:"#f5c542","stroke-width":1.5,opacity:.9}));
+    g.appendChild(el("circle",{cx:x,cy:y,r:Math.max(3,4.6-o.mag*0.5),fill:LC[o.lord],stroke:"#0b1733","stroke-width":.6}));
+    const t=el("text",{x:x,y:y-8,"text-anchor":"middle",fill:LC[o.lord],"font-size":9});t.textContent=o.n;g.appendChild(t);
+    g.addEventListener("mouseenter",()=>hl(o.n,true));g.addEventListener("mouseleave",()=>hl(o.n,false));
+    g.setAttribute("data-loc","1");g.addEventListener("click",()=>locate(o.n,o.ra,o.dec));dome.appendChild(g);});
+  // the Moon
+  if(curMoon&&curMoon.alt>0){const[mx,my]=domePos(curMoon.az,curMoon.alt);const g=el("g",{});
+    g.appendChild(el("circle",{cx:mx,cy:my,r:8,fill:"#f5c542",stroke:"#0b1733","stroke-width":1}));
+    g.appendChild(el("circle",{cx:mx+2.6,cy:my,r:6.4,fill:"#16224a"}));
+    const lb=el("text",{x:mx,y:my-13,"text-anchor":"middle",fill:"#f5c542","font-size":11.5,"font-weight":700});lb.textContent="Moon";g.appendChild(lb);dome.appendChild(g);}
+  if(SEL){const aa=altazOf(SEL.ra,SEL.dec,curLST);if(aa.alt>0){const[sx,sy]=domePos(aa.az,aa.alt);
+    const ring=el("circle",{cx:sx,cy:sy,r:11,fill:"none",stroke:"#f5c542","stroke-width":2});
+    ring.appendChild(el("animate",{attributeName:"r",values:"9;15;9",dur:"1.4s",repeatCount:"indefinite"}));
+    ring.appendChild(el("animate",{attributeName:"opacity",values:"1;.35;1",dur:"1.4s",repeatCount:"indefinite"}));
+    dome.appendChild(ring);}}
+}
+function hl(n,on){document.querySelectorAll("#upBody tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+function locate(n,ra,dec){const o=N27.find(x=>x.n===n)||{sa:"",iast:""};const same=SEL&&SEL.n===n;
+  SEL=same?null:{n,ra:+ra,dec:+dec,sa:o.sa,iast:o.iast};drawDome();updateDomeNote();
+  if(SEL){const dEl=document.getElementById("dome");if(dEl&&dEl.scrollIntoView)dEl.scrollIntoView({behavior:"smooth",block:"center"});}}
+function updateDomeNote(){const e=document.getElementById("domeNote");if(!e)return;
+  if(!SEL){e.style.display="none";return;}e.style.display="block";
+  const aa=altazOf(SEL.ra,SEL.dec,curLST);const nm=`<b class="sa">${SEL.sa}</b> <b>${SEL.iast}</b>`;
+  e.innerHTML=aa.alt>0?`📍 ${nm} — the gold ring on the chart · ${aa.alt.toFixed(0)}° up in the ${compass(aa.az)}. Tap again to clear.`
+    :`📍 ${nm} is below the horizon right now — try a later time. Tap again to clear.`;}
+["upBody","belowBody"].forEach(id=>{const n=document.getElementById(id);if(n)n.addEventListener("click",function(e){
+  const t=e.target.closest("[data-n]");if(!t)return;locate(+t.dataset.n,t.dataset.ra,t.dataset.dec);});});
+
+function stateOf(o){if(o.alt>=60)return["mer","near overhead"];
+  if(Math.abs(o.H)<12)return["mer","near highest"];
+  return o.H<0?["rise","rising · "+compass(o.az)]:["set","setting · "+compass(o.az)];}
+
+function render(y,m,d,hh,mm){
+  const LST=compute(y,m,d,hh,mm);curLST=LST;
+  const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();
+  const vara=window.NVARA[wd];
+  document.getElementById("forWhen").textContent=`For ${WD_EN[wd]}, ${d} ${MON[m]} ${y} · ${(hh%12||12)}:${pad(mm)} ${hh<12?"am":"pm"} SGT`;
+  document.getElementById("dayNote").textContent=wd===5?"✓ Friday session night":"";
+  const up=N27.filter(o=>o.alt>0);
+  // chips per lord
+  const chips=document.getElementById("chips");chips.innerHTML="";
+  LORDS.forEach(l=>{const all=N27.filter(o=>o.lord===l.key),u=all.filter(o=>o.alt>0);
+    const mean=u.length?u.reduce((s,o)=>s+o.alt,0)/u.length:0,meanH=u.length?u.reduce((s,o)=>s+o.H,0)/u.length:0;
+    const st=u.length===0?"below":(mean>=55?"overhead":meanH<-15?"rising E":meanH>15?"setting W":"near mer.");
+    const div=document.createElement("div");div.className="chip";div.style.borderLeftColor=l.col;
+    div.innerHTML=`<div class="z sa" style="color:${l.col}">${l.sa}</div><div class="e">${l.en.split(" ")[0]}</div>
+      <div class="st" style="color:${u.length?'#e7ecf7':'#7d8cb5'}">${u.length}/3 · <span style="color:var(--mute);font-weight:400">${st}</span></div>`;chips.appendChild(div);});
+  // panchanga (also gives Moon's nakshatra)
+  const p=panchanga(y,m,d,hh,mm,LST);curMoon=p;
+  const g=document.getElementById("glance");
+  if(!up.length){g.innerHTML="No nakshatras are above the horizon at this moment.";}
+  else{const bright=up.slice().sort((a,b)=>a.mag-b.mag)[0];
+    g.innerHTML=`Tonight <b>${up.length}</b> of the 27 nakshatras are above the horizon. The brightest up is <b class="sa">${bright.sa}</b> <b>${bright.iast}</b> (${bright.west}), ${bright.alt>=55?"high overhead":bright.alt>=30?"well up":"low"} in the ${compass(bright.az)}.`;}
+  // Moon's nakshatra headline
+  const mlEl=document.getElementById("moonLodge");
+  if(p){const lo=p.nak;const upTxt=p.alt>0?`up ${p.alt.toFixed(0)}° in the ${compass(p.az)} — look for the ◑ on the chart below`:"below the horizon now — it rises later";
+    mlEl.style.display="block";
+    mlEl.innerHTML=`🌙 Tonight the Moon lodges in <b class="sa">${lo.sa}</b> <b>${lo.iast}</b> <span style="color:var(--mute)">(pada ${p.pada})</span> — ${lo.dEN}
+      <div class="sub">Ruled by ${LORDBY[lo.lord].en}; deity ${lo.deity}. The Moon is ~${p.illum}% lit, ${upTxt}. It moves about one nakshatra east each night.</div>`;}
+  else mlEl.style.display="none";
+  // panchanga box
+  if(p){document.getElementById("panch").innerHTML=
+    `<b>📜 Pañchāṅga</b> — the five limbs of the day
+     <div class="row">
+       <span><span class="lbl">Vāra</span><br><span class="sa">${vara.sa}</span> ${vara.iast}</span>
+       <span><span class="lbl">Tithi</span><br>${p.paksha} ${p.tiName} <span style="color:var(--mute)">(${p.tiNum})</span></span>
+       <span><span class="lbl">Nakṣatra</span><br><span class="sa">${p.nak.sa}</span> ${p.nak.iast}</span>
+       <span><span class="lbl">Yoga</span><br>${p.yoga}</span>
+       <span><span class="lbl">Karaṇa</span><br>${p.karana}</span>
+     </div>
+     <div class="sub">Tithi = the Moon's lunar "day" (its angle ahead of the Sun); ${p.paksha==="Śukla"?"Śukla = the waxing bright fortnight":"Kṛṣṇa = the waning dark fortnight"}.</div>`;}
+  // up table
+  const ub=document.getElementById("upBody");ub.innerHTML="";
+  up.sort((a,b)=>b.alt-a.alt).forEach(o=>{const[cls,txt]=stateOf(o);const w=Math.round(o.alt/90*100);
+    const tr=document.createElement("tr");tr.dataset.n=o.n;tr.dataset.ra=o.ra;tr.dataset.dec=o.dec;
+    tr.innerHTML=`<td><span class="swatch" style="background:${LC[o.lord]}"></span><span class="nm sa" style="color:${LC[o.lord]}">${o.sa}</span> <span class="rom">${o.iast}</span></td>
+      <td class="west">${o.west}</td><td><div class="altbar"><i style="width:${w}%;background:${LC[o.lord]}"></i></div><span class="rom">${o.alt.toFixed(0)}°</span></td>
+      <td class="dir">${compass(o.az)}</td><td><span class="state ${cls}">${txt}</span></td>`;ub.appendChild(tr);});
+  // below
+  const below=N27.filter(o=>o.alt<=0).sort((a,b)=>b.alt-a.alt);
+  document.getElementById("belowHead").textContent=`▾ ${below.length} nakshatras below the horizon now`;
+  document.getElementById("belowBody").innerHTML=below.map(o=>`<tr data-n="${o.n}" data-ra="${o.ra}" data-dec="${o.dec}"><td><span class="swatch" style="background:${LC[o.lord]}"></span><span class="nm sa" style="color:${LC[o.lord]}">${o.sa}</span> <span class="rom">${o.iast}</span></td><td class="west">${o.west}</td><td class="rom">${o.alt.toFixed(0)}°</td></tr>`).join("");
+  // signpost stars (brightest up)
+  const sig=up.filter(o=>o.mag<2.2).sort((a,b)=>a.mag-b.mag);
+  document.getElementById("signNow").innerHTML=sig.length
+    ? sig.map(o=>`<span class="signstar" data-n="${o.n}" data-ra="${o.ra}" data-dec="${o.dec}"><b>${o.west.replace(/\s*\(.*/,"")}</b> · <span class="sa">${o.sa}</span> <span class="rom">${o.iast}</span> · ${o.alt.toFixed(0)}° ${compass(o.az)}</span>`).join("")
+    : `<span style="color:var(--mute)">No first-magnitude nakshatra stars are above the horizon right now — try a later time.</span>`;
+  document.getElementById("signNow").querySelectorAll("[data-n]").forEach(s=>s.addEventListener("click",()=>locate(+s.dataset.n,s.dataset.ra,s.dataset.dec)));
+  drawDome();updateDomeNote();
+}
+
+let curY,curM,curD,curH,curMin;
+const timeSlider=document.getElementById("timeSlider");
+function syncSlider(hh,mm){timeSlider.value=hh*60+mm;}
+function readAndRender(){const dv=document.getElementById("datePick").value,tv=document.getElementById("timePick").value||"20:30";
+  if(!dv)return;const p=dv.split("-").map(Number),t=tv.split(":").map(Number);curY=p[0];curM=p[1]-1;curD=p[2];curH=t[0];curMin=t[1];syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);}
+function stopLive(){if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
+timeSlider.addEventListener("input",()=>{stopLive();const v=+timeSlider.value,hh=Math.floor(v/60),mm=v%60;
+  document.getElementById("timePick").value=`${pad(hh)}:${pad(mm)}`;curH=hh;curMin=mm;render(curY,curM,curD,hh,mm);});
+document.getElementById("datePick").addEventListener("change",()=>{stopLive();readAndRender();});
+document.getElementById("timePick").addEventListener("change",()=>{stopLive();readAndRender();});
+document.getElementById("nextFri").addEventListener("click",()=>{stopLive();const f=nextFridayYMD();
+  document.getElementById("datePick").value=`${f.y}-${pad(f.m+1)}-${pad(f.d)}`;document.getElementById("timePick").value="20:30";readAndRender();});
+document.getElementById("nowBtn").addEventListener("click",()=>{const n=sgtNow();
+  document.getElementById("datePick").value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
+  document.getElementById("timePick").value=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+  curY=n.getFullYear();curM=n.getMonth();curD=n.getDate();curH=n.getHours();curMin=n.getMinutes();syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);
+  stopLive();liveTimer=setInterval(()=>{const t=sgtNow();document.getElementById("timePick").value=`${pad(t.getHours())}:${pad(t.getMinutes())}`;
+    curY=t.getFullYear();curM=t.getMonth();curD=t.getDate();curH=t.getHours();curMin=t.getMinutes();syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);},60000);});
+document.getElementById("belowHead").addEventListener("click",()=>{const w=document.getElementById("belowWrap");w.style.display=w.style.display==="none"?"block":"none";});
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+
+const f0=nextFridayYMD();document.getElementById("datePick").value=`${f0.y}-${pad(f0.m+1)}-${pad(f0.d)}`;
+curY=f0.y;curM=f0.m;curD=f0.d;curH=20;curMin=30;render(f0.y,f0.m,f0.d,20,30);
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  const bh=document.getElementById("belowHead");if(bh){bh.setAttribute("tabindex","0");bh.setAttribute("role","button");}
+  document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.id==="belowHead"){e.preventDefault();e.target.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

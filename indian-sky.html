@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The Indian sky — the 27 Nakshatras (lunar mansions) of Jyotiṣa, cross-referenced with the modern Western sky and the Chinese mansions. Their nine planetary lords, deities and symbols, with an interactive star map, in English with Sanskrit names. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Indian Sky — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a;
+  --saffron:#ff9d3c; --star:#f4f6fb; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.sa{font-family:"Noto Sans Devanagari","Nirmala UI","Kohinoor Devanagari","Mangal",sans-serif;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}
+.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:var(--cyan);}
+
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#wheel{width:100%;height:auto;display:block;max-width:430px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.lords{display:grid;grid-template-columns:1fr;gap:8px;}
+@media(min-width:520px){.lords{grid-template-columns:1fr 1fr;}}
+.lcard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);
+  border-radius:11px;padding:9px 12px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.lcard.active{background:#20345f;border-color:var(--gold);}
+.lcard .top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.lcard .z{font-size:17px;font-weight:700;}
+.lcard .e{font-size:13.5px;font-weight:700;}
+.lcard .naks{font-size:11.5px;color:var(--mute);margin:4px 0 0;}
+.lcard .desc{font-size:12px;color:var(--mute);margin:5px 0 0;max-height:0;overflow:hidden;transition:max-height .2s;}
+.lcard.active .desc{max-height:120px;}
+
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);
+  border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}.eclline{stroke:#f5c542;stroke-dasharray:5 5;opacity:.5;}
+.skychar{text-anchor:middle;font-size:11px;}
+.dirlabel{text-anchor:middle;fill:var(--mute);font-size:11px;letter-spacing:.08em;}
+
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--star);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+.num{color:var(--mute);font-variant-numeric:tabular-nums;font-size:12px;}
+@media(max-width:620px){.col-num,.col-deity{display:none;}}
+
+.npick{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;}
+@media(min-width:620px){.npick{grid-template-columns:repeat(9,1fr);}}
+.nchip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;
+  padding:6px 2px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.nchip .z{font-size:12px;font-weight:700;line-height:1.15;}
+.nchip .nn{font-size:9px;color:var(--mute);}
+.nchip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.1;opacity:.45;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}.mdesc h3 .z{color:var(--gold);}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.mdesc .fact b{color:var(--white);}
+.chinacross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid #5fd38a;border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.chinacross b{color:#8ff0bb;}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;}
+
+#rasi{width:100%;height:auto;max-width:470px;margin:0 auto;display:block;border-radius:12px;background-color:#0c1530;}
+.rpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.rpick{grid-template-columns:repeat(6,1fr);}}
+.rchip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:7px 4px;text-align:center;transition:.12s;}
+.rchip.active{border-color:var(--gold);background:#20345f;}
+.rchip .z{font-size:13px;font-weight:700;}.rchip .e{font-size:10px;color:var(--mute);display:block;}
+
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="titlerow">
+      <h1>🪷 The Indian Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the 27 Nakshatras &amp; their nine planetary lords</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <!-- intro -->
+  <div class="card essay">
+    <p class="lede">In Indian astronomy — <span class="term">Jyotiṣa</span>, "the science of light" — the sky is measured not by the Sun but by the <b>Moon</b>. Its monthly path is divided into 27 equal segments called <span class="term sa">नक्षत्र</span> <span class="term">nakshatras</span>, or <b>lunar mansions</b>: the 27 "homes" the Moon rests in, one each night.</p>
+    <p>Each nakshatra is a small patch of sky marked by a bright <b>junction star</b> (<span class="sa">योगतारा</span> <span class="term">yogatārā</span>), and carries its own <b>deity</b>, <b>symbol</b>, temperament and <b>ruling planet</b>. Together they form a calendar, a compass and a system of meaning written across the stars.</p>
+    <p><b>Why twenty-seven?</b> The Moon circles the stars in about <b>27.3 days</b>. Rounded down, that gives 27 stations — so each night the Moon "lodges" in the next nakshatra, shifting roughly 13° eastward. (A 28th, <b>Abhijit</b>, near the star Vega, is sometimes added for ritual timing.)</p>
+    <p><b>Why nine lords?</b> The 27 nakshatras cycle three times through <b>nine planetary rulers</b> (the <span class="sa">नवग्रह</span> <span class="term">Navagraha</span>) — Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury. This sequence sets the great <span class="term">Vimśottarī</span> cycle of life-periods, the backbone of Indian astrology.</p>
+    <div class="callout">🐉 <b>A shared idea.</b> The Chinese sky divides the same band into <b>28 mansions</b> (<span class="sa">宿</span> <em>xiù</em>) and the Indian sky into <b>27</b> — two great civilisations independently mapped the Moon's path into "lodges". Many nakshatras and mansions even share the <em>same stars</em>. Compare them in <a href="chinese-sky.html" style="color:var(--cyan)">The Chinese Sky →</a></div>
+  </div>
+
+  <!-- nine lords wheel -->
+  <div class="card">
+    <h2>The Nine Planetary Lords &amp; 27 Nakshatras <small class="sa">नवग्रह · नक्षत्र</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Tap a planet to light up the three nakshatras it rules — across the wheel, the sky map and the table below. The wheel runs in the Moon's order of travel, Aśvinī at the top.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="wheel" viewBox="-52 -52 504 504" role="img" aria-label="Wheel of the twenty-seven nakshatras coloured by planetary lord"></svg>
+        <p class="whint" id="whint"></p>
+      </div>
+      <div class="lords" id="lords"></div>
+    </div>
+  </div>
+
+  <!-- sky map -->
+  <div class="card">
+    <h2>The sky map — all 27 nakshatras</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false">🌌 Overlay Western constellations</button></div>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 300" role="img" aria-label="Full-sky strip map of the 27 nakshatras"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the 27 nakshatras"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <!-- table -->
+  <div class="card">
+    <h2>Nakshatra ↔ Western star <small>— 27</small></h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr>
+          <th class="col-num">#</th><th>Lord</th>
+          <th>Nakshatra</th><th>Junction star</th>
+          <th class="col-deity">Deity · symbol</th><th>Stars</th>
+        </tr></thead>
+        <tbody id="tbody27"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- deep dive -->
+  <div class="card">
+    <h2>Every star of a nakshatra <small class="sa">योगतारा</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick any nakshatra to see its full asterism drawn over the real stars — with its deity, symbol, ruling planet, and the matching Chinese mansion.</p>
+    <div class="npick" id="npick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="Full asterism of the selected nakshatra"></svg></div>
+      <div>
+        <div class="mdesc" id="mdesc"></div>
+        <div class="tablescroll" style="margin-top:12px"><table><tbody id="dtbody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- rasi framework -->
+  <div class="card" id="rasiCard">
+    <h2>The 12 Rāśi — signs of the zodiac <small class="sa">राशि</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The same circle of sky is also split into <b>12 signs</b> of 30° each. Since 27 into 12 doesn't divide evenly, each sign holds <b>2¼ nakshatras</b> (9 quarter-steps called <span class="sa">पद</span> <em>padas</em>). Tap a sign to see which nakshatras fall inside it.</p>
+    <div class="rpick" id="rpick"></div>
+    <div class="ddgrid">
+      <div>
+        <svg id="rasi" viewBox="-40 -40 540 540" role="img" aria-label="The 12 zodiac signs with the 27 nakshatras marked around the ecliptic"></svg>
+        <p class="cap" id="rcap"></p>
+      </div>
+      <div>
+        <div class="mdesc" id="rdesc"></div>
+        <div class="callout" style="margin-top:12px">☀️ <b>Sidereal vs tropical.</b> Indian astrology uses the <b>sidereal</b> zodiac — fixed to the actual stars. Western (horoscope) astrology uses the <b>tropical</b> zodiac — fixed to the seasons. Slow wobbling of Earth's axis (precession) has pulled these apart by about <b id="ayan">24°</b> today, the <span class="sa">अयनांश</span> <em>ayanāṁśa</em>. That's why your "Vedic sign" is usually one sign earlier than your familiar one.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="indian-tonight.html">🪷 Which nakshatras are up tonight?</a>
+    <a href="chinese-sky.html">🐉 Compare: The Chinese Sky</a>
+    <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+  </div>
+
+  <div class="foot">
+    <p>The plotted asterisms show each nakshatra's junction star (yogatārā) and, where the mansion is a well-known figure, its brighter members to about <b>magnitude 5</b> (Jurong's practical city-sky limit), at Hipparcos J2000 positions. Junction-star identifications follow the standard yogatārā list (after the <em>Sūrya Siddhānta</em> and B.&nbsp;V.&nbsp;Raman), cross-checked to modern catalogues; deities, symbols, ganas and planetary lords follow classical Jyotiṣa (Parāśara tradition). Twenty-one of the 27 junction stars are shared with the Chinese mansions and use the same coordinates as <a href="chinese-sky.html">The Chinese Sky</a>. Sidereal longitudes use the Lahiri (Chitrapakṣa) ayanāṁśa. For a live view of tonight's sky see <a href="indian-tonight.html">The Indian Sky Tonight</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const NAK=window.NAK, LORDS=window.NLORDS, RASHI=window.NRASHI;
+const LC={}; LORDS.forEach(l=>LC[l.key]=l.col);          // lord -> colour
+const LORDBY={}; LORDS.forEach(l=>LORDBY[l.key]=l);
+const col=k=>k.lord?LC[k.lord]:"#fff";
+// junction-star meta per nakshatra
+const DET=NAK.map(k=>({n:k.n,sa:k.sa,iast:k.iast,en:k.en,lord:k.lord,gana:k.gana,deity:k.deity,symbol:k.symbol,
+  west:k.stars[k.det][4],ra:k.stars[k.det][0],dec:k.stars[k.det][1],mag:k.stars[k.det][2],nstars:k.stars.length,dEN:k.dEN}));
+const START_RA=DET[0].ra;                                // anchor RA sweep on Aśvinī's own star
+DET.forEach(d=>d.rs=(d.ra-START_RA+360)%360);
+let activeLord=null;
+const rev=x=>((x%360)+360)%360;
+
+/* ---------- WHEEL: 27 wedges in Moon-order, coloured by lord ---------- */
+const wheel=document.getElementById("wheel");
+const CX=200,CY=200,R1=180,R2=104,RC=142;
+const polar=(r,deg)=>{const a=deg*Math.PI/180;return[CX+r*Math.cos(a),CY+r*Math.sin(a)];};
+function wedgePath(a1,a2){const[ox1,oy1]=polar(R1,a1),[ox2,oy2]=polar(R1,a2),[ix2,iy2]=polar(R2,a2),[ix1,iy1]=polar(R2,a1);
+  return`M${ox1} ${oy1} A${R1} ${R1} 0 0 1 ${ox2} ${oy2} L${ix2} ${iy2} A${R2} ${R2} 0 0 0 ${ix1} ${iy1} Z`;}
+const STEP=360/27;
+function drawWheel(){wheel.innerHTML="";
+  NAK.forEach((k,i)=>{const a1=-90+i*STEP,a2=-90+(i+1)*STEP,mid=(a1+a2)/2,on=!activeLord||activeLord===k.lord;
+    const p=el("path",{d:wedgePath(a1,a2),fill:LC[k.lord],stroke:"#0b1733","stroke-width":1,opacity:on?(activeLord===k.lord?1:.8):.13});
+    p.style.cursor="pointer";
+    p.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${k.n}. ${k.iast} · ${k.en} — ${LORDBY[k.lord].en}`;});
+    p.addEventListener("click",()=>setLord(k.lord));wheel.appendChild(p);
+    const[tx,ty]=polar(RC,mid);const t=el("text",{x:tx,y:ty,"text-anchor":"middle","dominant-baseline":"central","font-size":12,"font-weight":700,fill:"#0b1733"});t.textContent=k.n;t.style.opacity=on?1:.3;t.style.pointerEvents="none";wheel.appendChild(t);});
+  const c1=el("text",{x:CX,y:CY-10,"text-anchor":"middle","dominant-baseline":"central",fill:"#f5c542","font-size":22,class:"sa"});c1.textContent="२७";
+  const c2=el("text",{x:CX,y:CY+13,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});c2.textContent="nakshatras";
+  wheel.appendChild(c1);wheel.appendChild(c2);
+  // Moon-direction arrow
+  const[hx,hy]=polar(R1+22,-90);const ht=el("text",{x:hx,y:hy,class:"dirlabel","dominant-baseline":"central"});ht.textContent="Aśvinī ↻ Moon's path";wheel.appendChild(ht);}
+
+const lbox=document.getElementById("lords");
+function drawLords(){lbox.innerHTML="";LORDS.forEach(l=>{const naks=NAK.filter(k=>k.lord===l.key);
+  const d=document.createElement("div");d.className="lcard"+(activeLord===l.key?" active":"");d.dataset.k=l.key;d.style.borderLeftColor=l.col;
+  d.innerHTML=`<div class="top"><span class="z sa" style="color:${l.col}">${l.sa}</span><span class="e">${l.en}</span></div>
+    <div class="naks">${naks.map(k=>k.iast).join(" · ")}</div>
+    <div class="desc">${l.gloss}</div>`;
+  d.addEventListener("click",()=>setLord(l.key));lbox.appendChild(d);});}
+
+/* ---------- STRIP ---------- */
+const strip=document.getElementById("strip");
+const SW=980,SH=300,mL=44,mR=14,mT=18,mB=42;
+let SDMIN=-45,SDMAX=32,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+function drawWestern(){if(!window.WCONST)return;
+  WCONST.forEach(c=>{const stars=c[1],lines=c[2];
+    lines.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-START_RA)),x2=sx(rev(stars[b][0]-START_RA));
+      if(Math.abs(x1-x2)>SW*0.5)return;
+      strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.75}));});
+    stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.4,fill:"#8fa0c8",opacity:.85})));
+    const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-START_RA)),0)/stars.length, cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+    const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});}
+function drawNakFig(){NAK.forEach(k=>{const c=LC[k.lord];
+  k.lines.forEach(([a,b])=>{const x1=sx(rev(k.stars[a][0]-START_RA)),x2=sx(rev(k.stars[b][0]-START_RA));
+    if(Math.abs(x1-x2)>SW*0.5)return;
+    strip.appendChild(el("line",{x1,y1:sy(k.stars[a][1]),x2,y2:sy(k.stars[b][1]),stroke:c,"stroke-width":1.3,opacity:.6}));});
+  k.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.8,fill:c,opacity:.9})));});}
+const srad=m=>Math.max(2,5.4-m*0.7);
+function drawStrip(){strip.innerHTML="";
+  SDMIN=westOverlay?-64:-45; SDMAX=westOverlay?64:32;
+  if(westOverlay){drawWestern();drawNakFig();}
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  DET.forEach(m=>{const on=!activeLord||activeLord===m.lord;const g=el("g",{});g.style.cursor="pointer";
+    const c=el("circle",{cx:sx(m.rs),cy:sy(m.dec),r:srad(m.mag),fill:LC[m.lord],stroke:"#0b1733","stroke-width":.5,opacity:on?1:.16});
+    const ch=el("text",{x:sx(m.rs),y:sy(m.dec)-srad(m.mag)-4,class:"skychar",fill:LC[m.lord],opacity:on?1:.16});ch.textContent=m.n;
+    const act=()=>{capUpdate(m);c.setAttribute("r",srad(m.mag)+2);hlRow(m.n,true);};
+    g.addEventListener("mouseenter",act);g.addEventListener("mouseleave",()=>{c.setAttribute("r",srad(m.mag));hlRow(null,false);capReset();});
+    g.addEventListener("click",()=>{openNak(m.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    g.appendChild(c);g.appendChild(ch);strip.appendChild(g);});}
+
+/* ---------- CIRCLE (true RA/Dec polar chart) ---------- */
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=40;
+const rr=dec=>rIn+((32-dec)/(32-(-40)))*(rOut-rIn);      // dec +32 (in) .. -40 (out)
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+const cang=ra=>rev(ra-START_RA)- 90;                     // RA around the circle, Aśvinī at top
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rIn,fill:"none",stroke:"#22305a","stroke-width":1}));
+  // ecliptic ring (approx, where the nakshatra band lies)
+  const eqt=el("text",{x:OCX,y:OCY-rr(0)+11,"text-anchor":"middle",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";circle.appendChild(eqt);
+  DET.forEach(m=>{const on=!activeLord||activeLord===m.lord;const th=cang(m.ra);
+    const[dx,dy]=cpolar(rr(m.dec),th);
+    const dot=el("circle",{cx:dx,cy:dy,r:srad(m.mag),fill:LC[m.lord],stroke:"#0b1733","stroke-width":.5,opacity:on?1:.18});
+    const[cx3,cy3]=cpolar(rOut+15,th);const ch=el("text",{x:cx3,y:cy3,"text-anchor":"middle","dominant-baseline":"central","font-size":10,fill:LC[m.lord],opacity:on?1:.2});ch.textContent=m.n;
+    const g=el("g",{});g.style.cursor="pointer";g.appendChild(dot);g.appendChild(ch);
+    const act=()=>{capUpdate(m);dot.setAttribute("r",srad(m.mag)+2);hlRow(m.n,true);};
+    g.addEventListener("mouseenter",act);g.addEventListener("mouseleave",()=>{dot.setAttribute("r",srad(m.mag));hlRow(null,false);capReset();});
+    g.addEventListener("click",()=>{openNak(m.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+
+function capUpdate(m){document.getElementById("cap").innerHTML=
+  `<b style="color:${LC[m.lord]}" class="sa">${m.sa}</b> <b>${m.iast}</b> · "${m.en}" &nbsp;→&nbsp; <span style="color:var(--star)">${m.west}</span> · ${LORDBY[m.lord].en}`;}
+function capReset(){document.getElementById("cap").textContent = mapView==="circle"
+  ? "A star chart with the north pole at the centre. Each dot is a nakshatra's junction star; the number is its order along the Moon's path. Tap one for its full asterism."
+  : "Each dot is a nakshatra's junction (marker) star. Tap for its full asterism below.";}
+
+/* ---------- table ---------- */
+const tb=document.getElementById("tbody27");
+function drawTable(){tb.innerHTML="";
+  DET.forEach(m=>{const tr=document.createElement("tr");tr.dataset.n=m.n;if(activeLord&&activeLord!==m.lord)tr.classList.add("dim");
+    tr.innerHTML=`<td class="col-num num">${m.n}</td><td><span class="swatch" style="background:${LC[m.lord]}"></span></td>
+      <td><span class="nm sa" style="color:${LC[m.lord]}">${m.sa}</span> <span class="rom">${m.iast} · ${m.en}</span></td>
+      <td class="west">${m.west}</td><td class="col-deity" style="color:var(--mute);font-size:12px">${m.deity} · ${m.symbol}</td><td>${m.nstars}</td>`;
+    tr.addEventListener("mouseenter",()=>hlRow(m.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+    tr.addEventListener("click",()=>{openNak(m.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    tb.appendChild(tr);});}
+function hlRow(n,on){document.querySelectorAll("#tbody27 tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+
+function setLord(k){activeLord=activeLord===k?null:k;drawWheel();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".lcard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeLord));
+  document.getElementById("whint").textContent=activeLord?LORDBY[activeLord].en+" — "+LORDBY[activeLord].gloss:"The Moon's 27 homes, coloured by their nine ruling planets.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+document.getElementById("westToggle").addEventListener("click",function(){
+  westOverlay=!westOverlay;this.classList.toggle("active",westOverlay);this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay&&mapView!=="strip"){mapView="strip";
+    document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+    document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+  drawStrip();
+  document.getElementById("cap").innerHTML=westOverlay
+    ?"🌌 Western constellations (grey) over the 27 nakshatras (coloured). Both traditions map the same band near the ecliptic, so shared stars coincide exactly."
+    :capReset()||"";
+  if(!westOverlay)capReset();});
+
+/* ---------- DEEP DIVE ---------- */
+const npick=document.getElementById("npick");
+let selNak=4;
+function drawPicker(){npick.innerHTML="";
+  NAK.forEach(k=>{const d=document.createElement("div");d.className="nchip"+(selNak===k.n?" active":"");d.dataset.n=k.n;d.style.borderLeftColor=LC[k.lord];
+    d.innerHTML=`<div class="nn">${k.n}</div><div class="z sa" style="color:${LC[k.lord]}">${k.sa.length>6?k.sa.slice(0,5)+"…":k.sa}</div>`;
+    d.addEventListener("click",()=>openNak(k.n));npick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openNak(n){selNak=n;drawPicker();
+  document.querySelectorAll(".nchip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const k=NAK.find(x=>x.n===n),meta=DET.find(x=>x.n===n);
+  const ras=k.stars.map(s=>s[0]),decs=k.stars.map(s=>s[1]);
+  let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+  if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+  const dc0=Math.min(...decs),dc1=Math.max(...decs);
+  const padr=Math.max((ra1-ra0)*0.2,1.4),padd=Math.max((dc1-dc0)*0.2,1.4);
+  const W=460,H=360,pd=36,raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+  const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};
+  const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+  const rad=mg=>Math.max(2.2,6-mg*0.75);
+  dsky.innerHTML="";
+  k.lines.forEach(([a,b])=>{dsky.appendChild(el("line",{x1:X(k.stars[a][0]),y1:Y(k.stars[a][1]),x2:X(k.stars[b][0]),y2:Y(k.stars[b][1]),class:"aline"}));});
+  const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+  k.stars.forEach((s,i)=>{const isDet=i===k.det,isBright=s[2]<1.6;const g=el("g",{});
+    g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?LC[k.lord]:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+    const lbl=shortLbl(s[4])||(isDet?s[4]:"");
+    if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}
+    dsky.appendChild(g);});
+  // description
+  const L=LORDBY[k.lord],gn=window.NGANA[k.gana];
+  document.getElementById("mdesc").innerHTML=
+    `<h3><span class="z sa" style="font-size:24px">${k.sa}</span> <span style="color:var(--gold)">${k.iast}</span></h3>
+     <p class="mean">${k.dEN}</p>
+     <p class="fact"><b>Meaning:</b> "${k.en}" · <b>Junction star:</b> <span style="color:var(--white)">${k.stars[k.det][4]}</span></p>
+     <p class="fact"><span class="pill" style="border-color:${L.col};color:${L.col}">◉ ${L.en}</span>
+       <span class="pill" style="border-color:${gn.col};color:${gn.col}">${gn.en} gaṇa</span>
+       <span class="pill">${k.nstars} star${k.nstars>1?"s":""}</span></p>
+     <p class="fact"><b>Deity:</b> ${k.deity} <span style="color:var(--mute)">— ${k.deityEn}</span></p>
+     <p class="fact"><b>Symbol:</b> ${k.symbol}</p>`;
+  // Chinese cross-reference
+  const cc=document.getElementById("mdesc");
+  let ch=window.chineseStarAt?window.chineseStarAt(k.stars[k.det][0],k.stars[k.det][1]):null;
+  const cx=document.createElement("div");
+  if(ch){cx.className="chinacross";cx.innerHTML=`🐉 <b>In the Chinese sky</b>, this same star (${ch.west}) sits in the <b class="sa">${ch.mzh}</b> mansion${ch.men?" ("+ch.men+")":""} — the Chinese name for it is <span class="sa">${ch.cn}</span>. <a href="chinese-sky.html" style="color:var(--cyan)">See it →</a>`;}
+  else{cx.className="chinacross";cx.style.borderLeftColor="#41527e";cx.innerHTML=`🐉 This nakshatra's junction star lies outside the 28 Chinese mansions (it sits well off the Chinese equatorial belt).`;}
+  cc.appendChild(cx);
+  // pada / rasi placement
+  const startLon=(k.n-1)*window.NAK_SPAN;
+  const signStart=Math.floor(startLon/30),signEnd=Math.floor((startLon+window.NAK_SPAN-0.001)/30);
+  const signs=signStart===signEnd?RASHI[signStart].en:`${RASHI[signStart].en}–${RASHI[signEnd].en}`;
+  const pz=document.createElement("p");pz.className="fact";pz.style.marginTop="8px";
+  pz.innerHTML=`<b>Sidereal zodiac:</b> ${signStart*30}°–${(startLon+window.NAK_SPAN).toFixed(1)}° · sign(s) ${signs}`;
+  cc.appendChild(pz);
+  // star table
+  const dt=document.getElementById("dtbody");dt.innerHTML="";
+  k.stars.forEach((s,i)=>{const tr=document.createElement("tr");if(i===k.det)tr.classList.add("hl");
+    tr.innerHTML=`<td style="width:18px">${i===k.det?'<span class="swatch" style="background:'+LC[k.lord]+'"></span>':''}</td>
+      <td class="west">${s[4]}${i===k.det?' <span class="rom">· junction</span>':''}</td>
+      <td class="num">mag ${s[2].toFixed(1)}</td>`;dt.appendChild(tr);});}
+
+/* ---------- RASI framework ---------- */
+const rasiSvg=document.getElementById("rasi");
+const RCX=230,RCY=230,rrOut=200,rrIn=118;
+let selRasi=0;
+function rpolar(r,deg){const a=(deg-90)*Math.PI/180;return[RCX+r*Math.cos(a),RCY+r*Math.sin(a)];}
+function arcPath(r,a1,a2){const[x1,y1]=rpolar(r,a1),[x2,y2]=rpolar(r,a2),large=((a2-a1+360)%360)>180?1:0;return`M${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2}`;}
+function drawRasi(){rasiSvg.innerHTML="";
+  // 12 sign wedges
+  for(let j=0;j<12;j++){const a1=j*30,a2=(j+1)*30,on=selRasi===j,r=RASHI[j];
+    const[ox1,oy1]=rpolar(rrOut,a1),[ox2,oy2]=rpolar(rrOut,a2),[ix2,iy2]=rpolar(rrIn,a2),[ix1,iy1]=rpolar(rrIn,a1);
+    const p=el("path",{d:`M${ox1} ${oy1} A${rrOut} ${rrOut} 0 0 1 ${ox2} ${oy2} L${ix2} ${iy2} A${rrIn} ${rrIn} 0 0 0 ${ix1} ${iy1} Z`,
+      fill:LC[r.lord],stroke:"#0b1733","stroke-width":1.2,opacity:on?.9:.32});
+    p.style.cursor="pointer";p.addEventListener("click",()=>openRasi(j));rasiSvg.appendChild(p);
+    const[mx,my]=rpolar((rrOut+rrIn)/2,(a1+a2)/2);
+    const t=el("text",{x:mx,y:my,"text-anchor":"middle","dominant-baseline":"central","font-size":11,"font-weight":700,fill:"#0b1733"});t.textContent=r.iast;t.style.pointerEvents="none";rasiSvg.appendChild(t);}
+  // nakshatra ticks + numbers on the outer rim
+  NAK.forEach((k,i)=>{const lonMid=i*window.NAK_SPAN+window.NAK_SPAN/2;const on=(Math.floor(i*window.NAK_SPAN/30)===selRasi)||(Math.floor((i*window.NAK_SPAN+window.NAK_SPAN-0.01)/30)===selRasi);
+    const[a,b]=rpolar(rrOut,lonMid),[c,d]=rpolar(rrOut+9,lonMid);
+    rasiSvg.appendChild(el("line",{x1:a,y1:b,x2:c,y2:d,stroke:LC[k.lord],"stroke-width":on?2:1,opacity:on?1:.55}));
+    const[lx,ly]=rpolar(rrOut+20,lonMid);const t=el("text",{x:lx,y:ly,"text-anchor":"middle","dominant-baseline":"central","font-size":9,fill:on?LC[k.lord]:"#7d8cb5"});t.textContent=k.n;rasiSvg.appendChild(t);}
+  );
+  const c1=el("text",{x:RCX,y:RCY-8,"text-anchor":"middle","dominant-baseline":"central",fill:"#f5c542","font-size":15,class:"sa"});c1.textContent="राशि";
+  const c2=el("text",{x:RCX,y:RCY+12,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});c2.textContent="12 signs · 27 stars";rasiSvg.appendChild(c1);rasiSvg.appendChild(c2);}
+const rpick=document.getElementById("rpick");
+function drawRpick(){rpick.innerHTML="";RASHI.forEach((r,j)=>{const d=document.createElement("div");d.className="rchip"+(selRasi===j?" active":"");d.style.borderLeftColor=LC[r.lord];
+  d.innerHTML=`<span class="z sa" style="color:${LC[r.lord]}">${r.sa}</span><span class="e">${r.iast}</span>`;
+  d.addEventListener("click",()=>openRasi(j));rpick.appendChild(d);});}
+function openRasi(j){selRasi=j;drawRpick();drawRasi();
+  document.querySelectorAll(".rchip").forEach((c,i)=>c.classList.toggle("active",i===j));
+  const r=RASHI[j],lo=j*30,hi=(j+1)*30;
+  // find nakshatras & padas overlapping
+  const parts=[];
+  for(let i=0;i<27;i++){const nlo=i*window.NAK_SPAN,nhi=nlo+window.NAK_SPAN;
+    if(nhi>lo+0.001&&nlo<hi-0.001){const k=NAK[i];
+      // which padas fall in this sign
+      const padas=[];for(let p=0;p<4;p++){const plo=nlo+p*window.NPADA_SPAN,phi=plo+window.NPADA_SPAN;if(phi>lo+0.001&&plo<hi-0.001)padas.push(p+1);}
+      parts.push(`<span class="pill" style="border-color:${LC[k.lord]};color:${LC[k.lord]}">${k.n}. ${k.iast} <span style="color:var(--mute)">p${padas.join(",")}</span></span>`);}}
+  document.getElementById("rdesc").innerHTML=
+    `<h3><span class="z sa" style="font-size:24px;color:${LC[r.lord]}">${r.sa}</span> <span style="color:var(--gold)">${r.iast}</span> <span style="color:var(--mute);font-size:14px">· ${r.en}</span></h3>
+     <p class="fact"><b>Sidereal span:</b> ${lo}°–${hi}° · <b>ruler:</b> ${LORDBY[r.lord].en}</p>
+     <p class="fact" style="margin-top:8px"><b>Nakshatra quarters (padas) inside this sign:</b></p>
+     <p style="margin:6px 0 0">${parts.join(" ")}</p>`;
+  document.getElementById("rcap").textContent=`${r.iast} (${r.en}) spans ${lo}°–${hi}° of the sidereal zodiac and contains about 2¼ nakshatras.`;}
+
+/* ---------- night ---------- */
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+
+/* ---------- init ---------- */
+document.getElementById("ayan").textContent=window.ayanamsa(new Date().getFullYear()).toFixed(1)+"°";
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawWheel();drawLords();drawStrip();drawCircle();drawTable();drawPicker();openNak(selNak);drawRpick();openRasi(0);
+document.getElementById("whint").textContent="The Moon's 27 homes, coloured by their nine ruling planets.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.lcard,.nchip,.rchip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["lords","npick","rpick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.lcard,.nchip,.rchip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>
