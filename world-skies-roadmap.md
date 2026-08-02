@@ -8,7 +8,7 @@
 
 Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 
-**Done so far:** Chinese (28 mansions) · Indian (27 nakshatras) · Malay / Nusantara (star-pictures + 12 buruj). **Next up (P1):** Aboriginal Australian.
+**Done so far:** Chinese (28 mansions) · Indian (27 nakshatras) · Malay / Nusantara (star-pictures + 12 buruj) · Babylonian (MUL.APIN + Three Paths + zodiac) · Ancient Egyptian (Sah/Sopdet + 36 decans). **Next up (P1):** Aboriginal Australian.
 
 ---
 
@@ -20,8 +20,8 @@ Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 | 2 | **Indian — Nakshatras (नक्षत्र)** | ✅ Done | Lunar mansions + 9 lords + 12 rāśi | 27 nakshatras | **High** — 21/27 junction stars shared with the 28 宿 | Full | Very high | — | — |
 | 3 | **Malay / Nusantara** | ✅ Done | Star-pictures + 12 buruj | 5 bintang + 12 buruj | High — shares stars w/ Chinese & Indian | Full | High (local roots) | — | — |
 | 4 | **Aboriginal Australian** | ⬜ Not started | Dark + bright constellations | ~10–15 headline figures | Low — new concept (dark dust lanes) | Good (southern MW) | Medium | Medium | **P1** |
-| 5 | **Mesopotamian / Babylonian (MUL.APIN)** | ⬜ Not started | Constellations / star list | ~66 in MUL.APIN | High — ancestor of Western figures | Full | Medium (historical) | Medium | P2 |
-| 6 | **Ancient Egyptian** | ⬜ Not started | Decans + figures | 36 decans + Sah/Sopdet etc. | Medium — Orion, Sirius, Big Dipper | Full | Medium (visual) | Med–High (uncertain IDs) | P2 |
+| 5 | **Mesopotamian / Babylonian (MUL.APIN)** | ✅ Done | Constellations (Three Paths) + zodiac | 18 figures + 12 signs | High — ancestor of Western figures | Full | Medium (historical) | — | — |
+| 6 | **Ancient Egyptian** | ✅ Done | Figures + 36 decans | 5 figures + 36 decans | Shares Orion, Sirius, Big Dipper, Draco | Full | Medium (visual) | — | — |
 | 7 | **Polynesian / Pacific wayfinding** | ⬜ Not started | Star compass + nav stars | 32-point compass, ~dozens | Good | Medium (maritime SEA) | Low–Med | Medium | P2 |
 | 8 | **Inca / Andean** | ⬜ Not started | Dark cloud + bright | ~half-dozen dark, several bright | Good (southern MW) | Low | Medium | P3 |
 | 9 | **Maya / Mesoamerican** | ⬜ Not started | Zodiac + Venus lore | ~13 zodiac figures (partial) | Full | Low | High (fragmentary) | P3 |
@@ -39,8 +39,8 @@ Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 
 **Tier 2 — strong, do after.**
 
-- **Mesopotamian (MUL.APIN)** — the historical ancestor of the Western constellations; a good "where our modern sky came from" story and a clean counterpoint to the independently-developed Chinese sky.
-- **Egyptian** — visually iconic (Nut, Sah/Orion, Sopdet/Sirius, the 36 decans); easy to make beautiful, though some decan star IDs are scholarly guesses.
+- ~~**Mesopotamian (MUL.APIN)**~~ ✅ **Done** — see the Babylonian Sky section below.
+- ~~**Egyptian**~~ ✅ **Done** — see the Egyptian Sky section below.
 - **Polynesian wayfinding** — a *functional* sky (navigation, not myth); ties to maritime Southeast Asia.
 
 **Tier 3 — nice to have / later.**
@@ -92,7 +92,23 @@ Two pages mirroring the pair, English-first with Rumi + Jawi names. Treated hone
 
 ---
 
-## Per-culture build playbook (proven on Chinese + Indian + Malay)
+## Babylonian Sky — what's done ✅ (built 2026-08-02)
+
+- ✅ **`babylonian-sky.html`** — intro; the **Three Paths** grouping (Enlil/Anu/Ea) with a declination-band diagram + path cards; strip/circle maps + Western overlay; 18 MUL.APIN figures; per-figure deep dive with **Chinese + Indian cross-links**; and the **12-sign zodiac** framework (Babylon → the world).
+- ✅ **`babylonian-tonight.html`** — dome, up/below tables, Three-Path chips, and the **sign the Sun stands in** (sidereal).
+- ✅ **`babylonian-sky-data.js`** — `BSKY` (18), `BPATH` (3), `BZODIAC` (12), `signOfLon`. Paths assigned by MUL.APIN's ±17° declination bands.
+- Notes: names in Sumerian/Akkadian transliteration; a few boundary figures sit in different paths in different copies of the tablet.
+
+## Egyptian Sky — what's done ✅ (built 2026-08-02)
+
+- ✅ **`egyptian-sky.html`** — intro (Nut, the two star-families); **Imperishable vs Unwearying** realms with a polar diagram + cards; maps + overlay; 5 figures (Sah/Orion, Sopdet/Sirius, Meskhetiu/UMa, Reret-Taweret/Draco, the Mooring-post); per-figure deep dive with cross-links; and the **36-decan** clock framework (origin of the 24-hour day).
+- ✅ **`egyptian-tonight.html`** — dome, up/below, realm chips, and a **Sopdet (Sirius) watch**.
+- ✅ **`egyptian-sky-data.js`** — `ESKY` (5), `EREALM` (2), `EMONTH`/decan helpers.
+- Notes: securely identified figures are few (the sky is known from art, not a star-list); Sah/Sopdet/Meskhetiu solid, Taweret & the northern group per the tomb ceilings; individual decan star-IDs uncertain, so decans shown as the timekeeping ring anchored on Sopdet.
+
+---
+
+## Per-culture build playbook (proven on Chinese + Indian + Malay + Babylonian + Egyptian)
 
 Order matters — data accuracy first, then the pages, then wiring, then tests.
 

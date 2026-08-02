@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="Which Ancient Egyptian sky-figures are above the horizon tonight from the Science Centre Observatory, Singapore — Sah (Orion), Meskhetiu (Big Dipper), Taweret (Draco) — and where Sopdet (Sirius) rides. Computed on-device.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Egyptian Sky Tonight — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.eg{font-style:italic;color:var(--cyan);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.ctrlbar{display:flex;align-items:center;gap:9px;margin-top:11px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex-wrap:wrap;}
+.datein,.timein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;}
+.datein::-webkit-calendar-picker-indicator,.timein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
+.daynote{font-size:12.5px;color:var(--mute);}
+#timeSlider{flex:1 1 100%;accent-color:var(--gold);height:8px;cursor:pointer;margin-top:6px;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 10px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.glance{font-size:clamp(15px,4.2vw,18px);line-height:1.5;}
+.glance b{color:var(--gold);}
+.forwhen{font-size:12.5px;color:var(--mute);margin-top:8px;}
+.almanac{margin-top:12px;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:11px;font-size:14px;}
+.almanac b{color:var(--gold);}.almanac .sub{font-size:12px;color:var(--mute);margin-top:4px;}
+.chips{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px;}
+.chip{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:10px 12px;background:var(--navy3);}
+.chip .z{font-size:14px;font-weight:700;}.chip .e{font-size:11px;color:var(--mute);}
+.chip .st{font-size:12.5px;margin-top:4px;font-weight:700;}
+.domewrap{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
+@media(min-width:820px){.domewrap{grid-template-columns:minmax(0,440px) minmax(0,1fr);}}
+#dome{width:100%;height:auto;display:block;max-width:440px;margin:0 auto;border-radius:12px;background:radial-gradient(circle at 50% 50%,#16224a 0%,#0b1220 78%);}
+.domehint{font-size:12px;color:var(--mute);text-align:center;margin:8px 0 0;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:9px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr.hl{background:#20345f;}
+.nm{font-size:14.5px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:2px;}
+.altbar{height:7px;border-radius:4px;background:#22305a;position:relative;min-width:54px;}
+.altbar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;}
+.dir{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.state{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.state.rise{background:rgba(95,211,138,.16);color:#9be9b8;}.state.set{background:rgba(255,107,107,.15);color:#ffb4b4;}
+.state.mer{background:rgba(245,197,66,.15);color:#f7d984;}
+.belowhead{margin:16px 0 0;font-size:12.5px;color:var(--mute);cursor:pointer;user-select:none;}
+.below tbody tr{opacity:.55;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+.domenote{font-size:13px;color:var(--white);text-align:center;margin:6px 0 0;padding:8px 11px;background:var(--navy3);border:1px solid var(--gold);border-radius:10px;line-height:1.45;}
+.domenote b{color:var(--gold);}
+#upBody tr,#belowBody tr{cursor:pointer;}#dome g[data-loc]{cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>𓇳 The Egyptian Sky Tonight</h1>
+      <div class="loc">Science Centre Observatory · which figures are up, and where Sopdet rides</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+    </div>
+    <div class="ctrlbar">
+      <input type="date" id="datePick" class="datein">
+      <input type="time" id="timePick" class="timein" value="20:30">
+      <button type="button" id="nextFri" class="btnmini">↺ Next Fri 8:30pm</button>
+      <button type="button" id="nowBtn" class="btnmini">● Now</button>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+      <span class="daynote" id="dayNote"></span>
+      <input type="range" id="timeSlider" min="0" max="1439" step="5" value="1230" aria-label="Time of night — drag to scrub through the night">
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="glance" id="glance">—</div>
+    <div class="forwhen" id="forWhen"></div>
+    <div class="almanac" id="almanac"></div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="card">
+    <h2>Tonight's sky <small>— looking up (N top, E left)</small></h2>
+    <div class="domewrap">
+      <div>
+        <svg id="dome" viewBox="-26 -26 352 352" role="img" aria-label="All-sky chart of the Egyptian figures above the horizon now"></svg>
+        <p class="domehint">Centre = overhead · rim = horizon · rings at 30° &amp; 60°. Gold = imperishable (never set), cyan = unwearying. ✦ = Sopdet (Sirius). <b>Tap a figure or row to pin it.</b></p>
+        <p class="domenote" id="domeNote" style="display:none"></p>
+      </div>
+      <div class="tablescroll">
+        <table>
+          <thead><tr><th>Figure</th><th>Marker star</th><th>Alt</th><th>Look</th><th>State</th></tr></thead>
+          <tbody id="upBody"></tbody>
+        </table>
+        <div class="belowhead" id="belowHead"></div>
+        <div class="tablescroll below" id="belowWrap" style="display:none"><table><tbody id="belowBody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="egyptian-sky.html">𓇳 What the figures mean</a>
+    <a href="chinese-tonight.html">🐉 Chinese sky tonight</a>
+    <a href="indian-tonight.html">🪷 Indian sky tonight</a>
+  </div>
+
+  <div class="foot">
+    <p>Altitudes and directions are computed on-device for SCOB (1.3342°N, 103.7357°E) at the chosen moment via the shared <code>astro-core.js</code> engine, so the page works offline. Each figure is listed by its brightest marker star and coloured by family — gold for the <b>Imperishable</b> (circumpolar) stars, cyan for the <b>Unwearying</b> (rising &amp; setting). <b>Sopdet</b> is the star Sirius; its dawn heliacal rising once heralded the Nile flood. See <a href="egyptian-sky.html">The Egyptian Sky</a> for the figures, the 36 decans and sources.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="chinese-sky-data.js"></script>
+<script src="egyptian-sky-data.js"></script>
+<script src="astro-core.js"></script>
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const ESKY=window.ESKY, EREALM=window.EREALM;
+const RORDER=["imperishable","unwearying"];
+const rc=f=>EREALM[f.realm].col;
+const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI;
+const rev=x=>((x%360)+360)%360;const pad=n=>String(n).padStart(2,"0");
+const WD_EN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function sgtNow(){const n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
+function nextFridayYMD(){const d=sgtNow();const dow=d.getDay();let add=(5-dow+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return{y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};}
+function jd(date){return date.getTime()/86400000+2440587.5;}
+const CMP=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];const compass=az=>CMP[Math.round(az/22.5)%16];
+let liveTimer=null, SEL=null, curLST=0;
+const MK=ESKY.map(f=>({n:f.n,name:f.name,eg:f.eg,en:f.en,realm:f.realm,west:f.west,ra:f.stars[f.det][0],dec:f.stars[f.det][1],mag:f.stars[f.det][2]}));
+const SIRIUS={ra:101.287,dec:-16.716};
+function altazOf(ra,dec,LST){let H=((LST-ra+540)%360)-180;const Hr=H*RAD,dr=dec*RAD,l=LAT*RAD;
+  const alt=Math.asin(Math.sin(dr)*Math.sin(l)+Math.cos(dr)*Math.cos(l)*Math.cos(Hr))*DEG;
+  const az=rev(Math.atan2(-Math.cos(dr)*Math.sin(Hr),Math.sin(dr)*Math.cos(l)-Math.cos(dr)*Math.sin(l)*Math.cos(Hr))*DEG);return{alt,az,H};}
+function computeLST(y,m,d,hh,mm){const utc=Date.UTC(y,m,d,hh-8,mm,0);return rev(280.46061837+360.98564736629*(jd(new Date(utc))-2451545.0)+LON);}
+
+const dome=document.getElementById("dome");const ZC=150,ZR=140;
+function domePos(az,alt){const r=(90-alt)/90*ZR;return[ZC-r*Math.sin(az*RAD),ZC-r*Math.cos(az*RAD)];}
+function drawDome(){dome.innerHTML="";
+  [ZR,ZR*2/3,ZR/3].forEach((r,i)=>dome.appendChild(el("circle",{cx:ZC,cy:ZC,r,fill:"none",stroke:i===0?"#3a4c86":"#26335c","stroke-width":i===0?1.4:1})));
+  dome.appendChild(el("circle",{cx:ZC,cy:ZC,r:1.6,fill:"#9fb0d6"}));
+  [["N",0],["E",90],["S",180],["W",270]].forEach(([lab,az])=>{const[x,y]=domePos(az,-7);const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":12,"font-weight":700});t.textContent=lab;dome.appendChild(t);});
+  ESKY.forEach(f=>{const c=rc(f);const pos=f.stars.map(s=>altazOf(s[0],s[1],curLST));
+    f.lines.forEach(([p,q])=>{if(pos[p].alt>0&&pos[q].alt>0){const[x1,y1]=domePos(pos[p].az,pos[p].alt),[x2,y2]=domePos(pos[q].az,pos[q].alt);dome.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.1,opacity:.8}));}});
+    f.stars.forEach((s,i)=>{if(pos[i].alt>0){const[x,y]=domePos(pos[i].az,pos[i].alt);dome.appendChild(el("circle",{cx:x,cy:y,r:Math.max(2.2,4.4-s[2]*0.45),fill:c,stroke:"#0b1733","stroke-width":.5}));}});
+    const mk=pos[f.det];if(mk.alt>0){const[x,y]=domePos(mk.az,mk.alt);const g=el("g",{});const t=el("text",{x,y:y-8,"text-anchor":"middle",fill:c,"font-size":9,"font-weight":700});t.textContent=f.name;g.appendChild(t);
+      g.setAttribute("data-loc","1");g.addEventListener("click",()=>locate(f.n,f.stars[f.det][0],f.stars[f.det][1]));dome.appendChild(g);}});
+  // Sopdet/Sirius star marker (part of Sah/decans but flag it specially)
+  const sa=altazOf(SIRIUS.ra,SIRIUS.dec,curLST);if(sa.alt>0){const[vx,vy]=domePos(sa.az,sa.alt);const g=el("g",{});
+    g.appendChild(el("path",{d:`M ${vx} ${vy-7} L ${vx+2} ${vy-2} L ${vx+7} ${vy-2} L ${vx+3} ${vy+1.5} L ${vx+4.5} ${vy+7} L ${vx} ${vy+3.5} L ${vx-4.5} ${vy+7} L ${vx-3} ${vy+1.5} L ${vx-7} ${vy-2} L ${vx-2} ${vy-2} Z`,fill:"#fff2c8",stroke:"#0b1733","stroke-width":.6}));
+    const t=el("text",{x:vx,y:vy-11,"text-anchor":"middle",fill:"#fff2c8","font-size":10,"font-weight":700});t.textContent="Sopdet";g.appendChild(t);dome.appendChild(g);}
+  if(SEL){const aa=altazOf(SEL.ra,SEL.dec,curLST);if(aa.alt>0){const[sx,sy]=domePos(aa.az,aa.alt);const ring=el("circle",{cx:sx,cy:sy,r:11,fill:"none",stroke:"#f5c542","stroke-width":2});
+    ring.appendChild(el("animate",{attributeName:"r",values:"9;15;9",dur:"1.4s",repeatCount:"indefinite"}));ring.appendChild(el("animate",{attributeName:"opacity",values:"1;.35;1",dur:"1.4s",repeatCount:"indefinite"}));dome.appendChild(ring);}}}
+function locate(n,ra,dec){const a=MK.find(x=>x.n===n);const same=SEL&&SEL.n===n;SEL=same?null:{n,ra:+ra,dec:+dec,name:a.name,en:a.en};drawDome();updateDomeNote();
+  if(SEL){const dEl=document.getElementById("dome");if(dEl&&dEl.scrollIntoView)dEl.scrollIntoView({behavior:"smooth",block:"center"});}}
+function updateDomeNote(){const e=document.getElementById("domeNote");if(!e)return;if(!SEL){e.style.display="none";return;}e.style.display="block";
+  const aa=altazOf(SEL.ra,SEL.dec,curLST);e.innerHTML=aa.alt>0?`📍 <b>${SEL.name}</b> (${SEL.en}) — ${aa.alt.toFixed(0)}° up in the ${compass(aa.az)}. Tap again to clear.`:`📍 <b>${SEL.name}</b> is below the horizon now — try a later time. Tap again to clear.`;}
+["upBody","belowBody"].forEach(id=>{const n=document.getElementById(id);if(n)n.addEventListener("click",function(e){const t=e.target.closest("[data-n]");if(!t)return;locate(+t.dataset.n,t.dataset.ra,t.dataset.dec);});});
+function stateOf(o){if(o.alt>=60)return["mer","near overhead"];if(Math.abs(o.H)<12)return["mer","near highest"];return o.H<0?["rise","rising · "+compass(o.az)]:["set","setting · "+compass(o.az)];}
+
+function render(y,m,d,hh,mm){
+  const LST=computeLST(y,m,d,hh,mm);curLST=LST;
+  MK.forEach(o=>{const aa=altazOf(o.ra,o.dec,LST);o.alt=aa.alt;o.az=aa.az;o.H=aa.H;});
+  const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();
+  document.getElementById("forWhen").textContent=`For ${WD_EN[wd]}, ${d} ${MON[m]} ${y} · ${(hh%12||12)}:${pad(mm)} ${hh<12?"am":"pm"} SGT`;
+  document.getElementById("dayNote").textContent=wd===5?"✓ Friday session night":"";
+  const up=MK.filter(o=>o.alt>0);
+  const g=document.getElementById("glance");
+  if(up.length){const sah=MK.find(o=>o.name==="Sah");
+    g.innerHTML=`Tonight <b>${up.length}</b> of the ${MK.length} Egyptian figures are up.${sah&&sah.alt>0?` <b>Sah</b> (Osiris/Orion) rides ${sah.alt.toFixed(0)}° up in the ${compass(sah.az)}.`:""}`;}
+  else g.innerHTML="None of the Egyptian figures are above the horizon at this moment.";
+  // Sopdet watch
+  const sa=altazOf(SIRIUS.ra,SIRIUS.dec,LST);
+  document.getElementById("almanac").innerHTML=`✦ <b>Sopdet watch</b> — ${sa.alt>0?`Sirius rides <b>${sa.alt.toFixed(0)}°</b> up in the ${compass(sa.az)}`:`Sirius is below the horizon now`}
+    <div class="sub">Sopdet — Isis, brightest star in the sky — is the herald of the Nile flood. Its return to the dawn sky each summer (its heliacal rising) began the Egyptian year, and it leads the 36 decans as the sky's great timekeeper.</div>`;
+  // realm chips
+  const chips=document.getElementById("chips");chips.innerHTML="";
+  RORDER.forEach(k=>{const r=EREALM[k],all=ESKY.filter(f=>f.realm===k),uu=all.filter(f=>{const o=MK.find(x=>x.n===f.n);return o.alt>0;});
+    const div=document.createElement("div");div.className="chip";div.style.borderLeftColor=r.col;
+    div.innerHTML=`<div class="z" style="color:${r.col}">${r.en}</div><div class="e">${k==="imperishable"?"never set":"rise & set"}</div>
+      <div class="st" style="color:${uu.length?'#e7ecf7':'#7d8cb5'}">${uu.length}/${all.length} up</div>`;chips.appendChild(div);});
+  // up table
+  const ub=document.getElementById("upBody");ub.innerHTML="";
+  up.sort((a,b)=>b.alt-a.alt).forEach(o=>{const[cls,txt]=stateOf(o);const w=Math.round(o.alt/90*100);const f=ESKY.find(x=>x.n===o.n);
+    const tr=document.createElement("tr");tr.dataset.n=o.n;tr.dataset.ra=o.ra;tr.dataset.dec=o.dec;
+    tr.innerHTML=`<td><span class="swatch" style="background:${rc(f)}"></span><span class="nm" style="color:${rc(f)}">${o.name}</span> <span class="rom">${o.en.replace(/ \(.*/,"").replace(/ —.*/,"")}</span></td>
+      <td class="west">${o.west.replace(/\s*\(.*/,"").replace(" (Big Dipper)","")}</td><td><div class="altbar"><i style="width:${w}%;background:${rc(f)}"></i></div><span class="rom">${o.alt.toFixed(0)}°</span></td>
+      <td class="dir">${compass(o.az)}</td><td><span class="state ${cls}">${txt}</span></td>`;ub.appendChild(tr);});
+  const below=MK.filter(o=>o.alt<=0).sort((a,b)=>b.alt-a.alt);
+  document.getElementById("belowHead").textContent=`▾ ${below.length} figure${below.length!==1?"s":""} below the horizon now`;
+  document.getElementById("belowBody").innerHTML=below.map(o=>{const f=ESKY.find(x=>x.n===o.n);return `<tr data-n="${o.n}" data-ra="${o.ra}" data-dec="${o.dec}"><td><span class="swatch" style="background:${rc(f)}"></span><span class="nm" style="color:${rc(f)}">${o.name}</span></td><td class="west">${o.west.replace(/\s*\(.*/,"")}</td><td class="rom">${o.alt.toFixed(0)}°</td></tr>`;}).join("");
+  drawDome();updateDomeNote();
+}
+
+let curY,curM,curD,curH,curMin;const timeSlider=document.getElementById("timeSlider");
+function syncSlider(hh,mm){timeSlider.value=hh*60+mm;}
+function readAndRender(){const dv=document.getElementById("datePick").value,tv=document.getElementById("timePick").value||"20:30";if(!dv)return;const p=dv.split("-").map(Number),t=tv.split(":").map(Number);curY=p[0];curM=p[1]-1;curD=p[2];curH=t[0];curMin=t[1];syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);}
+function stopLive(){if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
+timeSlider.addEventListener("input",()=>{stopLive();const v=+timeSlider.value,hh=Math.floor(v/60),mm=v%60;document.getElementById("timePick").value=`${pad(hh)}:${pad(mm)}`;curH=hh;curMin=mm;render(curY,curM,curD,hh,mm);});
+document.getElementById("datePick").addEventListener("change",()=>{stopLive();readAndRender();});
+document.getElementById("timePick").addEventListener("change",()=>{stopLive();readAndRender();});
+document.getElementById("nextFri").addEventListener("click",()=>{stopLive();const f=nextFridayYMD();document.getElementById("datePick").value=`${f.y}-${pad(f.m+1)}-${pad(f.d)}`;document.getElementById("timePick").value="20:30";readAndRender();});
+document.getElementById("nowBtn").addEventListener("click",()=>{const n=sgtNow();document.getElementById("datePick").value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;document.getElementById("timePick").value=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+  curY=n.getFullYear();curM=n.getMonth();curD=n.getDate();curH=n.getHours();curMin=n.getMinutes();syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);
+  stopLive();liveTimer=setInterval(()=>{const t=sgtNow();document.getElementById("timePick").value=`${pad(t.getHours())}:${pad(t.getMinutes())}`;curY=t.getFullYear();curM=t.getMonth();curD=t.getDate();curH=t.getHours();curMin=t.getMinutes();syncSlider(curH,curMin);render(curY,curM,curD,curH,curMin);},60000);});
+document.getElementById("belowHead").addEventListener("click",()=>{const w=document.getElementById("belowWrap");w.style.display=w.style.display==="none"?"block":"none";});
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+const f0=nextFridayYMD();document.getElementById("datePick").value=`${f0.y}-${pad(f0.m+1)}-${pad(f0.d)}`;
+curY=f0.y;curM=f0.m;curD=f0.d;curH=20;curMin=30;render(f0.y,f0.m,f0.d,20,30);
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");const bh=document.getElementById("belowHead");if(bh){bh.setAttribute("tabindex","0");bh.setAttribute("role","button");}document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.id==="belowHead"){e.preventDefault();e.target.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>
