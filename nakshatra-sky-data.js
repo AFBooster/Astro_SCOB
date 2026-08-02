@@ -180,3 +180,13 @@ window.ayanamsa=function(year){ return 23.853 + 0.013969*(year-2000); };
 /* Sidereal longitude (deg) → {index 0..26, pada 1..4, frac 0..1 within the nakshatra}. */
 window.nakOfLon=function(sidLon){ var L=((sidLon%360)+360)%360; var i=Math.floor(L/window.NAK_SPAN);
   var within=L-i*window.NAK_SPAN; return {index:i, pada:Math.floor(within/window.NPADA_SPAN)+1, frac:within/window.NAK_SPAN}; };
+
+/* Lookup: given a star's J2000 RA/Dec, return the nakshatra whose junction/member star it is
+   (nearest within ~0.6°), else null. Mirrors window.chineseStarAt for cross-culture linking. */
+window.nakshatraStarAt=function(ra,dec){
+  if(!window.NAK||ra==null||dec==null)return null;var best=null,NAK=window.NAK;
+  for(var i=0;i<NAK.length;i++){var k=NAK[i];for(var j=0;j<k.stars.length;j++){var s=k.stars[j];
+    var dr=Math.abs(((s[0]-ra+540)%360)-180),dd=Math.abs(s[1]-dec);
+    if(dr<0.6&&dd<0.6){var d=dr*dr+dd*dd;if(!best||d<best.d)best={d:d,sa:k.sa,iast:k.iast,en:k.en,west:s[4],n:k.n,junction:j===k.det};}}}
+  return best;
+};

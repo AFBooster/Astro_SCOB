@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The Malay / Nusantara sky — the indigenous star-pictures (bintang) used for sea-navigation and the rice calendar, and the 12 buruj (zodiac). Cross-referenced with the Western sky, the Chinese mansions and the Indian nakshatras, in English with Rumi & Jawi names. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Malay Sky — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; --amber:#ffb454; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.jawi{font-family:"Noto Naskh Arabic","Traditional Arabic","Scheherazade New","Amiri",serif;direction:rtl;unicode-bidi:isolate;font-size:1.15em;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}
+.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:var(--cyan);}
+
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#compass{width:100%;height:auto;display:block;max-width:430px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.asts{display:flex;flex-direction:column;gap:9px;}
+.acard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);
+  border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.acard.active{background:#20345f;border-color:var(--gold);}
+.acard .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.acard .r{font-size:16px;font-weight:700;}
+.acard .j{font-size:16px;color:var(--mute);}
+.acard .meta{font-size:11.5px;color:var(--mute);margin-left:auto;}
+.acard .desc{font-size:12.5px;color:var(--mute);margin:6px 0 0;max-height:0;overflow:hidden;transition:max-height .25s;}
+.acard.active .desc{max-height:220px;}
+.uselegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--mute);margin:10px 0 0;justify-content:center;}
+.uselegend span{display:inline-flex;align-items:center;gap:5px;}
+.usedot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);
+  border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.dirlabel{text-anchor:middle;fill:var(--mute);font-size:11px;letter-spacing:.06em;}
+
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+@media(max-width:620px){.col-use{display:none;}}
+
+.apick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;}
+.achip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;
+  padding:7px 3px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.achip .r{font-size:11px;font-weight:700;line-height:1.15;}
+.achip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.2;opacity:.5;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}.mdesc h3 .r{color:var(--gold);}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.mdesc .fact b{color:var(--white);}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;}
+.cross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.cross.cn{border-left:4px solid #5fd38a;}.cross.in{border-left:4px solid #ff9d3c;}
+.cross b{color:#fff;}
+
+#buruj{width:100%;height:auto;max-width:470px;margin:0 auto;display:block;border-radius:12px;background-color:#0c1530;}
+.bpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.bpick{grid-template-columns:repeat(6,1fr);}}
+.bchip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:7px 4px;text-align:center;transition:.12s;}
+.bchip.active{border-color:var(--gold);background:#20345f;}
+.bchip .j{font-size:14px;}.bchip .e{font-size:9.5px;color:var(--mute);display:block;}
+
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="titlerow">
+      <h1>⛵ The Malay Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the star-pictures of the Nusantara &amp; the 12 buruj</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <!-- intro -->
+  <div class="card essay">
+    <p class="lede">The Malay world is a world of <b>sea and rice-field</b>, and its sky was read for two things above all: <b>finding your way</b> across the archipelago, and <b>knowing when to plant</b>. So the Nusantara sky is not a grid of mansions but a small set of vivid, useful <span class="term">star-pictures</span> — <span class="term">bintang</span> — remembered in stories and passed down by word of mouth.</p>
+    <p>A navigator learned that <b>Bintang Pari</b>, the stingray (the Southern Cross), points the way <b>south</b>; that <b>Bintang Biduk</b>, the boat (the Big Dipper), rides low in the <b>north</b>; and that <b>Bintang Belantik</b> (Orion) rises due <b>east</b>. A farmer watched <b>Bintang Tujuh</b> (the Pleiades) to time the rice.</p>
+    <p>Layered on top of this indigenous lore came the <b>buruj</b> — the twelve zodiac constellations, brought through Islamic almanac scholarship (<span class="term">ilmu falak</span>) with their Arabic names. In the traditional Malay <span class="term">taqwim</span> they mark the seasons and help find the <span class="term">qibla</span>.</p>
+    <p>Two more sights every Malay child knew: <b>Bima Sakti</b>, the glowing river of the <b>Milky Way</b>, named for the hero Bhima; and <b>Bintang Timur</b> / <b>Bintang Kejora</b> — bright <b>Venus</b>, the "eastern star" that heralds the dawn.</p>
+    <div class="callout">🐉🪷 <b>Same sky, three maps.</b> Where China drew <b>28 mansions</b> and India <b>27 nakshatras</b> along the Moon's path, the Malay world kept a handful of star-pictures for practical life — yet they share the very same stars. Each figure below shows its matching <a href="chinese-sky.html" style="color:var(--cyan)">Chinese mansion</a> and <a href="indian-sky.html" style="color:var(--cyan)">Indian nakshatra</a>.</div>
+  </div>
+
+  <!-- star compass -->
+  <div class="card">
+    <h2>The star compass <small>— mata angin · <span class="jawi">ماتا اڠين</span></small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Each star-picture sits at the compass bearing it marks for a navigator. Tap one to light it up on the compass, the sky map and the table. Colour = how it was used.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="compass" viewBox="-52 -52 504 504" role="img" aria-label="Malay star compass — the star-pictures placed by the direction they mark"></svg>
+        <p class="whint" id="whint"></p>
+        <div class="uselegend" id="uselegend"></div>
+      </div>
+      <div class="asts" id="asts"></div>
+    </div>
+  </div>
+
+  <!-- sky map -->
+  <div class="card">
+    <h2>The sky map — the star-pictures</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false">🌌 Overlay Western constellations</button></div>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 320" role="img" aria-label="Full-sky strip map of the Malay star-pictures"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the Malay star-pictures"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <!-- table -->
+  <div class="card">
+    <h2>Star-picture ↔ Western sky</h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr>
+          <th>Bintang</th><th>Western</th><th>Marks</th><th class="col-use">Used for</th><th>Stars</th>
+        </tr></thead>
+        <tbody id="tbodyM"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- deep dive -->
+  <div class="card">
+    <h2>Every star of a picture</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick a star-picture to see its full figure drawn over the real stars — with its story, and the Chinese mansions &amp; Indian nakshatras it shares.</p>
+    <div class="apick" id="apick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="Full figure of the selected star-picture"></svg></div>
+      <div>
+        <div class="mdesc" id="mdesc"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- buruj framework -->
+  <div class="card" id="burujCard">
+    <h2>The 12 Buruj — the zodiac <small>— <span class="jawi">بروج</span></small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The Arabic-Malay zodiac of the <span class="term">taqwim</span> almanac: twelve signs of 30° along the Sun's yearly path, each with its Arabic name. Tap one to read it.</p>
+    <div class="bpick" id="bpick"></div>
+    <div class="ddgrid">
+      <div>
+        <svg id="buruj" viewBox="-40 -40 540 540" role="img" aria-label="The 12 buruj around the ecliptic"></svg>
+        <p class="cap" id="bcap"></p>
+      </div>
+      <div>
+        <div class="mdesc" id="bdesc"></div>
+        <div class="callout" style="margin-top:12px">🌙 <b>Bintang &amp; buruj.</b> The indigenous <em>bintang</em> are what you actually see and steer by; the <em>buruj</em> are the scholarly zodiac used to reckon the calendar and the qibla. They meet in the sky — e.g. <b>Bintang Kala Jengking</b> (the scorpion) <em>is</em> the buruj <b>Al-'Aqrab</b>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="malay-tonight.html">⛵ Which star-pictures are up tonight?</a>
+    <a href="chinese-sky.html">🐉 The Chinese Sky</a>
+    <a href="indian-sky.html">🪷 The Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>Star-pictures are drawn from their brighter member stars to about <b>magnitude 5</b> (Jurong's practical city-sky limit) at Hipparcos J2000 positions. Identifications follow folk-astronomy studies of the Malay Peninsula and the wider Nusantara (Malay, Javanese &amp; Bugis traditions); names vary by region and are given in Rumi with the traditional <b>Jawi</b> script (spellings follow common orthography and may vary). The 12 <b>buruj</b> follow the Arabic zodiac used in the Malay <em>taqwim</em>. The Malay sky is a living oral tradition, not a fixed catalogue — this is a representative selection, not an exhaustive list. Shared-star links use the same coordinates as <a href="chinese-sky.html">The Chinese Sky</a> and <a href="indian-sky.html">The Indian Sky</a>. Live view: <a href="malay-tonight.html">The Malay Sky Tonight</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="malay-sky-data.js"></script>
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const MSKY=window.MSKY, MUSE=window.MUSE, MDIR=window.MDIR, MBURUJ=window.MBURUJ;
+const uc=a=>MUSE[a.use].col;
+let activeAst=null;
+const rev=x=>((x%360)+360)%360;
+const START_RA=45;   // strip RA origin
+// marker meta
+const DET=MSKY.map(a=>({n:a.n,rumi:a.rumi,jawi:a.jawi,en:a.en,west:a.west,use:a.use,az:a.az,dirRumi:a.dirRumi,dirEn:a.dirEn,
+  ra:a.stars[a.det][0],dec:a.stars[a.det][1],mag:a.stars[a.det][2],nstars:a.stars.length}));
+DET.forEach(d=>d.rs=rev(d.ra-START_RA));
+
+/* ---------- STAR COMPASS ---------- */
+const compass=document.getElementById("compass");
+const CX=200,CY=200,ROSE=150;
+const cpt=(r,azdeg)=>{const a=(azdeg-90)*Math.PI/180;return[CX+r*Math.cos(a),CY+r*Math.sin(a)];};
+function drawCompass(){compass.innerHTML="";
+  compass.appendChild(el("circle",{cx:CX,cy:CY,r:ROSE,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  compass.appendChild(el("circle",{cx:CX,cy:CY,r:ROSE*0.55,fill:"none",stroke:"#22305a","stroke-width":1,"stroke-dasharray":"3 4"}));
+  // 8 spokes + labels
+  MDIR.forEach(d=>{const[x,y]=cpt(ROSE,d.az),[lx,ly]=cpt(ROSE+26,d.az);
+    compass.appendChild(el("line",{x1:CX,y1:CY,x2:x,y2:y,stroke:"#26335c","stroke-width":d.az%90===0?1.2:0.7,opacity:.7}));
+    const t=el("text",{x:lx,y:ly,class:"dirlabel","dominant-baseline":"central"});
+    t.textContent=d.az%90===0?d.rumi+" "+(d.en[0]):d.rumi;t.setAttribute("font-size",d.az%90===0?11:9);compass.appendChild(t);});
+  compass.appendChild(el("circle",{cx:CX,cy:CY,r:2.4,fill:"#9fb0d6"}));
+  // asterisms placed by bearing
+  DET.forEach(m=>{const on=!activeAst||activeAst===m.rumi;const[x,y]=cpt(ROSE*0.72,m.az);
+    const g=el("g",{});g.style.cursor="pointer";
+    g.appendChild(el("circle",{cx:x,cy:y,r:on?8:5,fill:uc(MSKY.find(a=>a.rumi===m.rumi)),stroke:"#0b1733","stroke-width":1,opacity:on?1:.25}));
+    const t=el("text",{x:x,y:y-13,"text-anchor":"middle","font-size":10,"font-weight":700,fill:uc(MSKY.find(a=>a.rumi===m.rumi)),opacity:on?1:.25});
+    t.textContent=m.rumi.replace("Bintang ","");g.appendChild(t);
+    g.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${m.rumi} — ${m.en} · marks ${m.dirRumi} (${m.dirEn})`;});
+    g.addEventListener("click",()=>setAst(m.rumi));compass.appendChild(g);});
+  const c=el("text",{x:CX,y:CY+ROSE*0.55+2,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});
+  c.textContent="";compass.appendChild(c);}
+function drawLegend(){const box=document.getElementById("uselegend");box.innerHTML="";
+  Object.keys(MUSE).forEach(k=>{const u=MUSE[k];const s=document.createElement("span");
+    s.innerHTML=`<span class="usedot" style="background:${u.col}"></span>${u.rumi} · ${u.en}`;box.appendChild(s);});}
+
+const abox=document.getElementById("asts");
+function drawCards(){abox.innerHTML="";MSKY.forEach(a=>{const d=document.createElement("div");
+  d.className="acard"+(activeAst===a.rumi?" active":"");d.dataset.k=a.rumi;d.style.borderLeftColor=uc(a);
+  d.innerHTML=`<div class="top"><span class="r" style="color:${uc(a)}">${a.rumi}</span><span class="j jawi">${a.jawi}</span>
+    <span class="meta">${a.dirRumi} · ${MUSE[a.use].en}</span></div>
+    <div class="desc">${a.en} — ${a.dEN}</div>`;
+  d.addEventListener("click",()=>setAst(a.rumi));abox.appendChild(d);});}
+
+/* ---------- STRIP + CIRCLE (draw full figures) ---------- */
+const strip=document.getElementById("strip");
+const SW=980,SH=320,mL=44,mR=14,mT=18,mB=30;
+let SDMIN=-70,SDMAX=70,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+function drawWestern(){if(!window.WCONST)return;
+  window.WCONST.forEach(c=>{const stars=c[1],lines=c[2];
+    lines.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-START_RA)),x2=sx(rev(stars[b][0]-START_RA));
+      if(Math.abs(x1-x2)>SW*0.5)return;
+      strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.7}));});
+    stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.3,fill:"#8fa0c8",opacity:.8})));
+    const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-START_RA)),0)/stars.length, cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+    const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});}
+const srad=m=>Math.max(2,5.6-m*0.7);
+function drawStrip(){strip.innerHTML="";
+  if(westOverlay)drawWestern();
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  MSKY.forEach(a=>{const on=!activeAst||activeAst===a.rumi,c=uc(a);
+    a.lines.forEach(([p,q])=>{const x1=sx(rev(a.stars[p][0]-START_RA)),x2=sx(rev(a.stars[q][0]-START_RA));
+      if(Math.abs(x1-x2)>SW*0.5)return;
+      strip.appendChild(el("line",{x1,y1:sy(a.stars[p][1]),x2,y2:sy(a.stars[q][1]),stroke:c,"stroke-width":1.4,opacity:on?.7:.12}));});
+    a.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14})));
+    const m=DET.find(d=>d.rumi===a.rumi);const g=el("g",{});g.style.cursor="pointer";
+    const t=el("text",{x:sx(m.rs),y:sy(m.dec)-srad(m.mag)-4,"text-anchor":"middle",class:"nm",fill:c,"font-size":11,opacity:on?1:.16});
+    t.textContent=a.rumi.replace("Bintang ","");g.appendChild(t);
+    g.addEventListener("click",()=>{openAst(a.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    strip.appendChild(g);});}
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=26;
+const rr=dec=>rIn+((70-dec)/140)*(rOut-rIn);
+const cang=ra=>rev(ra-START_RA)-90;
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  const eqt=el("text",{x:OCX,y:OCY-rr(0)+11,"text-anchor":"middle",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";circle.appendChild(eqt);
+  MSKY.forEach(a=>{const on=!activeAst||activeAst===a.rumi,c=uc(a);
+    a.lines.forEach(([p,q])=>{const[x1,y1]=cpolar(rr(a.stars[p][1]),cang(a.stars[p][0])),[x2,y2]=cpolar(rr(a.stars[q][1]),cang(a.stars[q][0]));
+      circle.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.3,opacity:on?.65:.12}));});
+    a.stars.forEach(s=>{const[x,y]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:x,cy:y,r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14}));});
+    const m=DET.find(d=>d.rumi===a.rumi);const[lx,ly]=cpolar(rr(m.dec),cang(m.ra));
+    const t=el("text",{x:lx,y:ly-srad(m.mag)-4,"text-anchor":"middle",fill:c,"font-size":10,opacity:on?1:.16});t.textContent=a.rumi.replace("Bintang ","");
+    const g=el("g",{});g.style.cursor="pointer";g.appendChild(t);g.addEventListener("click",()=>{openAst(a.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+
+function capReset(){document.getElementById("cap").textContent = (mapView==="circle")
+  ? "A star chart with the north pole at the centre. The Malay star-pictures drawn in full; colour shows how each was used. Tap one for its story."
+  : "The star-pictures across the whole sky. Tap one to open its story below.";}
+
+/* ---------- table ---------- */
+const tb=document.getElementById("tbodyM");
+function drawTable(){tb.innerHTML="";
+  MSKY.forEach(a=>{const tr=document.createElement("tr");tr.dataset.k=a.rumi;if(activeAst&&activeAst!==a.rumi)tr.classList.add("dim");
+    tr.innerHTML=`<td><span class="swatch" style="background:${uc(a)}"></span> <span class="nm" style="color:${uc(a)}">${a.rumi.replace("Bintang ","")}</span> <span class="jawi" style="color:var(--mute)">${a.jawi}</span><br><span class="rom">${a.en}</span></td>
+      <td class="west">${a.west}</td><td>${a.dirRumi} <span class="rom">(${a.dirEn})</span></td>
+      <td class="col-use" style="color:var(--mute);font-size:12px">${MUSE[a.use].en}</td><td>${a.nstars}</td>`;
+    tr.addEventListener("mouseenter",()=>hlRow(a.rumi,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+    tr.addEventListener("click",()=>{openAst(a.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});
+    tb.appendChild(tr);});}
+function hlRow(k,on){document.querySelectorAll("#tbodyM tr").forEach(tr=>tr.classList.toggle("hl",on&&tr.dataset.k===k));}
+
+function setAst(k){activeAst=activeAst===k?null:k;drawCompass();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".acard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeAst));
+  const a=activeAst?MSKY.find(x=>x.rumi===activeAst):null;
+  document.getElementById("whint").textContent=a?`${a.rumi} — ${a.en} · marks ${a.dirRumi} (${a.dirEn}) · ${MUSE[a.use].en}`:"Five star-pictures, placed by the compass bearing each one marks.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+document.getElementById("westToggle").addEventListener("click",function(){
+  westOverlay=!westOverlay;this.classList.toggle("active",westOverlay);this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay&&mapView!=="strip"){mapView="strip";
+    document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+    document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+  drawStrip();
+  document.getElementById("cap").innerHTML=westOverlay
+    ?"🌌 Western constellations (grey) behind the Malay star-pictures (coloured) — the same stars, seen two ways."
+    :"";if(!westOverlay)capReset();});
+
+/* ---------- DEEP DIVE ---------- */
+const apick=document.getElementById("apick");
+let selAst=1;
+function drawPicker(){apick.innerHTML="";MSKY.forEach(a=>{const d=document.createElement("div");
+  d.className="achip"+(selAst===a.n?" active":"");d.dataset.n=a.n;d.style.borderLeftColor=uc(a);
+  d.innerHTML=`<div class="r" style="color:${uc(a)}">${a.rumi.replace("Bintang ","")}</div>`;
+  d.addEventListener("click",()=>openAst(a.n));apick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openAst(n){selAst=n;drawPicker();
+  document.querySelectorAll(".achip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const a=MSKY.find(x=>x.n===n),c=uc(a);
+  const ras=a.stars.map(s=>s[0]),decs=a.stars.map(s=>s[1]);
+  let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+  if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+  const dc0=Math.min(...decs),dc1=Math.max(...decs);
+  const padr=Math.max((ra1-ra0)*0.16,1.4),padd=Math.max((dc1-dc0)*0.16,1.4);
+  const W=460,H=360,pd=40,raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+  const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};
+  const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+  const rad=mg=>Math.max(2.4,6.5-mg*0.7);
+  dsky.innerHTML="";
+  a.lines.forEach(([p,q])=>{dsky.appendChild(el("line",{x1:X(a.stars[p][0]),y1:Y(a.stars[p][1]),x2:X(a.stars[q][0]),y2:Y(a.stars[q][1]),class:"aline"}));});
+  const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+  a.stars.forEach((s,i)=>{const isDet=i===a.det,isBright=s[2]<1.6;const g=el("g",{});
+    g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?c:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+    const lbl=shortLbl(s[4]);if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}
+    dsky.appendChild(g);});
+  // description
+  const u=MUSE[a.use];
+  document.getElementById("mdesc").innerHTML=
+    `<h3><span class="r" style="font-size:22px">${a.rumi}</span> <span class="jawi" style="color:var(--mute)">${a.jawi}</span></h3>
+     <p class="mean">${a.dEN}</p>
+     <p class="fact"><span class="pill" style="border-color:${c};color:${c}">${u.en}</span>
+       <span class="pill">marks ${a.dirRumi} · ${a.dirEn}</span>
+       <span class="pill">${a.west}</span></p>`;
+  const box=document.getElementById("mdesc");
+  // cross-links: scan all stars for shared Chinese mansions + Indian nakshatras
+  const cn={},ind={};
+  a.stars.forEach(s=>{
+    if(window.chineseStarAt){const h=window.chineseStarAt(s[0],s[1]);if(h)cn[h.mzh]=(h.men||"");}
+    if(window.nakshatraStarAt){const h=window.nakshatraStarAt(s[0],s[1]);if(h)ind[h.iast]=h.west.replace(/\s*\(.*/,"");}
+  });
+  const cnKeys=Object.keys(cn),inKeys=Object.keys(ind);
+  const cnEl=document.createElement("div");cnEl.className="cross cn";
+  cnEl.innerHTML=cnKeys.length
+    ?`🐉 <b>Chinese sky:</b> shares stars with the ${cnKeys.map(k=>`<span class="jawi" style="font-family:inherit;direction:ltr">${k}</span>${cn[k]?" ("+cn[k]+")":""}`).join(", ")} mansion${cnKeys.length>1?"s":""}. <a href="chinese-sky.html" style="color:var(--cyan)">See →</a>`
+    :`🐉 <b>Chinese sky:</b> lies outside the 28 mansions (a far ${a.stars[a.det][1]>30?"northern":"southern"} figure, off the equatorial belt).`;
+  box.appendChild(cnEl);
+  const inEl=document.createElement("div");inEl.className="cross in";
+  inEl.innerHTML=inKeys.length
+    ?`🪷 <b>Indian sky:</b> shares stars with nakshatra ${inKeys.map(k=>`<b>${k}</b> (${ind[k]})`).join(", ")}. <a href="indian-sky.html" style="color:var(--cyan)">See →</a>`
+    :`🪷 <b>Indian sky:</b> lies off the nakshatra belt (the Moon's path), so it has no nakshatra.`;
+  box.appendChild(inEl);}
+
+/* ---------- BURUJ framework ---------- */
+const burujSvg=document.getElementById("buruj");
+const BCX=230,BCY=230,brOut=200,brIn=118;
+let selBuruj=0;
+function bpolar(r,deg){const a=(deg-90)*Math.PI/180;return[BCX+r*Math.cos(a),BCY+r*Math.sin(a)];}
+const BCOL="#c9a24b";
+function drawBuruj(){burujSvg.innerHTML="";
+  for(let j=0;j<12;j++){const a1=j*30,a2=(j+1)*30,on=selBuruj===j,b=MBURUJ[j];
+    const[ox1,oy1]=bpolar(brOut,a1),[ox2,oy2]=bpolar(brOut,a2),[ix2,iy2]=bpolar(brIn,a2),[ix1,iy1]=bpolar(brIn,a1);
+    const p=el("path",{d:`M${ox1} ${oy1} A${brOut} ${brOut} 0 0 1 ${ox2} ${oy2} L${ix2} ${iy2} A${brIn} ${brIn} 0 0 0 ${ix1} ${iy1} Z`,
+      fill:BCOL,stroke:"#0b1733","stroke-width":1.2,opacity:on?.9:.28});
+    p.style.cursor="pointer";p.addEventListener("click",()=>openBuruj(j));burujSvg.appendChild(p);
+    const[mx,my]=bpolar((brOut+brIn)/2,(a1+a2)/2);
+    const t=el("text",{x:mx,y:my,"text-anchor":"middle","dominant-baseline":"central","font-size":13,fill:"#0b1733",class:"jawi"});t.textContent=b.jawi;t.style.pointerEvents="none";burujSvg.appendChild(t);}
+  const c1=el("text",{x:BCX,y:BCY-8,"text-anchor":"middle","dominant-baseline":"central",fill:"#f5c542","font-size":16,class:"jawi"});c1.textContent="بروج";
+  const c2=el("text",{x:BCX,y:BCY+13,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});c2.textContent="12 signs";burujSvg.appendChild(c1);burujSvg.appendChild(c2);}
+const bpick=document.getElementById("bpick");
+function drawBpick(){bpick.innerHTML="";MBURUJ.forEach((b,j)=>{const d=document.createElement("div");d.className="bchip"+(selBuruj===j?" active":"");d.style.borderLeftColor=BCOL;
+  d.innerHTML=`<span class="j jawi">${b.jawi}</span><span class="e">${b.rumi}</span>`;
+  d.addEventListener("click",()=>openBuruj(j));bpick.appendChild(d);});}
+function openBuruj(j){selBuruj=j;drawBpick();drawBuruj();
+  document.querySelectorAll(".bchip").forEach((c,i)=>c.classList.toggle("active",i===j));
+  const b=MBURUJ[j],lo=j*30,hi=(j+1)*30;
+  // which Malay star-picture's marker falls in this sidereal sign
+  const ay=window.ayanamsa?window.ayanamsa(new Date().getFullYear()):24;
+  const inside=MSKY.filter(a=>{const s=a.stars[a.det];const sid=rev(window.eclLonOf(s[0],s[1])-ay);return window.burujOfLon(sid)===j;});
+  document.getElementById("bdesc").innerHTML=
+    `<h3><span class="jawi" style="font-size:26px;color:${BCOL}">${b.jawi}</span> <span style="color:var(--gold)">${b.rumi}</span></h3>
+     <p class="fact"><b>Meaning:</b> ${b.en} · <b>Western sign:</b> ${b.west} · <b>span</b> ${lo}°–${hi}° (sidereal)</p>
+     ${inside.length?`<p class="fact" style="margin-top:8px"><b>Malay star-picture here:</b> ${inside.map(a=>`<span class="pill" style="border-color:${uc(a)};color:${uc(a)}">${a.rumi}</span>`).join(" ")}</p>`:``}`;
+  document.getElementById("bcap").textContent=`${b.rumi} (${b.en}) — the buruj matching ${b.west}, spanning ${lo}°–${hi}° of the ecliptic.`;}
+
+/* ---------- night ---------- */
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+
+/* ---------- init ---------- */
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawCompass();drawLegend();drawCards();drawStrip();drawCircle();drawTable();drawPicker();openAst(selAst);drawBpick();openBuruj(0);
+document.getElementById("whint").textContent="Five star-pictures, placed by the compass bearing each one marks.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.acard,.achip,.bchip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["asts","apick","bpick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.acard,.achip,.bchip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

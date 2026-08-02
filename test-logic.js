@@ -133,6 +133,27 @@ section('Dashboard share-blurb generator (scob-dashboard-v3.html)');
   ok('applyNavFilter is exposed for the menu filter', typeof ctx.applyNavFilter === 'function', typeof ctx.applyNavFilter);
 })();
 
+/* ===================================================== culture pages are credited in About =====
+ * Release-hygiene guard: every "culture sky" feature (a `<x>-sky.html` explainer that also has a
+ * `<x>-tonight.html` live page) MUST be linked from about.html's credits, so the About & Credits
+ * page can never silently fall behind a release. Auto-discovers culture pages — add a new culture
+ * and this check will require its credit automatically, no edit here needed. */
+section('Culture pages are credited on the About page (about.html)');
+(function () {
+  const about = fs.readFileSync(path.join(DIR, 'about.html'), 'utf8');
+  const cultures = fs.readdirSync(DIR)
+    .filter(f => /^[a-z]+-sky\.html$/.test(f))
+    .map(f => f.replace('-sky.html', ''))
+    .filter(base => fs.existsSync(path.join(DIR, base + '-tonight.html')));  // has a live "tonight" sibling
+  ok('found culture pages to check', cultures.length > 0, cultures.join(', ') || 'none');
+  cultures.forEach(base => {
+    ok('about.html links ' + base + '-sky.html', about.includes(base + '-sky.html'),
+       'add a credit + link for ' + base + '-sky.html to about.html');
+    ok('about.html links ' + base + '-tonight.html', about.includes(base + '-tonight.html'),
+       'add a credit + link for ' + base + '-tonight.html to about.html');
+  });
+})();
+
 console.log('');
 if (fails) { console.error('\x1b[31m' + fails + ' logic check(s) FAILED — an interactive feature has regressed.\x1b[0m'); process.exit(1); }
 console.log('\x1b[32mAll interactive-logic checks passed.\x1b[0m');
