@@ -8,7 +8,7 @@
 
 Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 
-**Done so far:** Chinese (28 mansions) · Indian (27 nakshatras) · Malay / Nusantara (star-pictures + 12 buruj) · Babylonian (MUL.APIN + Three Paths + zodiac) · Ancient Egyptian (Sah/Sopdet + 36 decans). **Next up (P1):** Aboriginal Australian.
+**Done so far:** Chinese · Indian · Malay/Nusantara · Babylonian · Ancient Egyptian · Maya · Inca/Andean. **Next up (P1):** Aboriginal Australian (last flagged P1 — also a dark-constellation sky; the Inca renderer can be reused). **Remaining:** Polynesian wayfinding (P2); Greek (P3, skip/layer).
 
 ---
 
@@ -23,8 +23,8 @@ Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 | 5 | **Mesopotamian / Babylonian (MUL.APIN)** | ✅ Done | Constellations (Three Paths) + zodiac | 18 figures + 12 signs | High — ancestor of Western figures | Full | Medium (historical) | — | — |
 | 6 | **Ancient Egyptian** | ✅ Done | Figures + 36 decans | 5 figures + 36 decans | Shares Orion, Sirius, Big Dipper, Draco | Full | Medium (visual) | — | — |
 | 7 | **Polynesian / Pacific wayfinding** | ⬜ Not started | Star compass + nav stars | 32-point compass, ~dozens | Good | Medium (maritime SEA) | Low–Med | Medium | P2 |
-| 8 | **Inca / Andean** | ⬜ Not started | Dark cloud + bright | ~half-dozen dark, several bright | Good (southern MW) | Low | Medium | P3 |
-| 9 | **Maya / Mesoamerican** | ⬜ Not started | Zodiac + Venus lore | ~13 zodiac figures (partial) | Full | Low | High (fragmentary) | P3 |
+| 8 | **Inca / Andean** | ✅ Done | Dark-cloud + bright | 6 dark + 2 bright | Good (southern MW) | Low | — | — |
+| 9 | **Maya / Mesoamerican** | ✅ Done | Figures + Venus calendar | 5 figures + Venus | Full | Low | — | — |
 | 10 | **Greek / Ptolemaic** | ⬜ Not started | Constellations | 48 classical | **Very high** — ≈ modern Western | Full | Low (already the default sky) | Low | P3 (skip/layer) |
 
 ---
@@ -45,7 +45,7 @@ Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 
 **Tier 3 — nice to have / later.**
 
-- **Inca** (more dark constellations), **Maya** (fragmentary sources), and **Greek** — skip or just *layer* Greek myths onto the default Western sky already in `WCONST`, since it's essentially the modern sky.
+- ~~**Inca**~~ ✅ **Done** (the dark-constellation sky — see below) · ~~**Maya**~~ ✅ **Done** (see below) · **Greek** — skip or just *layer* Greek myths onto the default Western sky already in `WCONST`, since it's essentially the modern sky.
 
 ---
 
@@ -108,7 +108,22 @@ Two pages mirroring the pair, English-first with Rumi + Jawi names. Treated hone
 
 ---
 
-## Per-culture build playbook (proven on Chinese + Indian + Malay + Babylonian + Egyptian)
+## Maya Sky — what's done ✅ (built 2026-08-02)
+
+- ✅ **`maya-sky.html`** — intro; 3 themes (the First Hearth / the Sky Road / the Pivot) on a polar chart + cards; maps + overlay; 5 figures (Tzab/Pleiades, the Turtle & Three Hearthstones/Orion w/ M42, Sina'an/Scorpius, the Peccaries/Gemini, Xaman Ek'/Polaris); deep dive w/ Chinese+Indian cross-links; and a **Venus pentagram** framework (584-day cycle, 8-year 5-cycle resonance, Tzolk'in/Haab'/Calendar Round).
+- ✅ **`maya-tonight.html`** — dome, up/below, theme chips, and **Chak Ek' (Venus)** as morning/evening star (via `Astro.planetEq`).
+- ✅ **`maya-sky-data.js`** — `MAYA` (5), `MTHEME` (3), `MAYA_VENUS` constants.
+
+## Inca / Andean Sky — what's done ✅ (built 2026-08-02) — first dark-constellation culture
+
+- ✅ **`inca-sky.html`** — intro; 2 kinds (bright-star / **dark-cloud**) on a polar chart + cards; maps + overlay with a traced **Mayu** (Milky Way) band; 8 figures — bright Qullqa/Pleiades & Chakana/Crux, dark Yacana (Llama, eyes α/β Cen), Uñallamacha, Yutu (Coalsack), Hanp'atu, Atoq, Mach'acuay; deep dive (dark figures honestly show *no* Chinese/Indian counterpart); Mayu + Pleiades-calendar framework.
+- ✅ **`inca-tonight.html`** — dome that draws the dark clouds as shaded blobs where they stand, up/below, kind chips, and a **Yacana/Qullqa watch**.
+- ✅ **`inca-sky-data.js`** — `INCA` (8, mixed bright/dark), `IKIND` (2), `IMAYU` (Milky Way trace). **New dark-cloud renderer** (ellipse silhouettes + eye-stars) — reuse for Aboriginal Australian.
+- Notes: dark-cloud outlines/positions are approximate (vary by source); after Urton (1981).
+
+---
+
+## Per-culture build playbook (proven on 7 cultures: Chinese · Indian · Malay · Babylonian · Egyptian · Maya · Inca)
 
 Order matters — data accuracy first, then the pages, then wiring, then tests.
 

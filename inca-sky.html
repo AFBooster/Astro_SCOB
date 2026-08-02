@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The Inca / Andean sky — the bright-star figures (Qullqa the Pleiades, Chakana the Southern Cross) and the famous DARK cloud constellations of the Milky Way (Mayu): Yacana the Llama, Yutu the partridge, the Fox, the Serpent and the Toad. Cross-referenced with the Chinese mansions and Indian nakshatras. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Inca Sky — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; --dark:#b98cff; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.qu{font-style:italic;color:var(--cyan);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--dark);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:#cbb3ff;}
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#kinds{width:100%;height:auto;display:block;max-width:400px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.groups{display:flex;flex-direction:column;gap:9px;}
+.gcard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.gcard.active{background:#20345f;border-color:var(--gold);}
+.gcard .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.gcard .r{font-size:15px;font-weight:700;}.gcard .qu{font-size:12.5px;}
+.gcard .figs{font-size:11.5px;color:var(--mute);margin:5px 0 0;}
+.gcard .desc{font-size:12.5px;color:var(--mute);margin:5px 0 0;max-height:0;overflow:hidden;transition:max-height .25s;}
+.gcard.active .desc{max-height:200px;}
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.mayu{stroke:#6f7fbf;stroke-width:12;opacity:.14;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+.apick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.apick{grid-template-columns:repeat(8,1fr);}}
+.achip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:7px 3px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.achip .r{font-size:10px;font-weight:700;line-height:1.12;}
+.achip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.2;opacity:.5;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;}
+.cross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.cross.cn{border-left:4px solid #5fd38a;}.cross.in{border-left:4px solid #ff9d3c;}
+.cross.dk{border-left:4px solid var(--dark);}
+.cross b{color:#fff;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🦙 The Inca Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the bright stars &amp; the dark animals of Mayu</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">High in the Andes, the Inca read the sky in <b>two ways at once</b>. Like everyone, they joined bright stars into figures. But they also did something almost no other people did: they saw constellations in the <b>dark</b> — in the black dust-lanes that split the glowing band of the Milky Way.</p>
+    <p>That band was <b class="term">Mayu</b>, the celestial river. Into its dark pools came animals to drink, their silhouettes blotting out the light: <b>Yacana</b> the great Llama, her eyes the brilliant stars α and β Centauri; <b>Yutu</b> the partridge; the <b>Fox</b>, the <b>Toad</b> and the winding <b>Serpent</b>.</p>
+    <p>The bright figures mattered too — above all <b class="qu">Qullqa</b>, the Storehouse (our Pleiades), whose June appearance was studied each year to <b>forecast the rains and time the planting</b>; and <b class="qu">Chakana</b>, the Southern Cross, the most sacred shape in the Andes.</p>
+    <div class="callout">🌑 <b>A sky of shadows.</b> Dark-cloud constellations are the Inca's great gift to world astronomy. Because they have no bright stars, most have <b>no counterpart</b> in the star-based Chinese or Indian systems — you can only see them where the Milky Way rides high and dark, as it does from Singapore.</div>
+  </div>
+
+  <div class="card">
+    <h2>Two kinds of constellation <small>— light &amp; shadow</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Bright-star figures (gold) and the dark-cloud animals of the Milky Way (violet). Tap a kind to light up its figures on the map and table.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="kinds" viewBox="0 0 360 360" role="img" aria-label="Polar chart of the Inca bright and dark constellations along the Milky Way"></svg>
+        <p class="whint" id="whint"></p>
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The sky map — Mayu &amp; its figures</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false">🌌 Overlay Western constellations</button></div>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 340" role="img" aria-label="Full-sky strip map of the Inca figures along the Milky Way"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the Inca figures"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <div class="card">
+    <h2>Figure ↔ Western sky</h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr><th>Kind</th><th>Andean figure</th><th>Western</th><th></th></tr></thead>
+        <tbody id="tbodyI"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Every figure, up close</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick a figure to see it on the sky — bright figures drawn from their stars, dark ones as the shadow they cast on Mayu.</p>
+    <div class="apick" id="apick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="The selected Inca figure"></svg></div>
+      <div><div class="mdesc" id="mdesc"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mayu &amp; the harvest star <small>— reading the river &amp; the Pleiades</small></h2>
+    <div class="ddgrid">
+      <div>
+        <div class="mdesc">
+          <p class="mean"><b style="color:var(--gold)">Mayu, the celestial river.</b> The Inca saw the Milky Way as a great river that watered both sky and Earth. It runs at an angle across the heavens, and over a night and a year it wheels around, its dark animals rising and setting in a fixed order — a living calendar in shadow.</p>
+          <p class="fact"><b>Two rivers, one water.</b> The Inca believed the celestial Mayu and the earthly rivers were one system: the Sun, crossing the Milky Way, was thought to scoop up water and carry it round to fall again as rain.</p>
+          <p class="fact"><b>The harvest star.</b> Each June, farmers across the Andes still judge how bright and clear <b class="qu">Qullqa</b> (the Pleiades) looks at its dawn rising. A clear, bright cluster promises good rains and an early planting; a dim, hazy one warns of drought and a late one. Modern science has found the trick works — thin high cloud from El Niño years really does dim the Pleiades.</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout">🦙 <b>Yacana comes to drink.</b> At midnight in the wet season the dark Llama was said to descend and drink from the sea, keeping the world from flooding — then climb back into Mayu before dawn. Watch her rise on the <a href="inca-tonight.html" style="color:var(--cyan)">tonight page</a>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="inca-tonight.html">🦙 Which figures are up tonight?</a>
+    <a href="chinese-sky.html">🐉 Chinese Sky</a>
+    <a href="indian-sky.html">🪷 Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>Bright figures are drawn from their stars at Hipparcos J2000 positions. The <b>dark-cloud constellations</b> are shown as shaded silhouettes at the approximate positions of the Milky Way's dark nebulae — their exact outlines vary between sources; identifications follow Gary Urton, <i>At the Crossroads of the Earth and the Sky</i> (1981) and Andean ethnography. The Llama's eyes are the real stars α and β Centauri. Shared-star links use the same coordinates as <a href="chinese-sky.html">The Chinese Sky</a> and <a href="indian-sky.html">The Indian Sky</a>. Live view: <a href="inca-tonight.html">The Inca Sky Tonight</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="inca-sky-data.js"></script>
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const INCA=window.INCA, IKIND=window.IKIND, IMAYU=window.IMAYU;
+const KORDER=["bright","dark"];
+const kc=f=>IKIND[f.kind].col;
+let activeKind=null;
+const rev=x=>((x%360)+360)%360;
+const START_RA=90;
+// representative point per figure (marker star for bright, centroid for dark)
+const DET=INCA.map(f=>{const isB=f.kind==="bright";const ra=isB?f.stars[f.det][0]:f.cx,dec=isB?f.stars[f.det][1]:f.cy;
+  return {n:f.n,name:f.name,en:f.en,kind:f.kind,west:f.west,ra,dec,rs:rev(ra-START_RA)};});
+
+/* ---------- KINDS polar chart ---------- */
+const kinds=document.getElementById("kinds");
+const RCX=180,RCY=180,rOutR=162;
+const rrad=dec=>((35-dec)/(35-(-72)))*rOutR;   // dec +35 (centre) .. -72 (rim), southern sky
+const rpolar=(r,ra)=>{const a=(rev(ra-START_RA)-90)*Math.PI/180;return[RCX+r*Math.cos(a),RCY+r*Math.sin(a)];};
+function drawMayuPolar(svg,radFn,polFn){let d="";for(let i=0;i<IMAYU.length;i++){const[x,y]=polFn(radFn(IMAYU[i][1]),IMAYU[i][0]);d+=(i?" L ":"M ")+x+" "+y;}svg.appendChild(el("path",{d,class:"mayu"}));}
+function drawKinds(){kinds.innerHTML="";
+  kinds.appendChild(el("circle",{cx:RCX,cy:RCY,r:rOutR,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  drawMayuPolar(kinds,rrad,rpolar);
+  kinds.appendChild(el("circle",{cx:RCX,cy:RCY,r:rrad(0),fill:"none",class:"eqline"}));
+  const eqt=el("text",{x:RCX+rrad(0)-2,y:RCY-3,"text-anchor":"end",fill:"#7d8cb5","font-size":8});eqt.textContent="eq.";kinds.appendChild(eqt);
+  INCA.forEach(f=>{const on=!activeKind||activeKind===f.kind,c=kc(f);
+    if(f.kind==="dark"){const[x,y]=rpolar(rrad(f.cy),f.cx);
+      kinds.appendChild(el("ellipse",{cx:x,cy:y,rx:Math.max(5,f.rx*0.7),ry:Math.max(4,f.ry*0.9),fill:c,opacity:on?.22:.05,stroke:c,"stroke-dasharray":"3 3","stroke-opacity":on?.6:.15}));
+      if(f.eyes)f.eyes.forEach(s=>{const[ex,ey]=rpolar(rrad(s[1]),s[0]);kinds.appendChild(el("circle",{cx:ex,cy:ey,r:2.6,fill:"#fff",opacity:on?1:.2}));});}
+    else{f.lines.forEach(([p,q])=>{const[x1,y1]=rpolar(rrad(f.stars[p][1]),f.stars[p][0]),[x2,y2]=rpolar(rrad(f.stars[q][1]),f.stars[q][0]);kinds.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.1,opacity:on?.6:.1}));});
+      f.stars.forEach(s=>{const[x,y]=rpolar(rrad(s[1]),s[0]);kinds.appendChild(el("circle",{cx:x,cy:y,r:Math.max(2,4.4-s[2]*0.5),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.15}));});}
+    const[lx,ly]=rpolar(rrad(f.kind==="dark"?f.cy:f.stars[f.det][1]),f.kind==="dark"?f.cx:f.stars[f.det][0]);
+    const g=el("g",{});g.style.cursor="pointer";const t=el("text",{x:lx,y:ly-6,"text-anchor":"middle",fill:c,"font-size":8.5,"font-weight":700,opacity:on?1:.2});t.textContent=f.name;g.appendChild(t);
+    g.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${f.name} — ${f.en} · ${IKIND[f.kind].en}`;});
+    g.addEventListener("click",()=>setKind(f.kind));kinds.appendChild(g);});
+  kinds.appendChild(el("circle",{cx:RCX,cy:RCY,r:2.2,fill:"#9fb0d6"}));}
+const gbox=document.getElementById("groups");
+function drawGroups(){gbox.innerHTML="";KORDER.forEach(k=>{const r=IKIND[k],figs=INCA.filter(f=>f.kind===k);
+  const d=document.createElement("div");d.className="gcard"+(activeKind===k?" active":"");d.dataset.k=k;d.style.borderLeftColor=r.col;
+  d.innerHTML=`<div class="top"><span class="r" style="color:${r.col}">${r.en}</span> <span class="qu">${r.qu}</span></div>
+    <div class="figs">${figs.map(f=>f.name).join(" · ")}</div><div class="desc">${r.gloss}</div>`;
+  d.addEventListener("click",()=>setKind(k));gbox.appendChild(d);});}
+
+/* ---------- STRIP + CIRCLE ---------- */
+const strip=document.getElementById("strip");
+const SW=980,SH=340,mL=40,mR=14,mT=18,mB=30;
+let SDMIN=-72,SDMAX=35,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+function drawMayuStrip(){const segs=[];let cur=[];for(let i=0;i<IMAYU.length;i++){const x=sx(rev(IMAYU[i][0]-START_RA)),y=sy(IMAYU[i][1]);
+  if(cur.length){const px=cur[cur.length-1][0];if(Math.abs(x-px)>SW*0.5){segs.push(cur);cur=[];}}cur.push([x,y]);}if(cur.length)segs.push(cur);
+  segs.forEach(seg=>{if(seg.length<2)return;let d="M "+seg[0][0]+" "+seg[0][1];for(let i=1;i<seg.length;i++)d+=" L "+seg[i][0]+" "+seg[i][1];strip.appendChild(el("path",{d,class:"mayu"}));});}
+function drawWestern(){if(!window.WCONST)return;window.WCONST.forEach(c=>{const stars=c[1],lines=c[2];
+  lines.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-START_RA)),x2=sx(rev(stars[b][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.7}));});
+  stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.3,fill:"#8fa0c8",opacity:.8})));
+  const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-START_RA)),0)/stars.length,cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+  const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});}
+const srad=m=>Math.max(2,5.6-m*0.7);
+function drawStrip(){strip.innerHTML="";drawMayuStrip();if(westOverlay)drawWestern();
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  INCA.forEach(f=>{const on=!activeKind||activeKind===f.kind,c=kc(f);
+    if(f.kind==="dark"){const cxp=sx(rev(f.cx-START_RA)),cyp=sy(f.cy);
+      const rxp=(f.rx/360)*(SW-mL-mR),ryp=(f.ry/(SDMAX-SDMIN))*(SH-mT-mB);
+      strip.appendChild(el("ellipse",{cx:cxp,cy:cyp,rx:rxp,ry:ryp,fill:c,opacity:on?.20:.05,stroke:c,"stroke-dasharray":"4 3","stroke-opacity":on?.55:.12}));
+      if(f.eyes)f.eyes.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:"#fff",stroke:"#0b1733","stroke-width":.5,opacity:on?1:.15})));
+      const t=el("text",{x:cxp,y:cyp,"text-anchor":"middle","dominant-baseline":"central",fill:c,"font-size":10,"font-weight":700,opacity:on?.95:.16});t.textContent=f.name;strip.appendChild(t);}
+    else{f.lines.forEach(([p,q])=>{const x1=sx(rev(f.stars[p][0]-START_RA)),x2=sx(rev(f.stars[q][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(f.stars[p][1]),x2,y2:sy(f.stars[q][1]),stroke:c,"stroke-width":1.3,opacity:on?.65:.12}));});
+      f.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14})));
+      const m=f.stars[f.det];const t=el("text",{x:sx(rev(m[0]-START_RA)),y:sy(m[1])-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":10,opacity:on?1:.16});t.textContent=f.name;strip.appendChild(t);}
+    // click target
+    const d=DET.find(x=>x.n===f.n);const g=el("g",{});g.style.cursor="pointer";g.appendChild(el("rect",{x:sx(d.rs)-14,y:sy(d.dec)-10,width:28,height:20,fill:"transparent"}));
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});strip.appendChild(g);});}
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=14;
+const rr=dec=>rIn+((35-dec)/107)*(rOut-rIn);
+const cang=ra=>rev(ra-START_RA)-90;
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  drawMayuPolar(circle,rr,cpolar);
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  INCA.forEach(f=>{const on=!activeKind||activeKind===f.kind,c=kc(f);
+    if(f.kind==="dark"){const[x,y]=cpolar(rr(f.cy),cang(f.cx));
+      circle.appendChild(el("ellipse",{cx:x,cy:y,rx:Math.max(6,f.rx*0.9),ry:Math.max(5,f.ry*1.1),fill:c,opacity:on?.2:.05,stroke:c,"stroke-dasharray":"4 3","stroke-opacity":on?.55:.12}));
+      if(f.eyes)f.eyes.forEach(s=>{const[ex,ey]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:ex,cy:ey,r:srad(s[2]),fill:"#fff",stroke:"#0b1733","stroke-width":.5,opacity:on?1:.15}));});
+      const t=el("text",{x:x,y:y,"text-anchor":"middle","dominant-baseline":"central",fill:c,"font-size":9,"font-weight":700,opacity:on?.95:.16});t.textContent=f.name;circle.appendChild(t);}
+    else{f.lines.forEach(([p,q])=>{const[x1,y1]=cpolar(rr(f.stars[p][1]),cang(f.stars[p][0])),[x2,y2]=cpolar(rr(f.stars[q][1]),cang(f.stars[q][0]));circle.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.2,opacity:on?.6:.1}));});
+      f.stars.forEach(s=>{const[x,y]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:x,cy:y,r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14}));});
+      const m=f.stars[f.det];const[lx,ly]=cpolar(rr(m[1]),cang(m[0]));const t=el("text",{x:lx,y:ly-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":9,opacity:on?1:.16});t.textContent=f.name;circle.appendChild(t);}
+    const d=DET.find(x=>x.n===f.n);const[gx,gy]=cpolar(rr(d.dec),cang(d.ra));const g=el("g",{});g.style.cursor="pointer";g.appendChild(el("circle",{cx:gx,cy:gy,r:12,fill:"transparent"}));
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+function capReset(){document.getElementById("cap").textContent=(mapView==="circle")
+  ?"North pole at the centre; the faint band is Mayu, the Milky Way. Gold = bright figures, violet shadows = the dark-cloud animals. Tap one for its story."
+  :"The Inca figures along Mayu, the celestial river. Dark animals are shown as violet shadows. Tap one for its story.";}
+
+const tb=document.getElementById("tbodyI");
+function drawTable(){tb.innerHTML="";KORDER.forEach(k=>{INCA.filter(f=>f.kind===k).forEach(f=>{const tr=document.createElement("tr");tr.dataset.n=f.n;if(activeKind&&activeKind!==f.kind)tr.classList.add("dim");
+  tr.innerHTML=`<td><span class="swatch" style="background:${kc(f)}"></span> <span class="rom">${f.kind==="dark"?"dark":"bright"}</span></td>
+    <td><span class="nm" style="color:${kc(f)}">${f.name}</span><br><span class="rom">${f.en}</span></td>
+    <td class="west">${f.west}</td><td class="rom">${f.kind==="dark"?"dark cloud":f.stars.length+" ★"}</td>`;
+  tr.addEventListener("mouseenter",()=>hlRow(f.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+  tr.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});tb.appendChild(tr);});});}
+function hlRow(n,on){document.querySelectorAll("#tbodyI tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+function setKind(k){activeKind=activeKind===k?null:k;drawKinds();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".gcard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeKind));
+  document.getElementById("whint").textContent=activeKind?IKIND[activeKind].gloss:"Two kinds of figure: bright stars, and the dark clouds of Mayu.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+document.getElementById("westToggle").addEventListener("click",function(){westOverlay=!westOverlay;this.classList.toggle("active",westOverlay);this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay&&mapView!=="strip"){mapView="strip";document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+  drawStrip();document.getElementById("cap").innerHTML=westOverlay?"🌌 Western constellations (grey) over Mayu and the Inca figures — see how the dark animals lie along the Milky Way, between the bright Greek figures.":"";if(!westOverlay)capReset();});
+
+/* ---------- DEEP DIVE ---------- */
+const apick=document.getElementById("apick");let selFig=6;
+function drawPicker(){apick.innerHTML="";INCA.forEach(f=>{const d=document.createElement("div");d.className="achip"+(selFig===f.n?" active":"");d.dataset.n=f.n;d.style.borderLeftColor=kc(f);
+  d.innerHTML=`<div class="r" style="color:${kc(f)}">${f.name}</div>`;d.addEventListener("click",()=>openFig(f.n));apick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openFig(n){selFig=n;drawPicker();document.querySelectorAll(".achip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const f=INCA.find(x=>x.n===n),c=kc(f);const W=460,H=360,pd=44;dsky.innerHTML="";
+  if(f.kind==="dark"){
+    const ra0=f.cx-f.rx*1.5,ra1=f.cx+f.rx*1.5,dc0=f.cy-f.ry*1.5,dc1=f.cy+f.ry*1.5;
+    const X=ra=>pd+(ra1-ra)/(ra1-ra0)*(W-2*pd),Y=dec=>pd+(dc1-dec)/(dc1-dc0)*(H-2*pd);
+    const rxp=(f.rx)/(ra1-ra0)*(W-2*pd),ryp=(f.ry)/(dc1-dc0)*(H-2*pd);
+    dsky.appendChild(el("ellipse",{cx:X(f.cx),cy:Y(f.cy),rx:rxp,ry:ryp,fill:c,opacity:.22,stroke:c,"stroke-dasharray":"5 4","stroke-width":1.4}));
+    if(f.eyes)f.eyes.forEach(s=>{dsky.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:5,fill:"#fff",stroke:"#0b1733","stroke-width":.7}));
+      const t=el("text",{x:X(s[0])+8,y:Y(s[1])+3.5,class:"starlabel",fill:"#f5c542"});t.textContent=(s[4].match(/\(([^)]+)\)/)||[])[1]||s[4];dsky.appendChild(t);});
+    const lb=el("text",{x:X(f.cx),y:Y(f.cy),"text-anchor":"middle","dominant-baseline":"central",fill:c,"font-size":13,"font-weight":700});lb.textContent=f.name;dsky.appendChild(lb);
+  } else {
+    const ras=f.stars.map(s=>s[0]),decs=f.stars.map(s=>s[1]);let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+    if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+    const dc0=Math.min(...decs),dc1=Math.max(...decs);const padr=Math.max((ra1-ra0)*0.16,1.6),padd=Math.max((dc1-dc0)*0.16,1.6);
+    const raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+    const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+    const rad=mg=>Math.max(2.4,6.5-mg*0.7);
+    f.lines.forEach(([p,q])=>{dsky.appendChild(el("line",{x1:X(f.stars[p][0]),y1:Y(f.stars[p][1]),x2:X(f.stars[q][0]),y2:Y(f.stars[q][1]),class:"aline"}));});
+    const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+    f.stars.forEach((s,i)=>{const isDet=i===f.det,isBright=s[2]<1.6;const g=el("g",{});
+      g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?c:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+      const lbl=shortLbl(s[4]);if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}dsky.appendChild(g);});
+  }
+  document.getElementById("mdesc").innerHTML=`<h3 style="color:${c}">${f.name} <span class="rom" style="font-size:14px">${f.en}</span></h3>
+    <p class="mean">${f.dEN}</p><p class="fact"><span class="pill" style="border-color:${c};color:${c}">${IKIND[f.kind].en}</span><span class="pill">${f.west}</span></p>`;
+  const box=document.getElementById("mdesc");
+  if(f.kind==="dark"){const dk=document.createElement("div");dk.className="cross dk";
+    dk.innerHTML=(f.eyes?`🌑 A <b>dark-cloud constellation</b> — a shadow on the Milky Way, with no bright stars of its own except its ${f.eyes.length===2?"two eyes":"eye"}, α &amp; β&nbsp;Centauri.`:`🌑 A <b>dark-cloud constellation</b> — a shadow on the Milky Way, with no bright stars. This is why it has no counterpart in the star-based Chinese or Indian skies.`);box.appendChild(dk);
+    if(f.eyes){const cn={},ind={};f.eyes.forEach(s=>{const h=window.chineseStarAt&&window.chineseStarAt(s[0],s[1]);if(h)cn[h.mzh]=1;const nh=window.nakshatraStarAt&&window.nakshatraStarAt(s[0],s[1]);if(nh)ind[nh.iast]=1;});
+      if(!Object.keys(cn).length&&!Object.keys(ind).length){const e2=document.createElement("div");e2.className="cross";e2.style.borderLeftColor="#41527e";e2.innerHTML="Even its eyes (α/β Centauri) lie outside the Chinese mansions and Indian nakshatras — the far-southern sky Babylon and China never charted.";box.appendChild(e2);}}
+  } else {
+    const cn={},ind={};f.stars.forEach(s=>{if(window.chineseStarAt){const h=window.chineseStarAt(s[0],s[1]);if(h)cn[h.mzh]=h.men||"";}if(window.nakshatraStarAt){const h=window.nakshatraStarAt(s[0],s[1]);if(h)ind[h.iast]=h.west.replace(/\s*\(.*/,"");}});
+    const ck=Object.keys(cn),ik=Object.keys(ind);
+    const cnEl=document.createElement("div");cnEl.className="cross cn";
+    cnEl.innerHTML=ck.length?`🐉 <b>Chinese sky:</b> shares stars with the ${ck.map(k=>`<span style="font-family:inherit">${k}</span>${cn[k]?" ("+cn[k]+")":""}`).join(", ")} mansion${ck.length>1?"s":""}. <a href="chinese-sky.html" style="color:var(--cyan)">See →</a>`:`🐉 <b>Chinese sky:</b> outside the 28 mansions (a far-southern figure).`;box.appendChild(cnEl);
+    const inEl=document.createElement("div");inEl.className="cross in";
+    inEl.innerHTML=ik.length?`🪷 <b>Indian sky:</b> shares stars with nakshatra ${ik.map(k=>`<b>${k}</b> (${ind[k]})`).join(", ")}. <a href="indian-sky.html" style="color:var(--cyan)">See →</a>`:`🪷 <b>Indian sky:</b> off the nakshatra belt, so no nakshatra.`;box.appendChild(inEl);
+  }}
+
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawKinds();drawGroups();drawStrip();drawCircle();drawTable();drawPicker();openFig(selFig);
+document.getElementById("whint").textContent="Two kinds of figure: bright stars, and the dark clouds of Mayu.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.gcard,.achip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["groups","apick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.gcard,.achip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

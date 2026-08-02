@@ -1,5 +1,5 @@
 /* SCOB Night-Sky — service worker: offline cache so the installed app opens with no signal */
-const CACHE = 'scob-sky-v80';
+const CACHE = 'scob-sky-v81';
 const ASSETS = [
   'scob-dashboard-v3.html',
   'main.html',
@@ -48,6 +48,12 @@ const ASSETS = [
   'egyptian-sky.html',
   'egyptian-tonight.html',
   'egyptian-sky-data.js',
+  'maya-sky.html',
+  'maya-tonight.html',
+  'maya-sky-data.js',
+  'inca-sky.html',
+  'inca-tonight.html',
+  'inca-sky-data.js',
   'sky-data.js',
   'scale-model.html',
   'highlights-card.html',
