@@ -16,12 +16,17 @@
   function dS(date) { return jd(date) - 2451543.5; }
   function lstDeg(date) { var J = jd(date); return rev(280.46061837 + 360.98564736629 * (J - 2451545.0) + SCOB.LON); }
 
-  function altazAt(ra, dec, date) {
-    var H = (lstDeg(date) - ra) * RAD, dr = dec * RAD, l = SCOB.LAT * RAD;
-    var alt = Math.asin(Math.sin(dr) * Math.sin(l) + Math.cos(dr) * Math.cos(l) * Math.cos(H)) * DEG;
-    var az = Math.atan2(-Math.cos(dr) * Math.sin(H), Math.sin(dr) * Math.cos(l) - Math.cos(dr) * Math.sin(l) * Math.cos(H)) * DEG;
-    return { alt: alt, az: rev(az) };
+  // Alt/az/hour-angle of a J2000 star from a PRE-COMPUTED local sidereal time (deg). This is the
+  // single primitive every star-plotting view uses: pages that draw many stars compute the LST once
+  // (lstDeg) and loop over this, instead of re-deriving the sidereal time per star. Returns the
+  // signed hour angle H (deg, -180..180) too, for "near the meridian / rising / setting" logic.
+  function altazLST(ra, dec, lst) {
+    var H = ((lst - ra + 540) % 360) - 180, Hr = H * RAD, dr = dec * RAD, l = SCOB.LAT * RAD;
+    var alt = Math.asin(Math.sin(dr) * Math.sin(l) + Math.cos(dr) * Math.cos(l) * Math.cos(Hr)) * DEG;
+    var az = Math.atan2(-Math.cos(dr) * Math.sin(Hr), Math.sin(dr) * Math.cos(l) - Math.cos(dr) * Math.sin(l) * Math.cos(Hr)) * DEG;
+    return { alt: alt, az: rev(az), H: H };
   }
+  function altazAt(ra, dec, date) { return altazLST(ra, dec, lstDeg(date)); }
   function compass(az) {
     var d = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
     return d[Math.round(az / 22.5) % 16];
@@ -508,7 +513,7 @@
 
   root.Astro = {
     SCOB: SCOB, RAD: RAD, DEG: DEG, rev: rev, pad: pad,
-    jd: jd, lstDeg: lstDeg, altazAt: altazAt, compass: compass,
+    jd: jd, lstDeg: lstDeg, altazAt: altazAt, altazLST: altazLST, compass: compass,
     sun: sun, moon: moon, eclToEq: eclToEq, planetEq: planetEq, PLAN: PLAN,
     sunAltAt: sunAltAt, sky: sky, SHOWPIECES: SHOWPIECES, illus: illus,
     COMETS: COMETS, cometEq: cometEq, activeComets: activeComets,

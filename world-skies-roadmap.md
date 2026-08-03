@@ -8,7 +8,7 @@
 
 Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 
-**Done so far:** Chinese · Indian · Malay/Nusantara · Babylonian · Ancient Egyptian · Maya · Inca/Andean. **Next up (P1):** Aboriginal Australian (last flagged P1 — also a dark-constellation sky; the Inca renderer can be reused). **Remaining:** Polynesian wayfinding (P2); Greek (P3, skip/layer).
+**✅ COMPLETE — all 10 sky cultures built:** Chinese · Indian · Malay/Nusantara · Babylonian · Ancient Egyptian · Maya · Inca/Andean · Polynesian · Aboriginal Australian · Greek. The star-location engine is consolidated into `sky-culture-core.js` (the three newest cultures build on it; older pages can migrate to it incrementally).
 
 ---
 
@@ -19,13 +19,13 @@ Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 | 1 | **Chinese (中國星官)** | ✅ Done | Lunar mansions + enclosures | 28 宿 + 4 Symbols + 3 Enclosures | — (baseline) | Full | Very high | — | — |
 | 2 | **Indian — Nakshatras (नक्षत्र)** | ✅ Done | Lunar mansions + 9 lords + 12 rāśi | 27 nakshatras | **High** — 21/27 junction stars shared with the 28 宿 | Full | Very high | — | — |
 | 3 | **Malay / Nusantara** | ✅ Done | Star-pictures + 12 buruj | 5 bintang + 12 buruj | High — shares stars w/ Chinese & Indian | Full | High (local roots) | — | — |
-| 4 | **Aboriginal Australian** | ⬜ Not started | Dark + bright constellations | ~10–15 headline figures | Low — new concept (dark dust lanes) | Good (southern MW) | Medium | Medium | **P1** |
+| 4 | **Aboriginal Australian** | ✅ Done | Dark (Emu) + bright | 4 bright + 1 dark (Emu) | Good (southern MW) | Medium | — | — |
 | 5 | **Mesopotamian / Babylonian (MUL.APIN)** | ✅ Done | Constellations (Three Paths) + zodiac | 18 figures + 12 signs | High — ancestor of Western figures | Full | Medium (historical) | — | — |
 | 6 | **Ancient Egyptian** | ✅ Done | Figures + 36 decans | 5 figures + 36 decans | Shares Orion, Sirius, Big Dipper, Draco | Full | Medium (visual) | — | — |
-| 7 | **Polynesian / Pacific wayfinding** | ⬜ Not started | Star compass + nav stars | 32-point compass, ~dozens | Good | Medium (maritime SEA) | Low–Med | Medium | P2 |
+| 7 | **Polynesian / Pacific wayfinding** | ✅ Done | Star lines + star compass | 11 figures, 4 lines | Good | Medium (maritime SEA) | — | — |
 | 8 | **Inca / Andean** | ✅ Done | Dark-cloud + bright | 6 dark + 2 bright | Good (southern MW) | Low | — | — |
 | 9 | **Maya / Mesoamerican** | ✅ Done | Figures + Venus calendar | 5 figures + Venus | Full | Low | — | — |
-| 10 | **Greek / Ptolemaic** | ⬜ Not started | Constellations | 48 classical | **Very high** — ≈ modern Western | Full | Low (already the default sky) | Low | P3 (skip/layer) |
+| 10 | **Greek / Ptolemaic** | ✅ Done | Constellations by myth family | 16 (of 48) + 12 zodiac | **Very high** — ≈ modern Western | Full | Low (already the default sky) | — | — |
 
 ---
 
@@ -123,7 +123,19 @@ Two pages mirroring the pair, English-first with Rumi + Jawi names. Treated hone
 
 ---
 
-## Per-culture build playbook (proven on 7 cultures: Chinese · Indian · Malay · Babylonian · Egyptian · Maya · Inca)
+## Polynesian · Aboriginal · Greek — what's done ✅ (built 2026-08-02) — the final three
+
+- ✅ **Polynesian** (`polynesian-sky.html` / `-tonight.html` / `-sky-data.js`) — the four Hawaiian **star lines** (grouping), a polar map + Western overlay, per-figure deep dive, and a **star-compass** diagram; tonight page shows star lines up + how to find south by the Southern Cross, and the season (Kau / Hoʻoilo).
+- ✅ **Aboriginal Australian** (`aboriginal-sky.html` / `-tonight.html` / `-sky-data.js`) — bright figures (Seven Sisters, Orion canoe, Southern Cross, Canopus) + the **Emu in the Sky** dark constellation (reuses the Inca dark-cloud renderer + a Milky Way band); tonight page has an Emu watch. Framework: the Emu seasonal calendar.
+- ✅ **Greek** (`greek-sky.html` / `-tonight.html` / `-sky-data.js`) — 16 classical constellations grouped by **myth family** (Perseus legend / zodiac / Orion & hunt / gods & heroes), the **12 zodiac** framework, and the richest cross-links of all; tonight page shows the Sun's (tropical) sign.
+
+## Engine consolidation ✅ — `sky-culture-core.js`
+
+The star-location engine is now shared: `SkyCore` exposes `lstAt()`, `altAz()`, `eclLonOf()`, `signOfLon()`, `compass()`, `el()`, the time helpers, the SCOB location, and a unified `crossLinks(ra,dec)`. The **three newest cultures import it and are noticeably leaner** (no per-page copies of the geometry). The 7 earlier culture pages still carry inline copies; each can be migrated later by adding the `<script>` and deleting its local helper block (the test suite verifies each migration). **Future cultures should build on `sky-culture-core.js` from the start.**
+
+---
+
+## Per-culture build playbook (proven on all 10 cultures — newest built on `sky-culture-core.js`)
 
 Order matters — data accuracy first, then the pages, then wiring, then tests.
 

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The Greek sky — the classical constellations and their myths, the source of today's Western sky: the Perseus legend, the zodiac, Orion & the hunt, and the gods and heroes. Cross-referenced with the Chinese mansions and Indian nakshatras. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Greek Sky — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.gk{font-style:italic;color:var(--cyan);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:var(--cyan);}
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#grp{width:100%;height:auto;display:block;max-width:400px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.groups{display:flex;flex-direction:column;gap:9px;}
+.gcard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.gcard.active{background:#20345f;border-color:var(--gold);}
+.gcard .r{font-size:15px;font-weight:700;}
+.gcard .figs{font-size:11.5px;color:var(--mute);margin:5px 0 0;}
+.gcard .desc{font-size:12.5px;color:var(--mute);margin:5px 0 0;max-height:0;overflow:hidden;transition:max-height .25s;}
+.gcard.active .desc{max-height:180px;}
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+@media(max-width:620px){.col-west{display:none;}}
+.npick{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;}
+@media(min-width:620px){.npick{grid-template-columns:repeat(8,1fr);}}
+.nchip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:6px 2px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.nchip .r{font-size:10px;font-weight:700;line-height:1.12;}
+.nchip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.2;opacity:.5;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;}
+.cross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.cross.cn{border-left:4px solid #5fd38a;}.cross.in{border-left:4px solid #ff9d3c;}
+.cross b{color:#fff;}
+#zodiac{width:100%;height:auto;max-width:470px;margin:0 auto;display:block;border-radius:12px;background-color:#0c1530;}
+.bpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.bpick{grid-template-columns:repeat(6,1fr);}}
+.bchip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:7px 4px;text-align:center;transition:.12s;}
+.bchip.active{border-color:var(--gold);background:#20345f;}
+.bchip .r{font-size:11px;font-weight:700;}.bchip .e{font-size:9.5px;color:var(--mute);display:block;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🏛️ The Greek Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the classical constellations &amp; their myths</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">The constellations most of the world knows today are the <b>Greek</b> ones — 48 figures catalogued by <span class="term">Ptolemy</span> in his <span class="gk">Almagest</span> around 150 CE, grown over the centuries to the modern <b>88</b>. But the Greeks did not invent them from nothing: they inherited many from <b>Babylon</b> and wrapped them in their own glittering <b>mythology</b>.</p>
+    <p>So the Greek sky is best read as a set of <b>stories</b>. A single tragedy plays out across six constellations — vain Queen <b>Cassiopeia</b>, her daughter <b>Andromeda</b> chained to the rock, the sea-monster <b>Cetus</b>, and the hero <b>Perseus</b> on winged <b>Pegasus</b> who saves her.</p>
+    <p>The <b>zodiac</b> carries the Sun through the Bull, the Lion, the Scorpion; <b>Orion</b> the hunter strides the winter sky with his dogs; and among the gods' own things hang the Great Bear, the Lyre of Orpheus and the Swan.</p>
+    <div class="callout">🌍 <b>The sky we all share.</b> Because these are the Western figures, they overlap the most with every other tradition here — each one below shows the <a href="chinese-sky.html" style="color:var(--cyan)">Chinese mansion</a> and <a href="indian-sky.html" style="color:var(--cyan)">Indian nakshatra</a> built from the very same stars.</div>
+  </div>
+
+  <div class="card">
+    <h2>Four families of myth</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The constellations grouped by the stories they tell. Tap a family to light it up on the map and table.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="grp" viewBox="0 0 360 360" role="img" aria-label="Polar chart of the Greek constellations grouped by myth family"></svg>
+        <p class="whint" id="whint"></p>
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The sky map — the classical constellations</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <p style="margin:-2px 0 10px;color:var(--mute);font-size:12px">(These <em>are</em> the Western constellations, so no overlay is needed — this whole app's default sky is Greek.)</p>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 320" role="img" aria-label="Full-sky strip map of the Greek constellations"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the Greek constellations"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <div class="card">
+    <h2>Constellation ↔ other skies <small>— 16</small></h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr><th>Family</th><th>Constellation</th><th class="col-west">Brightest star</th><th>Stars</th></tr></thead>
+        <tbody id="tbodyG"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Every star &amp; the myth</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick a constellation for its stars, its story, and the Chinese mansion &amp; Indian nakshatra it shares.</p>
+    <div class="npick" id="npick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="The selected Greek constellation"></svg></div>
+      <div><div class="mdesc" id="mdesc"></div></div>
+    </div>
+  </div>
+
+  <div class="card" id="zodiacCard">
+    <h2>The 12 zodiac — the Greek names <small>— the ones we still use</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The signs of the Sun's road as the Greeks named them (Latinised for us). Tap one for its myth.</p>
+    <div class="bpick" id="bpick"></div>
+    <div class="ddgrid">
+      <div>
+        <svg id="zodiac" viewBox="-40 -40 540 540" role="img" aria-label="The 12 zodiac signs around the ecliptic"></svg>
+        <p class="cap" id="zcap"></p>
+      </div>
+      <div>
+        <div class="mdesc" id="zdesc"></div>
+        <div class="callout" style="margin-top:12px">♈ <b>From Babylon, through Greece, to us.</b> The Greeks took the twelve signs from Babylon and gave them the myths and Latin names we use today — Aries the Ram, Taurus the Bull, Gemini the Twins…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="greek-tonight.html">🏛️ Which constellations are up tonight?</a>
+    <a href="chinese-sky.html">🐉 Chinese Sky</a>
+    <a href="indian-sky.html">🪷 Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>The 16 constellations shown are a selection of the classical 48, grouped by myth; all are drawn from their bright stars at Hipparcos J2000 positions. Constellation figures and the wider Western sky appear throughout the app (e.g. the Western overlay on every other culture page). Myths follow the standard classical sources (Ptolemy, Aratus, Ovid). Shared-star links use the same coordinates as <a href="chinese-sky.html">The Chinese Sky</a> and <a href="indian-sky.html">The Indian Sky</a>. Live view: <a href="greek-tonight.html">The Greek Sky Tonight</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="greek-sky-data.js"></script>
+<script>
+const {el,rev,crossLinks}=window.SkyCore;
+const GREEK=window.GREEK, GFAM=window.GFAM, GZ=window.GZODIAC;
+const FORDER=["perseus","zodiac","hunt","heroes"];
+const fc=f=>GFAM[f.fam].col;
+let activeFam=null;
+const START_RA=90;
+const DET=GREEK.map(f=>({n:f.n,name:f.name,en:f.en,fam:f.fam,west:f.west,ra:f.stars[f.det][0],dec:f.stars[f.det][1],mag:f.stars[f.det][2],nstars:f.stars.length}));
+
+const grp=document.getElementById("grp");
+const RCX=180,RCY=180,rOutR=162;
+const rrad=dec=>((90-dec)/(90-(-45)))*rOutR;
+const rpolar=(r,ra)=>{const a=(rev(ra-START_RA)-90)*Math.PI/180;return[RCX+r*Math.cos(a),RCY+r*Math.sin(a)];};
+function drawGrp(){grp.innerHTML="";
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:rOutR,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:rrad(0),fill:"none",class:"eqline"}));
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:2.4,fill:"#9fb0d6"}));
+  GREEK.forEach(f=>{const on=!activeFam||activeFam===f.fam,c=fc(f);
+    f.lines.forEach(([p,q])=>{const[x1,y1]=rpolar(rrad(f.stars[p][1]),f.stars[p][0]),[x2,y2]=rpolar(rrad(f.stars[q][1]),f.stars[q][0]);grp.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1,opacity:on?.5:.09}));});
+    f.stars.forEach(s=>{const[x,y]=rpolar(rrad(s[1]),s[0]);grp.appendChild(el("circle",{cx:x,cy:y,r:Math.max(1.6,3.8-s[2]*0.45),fill:c,stroke:"#0b1733","stroke-width":.4,opacity:on?1:.14}));});
+    const m=DET.find(d=>d.n===f.n);const[lx,ly]=rpolar(rrad(m.dec),m.ra);const g=el("g",{});g.style.cursor="pointer";
+    const t=el("text",{x:lx,y:ly-5,"text-anchor":"middle",fill:c,"font-size":8,"font-weight":700,opacity:on?1:.2});t.textContent=f.name;g.appendChild(t);
+    g.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${f.name} — the ${f.en} · ${GFAM[f.fam].en}`;});
+    g.addEventListener("click",()=>setFam(f.fam));grp.appendChild(g);});}
+const gbox=document.getElementById("groups");
+function drawGroups(){gbox.innerHTML="";FORDER.forEach(k=>{const p=GFAM[k],figs=GREEK.filter(f=>f.fam===k);
+  const d=document.createElement("div");d.className="gcard"+(activeFam===k?" active":"");d.dataset.k=k;d.style.borderLeftColor=p.col;
+  d.innerHTML=`<div class="r" style="color:${p.col}">${p.en}</div><div class="figs">${figs.map(f=>f.name).join(" · ")}</div><div class="desc">${p.gloss}</div>`;
+  d.addEventListener("click",()=>setFam(k));gbox.appendChild(d);});}
+
+const strip=document.getElementById("strip");
+const SW=980,SH=320,mL=40,mR=14,mT=18,mB=30;
+let SDMIN=-50,SDMAX=70;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+const srad=m=>Math.max(2,5.6-m*0.7);
+function drawStrip(){strip.innerHTML="";
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  GREEK.forEach(f=>{const on=!activeFam||activeFam===f.fam,c=fc(f);
+    f.lines.forEach(([p,q])=>{const x1=sx(rev(f.stars[p][0]-START_RA)),x2=sx(rev(f.stars[q][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(f.stars[p][1]),x2,y2:sy(f.stars[q][1]),stroke:c,"stroke-width":1.3,opacity:on?.6:.12}));});
+    f.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14})));
+    const m=f.stars[f.det];const t=el("text",{x:sx(rev(m[0]-START_RA)),y:sy(m[1])-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":10,opacity:on?1:.16});t.textContent=f.name;strip.appendChild(t);
+    const g=el("g",{});g.style.cursor="pointer";g.appendChild(el("rect",{x:sx(rev(m[0]-START_RA))-16,y:sy(m[1])-12,width:32,height:22,fill:"transparent"}));
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});strip.appendChild(g);});}
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=24;
+const rr=dec=>rIn+((70-dec)/135)*(rOut-rIn);
+const cang=ra=>rev(ra-START_RA)-90;
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  GREEK.forEach(f=>{const on=!activeFam||activeFam===f.fam,c=fc(f);
+    f.lines.forEach(([p,q])=>{const[x1,y1]=cpolar(rr(f.stars[p][1]),cang(f.stars[p][0])),[x2,y2]=cpolar(rr(f.stars[q][1]),cang(f.stars[q][0]));circle.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.1,opacity:on?.55:.1}));});
+    f.stars.forEach(s=>{const[x,y]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:x,cy:y,r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14}));});
+    const m=f.stars[f.det];const[lx,ly]=cpolar(rr(m[1]),cang(m[0]));const g=el("g",{});g.style.cursor="pointer";g.appendChild(el("circle",{cx:lx,cy:ly,r:12,fill:"transparent"}));
+    const t=el("text",{x:lx,y:ly-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":9,opacity:on?1:.16});t.textContent=f.name;g.appendChild(t);
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+function capReset(){document.getElementById("cap").textContent=(mapView==="circle")
+  ?"North pole at the centre. Constellations coloured by myth family. Tap one for its story."
+  :"The classical constellations across the whole sky, by myth family. Tap one for its story below.";}
+
+const tb=document.getElementById("tbodyG");
+function drawTable(){tb.innerHTML="";FORDER.forEach(k=>{GREEK.filter(f=>f.fam===k).forEach(f=>{const tr=document.createElement("tr");tr.dataset.n=f.n;if(activeFam&&activeFam!==f.fam)tr.classList.add("dim");
+  tr.innerHTML=`<td><span class="swatch" style="background:${fc(f)}"></span> <span class="rom">${GFAM[f.fam].en.replace("The ","").replace(" &amp; the Hunt","")}</span></td>
+    <td><span class="nm" style="color:${fc(f)}">${f.name}</span> <span class="rom">the ${f.en}</span></td>
+    <td class="col-west west">${(f.stars[f.det][4]||"").replace(/.*\(/,"").replace(")","")}</td><td>${f.stars.length}</td>`;
+  tr.addEventListener("mouseenter",()=>hlRow(f.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+  tr.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});tb.appendChild(tr);});});}
+function hlRow(n,on){document.querySelectorAll("#tbodyG tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+function setFam(k){activeFam=activeFam===k?null:k;drawGrp();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".gcard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeFam));
+  document.getElementById("whint").textContent=activeFam?GFAM[activeFam].gloss:"The classical sky told as four families of myth.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+
+const npick=document.getElementById("npick");let selFig=1;
+function drawPicker(){npick.innerHTML="";GREEK.forEach(f=>{const d=document.createElement("div");d.className="nchip"+(selFig===f.n?" active":"");d.dataset.n=f.n;d.style.borderLeftColor=fc(f);
+  d.innerHTML=`<div class="r" style="color:${fc(f)}">${f.name}</div>`;d.addEventListener("click",()=>openFig(f.n));npick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openFig(n){selFig=n;drawPicker();document.querySelectorAll(".nchip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const f=GREEK.find(x=>x.n===n),c=fc(f);
+  const ras=f.stars.map(s=>s[0]),decs=f.stars.map(s=>s[1]);let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+  if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+  const dc0=Math.min(...decs),dc1=Math.max(...decs);const padr=Math.max((ra1-ra0)*0.16,1.6),padd=Math.max((dc1-dc0)*0.16,1.6);
+  const W=460,H=360,pd=40,raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+  const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+  const rad=mg=>Math.max(2.4,6.5-mg*0.7);dsky.innerHTML="";
+  f.lines.forEach(([p,q])=>{dsky.appendChild(el("line",{x1:X(f.stars[p][0]),y1:Y(f.stars[p][1]),x2:X(f.stars[q][0]),y2:Y(f.stars[q][1]),class:"aline"}));});
+  const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+  f.stars.forEach((s,i)=>{const isDet=i===f.det,isBright=s[2]<1.6;const g=el("g",{});
+    g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?c:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+    const lbl=shortLbl(s[4]);if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}dsky.appendChild(g);});
+  document.getElementById("mdesc").innerHTML=`<h3 style="color:${c}">${f.name} <span class="rom" style="font-size:14px">the ${f.en}</span></h3>
+    <p class="mean">${f.dEN}</p><p class="fact"><span class="pill" style="border-color:${c};color:${c}">${GFAM[f.fam].en}</span><span class="pill">${f.stars.length} stars</span></p>`;
+  const box=document.getElementById("mdesc");const cn={},ind={};
+  f.stars.forEach(s=>{const L=crossLinks(s[0],s[1]);if(L.chinese)cn[L.chinese.mzh]=L.chinese.men||"";if(L.indian)ind[L.indian.iast]=L.indian.west.replace(/\s*\(.*/,"");});
+  const ck=Object.keys(cn),ik=Object.keys(ind);
+  const cnEl=document.createElement("div");cnEl.className="cross cn";cnEl.innerHTML=ck.length?`🐉 <b>Chinese sky:</b> the same stars form the ${ck.map(k=>`<span style="font-family:inherit">${k}</span>${cn[k]?" ("+cn[k]+")":""}`).join(", ")} mansion${ck.length>1?"s":""}. <a href="chinese-sky.html" style="color:var(--cyan)">See →</a>`:`🐉 <b>Chinese sky:</b> outside the 28 mansions.`;box.appendChild(cnEl);
+  const inEl=document.createElement("div");inEl.className="cross in";inEl.innerHTML=ik.length?`🪷 <b>Indian sky:</b> the same stars form nakshatra ${ik.map(k=>`<b>${k}</b> (${ind[k]})`).join(", ")}. <a href="indian-sky.html" style="color:var(--cyan)">See →</a>`:`🪷 <b>Indian sky:</b> off the nakshatra belt.`;box.appendChild(inEl);}
+
+/* ---------- ZODIAC framework ---------- */
+const zSvg=document.getElementById("zodiac");
+const ZCX=230,ZCY=230,zrOut=200,zrIn=118;let selZ=0;const ZCOL="#c9a24b";
+function zpolar(r,deg){const a=(deg-90)*Math.PI/180;return[ZCX+r*Math.cos(a),ZCY+r*Math.sin(a)];}
+function drawZodiac(){zSvg.innerHTML="";
+  for(let j=0;j<12;j++){const a1=j*30,a2=(j+1)*30,on=selZ===j,b=GZ[j];
+    const[ox1,oy1]=zpolar(zrOut,a1),[ox2,oy2]=zpolar(zrOut,a2),[ix2,iy2]=zpolar(zrIn,a2),[ix1,iy1]=zpolar(zrIn,a1);
+    const p=el("path",{d:`M${ox1} ${oy1} A${zrOut} ${zrOut} 0 0 1 ${ox2} ${oy2} L${ix2} ${iy2} A${zrIn} ${zrIn} 0 0 0 ${ix1} ${iy1} Z`,fill:ZCOL,stroke:"#0b1733","stroke-width":1.2,opacity:on?.9:.28});
+    p.style.cursor="pointer";p.addEventListener("click",()=>openZ(j));zSvg.appendChild(p);
+    const[mx,my]=zpolar((zrOut+zrIn)/2,(a1+a2)/2);const t=el("text",{x:mx,y:my,"text-anchor":"middle","dominant-baseline":"central","font-size":10,fill:"#0b1733","font-weight":700});t.textContent=b.en.slice(0,3);t.style.pointerEvents="none";zSvg.appendChild(t);}
+  const c1=el("text",{x:ZCX,y:ZCY-8,"text-anchor":"middle","dominant-baseline":"central",fill:"#f5c542","font-size":15});c1.textContent="12 signs";
+  const c2=el("text",{x:ZCX,y:ZCY+12,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10});c2.textContent="the Greek zodiac";zSvg.appendChild(c1);zSvg.appendChild(c2);}
+const bpick=document.getElementById("bpick");
+function drawBpick(){bpick.innerHTML="";GZ.forEach((b,j)=>{const d=document.createElement("div");d.className="bchip"+(selZ===j?" active":"");d.style.borderLeftColor=ZCOL;
+  d.innerHTML=`<span class="r">${b.en}</span><span class="e gk">${b.gk}</span>`;d.addEventListener("click",()=>openZ(j));bpick.appendChild(d);});}
+function openZ(j){selZ=j;drawBpick();drawZodiac();document.querySelectorAll(".bchip").forEach((c,i)=>c.classList.toggle("active",i===j));
+  const b=GZ[j],lo=j*30,hi=(j+1)*30;
+  document.getElementById("zdesc").innerHTML=`<h3 style="color:${ZCOL}">${b.en} <span class="gk" style="font-size:15px">${b.gk}</span></h3>
+    <p class="mean">${b.myth[0].toUpperCase()+b.myth.slice(1)}.</p><p class="fact"><b>Ecliptic span:</b> ${lo}°–${hi}°</p>`;
+  document.getElementById("zcap").textContent=`${b.en} (${b.gk}) — ${b.myth}.`;}
+
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawGrp();drawGroups();drawStrip();drawCircle();drawTable();drawPicker();openFig(selFig);drawBpick();openZ(0);
+document.getElementById("whint").textContent="The classical sky told as four families of myth.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.gcard,.nchip,.bchip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["groups","npick","bpick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.gcard,.nchip,.bchip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The Polynesian sky — the four Hawaiian star lines wayfinders steer by (Ke Ka o Makaliʻi, Ka Iwikuamoʻo, Manaiakalani, Ka Lupe o Kawelo), the star compass, and stars like Hōkūleʻa (Arcturus) and Māui's fishhook (Scorpius). Cross-referenced with the Chinese mansions and Indian nakshatras. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Polynesian Sky — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.haw{font-style:italic;color:var(--cyan);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:var(--cyan);}
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#grp{width:100%;height:auto;display:block;max-width:400px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.groups{display:flex;flex-direction:column;gap:9px;}
+.gcard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.gcard.active{background:#20345f;border-color:var(--gold);}
+.gcard .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.gcard .r{font-size:15px;font-weight:700;}.gcard .sub{font-size:12px;color:var(--mute);}
+.gcard .figs{font-size:11.5px;color:var(--mute);margin:5px 0 0;}
+.gcard .desc{font-size:12.5px;color:var(--mute);margin:5px 0 0;max-height:0;overflow:hidden;transition:max-height .25s;}
+.gcard.active .desc{max-height:170px;}
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+@media(max-width:620px){.col-west{display:none;}}
+.apick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.apick{grid-template-columns:repeat(6,1fr);}}
+.achip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:6px 3px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.achip .r{font-size:10px;font-weight:700;line-height:1.12;}
+.achip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.2;opacity:.5;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;}
+.cross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.cross.cn{border-left:4px solid #5fd38a;}.cross.in{border-left:4px solid #ff9d3c;}
+.cross b{color:#fff;}
+#compass{width:100%;height:auto;max-width:400px;margin:0 auto;display:block;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🛶 The Polynesian Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the star lines &amp; the wayfinder's compass</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">The Polynesians were the greatest <b>ocean navigators</b> in history, settling a third of the planet — thousands of islands across the Pacific — with no instruments at all. Their compass was the sky itself.</p>
+    <p>A <span class="term">wayfinder</span> memorised where hundreds of stars <b>rise and set</b> on the horizon, and steered by them through the night. To hold it all in memory, the Hawaiian tradition groups the brightest into four great <b>star lines</b> (<span class="haw">nā kūlia</span>) — arcs of stars that rise together and sweep across the sky in turn through the year.</p>
+    <p>Along them ride the wayfinder's key marks: <b class="haw">Hōkūleʻa</b> (Arcturus), the star that passes straight overhead at Hawaiʻi; <b class="haw">Hōkūpaʻa</b> (the North Star) and <b class="haw">Hānaiakamalama</b> (the Southern Cross) to hold a course; and <b class="haw">Ka Makau Nui o Māui</b> — the great fishhook (Scorpius) with which the demigod hauled the islands from the sea.</p>
+    <div class="callout">🧭 <b>A sky you sail by.</b> Where other cultures read the stars for calendars or myth, the Polynesians read them to <b>find their way</b>. Each figure below also shows its matching <a href="chinese-sky.html" style="color:var(--cyan)">Chinese mansion</a> and <a href="indian-sky.html" style="color:var(--cyan)">Indian nakshatra</a>.</div>
+  </div>
+
+  <div class="card">
+    <h2>The four star lines <small>— nā kūlia hōkū</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The sky memorised as four great arcs. Tap a line to light up its stars on the map and table.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="grp" viewBox="0 0 360 360" role="img" aria-label="Polar chart of the four Polynesian star lines"></svg>
+        <p class="whint" id="whint"></p>
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The sky map — the star lines</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false">🌌 Overlay Western constellations</button></div>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 320" role="img" aria-label="Full-sky strip map of the Polynesian star lines"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the Polynesian star lines"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <div class="card">
+    <h2>Figure ↔ Western sky</h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr><th>Star line</th><th>Hawaiian figure</th><th class="col-west">Western</th><th>Stars</th></tr></thead>
+        <tbody id="tbodyP"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Every star of a figure</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick a figure to see it over the real stars — with its story and the Chinese mansion &amp; Indian nakshatra it shares.</p>
+    <div class="apick" id="apick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="The selected Polynesian figure"></svg></div>
+      <div><div class="mdesc" id="mdesc"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The star compass <small>— how to steer by the sky</small></h2>
+    <div class="ddgrid">
+      <div>
+        <svg id="compass" viewBox="0 0 360 360" role="img" aria-label="The Hawaiian star compass with its four quadrants"></svg>
+      </div>
+      <div>
+        <div class="mdesc">
+          <p class="mean"><b style="color:var(--gold)">Where a star rises is a bearing.</b> Every star rises at the same point on the eastern horizon each night and sets at the mirror point in the west. The wayfinder divides the horizon into <b>32 houses</b> (like our compass points) grouped in four quadrants: <span class="haw">Koʻolau</span> (NE), <span class="haw">Malanai</span> (SE), <span class="haw">Kona</span> (SW), <span class="haw">Hoʻolua</span> (NW).</p>
+          <p class="fact">To hold a course, you keep a known star rising or setting off a fixed point of the canoe. As one star climbs too high, the next in its "house" takes over — a chain of steering stars all night long.</p>
+          <p class="fact">Between the stars, the wayfinder also reads the <b>swells</b>, the <b>wind</b>, the <b>clouds</b> and the flight of <b>birds</b> — the whole ocean and sky as one instrument.</p>
+        </div>
+        <div class="callout" style="margin-top:12px">🛶 See which star lines are up, and where south lies, on the <a href="polynesian-tonight.html" style="color:var(--cyan)">tonight page</a>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="polynesian-tonight.html">🛶 Which star lines are up tonight?</a>
+    <a href="chinese-sky.html">🐉 Chinese Sky</a>
+    <a href="indian-sky.html">🪷 Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>Figures follow the Hawaiian star-line system of the Polynesian Voyaging Society (Nainoa Thompson), drawn from their bright stars at Hipparcos J2000 positions; Hawaiian names are given with their Western stars. Sky-lore varies across Polynesia (Māori, Tahitian, Sāmoan and others share many of these stars under their own names). Shared-star links use the same coordinates as <a href="chinese-sky.html">The Chinese Sky</a> and <a href="indian-sky.html">The Indian Sky</a>. Live view: <a href="polynesian-tonight.html">The Polynesian Sky Tonight</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="polynesian-sky-data.js"></script>
+<script>
+const {el,rev,compass,eclLonOf,crossLinks}=window.SkyCore;
+const POLY=window.POLY, PLINE=window.PLINE;
+const LORDER=["bailer","backbone","fishline","kite"];
+const lc=f=>PLINE[f.line].col;
+let activeLine=null;
+const START_RA=90;
+const DET=POLY.map(f=>({n:f.n,name:f.name,en:f.en,line:f.line,west:f.west,ra:f.stars[f.det][0],dec:f.stars[f.det][1],mag:f.stars[f.det][2],nstars:f.stars.length}));
+
+/* ---------- grouping polar chart ---------- */
+const grp=document.getElementById("grp");
+const RCX=180,RCY=180,rOutR=162;
+const rrad=dec=>((90-dec)/(90-(-72)))*rOutR;
+const rpolar=(r,ra)=>{const a=(rev(ra-START_RA)-90)*Math.PI/180;return[RCX+r*Math.cos(a),RCY+r*Math.sin(a)];};
+function drawGrp(){grp.innerHTML="";
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:rOutR,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:rrad(0),fill:"none",class:"eqline"}));
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:2.4,fill:"#9fb0d6"}));
+  POLY.forEach(f=>{const on=!activeLine||activeLine===f.line,c=lc(f);
+    f.lines.forEach(([p,q])=>{const[x1,y1]=rpolar(rrad(f.stars[p][1]),f.stars[p][0]),[x2,y2]=rpolar(rrad(f.stars[q][1]),f.stars[q][0]);grp.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.1,opacity:on?.55:.1}));});
+    f.stars.forEach(s=>{const[x,y]=rpolar(rrad(s[1]),s[0]);grp.appendChild(el("circle",{cx:x,cy:y,r:Math.max(1.8,4.2-s[2]*0.5),fill:c,stroke:"#0b1733","stroke-width":.4,opacity:on?1:.15}));});
+    const m=DET.find(d=>d.n===f.n);const[lx,ly]=rpolar(rrad(m.dec),m.ra);const g=el("g",{});g.style.cursor="pointer";
+    const t=el("text",{x:lx,y:ly-6,"text-anchor":"middle",fill:c,"font-size":8,"font-weight":700,opacity:on?1:.2});t.textContent=f.name.length>16?f.en:f.name;g.appendChild(t);
+    g.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${f.name} — ${f.en} · ${PLINE[f.line].en}`;});
+    g.addEventListener("click",()=>setLine(f.line));grp.appendChild(g);});}
+const gbox=document.getElementById("groups");
+function drawGroups(){gbox.innerHTML="";LORDER.forEach(k=>{const p=PLINE[k],figs=POLY.filter(f=>f.line===k);
+  const d=document.createElement("div");d.className="gcard"+(activeLine===k?" active":"");d.dataset.k=k;d.style.borderLeftColor=p.col;
+  d.innerHTML=`<div class="top"><span class="r" style="color:${p.col}">${p.en}</span> <span class="sub">${p.sub}</span></div>
+    <div class="figs">${figs.map(f=>f.name).join(" · ")}</div><div class="desc">${p.gloss}</div>`;
+  d.addEventListener("click",()=>setLine(k));gbox.appendChild(d);});}
+
+/* ---------- strip + circle ---------- */
+const strip=document.getElementById("strip");
+const SW=980,SH=320,mL=40,mR=14,mT=18,mB=30;
+let SDMIN=-72,SDMAX=90,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+function drawWestern(){if(!window.WCONST)return;window.WCONST.forEach(c=>{const stars=c[1],ls=c[2];
+  ls.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-START_RA)),x2=sx(rev(stars[b][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.7}));});
+  stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.3,fill:"#8fa0c8",opacity:.8})));
+  const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-START_RA)),0)/stars.length,cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+  const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});}
+const srad=m=>Math.max(2,5.6-m*0.7);
+function drawStrip(){strip.innerHTML="";if(westOverlay)drawWestern();
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  POLY.forEach(f=>{const on=!activeLine||activeLine===f.line,c=lc(f);
+    f.lines.forEach(([p,q])=>{const x1=sx(rev(f.stars[p][0]-START_RA)),x2=sx(rev(f.stars[q][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(f.stars[p][1]),x2,y2:sy(f.stars[q][1]),stroke:c,"stroke-width":1.3,opacity:on?.6:.12}));});
+    f.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14})));
+    const m=f.stars[f.det];const t=el("text",{x:sx(rev(m[0]-START_RA)),y:sy(m[1])-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":10,opacity:on?1:.16});t.textContent=f.name.length>14?f.en:f.name;strip.appendChild(t);
+    const gg=el("g",{});gg.style.cursor="pointer";gg.appendChild(el("rect",{x:sx(rev(m[0]-START_RA))-16,y:sy(m[1])-12,width:32,height:22,fill:"transparent"}));
+    gg.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});strip.appendChild(gg);});}
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=14;
+const rr=dec=>rIn+((90-dec)/162)*(rOut-rIn);
+const cang=ra=>rev(ra-START_RA)-90;
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  POLY.forEach(f=>{const on=!activeLine||activeLine===f.line,c=lc(f);
+    f.lines.forEach(([p,q])=>{const[x1,y1]=cpolar(rr(f.stars[p][1]),cang(f.stars[p][0])),[x2,y2]=cpolar(rr(f.stars[q][1]),cang(f.stars[q][0]));circle.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.2,opacity:on?.55:.1}));});
+    f.stars.forEach(s=>{const[x,y]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:x,cy:y,r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14}));});
+    const m=f.stars[f.det];const[lx,ly]=cpolar(rr(m[1]),cang(m[0]));const g=el("g",{});g.style.cursor="pointer";
+    g.appendChild(el("circle",{cx:lx,cy:ly,r:12,fill:"transparent"}));
+    const t=el("text",{x:lx,y:ly-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":9,opacity:on?1:.16});t.textContent=f.name.length>14?f.en:f.name;g.appendChild(t);
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+function capReset(){document.getElementById("cap").textContent=(mapView==="circle")
+  ?"North pole at the centre. The four star lines coloured; tap a figure for its story."
+  :"The Polynesian star lines across the whole sky. Tap one to open its story below.";}
+
+const tb=document.getElementById("tbodyP");
+function drawTable(){tb.innerHTML="";LORDER.forEach(k=>{POLY.filter(f=>f.line===k).forEach(f=>{const tr=document.createElement("tr");tr.dataset.n=f.n;if(activeLine&&activeLine!==f.line)tr.classList.add("dim");
+  tr.innerHTML=`<td><span class="swatch" style="background:${lc(f)}"></span> <span class="rom">${PLINE[f.line].sub}</span></td>
+    <td><span class="nm" style="color:${lc(f)}">${f.name}</span><br><span class="rom">${f.en}</span></td>
+    <td class="col-west west">${f.west}</td><td>${f.stars.length}</td>`;
+  tr.addEventListener("mouseenter",()=>hlRow(f.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+  tr.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});tb.appendChild(tr);});});}
+function hlRow(n,on){document.querySelectorAll("#tbodyP tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+function setLine(k){activeLine=activeLine===k?null:k;drawGrp();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".gcard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeLine));
+  document.getElementById("whint").textContent=activeLine?PLINE[activeLine].gloss:"The sky as four great star lines the wayfinder steers by.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+document.getElementById("westToggle").addEventListener("click",function(){westOverlay=!westOverlay;this.classList.toggle("active",westOverlay);this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay&&mapView!=="strip"){mapView="strip";document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+  drawStrip();document.getElementById("cap").innerHTML=westOverlay?"🌌 Western constellations (grey) behind the Polynesian star lines (coloured) — the same stars, sailed by.":"";if(!westOverlay)capReset();});
+
+/* ---------- deep dive ---------- */
+const apick=document.getElementById("apick");let selFig=1;
+function drawPicker(){apick.innerHTML="";POLY.forEach(f=>{const d=document.createElement("div");d.className="achip"+(selFig===f.n?" active":"");d.dataset.n=f.n;d.style.borderLeftColor=lc(f);
+  d.innerHTML=`<div class="r" style="color:${lc(f)}">${f.name.length>13?f.en:f.name}</div>`;d.addEventListener("click",()=>openFig(f.n));apick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openFig(n){selFig=n;drawPicker();document.querySelectorAll(".achip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const f=POLY.find(x=>x.n===n),c=lc(f);
+  const ras=f.stars.map(s=>s[0]),decs=f.stars.map(s=>s[1]);let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+  if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+  const dc0=Math.min(...decs),dc1=Math.max(...decs);const padr=Math.max((ra1-ra0)*0.16,2),padd=Math.max((dc1-dc0)*0.16,2);
+  const W=460,H=360,pd=42,raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+  const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+  const rad=mg=>Math.max(2.4,6.5-mg*0.7);dsky.innerHTML="";
+  f.lines.forEach(([p,q])=>{dsky.appendChild(el("line",{x1:X(f.stars[p][0]),y1:Y(f.stars[p][1]),x2:X(f.stars[q][0]),y2:Y(f.stars[q][1]),class:"aline"}));});
+  const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+  f.stars.forEach((s,i)=>{const isDet=i===f.det,isBright=s[2]<1.6;const g=el("g",{});
+    g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?c:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+    const lbl=shortLbl(s[4]);if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}dsky.appendChild(g);});
+  document.getElementById("mdesc").innerHTML=`<h3 style="color:${c}">${f.name} <span class="rom" style="font-size:14px">${f.en}</span></h3>
+    <p class="mean">${f.dEN}</p><p class="fact"><span class="pill" style="border-color:${c};color:${c}">${PLINE[f.line].en}</span><span class="pill">${f.west}</span><span class="pill">${f.stars.length} stars</span></p>`;
+  const box=document.getElementById("mdesc");const cn={},ind={};
+  f.stars.forEach(s=>{const L=crossLinks(s[0],s[1]);if(L.chinese)cn[L.chinese.mzh]=L.chinese.men||"";if(L.indian)ind[L.indian.iast]=L.indian.west.replace(/\s*\(.*/,"");});
+  const ck=Object.keys(cn),ik=Object.keys(ind);
+  const cnEl=document.createElement("div");cnEl.className="cross cn";
+  cnEl.innerHTML=ck.length?`🐉 <b>Chinese sky:</b> shares stars with the ${ck.map(k=>`<span style="font-family:inherit">${k}</span>${cn[k]?" ("+cn[k]+")":""}`).join(", ")} mansion${ck.length>1?"s":""}. <a href="chinese-sky.html" style="color:var(--cyan)">See →</a>`:`🐉 <b>Chinese sky:</b> outside the 28 mansions (a far-northern or -southern figure).`;box.appendChild(cnEl);
+  const inEl=document.createElement("div");inEl.className="cross in";
+  inEl.innerHTML=ik.length?`🪷 <b>Indian sky:</b> shares stars with nakshatra ${ik.map(k=>`<b>${k}</b> (${ind[k]})`).join(", ")}. <a href="indian-sky.html" style="color:var(--cyan)">See →</a>`:`🪷 <b>Indian sky:</b> off the nakshatra belt, so no nakshatra.`;box.appendChild(inEl);}
+
+/* ---------- star compass diagram ---------- */
+(function(){const s=document.getElementById("compass");const CX=180,CY=180,R=150;
+  s.appendChild(el("circle",{cx:CX,cy:CY,r:R,fill:"none",stroke:"#2a3868","stroke-width":1.2}));
+  s.appendChild(el("circle",{cx:CX,cy:CY,r:R*0.62,fill:"none",stroke:"#22305a","stroke-width":1,"stroke-dasharray":"3 4"}));
+  // 32 house ticks
+  for(let i=0;i<32;i++){const a=(i/32*360-90)*Math.PI/180,cardinal=(i%8===0);const r0=cardinal?R-16:R-9;
+    s.appendChild(el("line",{x1:CX+r0*Math.cos(a),y1:CY+r0*Math.sin(a),x2:CX+R*Math.cos(a),y2:CY+R*Math.sin(a),stroke:cardinal?"#5bd6e0":"#3a4c86","stroke-width":cardinal?1.5:0.8}));}
+  // quadrant arcs + names
+  const quads=[["Koʻolau",-45,"#5bd6e0"],["Malanai",45,"#ff6b6b"],["Kona",135,"#f5c542"],["Hoʻolua",225,"#6fe0a0"]];
+  quads.forEach(([nm,ang,col])=>{const a=(ang-90)*Math.PI/180;const t=el("text",{x:CX+R*0.4*Math.cos(a),y:CY+R*0.4*Math.sin(a),"text-anchor":"middle","dominant-baseline":"central",fill:col,"font-size":11,"font-weight":700});t.textContent=nm;s.appendChild(t);});
+  // cardinals (Hawaiian)
+  const card=[["ʻĀkau · N",-90],["Hikina · E",0],["Hema · S",90],["Komohana · W",180]];
+  card.forEach(([nm,ang])=>{const a=(ang)*Math.PI/180;const t=el("text",{x:CX+(R+16)*Math.cos(a),y:CY+(R+16)*Math.sin(a),"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":10,"font-weight":700});t.textContent=nm;s.appendChild(t);});
+  const c1=el("text",{x:CX,y:CY-6,"text-anchor":"middle","dominant-baseline":"central",fill:"#f5c542","font-size":12,"font-weight":700});c1.textContent="Manu";
+  const c2=el("text",{x:CX,y:CY+11,"text-anchor":"middle","dominant-baseline":"central",fill:"#9fb0d6","font-size":9});c2.textContent="the bird / 32 houses";s.appendChild(c1);s.appendChild(c2);})();
+
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawGrp();drawGroups();drawStrip();drawCircle();drawTable();drawPicker();openFig(selFig);
+document.getElementById("whint").textContent="The sky as four great star lines the wayfinder steers by.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.gcard,.achip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["groups","apick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.gcard,.achip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

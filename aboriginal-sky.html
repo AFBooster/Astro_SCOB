@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="Aboriginal Australian astronomy — the Emu in the Sky (a dark constellation in the Milky Way), the Seven Sisters (Pleiades), the canoe of Orion and the Southern Cross. Among the oldest sky-stories on Earth. Cross-referenced with the Chinese mansions and Indian nakshatras. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Aboriginal Australian Sky — SCOB Night-Sky</title>
+<style>
+:root{ color-scheme: dark;
+  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
+  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a; --dark:#c58b6a; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--dark);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:#e0b48f;}
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#kinds{width:100%;height:auto;display:block;max-width:400px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.groups{display:flex;flex-direction:column;gap:9px;}
+.gcard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.gcard.active{background:#20345f;border-color:var(--gold);}
+.gcard .r{font-size:15px;font-weight:700;}
+.gcard .figs{font-size:11.5px;color:var(--mute);margin:5px 0 0;}
+.gcard .desc{font-size:12.5px;color:var(--mute);margin:5px 0 0;max-height:0;overflow:hidden;transition:max-height .25s;}
+.gcard.active .desc{max-height:200px;}
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.mw{stroke:#6f7fbf;stroke-width:12;opacity:.14;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+.apick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.apick{grid-template-columns:repeat(5,1fr);}}
+.achip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:7px 3px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.achip .r{font-size:10px;font-weight:700;line-height:1.12;}
+.achip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.2;opacity:.5;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;}
+.cross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.cross.cn{border-left:4px solid #5fd38a;}.cross.in{border-left:4px solid #ff9d3c;}.cross.dk{border-left:4px solid var(--dark);}
+.cross b{color:#fff;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
+.foot a{color:var(--cyan);}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🦤 Aboriginal Australian Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the Emu in the Sky &amp; the Seven Sisters</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">Aboriginal and Torres Strait Islander peoples have watched these skies for <b>tens of thousands of years</b> — the oldest continuous astronomical traditions on Earth. Across hundreds of nations and languages, the stars carry law, story, navigation and the seasons.</p>
+    <p>Like the Inca an ocean away, many Aboriginal peoples read the <b>dark</b> shapes of the Milky Way as much as the bright stars. The greatest is the <b class="term">Emu in the Sky</b> — its head the dark Coalsack beside the Southern Cross, its long neck and body the dust-lanes running down to Scorpius.</p>
+    <p>Among the bright figures are the <b>Seven Sisters</b> (the Pleiades) — a story told right across Australia and, astonishingly, around the world, perhaps for 100,000 years; the <b>canoe</b> of three brothers (Orion); and the <b>Southern Cross</b>, watched over by the ancestor Mirrabooka.</p>
+    <div class="callout">🦤 <b>A calendar in the dark.</b> As the Emu turns through the year it tells people when to gather emu eggs. This is knowledge for living, not just stories. Each figure below also shows its matching <a href="chinese-sky.html" style="color:var(--cyan)">Chinese mansion</a> and <a href="indian-sky.html" style="color:var(--cyan)">Indian nakshatra</a> — though the Emu, being dark, has none.</div>
+  </div>
+
+  <div class="card">
+    <h2>Two kinds of figure <small>— stars &amp; shadows</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Bright-star figures (gold) and the dark shapes of the Milky Way (the Emu). Tap a kind to light up its figures.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="kinds" viewBox="0 0 360 360" role="img" aria-label="Polar chart of the Aboriginal star and dark figures"></svg>
+        <p class="whint" id="whint"></p>
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The sky map — the Milky Way &amp; its figures</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false">🌌 Overlay Western constellations</button></div>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 340" role="img" aria-label="Full-sky strip map of the Aboriginal figures"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the Aboriginal figures"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <div class="card">
+    <h2>Figure ↔ Western sky</h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr><th>Kind</th><th>Figure</th><th>Western</th><th></th></tr></thead>
+        <tbody id="tbodyA"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Every figure, up close</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick a figure — bright ones from their stars, the Emu as the shadow it casts on the Milky Way.</p>
+    <div class="apick" id="apick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="The selected Aboriginal figure"></svg></div>
+      <div><div class="mdesc" id="mdesc"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The Emu &amp; the seasons <small>— a calendar written in shadow</small></h2>
+    <div class="ddgrid">
+      <div>
+        <div class="mdesc">
+          <p class="mean"><b style="color:var(--gold)">The Emu turns through the year.</b> In <b>April–May</b> the Emu appears after dusk stretched across the sky like a running bird — the sign that emus are laying, and eggs can be gathered. By <b>June–July</b> she sits low over the horizon like an emu on a nest. Later in the year she sinks and fades — the eggs have hatched, the waterholes run dry.</p>
+          <p class="fact">This is one of the clearest examples of a <b>practical sky-calendar</b> anywhere: the orientation of a shape made of <em>darkness</em>, read to time a food harvest, for thousands of years.</p>
+          <p class="fact"><b>The Seven Sisters.</b> The story of the sisters (the Pleiades) pursued by a man or men (Orion) is told across Australia — and around the world. Researchers suggest the shared tale may descend from a single story over <b>100,000 years</b> old, carried out of Africa.</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout">🌑 <b>Look for the Emu.</b> On a dark night from April to September, find the Southern Cross, then the dark Coalsack beside it — that's the Emu's head. See where the Emu rides now on the <a href="aboriginal-tonight.html" style="color:var(--cyan)">tonight page</a>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="aboriginal-tonight.html">🦤 Which figures are up tonight?</a>
+    <a href="chinese-sky.html">🐉 Chinese Sky</a>
+    <a href="indian-sky.html">🪷 Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>Aboriginal Australia comprises hundreds of distinct nations, each with its own sky-knowledge; this is a small, widely-shared and respectfully-chosen selection, drawn from published research (e.g. the work of Ray Norris, Duane Hamacher and Aboriginal knowledge-holders on Kamilaroi/Euahlayi and Yolngu astronomy). Bright figures use Hipparcos J2000 star positions; the Emu is drawn as a shaded silhouette at the approximate position of the Milky Way's dark clouds (its true extent is far larger than any outline). Shared-star links use the same coordinates as <a href="chinese-sky.html">The Chinese Sky</a> and <a href="indian-sky.html">The Indian Sky</a>. Live view: <a href="aboriginal-tonight.html">Aboriginal Sky Tonight</a>.</p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="aboriginal-sky-data.js"></script>
+<script>
+const {el,rev,crossLinks}=window.SkyCore;
+const ABOR=window.ABOR, AKIND=window.AKIND, AMILKY=window.AMILKY;
+const KORDER=["bright","dark"];
+const kc=f=>AKIND[f.kind].col;
+let activeKind=null;
+const START_RA=90;
+const DET=ABOR.map(f=>{const isB=f.kind==="bright";return {n:f.n,name:f.name,en:f.en,kind:f.kind,west:f.west,ra:isB?f.stars[f.det][0]:f.cx,dec:isB?f.stars[f.det][1]:f.cy};});
+
+const kinds=document.getElementById("kinds");
+const RCX=180,RCY=180,rOutR=162;
+const rrad=dec=>((35-dec)/(35-(-72)))*rOutR;
+const rpolar=(r,ra)=>{const a=(rev(ra-START_RA)-90)*Math.PI/180;return[RCX+r*Math.cos(a),RCY+r*Math.sin(a)];};
+function drawMW(svg,radFn,polFn){let d="";for(let i=0;i<AMILKY.length;i++){const[x,y]=polFn(radFn(AMILKY[i][1]),AMILKY[i][0]);d+=(i?" L ":"M ")+x+" "+y;}svg.appendChild(el("path",{d,class:"mw"}));}
+function drawKinds(){kinds.innerHTML="";
+  kinds.appendChild(el("circle",{cx:RCX,cy:RCY,r:rOutR,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  drawMW(kinds,rrad,rpolar);
+  kinds.appendChild(el("circle",{cx:RCX,cy:RCY,r:rrad(0),fill:"none",class:"eqline"}));
+  ABOR.forEach(f=>{const on=!activeKind||activeKind===f.kind,c=kc(f);
+    if(f.kind==="dark"){const[x,y]=rpolar(rrad(f.cy),f.cx);kinds.appendChild(el("ellipse",{cx:x,cy:y,rx:Math.max(8,f.rx*0.7),ry:Math.max(5,f.ry*0.9),fill:c,opacity:on?.22:.05,stroke:c,"stroke-dasharray":"3 3","stroke-opacity":on?.6:.15}));}
+    else{f.lines.forEach(([p,q])=>{const[x1,y1]=rpolar(rrad(f.stars[p][1]),f.stars[p][0]),[x2,y2]=rpolar(rrad(f.stars[q][1]),f.stars[q][0]);kinds.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.1,opacity:on?.6:.1}));});
+      f.stars.forEach(s=>{const[x,y]=rpolar(rrad(s[1]),s[0]);kinds.appendChild(el("circle",{cx:x,cy:y,r:Math.max(2,4.4-s[2]*0.5),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.15}));});}
+    const m=DET.find(d=>d.n===f.n);const[lx,ly]=rpolar(rrad(m.dec),m.ra);const g=el("g",{});g.style.cursor="pointer";
+    const t=el("text",{x:lx,y:ly-6,"text-anchor":"middle",fill:c,"font-size":8.5,"font-weight":700,opacity:on?1:.2});t.textContent=f.name.split(" ")[0].replace("—","");g.appendChild(t);
+    g.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${f.name} — ${AKIND[f.kind].en}`;});
+    g.addEventListener("click",()=>setKind(f.kind));kinds.appendChild(g);});
+  kinds.appendChild(el("circle",{cx:RCX,cy:RCY,r:2.2,fill:"#9fb0d6"}));}
+const gbox=document.getElementById("groups");
+function drawGroups(){gbox.innerHTML="";KORDER.forEach(k=>{const r=AKIND[k],figs=ABOR.filter(f=>f.kind===k);
+  const d=document.createElement("div");d.className="gcard"+(activeKind===k?" active":"");d.dataset.k=k;d.style.borderLeftColor=r.col;
+  d.innerHTML=`<div class="r" style="color:${r.col}">${r.en}</div><div class="figs">${figs.map(f=>f.name.split(" ")[0].replace("—","")).join(" · ")}</div><div class="desc">${r.gloss}</div>`;
+  d.addEventListener("click",()=>setKind(k));gbox.appendChild(d);});}
+
+const strip=document.getElementById("strip");
+const SW=980,SH=340,mL=40,mR=14,mT=18,mB=30;
+let SDMIN=-72,SDMAX=35,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+function drawMWstrip(){const segs=[];let cur=[];for(let i=0;i<AMILKY.length;i++){const x=sx(rev(AMILKY[i][0]-START_RA)),y=sy(AMILKY[i][1]);if(cur.length){const px=cur[cur.length-1][0];if(Math.abs(x-px)>SW*0.5){segs.push(cur);cur=[];}}cur.push([x,y]);}if(cur.length)segs.push(cur);
+  segs.forEach(seg=>{if(seg.length<2)return;let d="M "+seg[0][0]+" "+seg[0][1];for(let i=1;i<seg.length;i++)d+=" L "+seg[i][0]+" "+seg[i][1];strip.appendChild(el("path",{d,class:"mw"}));});}
+function drawWestern(){if(!window.WCONST)return;window.WCONST.forEach(c=>{const stars=c[1],ls=c[2];
+  ls.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-START_RA)),x2=sx(rev(stars[b][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.7}));});
+  stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.3,fill:"#8fa0c8",opacity:.8})));
+  const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-START_RA)),0)/stars.length,cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+  const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});}
+const srad=m=>Math.max(2,5.6-m*0.7);
+function drawStrip(){strip.innerHTML="";drawMWstrip();if(westOverlay)drawWestern();
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  ABOR.forEach(f=>{const on=!activeKind||activeKind===f.kind,c=kc(f);
+    if(f.kind==="dark"){const cxp=sx(rev(f.cx-START_RA)),cyp=sy(f.cy),rxp=(f.rx/360)*(SW-mL-mR),ryp=(f.ry/(SDMAX-SDMIN))*(SH-mT-mB);
+      strip.appendChild(el("ellipse",{cx:cxp,cy:cyp,rx:rxp,ry:ryp,fill:c,opacity:on?.2:.05,stroke:c,"stroke-dasharray":"4 3","stroke-opacity":on?.55:.12}));
+      if(f.head){strip.appendChild(el("circle",{cx:sx(rev(f.head[0]-START_RA)),cy:sy(f.head[1]),r:5,fill:c,opacity:on?.5:.12,stroke:c,"stroke-opacity":.6}));}
+      const t=el("text",{x:cxp,y:cyp,"text-anchor":"middle","dominant-baseline":"central",fill:c,"font-size":11,"font-weight":700,opacity:on?.95:.16});t.textContent="Emu";strip.appendChild(t);}
+    else{f.lines.forEach(([p,q])=>{const x1=sx(rev(f.stars[p][0]-START_RA)),x2=sx(rev(f.stars[q][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(f.stars[p][1]),x2,y2:sy(f.stars[q][1]),stroke:c,"stroke-width":1.3,opacity:on?.65:.12}));});
+      f.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14})));
+      const m=f.stars[f.det];const t=el("text",{x:sx(rev(m[0]-START_RA)),y:sy(m[1])-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":10,opacity:on?1:.16});t.textContent=f.name.split(" ")[0].replace("—","");strip.appendChild(t);}
+    const d=DET.find(x=>x.n===f.n);const g=el("g",{});g.style.cursor="pointer";g.appendChild(el("rect",{x:sx(rev(d.ra-START_RA))-16,y:sy(d.dec)-12,width:32,height:22,fill:"transparent"}));
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});strip.appendChild(g);});}
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=14;
+const rr=dec=>rIn+((35-dec)/107)*(rOut-rIn);
+const cang=ra=>rev(ra-START_RA)-90;
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  drawMW(circle,rr,cpolar);
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  ABOR.forEach(f=>{const on=!activeKind||activeKind===f.kind,c=kc(f);
+    if(f.kind==="dark"){const[x,y]=cpolar(rr(f.cy),cang(f.cx));circle.appendChild(el("ellipse",{cx:x,cy:y,rx:Math.max(9,f.rx*0.9),ry:Math.max(6,f.ry*1.1),fill:c,opacity:on?.2:.05,stroke:c,"stroke-dasharray":"4 3","stroke-opacity":on?.55:.12}));
+      const t=el("text",{x:x,y:y,"text-anchor":"middle","dominant-baseline":"central",fill:c,"font-size":10,"font-weight":700,opacity:on?.95:.16});t.textContent="Emu";circle.appendChild(t);}
+    else{f.lines.forEach(([p,q])=>{const[x1,y1]=cpolar(rr(f.stars[p][1]),cang(f.stars[p][0])),[x2,y2]=cpolar(rr(f.stars[q][1]),cang(f.stars[q][0]));circle.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.2,opacity:on?.6:.1}));});
+      f.stars.forEach(s=>{const[x,y]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:x,cy:y,r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14}));});
+      const m=f.stars[f.det];const[lx,ly]=cpolar(rr(m[1]),cang(m[0]));const t=el("text",{x:lx,y:ly-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":9,opacity:on?1:.16});t.textContent=f.name.split(" ")[0].replace("—","");circle.appendChild(t);}
+    const d=DET.find(x=>x.n===f.n);const[gx,gy]=cpolar(rr(d.dec),cang(d.ra));const g=el("g",{});g.style.cursor="pointer";g.appendChild(el("circle",{cx:gx,cy:gy,r:12,fill:"transparent"}));
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+function capReset(){document.getElementById("cap").textContent=(mapView==="circle")
+  ?"North pole at the centre; the faint band is the Milky Way. Gold = star figures, the shadow = the Emu. Tap one for its story."
+  :"The Aboriginal figures along the Milky Way. The Emu is the dark shape. Tap one for its story.";}
+
+const tb=document.getElementById("tbodyA");
+function drawTable(){tb.innerHTML="";KORDER.forEach(k=>{ABOR.filter(f=>f.kind===k).forEach(f=>{const tr=document.createElement("tr");tr.dataset.n=f.n;if(activeKind&&activeKind!==f.kind)tr.classList.add("dim");
+  tr.innerHTML=`<td><span class="swatch" style="background:${kc(f)}"></span> <span class="rom">${f.kind==="dark"?"dark":"star"}</span></td>
+    <td><span class="nm" style="color:${kc(f)}">${f.name}</span><br><span class="rom">${f.en}</span></td>
+    <td class="west">${f.west}</td><td class="rom">${f.kind==="dark"?"dark cloud":f.stars.length+" ★"}</td>`;
+  tr.addEventListener("mouseenter",()=>hlRow(f.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+  tr.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});tb.appendChild(tr);});});}
+function hlRow(n,on){document.querySelectorAll("#tbodyA tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+function setKind(k){activeKind=activeKind===k?null:k;drawKinds();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".gcard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeKind));
+  document.getElementById("whint").textContent=activeKind?AKIND[activeKind].gloss:"Two kinds of figure: bright stars, and the dark Emu of the Milky Way.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+document.getElementById("westToggle").addEventListener("click",function(){westOverlay=!westOverlay;this.classList.toggle("active",westOverlay);this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay&&mapView!=="strip"){mapView="strip";document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+  drawStrip();document.getElementById("cap").innerHTML=westOverlay?"🌌 Western constellations (grey) over the Milky Way — the Emu lies in the dark lanes between them.":"";if(!westOverlay)capReset();});
+
+const apick=document.getElementById("apick");let selFig=5;
+function drawPicker(){apick.innerHTML="";ABOR.forEach(f=>{const d=document.createElement("div");d.className="achip"+(selFig===f.n?" active":"");d.dataset.n=f.n;d.style.borderLeftColor=kc(f);
+  d.innerHTML=`<div class="r" style="color:${kc(f)}">${f.name.split(" —")[0].split(" ").slice(0,2).join(" ")}</div>`;d.addEventListener("click",()=>openFig(f.n));apick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openFig(n){selFig=n;drawPicker();document.querySelectorAll(".achip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const f=ABOR.find(x=>x.n===n),c=kc(f);const W=460,H=360,pd=44;dsky.innerHTML="";
+  if(f.kind==="dark"){const ra0=f.cx-f.rx*1.3,ra1=f.cx+f.rx*1.3,dc0=f.cy-f.ry*1.6,dc1=f.cy+f.ry*1.6;
+    const X=ra=>pd+(ra1-ra)/(ra1-ra0)*(W-2*pd),Y=dec=>pd+(dc1-dec)/(dc1-dc0)*(H-2*pd);
+    const rxp=f.rx/(ra1-ra0)*(W-2*pd),ryp=f.ry/(dc1-dc0)*(H-2*pd);
+    dsky.appendChild(el("ellipse",{cx:X(f.cx),cy:Y(f.cy),rx:rxp,ry:ryp,fill:c,opacity:.22,stroke:c,"stroke-dasharray":"5 4","stroke-width":1.4}));
+    if(f.head){dsky.appendChild(el("circle",{cx:X(f.head[0]),cy:Y(f.head[1]),r:9,fill:c,opacity:.4,stroke:c,"stroke-width":1}));const ht=el("text",{x:X(f.head[0]),y:Y(f.head[1])-13,"text-anchor":"middle",fill:c,"font-size":10});ht.textContent="head (Coalsack)";dsky.appendChild(ht);}
+    const lb=el("text",{x:X(f.cx),y:Y(f.cy),"text-anchor":"middle","dominant-baseline":"central",fill:c,"font-size":13,"font-weight":700});lb.textContent="the Emu";dsky.appendChild(lb);
+  } else {
+    const ras=f.stars.map(s=>s[0]),decs=f.stars.map(s=>s[1]);let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+    if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+    const dc0=Math.min(...decs),dc1=Math.max(...decs);const padr=Math.max((ra1-ra0)*0.16,2),padd=Math.max((dc1-dc0)*0.16,2);
+    const raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+    const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+    const rad=mg=>Math.max(2.4,6.5-mg*0.7);
+    f.lines.forEach(([p,q])=>{dsky.appendChild(el("line",{x1:X(f.stars[p][0]),y1:Y(f.stars[p][1]),x2:X(f.stars[q][0]),y2:Y(f.stars[q][1]),class:"aline"}));});
+    const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+    f.stars.forEach((s,i)=>{const isDet=i===f.det,isBright=s[2]<1.6;const g=el("g",{});
+      g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?c:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+      const lbl=shortLbl(s[4]);if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}dsky.appendChild(g);});
+  }
+  document.getElementById("mdesc").innerHTML=`<h3 style="color:${c}">${f.name}</h3><p class="mean" style="color:var(--mute)">${f.en}</p><p class="mean">${f.dEN}</p>
+    <p class="fact"><span class="pill" style="border-color:${c};color:${c}">${AKIND[f.kind].en}</span><span class="pill">${f.west}</span></p>`;
+  const box=document.getElementById("mdesc");
+  if(f.kind==="dark"){const dk=document.createElement("div");dk.className="cross dk";dk.innerHTML=`🌑 A <b>dark constellation</b> — the Emu is made of the shadows between the stars, so it has no counterpart in the star-based Chinese or Indian skies.`;box.appendChild(dk);}
+  else{const cn={},ind={};f.stars.forEach(s=>{const L=crossLinks(s[0],s[1]);if(L.chinese)cn[L.chinese.mzh]=L.chinese.men||"";if(L.indian)ind[L.indian.iast]=L.indian.west.replace(/\s*\(.*/,"");});
+    const ck=Object.keys(cn),ik=Object.keys(ind);
+    const cnEl=document.createElement("div");cnEl.className="cross cn";cnEl.innerHTML=ck.length?`🐉 <b>Chinese sky:</b> shares stars with the ${ck.map(k=>`<span style="font-family:inherit">${k}</span>${cn[k]?" ("+cn[k]+")":""}`).join(", ")} mansion${ck.length>1?"s":""}. <a href="chinese-sky.html" style="color:var(--cyan)">See →</a>`:`🐉 <b>Chinese sky:</b> outside the 28 mansions (a far-southern figure).`;box.appendChild(cnEl);
+    const inEl=document.createElement("div");inEl.className="cross in";inEl.innerHTML=ik.length?`🪷 <b>Indian sky:</b> shares stars with nakshatra ${ik.map(k=>`<b>${k}</b> (${ind[k]})`).join(", ")}. <a href="indian-sky.html" style="color:var(--cyan)">See →</a>`:`🪷 <b>Indian sky:</b> off the nakshatra belt, so no nakshatra.`;box.appendChild(inEl);}}
+
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawKinds();drawGroups();drawStrip();drawCircle();drawTable();drawPicker();openFig(selFig);
+document.getElementById("whint").textContent="Two kinds of figure: bright stars, and the dark Emu of the Milky Way.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.gcard,.achip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["groups","apick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.gcard,.achip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /* SCOB Night-Sky — service worker: offline cache so the installed app opens with no signal */
-const CACHE = 'scob-sky-v81';
+const CACHE = 'scob-sky-v83';
 const ASSETS = [
   'scob-dashboard-v3.html',
   'main.html',
@@ -54,6 +54,16 @@ const ASSETS = [
   'inca-sky.html',
   'inca-tonight.html',
   'inca-sky-data.js',
+  'sky-culture-core.js',
+  'polynesian-sky.html',
+  'polynesian-tonight.html',
+  'polynesian-sky-data.js',
+  'aboriginal-sky.html',
+  'aboriginal-tonight.html',
+  'aboriginal-sky-data.js',
+  'greek-sky.html',
+  'greek-tonight.html',
+  'greek-sky-data.js',
   'sky-data.js',
   'scale-model.html',
   'highlights-card.html',
@@ -90,7 +100,7 @@ self.addEventListener('fetch', e => {
   // This is what prevents a stale cached version.js from pinning the footer to an old version.
   const url = e.request.url;
   const isPage = e.request.mode === 'navigate' || url.endsWith('.html');
-  const isLive = url.endsWith('version.js') || url.endsWith('astro-core.js');
+  const isLive = url.endsWith('version.js') || url.endsWith('astro-core.js') || url.endsWith('sky-culture-core.js');
   if (isPage || isLive) {
     e.respondWith(
       fetch(e.request).then(res => {
