@@ -1,5 +1,5 @@
 /* SCOB Night-Sky — service worker: offline cache so the installed app opens with no signal */
-const CACHE = 'scob-sky-v84';
+const CACHE = 'scob-sky-v85';
 const ASSETS = [
   'scob-dashboard-v3.html',
   'main.html',
@@ -21,6 +21,7 @@ const ASSETS = [
   'phone-astrophotography.html',
   'seestar.html',
   'telescope-types.html',
+  'space-telescopes.html',
   'moon-tonight.html',
   'tracking-methods.html',
   'tonights-tour.html',
