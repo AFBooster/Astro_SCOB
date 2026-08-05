@@ -5,14 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tonight's Highlights Card — SCOB</title>
 <meta name="description" content="Generate a shareable image of tonight's stargazing highlights over Singapore — Moon phase, the best planet and top targets — to post for the Science Centre Observatory.">
+<link rel="stylesheet" href="scob-theme.css">
 <style>
-:root{color-scheme:dark;--navy:#0b1733;--navy2:#13224a;--navy3:#1a2b56;--gold:#f5c542;--cyan:#5bd6e0;--white:#f4f6fb;--mute:#9fb0d6;--line:#33406b;}
 *{box-sizing:border-box;margin:0;}
 body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
 .wrap{max-width:640px;margin:0 auto;padding:0 16px 42px;}
 header{padding:18px 0 6px;}
 h1{font-size:22px;margin:0;color:var(--gold);}
-.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
 .bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .bar a,.bar button{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;background:none;cursor:pointer;}
 .bar button.alt{color:var(--white);border-color:var(--line);}
@@ -22,7 +21,6 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .cardwrap{margin:14px 0;text-align:center;}
 canvas{width:100%;max-width:460px;height:auto;border-radius:14px;border:1px solid var(--line);}
 .foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
-.foot a{color:var(--cyan);}
 </style>
 </head>
 <body>

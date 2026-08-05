@@ -9,32 +9,16 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>The Chinese Sky — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
 <style>
-:root{ color-scheme: dark;
-  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
-  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a;
-  --dragon:#5fd38a; --tortoise:#6ea8ff; --tiger:#dfe4ee; --bird:#ff7a6b; --star:#f4f6fb; }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--navy);color:var(--white);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
-body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
 .zh{font-family:"Songti SC","STSong","Noto Serif SC",serif;}
-.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
 /* language switch */
 .en-only,.zh-only{}
 body.lang-zh .en-only{display:none;}
 body:not(.lang-zh) .zh-only{display:none;}
-
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
 .titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
 .loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
-.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
-.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
 .btnmini.on{background:#20345f;color:var(--white);}
-
-.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
 .card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
 .card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
 .lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
@@ -78,7 +62,6 @@ h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
 
 .tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;}
-thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
 tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
 tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
@@ -104,11 +87,6 @@ tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
 .mdesc h3{margin:0 0 4px;font-size:17px;}.mdesc h3 .z{color:var(--gold);}
 .mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
 .mdesc .fact{font-size:12.5px;color:var(--mute);margin:0;}
-
-.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
-.foot a{color:var(--cyan);}
-.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
 </style>
 </head>
 <body>
@@ -226,10 +204,12 @@ tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
   </div>
 </div>
 
+<script src="sky-culture-core.js"></script>
 <script src="chinese-sky-data.js"></script>
 <script>
+const {el, rev} = window.SkyCore;   /* shared helpers — see sky-culture-core.js */
 const SVGNS="http://www.w3.org/2000/svg";
-function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
 const COL={dragon:"#5fd38a",tortoise:"#6ea8ff",tiger:"#dfe4ee",bird:"#ff7a6b"};
 let lang = (function(){try{return localStorage.getItem("scobLangCS")||"en";}catch(e){return "en";}})();
 const L=(en,zh)=>lang==="zh"?zh:en;
@@ -251,7 +231,7 @@ const DET=M.map(m=>({n:m.n,zh:m.zh,pin:m.pin,en:m.en,sym:m.sym,westDet:m.westDet
 const HORN_RA=DET.find(d=>d.n===1).ra;            // base the RA sweep on the Horn's own star
 DET.forEach(d=>d.rs=(d.ra-HORN_RA+360)%360);
 let activeSym=null, mapView="circle";
-const rev=x=>((x%360)+360)%360;   // used by the Western-constellation overlay
+   // used by the Western-constellation overlay
 
 /* ---------- WHEEL ---------- */
 const wheel=document.getElementById("wheel");

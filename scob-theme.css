@@ -1,0 +1,186 @@
+/* SCOB Night-Sky — shared theme.
+ * ===========================================================================
+ * SINGLE SOURCE OF TRUTH for the palette and the shared page furniture.
+ *
+ * Built by measuring all 55 pages of the v3.82 tree, not by guesswork. Every
+ * value below is the variant that already appears on the most pages, so linking
+ * this file changes nothing visually — it only removes the need for each page to
+ * carry its own copy.
+ *
+ * WHAT IT REPLACES
+ *   19 distinct :root blocks, all trying to be the same palette
+ *   ~86 KB of byte-identical rules (.foot a on 44 pages, thead th on 20,
+ *   .btnmini on 20, .backlink on 20, body.night on 21, …)
+ *
+ * USAGE — in <head>, BEFORE the page's own <style>:
+ *     <link rel="stylesheet" href="scob-theme.css">
+ * Then let migrate-theme.js strip the now-redundant rules:
+ *     node migrate-theme.js --apply <page>.html
+ * Anything page-specific stays inline and still wins, because the inline
+ * <style> comes after the <link>.
+ *
+ * PRINT PAGES — checklist.html, object-cards.html and qr-poster.html print on
+ * white paper. They get class="paper" on <body> instead of their own palette.
+ *
+ * NOT DEFINED HERE — `--dark`. aboriginal-*.html sets it to #c58b6a and
+ * inca-*.html to #b98cff: one name, two colours, both in the dark theme. That is
+ * real drift, not a shared token, so it stays page-local until you decide which
+ * one it should be (or rename them --dark-ochre / --dark-violet).
+ *
+ * Cache: add to sw.js ASSETS — ./check-release.sh --fix does it for you.
+ * Deploy: the Pages workflow stages *.css as of v3.82.
+ * ======================================================================== */
+
+/* ── Palette (the 48-page dark set) ──────────────────────────────────────── */
+:root{
+  color-scheme:dark;
+
+  --navy:#0b1733;      /* page background            */
+  --navy2:#13224a;     /* card background            */
+  --navy3:#1a2b56;     /* inset / control background */
+  --gold:#f5c542;      /* headings, emphasis         */
+  --cyan:#5bd6e0;      /* links, buttons, nav pills  */
+  --white:#f4f6fb;     /* body text                  */
+  --mute:#9fb0d6;      /* secondary text             */
+  --line:#33406b;      /* borders, rules             */
+
+  --green:#5fd38a;     /* good / go / above horizon  */
+  --red:#ff6b6b;       /* bad / no-go / below        */
+  --orange:#ff9d3c;    /* caution / warm accent      */
+  --purple:#b79cff;
+  --pink:#ff8ac2;
+  --amber:#ffb454;
+  --saffron:#ff9d3c;
+
+  /* Chinese sky — the Four Symbols */
+  --dragon:#5fd38a;    /* 青龍 east  */
+  --tortoise:#6ea8ff;  /* 玄武 north */
+  --tiger:#dfe4ee;     /* 白虎 west  */
+  --bird:#ff7a6b;      /* 朱雀 south */
+  --star:#f4f6fb;
+
+  /* Type — this stack is written out longhand on 50+ pages today */
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+  --radius:14px;
+  --radius-sm:9px;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  background:var(--navy);
+  color:var(--white);
+  font-family:var(--ui);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-text-size-adjust:100%;
+}
+
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
+
+/* ── Page header ─────────────────────────────────────────────────────────── */
+header{
+  position:sticky;top:0;z-index:10;
+  background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));
+  padding:14px 0 12px;
+}
+h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
+.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
+
+/* ── Buttons & links ─────────────────────────────────────────────────────── */
+.backlink{
+  font-size:13px;color:var(--cyan);text-decoration:none;
+  border:1px solid var(--cyan);border-radius:var(--radius-sm);
+  padding:7px 11px;font-weight:700;white-space:nowrap;
+}
+.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{
+  color:var(--cyan);font-weight:700;font-size:13px;
+  border:1px solid var(--cyan);border-radius:var(--radius-sm);
+  padding:9px 16px;text-decoration:none;
+}
+.btnmini{
+  background:transparent;color:var(--cyan);
+  border:1px solid var(--cyan);border-radius:var(--radius-sm);
+  padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.bar a{
+  color:var(--cyan);font-weight:700;font-size:12.5px;
+  border:1px solid var(--cyan);border-radius:var(--radius-sm);
+  padding:7px 12px;text-decoration:none;
+}
+
+/* ── Cards & chips ───────────────────────────────────────────────────────── */
+.card{
+  background:var(--navy2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:clamp(14px,4vw,18px);margin-top:16px;
+}
+.pill{
+  display:inline-block;border:1px solid var(--line);border-radius:999px;
+  padding:2px 9px;font-size:11.5px;color:var(--mute);margin:0 5px 5px 0;
+}
+
+/* ── Tables ──────────────────────────────────────────────────────────────── */
+thead th{
+  text-align:left;color:var(--mute);font-weight:700;font-size:11px;
+  letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+}
+
+/* ── The "tonight" control bar & all-sky dome (the 10 -tonight pages) ────── */
+.ctrlbar{
+  display:flex;align-items:center;gap:9px;margin-top:11px;
+  background:var(--navy2);border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;flex-wrap:wrap;
+}
+.datein,.timein{
+  font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:8px 10px;font-family:inherit;
+}
+#dome{
+  width:100%;height:auto;display:block;max-width:440px;margin:0 auto;
+  border-radius:12px;
+  background:radial-gradient(circle at 50% 50%,#16224a 0%,#0b1220 78%);
+}
+.domenote{
+  font-size:13px;color:var(--white);text-align:center;margin:6px 0 0;
+  padding:8px 11px;background:var(--navy3);border:1px solid var(--gold);
+  border-radius:10px;line-height:1.45;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.foot{
+  margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;
+  border-top:1px solid var(--line);padding-top:14px;
+}
+.foot a{color:var(--cyan);}
+
+/* ── Red / night mode ────────────────────────────────────────────────────── */
+body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
+
+/* ── Print / paper pages ─────────────────────────────────────────────────── */
+/* checklist.html, object-cards.html, qr-poster.html — add class="paper" to <body>
+   instead of redefining the palette inline. */
+body.paper{
+  color-scheme:light;
+  --navy:#ffffff;--navy2:#ffffff;--navy3:#f3f6fc;
+  --gold:#c8971a;--cyan:#0a7f8c;
+  --white:#1a2440;--ink:#1a2440;--mute:#5a6683;--line:#c9d2e6;
+}
+@media print{
+  .no-print{display:none !important;}
+  .card{break-inside:avoid;}
+}
+
+/* ── Motion ──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    transition-duration:.001ms !important;
+  }
+}

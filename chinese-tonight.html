@@ -9,32 +9,17 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>The Chinese Sky Tonight — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
 <style>
-:root{ color-scheme: dark;
-  --navy:#0b1733; --navy2:#13224a; --navy3:#1a2b56; --gold:#f5c542; --cyan:#5bd6e0;
-  --white:#f4f6fb; --mute:#9fb0d6; --line:#33406b; --red:#ff6b6b; --green:#5fd38a;
-  --dragon:#5fd38a; --tortoise:#6ea8ff; --tiger:#dfe4ee; --bird:#ff7a6b; }
-*{box-sizing:border-box;}
-body{margin:0;background:var(--navy);color:var(--white);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
-body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
 .zh{font-family:"Songti SC","STSong","Noto Serif SC",serif;}
-.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,22px) 40px;}
 body.lang-zh .en-only{display:none;}
 body:not(.lang-zh) .zh-only{display:none;}
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:14px 0 12px;}
 .titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
 .loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
-.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-weight:700;white-space:nowrap;}
-.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
-.ctrlbar{display:flex;align-items:center;gap:9px;margin-top:11px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex-wrap:wrap;}
-.datein,.timein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;}
 .datein::-webkit-calendar-picker-indicator,.timein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
 .daynote{font-size:12.5px;color:var(--mute);}
 #timeSlider{flex:1 1 100%;accent-color:var(--gold);height:8px;cursor:pointer;margin-top:6px;}
 .sctime{font-variant-numeric:tabular-nums;font-weight:700;color:var(--gold);font-size:13px;}
-.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,4vw,18px);margin-top:16px;}
 .card h2{margin:0 0 10px;font-size:15px;color:var(--gold);}
 .card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
 .glance{font-size:clamp(15px,4.2vw,18px);line-height:1.5;}
@@ -53,11 +38,9 @@ h1{font-size:clamp(18px,5vw,23px);margin:0;color:var(--gold);}
 .chip .st{font-size:13px;margin-top:5px;font-weight:700;}
 .domewrap{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
 @media(min-width:820px){.domewrap{grid-template-columns:minmax(0,440px) minmax(0,1fr);}}
-#dome{width:100%;height:auto;display:block;max-width:440px;margin:0 auto;border-radius:12px;background:radial-gradient(circle at 50% 50%,#16224a 0%,#0b1220 78%);}
 .domehint{font-size:12px;color:var(--mute);text-align:center;margin:8px 0 0;}
 .tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;}
-thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
 tbody td{padding:9px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
 tbody tr.hl{background:#20345f;}
 .cn2{font-size:16px;font-weight:600;}.pin{color:var(--mute);font-size:12px;}
@@ -70,10 +53,6 @@ tbody tr.hl{background:#20345f;}
 .state.mer{background:rgba(245,197,66,.15);color:#f7d984;}
 .belowhead{margin:16px 0 0;font-size:12.5px;color:var(--mute);cursor:pointer;user-select:none;}
 .below tbody tr{opacity:.55;}
-.foot{margin-top:26px;font-size:11.5px;color:var(--mute);line-height:1.7;border-top:1px solid var(--line);padding-top:14px;}
-.foot a{color:var(--cyan);}
-.btnrow{text-align:center;margin:18px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:9px 16px;text-decoration:none;}
 .encnow{display:flex;flex-direction:column;gap:9px;}
 .encrow{padding:10px 12px;background:var(--navy3);border:1px solid var(--line);border-left-width:4px;border-radius:11px;}
 .encrow .eh .z{font-size:17px;font-weight:700;}
@@ -89,7 +68,6 @@ tbody tr.hl{background:#20345f;}
 .enchint a{color:var(--cyan);}
 .encstar{cursor:pointer;transition:border-color .12s;}
 .encstar:hover{border-color:var(--gold);}
-.domenote{font-size:13px;color:var(--white);text-align:center;margin:6px 0 0;padding:8px 11px;background:var(--navy3);border:1px solid var(--gold);border-radius:10px;line-height:1.45;}
 .domenote b{color:var(--gold);}
 #upBody tr{cursor:pointer;} #belowBody tr{cursor:pointer;}
 #dome g[data-loc]{cursor:pointer;}
@@ -159,11 +137,13 @@ tbody tr.hl{background:#20345f;}
   </div>
 </div>
 
+<script src="sky-culture-core.js"></script>
 <script src="chinese-sky-data.js"></script>
 <script src="astro-core.js"></script>
 <script>
+const {el, jd, nextFridayYMD, pad, rev, sgtNow} = window.SkyCore;   /* shared helpers — see sky-culture-core.js */
 const SVGNS="http://www.w3.org/2000/svg";
-function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
 const COL={dragon:"#5fd38a",tortoise:"#6ea8ff",tiger:"#dfe4ee",bird:"#ff7a6b"};
 const SYMS={dragon:{zh:"蒼龍",en:"Azure Dragon"},tortoise:{zh:"玄武",en:"Black Tortoise"},tiger:{zh:"白虎",en:"White Tiger"},bird:{zh:"朱雀",en:"Vermilion Bird"}};
 const SYMORDER=["dragon","tortoise","tiger","bird"];
@@ -177,13 +157,10 @@ const HORN_RA=M28.find(m=>m.n===1).ra;            // base the RA sweep on the Ho
 M28.forEach(m=>m.rs=(m.ra-HORN_RA+360)%360);
 
 const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI;
-const rev=x=>((x%360)+360)%360;
-const pad=n=>String(n).padStart(2,"0");
+
 const WD_EN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],WD_ZH=["日","一","二","三","四","五","六"];
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-function sgtNow(){const n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
-function nextFridayYMD(){const d=sgtNow();const dow=d.getDay();let add=(5-dow+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return{y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};}
-function jd(date){return date.getTime()/86400000+2440587.5;}
+
 const CMP=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 const CMPZH=["北","北北東","東北","東北東","東","東南東","東南","南南東","南","南南西","西南","西南西","西","西北西","西北","北北西"];
 const compass=az=>lang==="zh"?CMPZH[Math.round(az/22.5)%16]:CMP[Math.round(az/22.5)%16];

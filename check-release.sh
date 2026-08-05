@@ -29,7 +29,7 @@ FIX=0; [ "${1:-}" = "--fix" ] && FIX=1
 
 # Files that are deliberately NOT shipped/cached (dev-only, never served).
 EXCLUDE_PAGES=()                                    # pages exempt from the version footer
-EXCLUDE_ASSETS=(sw.js test-astro.js test-logic.js test-pages.js)
+EXCLUDE_ASSETS=(sw.js test-astro.js test-logic.js test-pages.js migrate-theme.js)
 # Redirect stubs kept alive for people who installed the PWA from an old URL.
 # They are deliberately unlinked, so the orphan check should not nag about them.
 STUBS=(main.html scob-dashboard.html occultations.html iss-transits.html identify.html audio-tour.html)
@@ -154,9 +154,14 @@ if [ -n "$VER" ] && grep -aEq "\*\*${VER}\*\*.*current" README.md; then
 else
   bad "README has no *(current)* row for $VER"
 fi
-CURROWS=$(grep -acE '\*\(current\)\*' README.md || true)
+# Count only the version CELL marker (| **vN.NN** *(current)* |), not the words
+# "*(current)*" appearing inside a changelog description — the v3.82 entry
+# describes this very check and would otherwise flag itself.
+CURROWS=$(grep -acE '^\|[[:space:]]*\*\*v[0-9]+\.[0-9]+\*\*[[:space:]]*\*\(current\)\*' README.md || true)
 if [ "${CURROWS:-0}" -gt 1 ]; then
-  bad "README has $CURROWS *(current)* rows — only the newest release should be marked"
+  bad "README has $CURROWS rows marked *(current)* — only the newest release should be"
+elif [ "${CURROWS:-0}" -eq 0 ]; then
+  bad "no release row is marked *(current)*"
 fi
 if [ -n "$CACHE" ] && grep -aqF "$CACHE" README.md; then
   ok "README mentions $CACHE"
