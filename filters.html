@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Imaging &amp; Visual Filters — SCOB Night-Sky</title>
+<meta name="description" content="A reference to astrophotography and visual filters for the Science Centre Observatory: broadband, narrowband, dual-band, LRGB, planetary, lunar and solar filters — what each does, the wavelengths it isolates and when to reach for it.">
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;}
+.intro{font-size:14px;color:var(--white);margin:14px 0 4px;}
+.toc{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 2px;}
+.toc a{font-size:12px;color:var(--cyan);border:1px solid var(--line);border-radius:999px;padding:5px 11px;text-decoration:none;}
+.toc a:hover{border-color:var(--cyan);}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-top:16px;}
+.card h2{margin:0 0 4px;font-size:16px;color:var(--orange);}
+.card h2 .em{font-size:19px;}
+.sub{color:var(--mute);font-size:13px;margin:0 0 10px;}
+h3{font-size:14.5px;margin:14px 0 5px;color:var(--gold);}
+p{margin:0 0 10px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:680px){.grid2,.grid3{grid-template-columns:1fr;}}
+.mini{background:var(--navy3);border:1px solid var(--line);border-radius:11px;padding:12px 13px;}
+.mini h4{margin:0 0 5px;font-size:13.5px;color:var(--white);}
+table{width:100%;border-collapse:collapse;margin:8px 0 2px;font-size:13px;}
+thead th{text-align:left;color:var(--mute);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:8px 8px;border-bottom:1px solid var(--line);}
+tbody td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px;border:1px solid rgba(255,255,255,.25);}
+.line{font-weight:800;}
+.line.ha{color:#ff8a7a;}
+.line.oiii{color:#5fe0c9;}
+.line.sii{color:#ff9db0;}
+.chip{display:inline-block;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mute);margin:0 4px 4px 0;}
+.spectrum{height:22px;border-radius:7px;margin:10px 0 2px;position:relative;border:1px solid var(--line);
+  background:linear-gradient(90deg,#7d00ff 0%,#0026ff 12%,#00b3ff 26%,#00ff66 40%,#c6ff00 52%,#ffdd00 62%,#ff8800 74%,#ff0000 88%,#4d0000 100%);}
+.spectrum .mk{position:absolute;top:-5px;width:2px;height:32px;background:#fff;box-shadow:0 0 6px #fff;}
+.spectrum .lb{position:absolute;top:28px;transform:translateX(-50%);font-size:10.5px;white-space:nowrap;}
+.scale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mute);margin-top:26px;}
+.warn{background:rgba(255,107,107,.16);border:1px solid var(--red);border-radius:11px;padding:11px 13px;margin:12px 0;font-size:13px;color:#ffd0d0;}
+.warn b{color:#fff;}
+.note{background:rgba(245,197,66,.10);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:10px 13px;margin:12px 0;font-size:13px;}
+.note b{color:var(--gold);}
+.scob{background:linear-gradient(180deg,rgba(91,214,224,.10),rgba(183,156,255,.07));border:1px solid rgba(91,214,224,.35);}
+ul{margin:5px 0 10px;padding-left:19px;}
+li{margin:4px 0;font-size:13.5px;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.7;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎚️ Imaging &amp; Visual Filters</h1>
+    <div class="loc">What every filter does, the light it isolates and when to reach for it — for imaging and the eyepiece. Science Centre Observatory, Jurong.</div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="telescope-types.html">🔭 Telescope guide</a>
+      <a href="phone-astrophotography.html">📱 Phone astrophotography</a>
+      <a href="seestar.html">🤖 Seestar</a>
+    </div>
+  </header>
+
+  <p class="intro">Every astro filter does one of two jobs: <b>let the good light in</b> (the glow of a nebula, the reflected light off a planet) or <b>keep the bad light out</b> (Singapore's heavy streetlight glow, scattered moonlight, infrared your optics can't focus). The right filter can lift a target out of an orange city sky that swallows it in a plain photograph.</p>
+
+  <div class="toc">
+    <a href="#lines">The key emission lines</a>
+    <a href="#cam">Mono vs OSC</a>
+    <a href="#broad">Broadband</a>
+    <a href="#narrow">Narrowband</a>
+    <a href="#dual">Dual-band</a>
+    <a href="#palette">Palettes</a>
+    <a href="#lrgb">LRGB</a>
+    <a href="#planet">Planetary &amp; lunar</a>
+    <a href="#solar">Solar</a>
+    <a href="#band">Bandwidth</a>
+    <a href="#choose">How to choose</a>
+    <a href="#cheat">Cheat sheet</a>
+  </div>
+
+  <div class="card" id="lines">
+    <h2>🌈 The four emission lines that matter</h2>
+    <p class="sub">Different objects glow at different wavelengths. Narrowband filters isolate slivers just a few nanometres (nm) wide around these.</p>
+    <div class="spectrum">
+      <div class="mk" style="left:22.5%"><div class="lb" style="color:#5fe0c9">OIII 500.7</div></div>
+      <div class="mk" style="left:33.2%"><div class="lb" style="top:44px;color:#5fe0c9">Hβ 486</div></div>
+      <div class="mk" style="left:86.4%"><div class="lb" style="color:#ff8a7a">Hα 656.3</div></div>
+      <div class="mk" style="left:90.5%"><div class="lb" style="top:44px;color:#ff9db0">SII 671.6</div></div>
+    </div>
+    <div class="scale"><span>380 nm · violet</span><span>550 nm · green</span><span>700 nm · deep red</span></div>
+    <p class="sub" style="margin-top:20px">Hydrogen-alpha (Hα) and sulphur-II (SII) sit in the deep red; doubly-ionised oxygen (OIII) and hydrogen-beta (Hβ) sit in the blue-green.</p>
+  </div>
+
+  <div class="card" id="cam">
+    <h2>📷 The fork in the road: mono vs one-shot-colour</h2>
+    <p class="sub">Which filters you buy depends entirely on your camera.</p>
+    <div class="grid2">
+      <div class="mini">
+        <h4>Monochrome camera</h4>
+        <p style="font-size:13px">Records pure brightness. You shoot the target repeatedly through separate filters — R, G, B, and/or Hα, OIII, SII — then combine in software. Highest resolution and full control, but needs a filter wheel and more time.</p>
+      </div>
+      <div class="mini">
+        <h4>One-shot-colour (OSC / DSLR / smart scope)</h4>
+        <p style="font-size:13px">Has a built-in colour matrix, so it captures colour in a single exposure. You screw one filter in front and go — usually a light-pollution or dual-band filter. Simpler, faster, no wheel. The Observatory's Seestar works this way.</p>
+      </div>
+    </div>
+    <div class="note"><b>Rule of thumb:</b> mono imagers buy <i>individual</i> line filters (Hα, OIII, SII) and LRGB sets; OSC imagers buy <i>combination</i> filters (dual-band, tri-band, broadband) that pass several useful bands at once.</div>
+  </div>
+
+  <div class="card" id="broad">
+    <h2>🌫️ Broadband filters</h2>
+    <p class="sub">Wide passbands that shape or clean up the whole visible spectrum rather than isolating one line.</p>
+    <table>
+      <thead><tr><th>Filter</th><th>Passes / blocks</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:#dfe7ff"></span><b>UV/IR cut</b></td><td>Passes visible ~400–700 nm; blocks UV &amp; infrared</td><td>Baseline for refractor imaging — keeps stars tight</td></tr>
+        <tr><td><span class="sw" style="background:#f4f6ff"></span><b>Luminance (L)</b></td><td>Full clean visible band, blocks UV/IR</td><td>The detail layer in mono LRGB</td></tr>
+        <tr><td><span class="sw" style="background:#7fe3c4"></span><b>Light-pollution / CLS</b></td><td>Blocks sodium &amp; mercury streetlight; passes the rest</td><td>Galaxies &amp; clusters from suburbia</td></tr>
+        <tr><td><span class="sw" style="background:#9be0ff"></span><b>UHC</b></td><td>Passes Hα/Hβ/OIII, suppresses the gaps</td><td>Emission nebulae; works visually too</td></tr>
+        <tr><td><span class="sw" style="background:#c9d2ea"></span><b>Neutral density</b></td><td>Dims uniformly</td><td>Taming a bright Moon at the eyepiece</td></tr>
+      </tbody>
+    </table>
+    <div class="warn">⚠️ <b>Broadband light-pollution filters can't work miracles.</b> Modern LED streetlights emit a broad, continuous spectrum, so these help far less than in the old sodium-lamp era. From a sky as bright as Singapore's, <b>narrowband is the real answer.</b></div>
+  </div>
+
+  <div class="card" id="narrow">
+    <h2>🎯 Narrowband line filters</h2>
+    <p class="sub">Very narrow passbands (3–12 nm) centred on one emission line — the heart of nebula imaging.</p>
+    <p>Because they reject almost the entire spectrum except one thin slice, narrowband filters cut light pollution and even moonlight to near-irrelevance — you can image bright emission nebulae from the city under a full Moon. They only work on <b>emission targets</b> (nebulae glowing at specific lines), not on galaxies or star clusters.</p>
+    <div class="grid3">
+      <div class="mini"><span class="line ha">Hα · 656.3 nm</span><h4 style="margin-top:6px">Hydrogen-alpha</h4><p style="font-size:12.5px">Deep red. The most abundant, highest-signal line. The single most useful narrowband filter and a great first buy.</p></div>
+      <div class="mini"><span class="line oiii">OIII · 500.7 nm</span><h4 style="margin-top:6px">Oxygen-III</h4><p style="font-size:12.5px">Teal blue-green. Planetary nebulae, supernova remnants, delicate outer shells. Usually the second filter added.</p></div>
+      <div class="mini"><span class="line sii">SII · 671.6 nm</span><h4 style="margin-top:6px">Sulphur-II</h4><p style="font-size:12.5px">Deep red, just beyond Hα. Faint and slow, but the third channel of the classic Hubble palette.</p></div>
+    </div>
+    <p style="margin-top:12px"><span class="chip">Hβ · 486.1 nm</span><span class="chip">NII · 658.4 nm</span> Hydrogen-beta helps with a few faint objects; NII sits so close to Hα that only very narrow filters separate them.</p>
+    <div class="note"><b>Narrower = darker sky, but slower &amp; pricier.</b> A 3 nm filter gives blacker backgrounds and better Moon rejection than a 7 nm, but passes less light (longer exposures) and costs more — and needs a well-corrected, not-too-fast optical system.</div>
+  </div>
+
+  <div class="card" id="dual">
+    <h2>🔀 Dual- &amp; multi-band filters (for OSC)</h2>
+    <p class="sub">The clever compromise that brings narrowband to one-shot-colour cameras.</p>
+    <p>These pass two or more narrow bands at once — most commonly Hα and OIII. On a colour sensor the red pixels catch the Hα and the blue-green pixels catch the OIII, so a single exposure gives a colourful nebula with heavy light-pollution rejection. No filter wheel, no separate subs.</p>
+    <table>
+      <thead><tr><th>Type</th><th>Bands</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Dual-band</b></td><td>Hα + OIII</td><td>The go-to OSC nebula filter; sold at ~7 nm and ~3 nm widths.</td></tr>
+        <tr><td><b>Tri-band</b></td><td>Hα + Hβ + OIII</td><td>Adds the Hβ region for a little more blue signal.</td></tr>
+        <tr><td><b>Quad-band</b></td><td>Hα + SII + Hβ + OIII</td><td>All four workhorse lines for fuller nebula colour on OSC.</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Naming can mislead.</b> "L-eNhance", "L-eXtreme", "Duo-Band", "ALP-T" and the like are brand names — always check the actual <i>bands</i> and <i>bandwidth</i> in the spec sheet, not the marketing label.</div>
+  </div>
+
+  <div class="card" id="palette">
+    <h2>🎨 Narrowband palettes</h2>
+    <p class="sub">Narrowband data is monochrome per line, so you choose which line becomes which colour channel. It's a creative choice, not a physical one.</p>
+    <table>
+      <thead><tr><th>Palette</th><th>R / G / B</th><th>Look</th></tr></thead>
+      <tbody>
+        <tr><td><b>SHO (Hubble)</b></td><td>SII→R, Hα→G, OIII→B</td><td>The iconic gold-and-teal "Hubble" look. Needs all three filters.</td></tr>
+        <tr><td><b>HOO (bicolour)</b></td><td>Hα→R, OIII→G&amp;B</td><td>Natural-looking red/blue nebulae from just two bands — ideal for dual-band OSC.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" id="lrgb">
+    <h2>🟥🟩🟦 LRGB filters (mono broadband colour)</h2>
+    <p class="sub">The classic way a mono camera makes a true-colour image.</p>
+    <p>Shoot four stacks and combine: a high-detail <b>Luminance</b> layer for sharpness and depth, plus <b>Red</b>, <b>Green</b> and <b>Blue</b> for colour. This is the standard approach for galaxies, clusters and reflection nebulae — broadband targets where narrowband doesn't apply. Many advanced images blend both: LRGB for natural star colour, with Hα mixed into red to boost nebulosity.</p>
+    <p><span class="sw" style="background:#f4f6ff"></span><b>L</b> — brightness/detail master (most exposure time) &nbsp; <span class="sw" style="background:#ff5a5a"></span><b>R</b> &nbsp; <span class="sw" style="background:#57e06a"></span><b>G</b> &nbsp; <span class="sw" style="background:#5a8bff"></span><b>B</b> — the colour channels.</p>
+  </div>
+
+  <div class="card" id="planet">
+    <h2>🪐 Planetary &amp; lunar filters</h2>
+    <p class="sub">A different world — fast video of small, bright targets, fighting atmospheric blur rather than light pollution.</p>
+    <table>
+      <thead><tr><th>Filter</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><b>IR-pass (642 / 685 / 742 nm)</b></td><td>Passes only infrared, which cuts through turbulence — sharper Mars &amp; Moon in poor seeing (common in humid Singapore air).</td></tr>
+        <tr><td><b>UV-pass (~350 nm)</b></td><td>Reveals Venus cloud structure invisible to the eye.</td></tr>
+        <tr><td><b>Methane band (889 nm)</b></td><td>Striking contrast on Jupiter &amp; Saturn cloud belts (specialist, slow).</td></tr>
+        <tr><td><b>Wratten colour (#21, #80A, #23A…)</b></td><td>Boost features — blue enhances Mars clouds &amp; Jupiter's belts; red sharpens surface markings.</td></tr>
+        <tr><td><b>ND / polarising</b></td><td>Tame the Moon's glare; variable polarisers dim smoothly.</td></tr>
+        <tr><td><b>ADC (dispersion corrector)</b></td><td>A prism device — not a colour filter — that realigns the R/G/B smearing on low-altitude targets.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" id="solar">
+    <h2>☀️ Solar filters</h2>
+    <p class="sub">For imaging the Sun — the one category where a mistake causes instant, permanent damage.</p>
+    <div class="warn">⚠️ <b>Never</b> point a telescope, finder or camera at the Sun without a certified full-aperture solar filter fitted over the <b>front</b> of the instrument. Ordinary ND, polarising or screw-in "sun" eyepiece filters are <b>not</b> safe and can shatter. Eye and sensor damage is instantaneous. See the <a href="solar.html">Daytime / Solar mode</a> page for the full safety checklist.</div>
+    <table>
+      <thead><tr><th>Filter</th><th>What you see</th></tr></thead>
+      <tbody>
+        <tr><td><b>White-light (front) — glass or Baader film</b></td><td>The photosphere: sunspots, granulation. Attaches to the front aperture, blocks ~99.999% of light.</td></tr>
+        <tr><td><b>Hydrogen-alpha solar (etalon scope)</b></td><td>Prominences, filaments, flares. A very narrow (&lt;0.1 nm) system — different from imaging Hα filters.</td></tr>
+        <tr><td><b>Calcium-K (393 nm)</b></td><td>The chromosphere in violet — plage and active regions.</td></tr>
+        <tr><td><b>Herschel wedge</b></td><td>A prism (refractors only) for very high-contrast white-light imaging.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" id="band">
+    <h2>📏 Understanding bandwidth (FWHM)</h2>
+    <p class="sub">The single number that separates a budget filter from a premium one.</p>
+    <p>Bandwidth — quoted as <b>FWHM</b> (full width at half maximum, in nm) — is how wide a slice of spectrum the filter passes. Narrower means darker skies and better rejection, but lower throughput and higher cost.</p>
+    <table>
+      <thead><tr><th>Width</th><th>Character</th><th>Best when</th></tr></thead>
+      <tbody>
+        <tr><td><b>12 nm +</b></td><td>Bright, forgiving, fast, cheap</td><td>Dark skies, fast optics, beginners</td></tr>
+        <tr><td><b>6–7 nm</b></td><td>The popular sweet spot</td><td>Suburban skies, most amateur setups</td></tr>
+        <tr><td><b>3 nm −</b></td><td>Blackest sky, best Moon/LP rejection</td><td>Heavy light pollution, full Moon, premium rigs</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Faster than f/4? Mind the band-shift.</b> Very narrow filters shift their passband under steep light cones from fast optics, dimming the field edges. Filter makers publish which f-ratios each design tolerates — check before pairing a 3 nm filter with a very fast astrograph.</div>
+  </div>
+
+  <div class="card" id="choose">
+    <h2>🧭 How to choose</h2>
+    <table>
+      <thead><tr><th>Your situation</th><th>Start here</th></tr></thead>
+      <tbody>
+        <tr><td>OSC / smart scope, city sky, want nebulae</td><td>A <b>dual-band (Hα+OIII)</b> filter — the best value in astrophotography</td></tr>
+        <tr><td>OSC, dark skies, galaxies &amp; clusters</td><td>A <b>UV/IR cut</b> or mild broadband filter — dual-band won't help broadband targets</td></tr>
+        <tr><td>Mono camera, first filters</td><td><b>LRGB set</b> for broadband + <b>Hα</b> for nebulae</td></tr>
+        <tr><td>Mono, going full narrowband</td><td>Add <b>OIII</b> then <b>SII</b> to shoot the SHO palette</td></tr>
+        <tr><td>Planets &amp; the Moon</td><td><b>IR/UV-pass</b>, colour Wrattens, an <b>ADC</b>, and an ND for the Moon</td></tr>
+        <tr><td>The Sun</td><td>A certified <b>front white-light</b> filter — or a dedicated solar Hα scope</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Match the filter size to your sensor.</b> Filters come as 1.25"/2" round mounted, or unmounted 31/36/50 mm for wheels. Undersized filters vignette large sensors — size to the camera, not just the scope.</div>
+  </div>
+
+  <div class="card" id="cheat">
+    <h2>⚡ One-glance cheat sheet</h2>
+    <table>
+      <thead><tr><th>Filter</th><th>Line / band</th><th>Camera</th><th>Best target</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:#dfe7ff"></span>UV/IR cut</td><td>~400–700 nm</td><td>OSC / Mono</td><td>Everything (baseline)</td></tr>
+        <tr><td><span class="sw" style="background:#f4f6ff"></span>Luminance</td><td>Visible</td><td>Mono</td><td>Detail layer for LRGB</td></tr>
+        <tr><td><span class="sw" style="background:#7fe3c4"></span>Light pollution</td><td>Blocks Na/Hg</td><td>OSC / Mono</td><td>Galaxies, clusters (suburb)</td></tr>
+        <tr><td><span class="sw" style="background:#e8443a"></span>Hα</td><td>656.3 nm</td><td>Mono</td><td>Emission nebulae (best signal)</td></tr>
+        <tr><td><span class="sw" style="background:#28c5a8"></span>OIII</td><td>500.7 nm</td><td>Mono</td><td>Planetary nebulae, SNRs</td></tr>
+        <tr><td><span class="sw" style="background:#b23a48"></span>SII</td><td>671.6 nm</td><td>Mono</td><td>Hubble-palette 3rd channel</td></tr>
+        <tr><td><span class="sw" style="background:linear-gradient(90deg,#e8443a,#28c5a8)"></span>Dual-band</td><td>Hα+OIII</td><td>OSC</td><td>Nebulae from the city</td></tr>
+        <tr><td><span class="sw" style="background:#8a1a1a"></span>IR-pass</td><td>685 nm+</td><td>Planetary</td><td>Mars, Moon in poor seeing</td></tr>
+        <tr><td><span class="sw" style="background:#c9d2ea"></span>ND / polariser</td><td>Neutral</td><td>Any</td><td>Bright Moon glare</td></tr>
+        <tr><td><span class="sw" style="background:#ffd27a"></span>Solar (front)</td><td>Blocks ~99.999%</td><td>Any</td><td>The Sun — safely</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card scob">
+    <h2>🔭 For SCOB sessions</h2>
+    <p style="font-size:13.5px">Under Jurong's bright, humid, light-polluted sky the most useful filters are: an <b>ND or polarising</b> filter to tame lunar glare on public Moon nights; colour <b>Wratten</b> filters and an <b>IR-pass</b> for planetary contrast when the seeing is soft; and a certified <b>front solar filter</b> for daytime Sun sessions. For deep-sky imaging from the deck, a <b>dual-band (Hα+OIII)</b> filter is the only kind that meaningfully cuts through the city glow — which is exactly why the Observatory's <a href="seestar.html">Seestar smart telescope</a> relies on a built-in dual-band filter to pull nebulae out of the orange sky.</p>
+  </div>
+
+  <div class="foot">
+    Wavelengths in nanometres (nm); bandwidth quoted as FWHM. A reference guide for Science Centre Observatory volunteers and visitors — always follow the solar-safety rules before any daytime observing.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="version.js"></script>
+</body>
+</html>
