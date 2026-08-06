@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Object Cards — SCOB Night-Sky</title>
 <meta name="description" content="Printable one-per-object cards for the SCOB showpieces — a fact, where to look, and the right telescope — to place beside each scope.">
+<link rel="stylesheet" href="scob-theme.css">
 <style>
-:root{--navy:#0b1733;--navy2:#13224a;--gold:#c8971a;--cyan:#0a7f8c;--ink:#1a2440;--mute:#5a6683;--line:#c9d2e6;}
 *{box-sizing:border-box;margin:0;}
 body{background:#eef1f8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
 .wrap{max-width:900px;margin:0 auto;padding:16px 16px 40px;}
 header h1{font-size:22px;color:#0b1733;margin:0;}
-.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
 .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0;}
-.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
 .bar button,.bar select{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;}
 .bar .print{background:var(--gold);color:#fff;border-color:var(--gold);}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
@@ -32,7 +30,6 @@ header h1{font-size:22px;color:#0b1733;margin:0;}
 .card .qrcap{font-size:11px;color:var(--mute);line-height:1.3;}
 .card .qrcap b{color:#0b1733;}
 .foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px;}
-.foot a{color:var(--cyan);}
 .hint{font-size:12.5px;color:var(--mute);margin-bottom:10px;}
 @media print{
   body{background:#fff;font-size:12px;}
@@ -43,7 +40,7 @@ header h1{font-size:22px;color:#0b1733;margin:0;}
 }
 </style>
 </head>
-<body>
+<body class="paper">
 <div class="wrap">
   <header>
     <h1>🃏 Object Cards</h1>

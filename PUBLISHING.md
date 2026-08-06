@@ -70,13 +70,28 @@ Two options:
 
 ## What gets published
 
-Only the web files: every `*.html`, `*.js`, `*.webmanifest`, and the icons.
+Only the web files: every `*.html`, `*.js`, `*.css`, `*.webmanifest`, and the icons.
 The workflow copies `scob-dashboard-v3.html` to `index.html` so the bare site URL
 opens the dashboard.
 
 **Not** published (they stay in the repo but never reach the live site):
-`README.md` and other `.md` files, the test scripts (`test-*.js`), `check-release.sh`,
-`deploy.sh`, `publish.bat`, and `SCOB-Dashboard-User-Guide.pptx/.pdf`.
+`README.md` and other `.md` files, `check-release.sh`, `deploy.sh`, `publish.bat`,
+and `SCOB-Dashboard-User-Guide.pptx/.pdf`.
+
+Two `.js` files *would* be caught by the blanket `cp *.js` and are therefore deleted
+from `_site` explicitly by the workflow — if you add another dev-only script, add it
+to that `rm -f` line too:
+
+- `test-astro.js`, `test-logic.js`, `test-pages.js` — the CI suites
+- `migrate-theme.js` — the one-page-at-a-time CSS migration tool
+
+**Why dev tooling stays tracked.** `check-release.sh`, `deploy.sh`, `publish.bat` and
+the test suites have always been committed, so `migrate-theme.js` is kept for
+consistency: anyone who clones the repo gets the same tools you have. It is excluded
+from the service-worker cache (`EXCLUDE_ASSETS` in `check-release.sh`) and from the
+published site, so it costs visitors nothing. `world-skies-roadmap.md` likewise stays
+committed — `.md` files are never published, so it is visible to anyone browsing the
+repo but never served from the site.
 
 ---
 

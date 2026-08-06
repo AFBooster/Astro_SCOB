@@ -22,10 +22,9 @@
  * PRINT PAGES — checklist.html, object-cards.html and qr-poster.html print on
  * white paper. They get class="paper" on <body> instead of their own palette.
  *
- * NOT DEFINED HERE — `--dark`. aboriginal-*.html sets it to #c58b6a and
- * inca-*.html to #b98cff: one name, two colours, both in the dark theme. That is
- * real drift, not a shared token, so it stays page-local until you decide which
- * one it should be (or rename them --dark-ochre / --dark-violet).
+ * RESOLVED IN v3.84 — `--dark` used to mean #c58b6a on the Aboriginal pages and
+ * #b98cff on the Inca ones: one name, two colours, both in the dark theme. They
+ * are now --dark-ochre and --dark-violet and live here. No visual change.
  *
  * Cache: add to sw.js ASSETS — ./check-release.sh --fix does it for you.
  * Deploy: the Pages workflow stages *.css as of v3.82.
@@ -51,6 +50,10 @@
   --pink:#ff8ac2;
   --amber:#ffb454;
   --saffron:#ff9d3c;
+
+  /* Culture accents — same shade of "dark", two different intents */
+  --dark-ochre:#c58b6a;    /* Aboriginal — the Emu, dust lanes */
+  --dark-violet:#b98cff;   /* Inca — dark-cloud constellations */
 
   /* Chinese sky — the Four Symbols */
   --dragon:#5fd38a;    /* 青龍 east  */
@@ -166,11 +169,17 @@ body.night{filter:sepia(1) hue-rotate(-50deg) saturate(4) brightness(.75);}
 /* ── Print / paper pages ─────────────────────────────────────────────────── */
 /* checklist.html, object-cards.html, qr-poster.html — add class="paper" to <body>
    instead of redefining the palette inline. */
+/* Measured from the three pages themselves — they do NOT invert --navy/--navy2
+   (those stay the dark values and are used for ink-on-white headings); only the
+   accent, text and rule colours change for paper. Getting this wrong would have
+   turned the printed headings white on white. */
 body.paper{
   color-scheme:light;
-  --navy:#ffffff;--navy2:#ffffff;--navy3:#f3f6fc;
-  --gold:#c8971a;--cyan:#0a7f8c;
-  --white:#1a2440;--ink:#1a2440;--mute:#5a6683;--line:#c9d2e6;
+  --gold:#c8971a;
+  --cyan:#0a7f8c;
+  --ink:#1a2440;
+  --mute:#5a6683;
+  --line:#c9d2e6;
 }
 @media print{
   .no-print{display:none !important;}

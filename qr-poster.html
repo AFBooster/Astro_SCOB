@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QR Poster — SCOB</title>
 <meta name="description" content="A printable A4 poster with a QR code that opens the Science Centre Observatory's live sky guide on visitors' phones.">
+<link rel="stylesheet" href="scob-theme.css">
 <style>
-:root{--navy:#0b1733;--gold:#c8971a;--cyan:#0a7f8c;--ink:#1a2440;--mute:#5a6683;--line:#c9d2e6;}
 *{box-sizing:border-box;margin:0;}
 body{background:#eef1f8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
 .wrap{max-width:820px;margin:0 auto;padding:16px 16px 40px;}
 header h1{font-size:20px;color:#0b1733;}
-.loc{font-size:12.5px;color:var(--mute);margin-top:3px;}
 .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0;}
-.bar a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;text-decoration:none;}
 .bar select,.bar button{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;}
 .bar .print{background:var(--gold);color:#fff;border-color:var(--gold);}
 .hint{font-size:12.5px;color:var(--mute);margin-bottom:10px;}
@@ -44,7 +42,7 @@ header h1{font-size:20px;color:#0b1733;}
 }
 </style>
 </head>
-<body>
+<body class="paper">
 <div class="wrap">
   <header>
     <h1>🖨️ Visitor QR Poster</h1>

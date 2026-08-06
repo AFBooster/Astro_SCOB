@@ -109,18 +109,18 @@ h1{font-size:22px;margin:0;color:var(--gold);}
     Phase, terminator position (selenographic colongitude, approx. ±2°) and feature visibility computed in your browser for 8:30 pm SGT on the chosen date — works offline. Feature positions compiled from the IAU/USGS <a href="https://planetarynames.wr.usgs.gov" target="_blank" rel="noopener">Gazetteer of Planetary Nomenclature</a> · lunar theory — P. Schlyter · Science Centre Observatory, Singapore.<br><span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
+<script src="sky-culture-core.js"></script>
 <script>
+const {jd, nextFridayYMD, pad, rev, sgtNow} = window.SkyCore;   /* shared helpers — see sky-culture-core.js */
 "use strict";
 const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI;
-const rev=x=>((x%360)+360)%360;
+
 const w180=x=>{let v=rev(x);return v>180?v-360:v;};
-const pad=n=>String(n).padStart(2,'0');
+
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function dateLabel(y,m,d){const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();return `${WD[wd]}, ${d} ${MON[m]} ${y}`;}
 function timeLabel(hh,mm){const ap=hh<12?'am':'pm';let h=hh%12||12;return h+':'+pad(mm)+' '+ap;}
-function sgtNow(){const n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
-function nextFridayYMD(){const d=sgtNow();const dow=d.getDay();let add=(5-dow+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return{y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};}
-function jd(date){return date.getTime()/86400000+2440587.5;}
+
 function sun(d){const w=rev(282.9404+4.70935e-5*d),M=rev(356.0470+0.9856002585*d),e=0.016709-1.151e-9*d;
   let E=M+e*DEG*Math.sin(M*RAD)*(1+e*Math.cos(M*RAD));const xv=Math.cos(E*RAD)-e,yv=Math.sqrt(1-e*e)*Math.sin(E*RAD);
   const v=rev(Math.atan2(yv,xv)*DEG),r=Math.sqrt(xv*xv+yv*yv);return{lon:rev(v+w),M,r};}
