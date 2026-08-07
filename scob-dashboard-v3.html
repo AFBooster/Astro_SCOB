@@ -966,6 +966,11 @@ function renderGlance(){
   if(DARK){const rows=CAT.map(t2=>{const a2=altaz(t2[3],t2[4]);return{name:t2[0],alt:a2.alt,sep:moonSep(t2[3],t2[4]),cls:t2[5]};}).filter(r=>r.alt>20).sort((a2,b2)=>b2.alt-a2.alt);
     const pick=rows.find(r=>visualVerdict(r)[0]==='exc')||rows.find(r=>visualVerdict(r)[0]==='good');
     if(pick)tt=pick.name+' '+Math.round(pick.alt)+'°';}
+  let cmt=null;
+  if(window.Astro&&window.Astro.activeComets){
+    const cs=new Date(Date.UTC(y,m,d,GL.hh-8,GL.mm,0));
+    const ups=window.Astro.activeComets(cs).map(c=>{const ce=window.Astro.cometEq(c,cs);const aa=altaz(ce.ra,ce.dec);return{name:c.name.replace(/^Comet\s+/,''),alt:aa.alt,mag:ce.mag};}).filter(c=>c.alt>8).sort((a,b)=>a.mag-b.mag);
+    if(ups[0])cmt=ups[0];}
   let head;
   if(sunAlt>-6)head='☀️ Sky not dark at the chosen time — fully dark from '+(st.dark||'about 8:15pm')+'.';
   else if(WXV&&WXV.cls==='ok')head='✅ Tonight looks a GO — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance.';
@@ -982,6 +987,7 @@ function renderGlance(){
     +(ml?'<span class="gc" title="The Chinese lunar mansion the Moon is in tonight">🐉 Moon lodges in <b>'+ml.zh+'宿 '+ml.en+'</b></span>':'')
     +(bp?'<span class="gc">🪐 Best planet <b>'+bp+'</b></span>':'')
     +(tt?'<span class="gc">🔭 Top target <b>'+tt+'</b></span>':'')
+    +(cmt?'<span class="gc" title="A tracked comet is above the horizon now — full details on the Comets page">☄️ Comet <b>'+cmt.name+' · mag '+cmt.mag.toFixed(1)+'</b></span>':'')
     +(DARK?(function(){const L=dynLimitMag();const cut=(L.moon+L.haze);return '<span class="gc" title="Estimated faintest deep-sky visible now — Bortle '+BORTLE+' base '+L.base.toFixed(1)+', minus the Moon and live haze">🔭 Limiting mag <b>~'+L.mag.toFixed(1)+'</b>'+(cut>=0.3?' <span style="opacity:.7">(−'+cut.toFixed(1)+')</span>':'')+'</span>';})():'')
     +(EVT.length?'<span class="gc">'+EVT[0][1]+' <b>'+EVT[0][2]+'</b></span>':'')
     +(ISSCHIP?'<span class="gc">🛰️ Best pass <b>'+ISSCHIP+'</b></span>':'')
