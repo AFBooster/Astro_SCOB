@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Comets tonight — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+body{margin:0;background:var(--navy);color:var(--white);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.5;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px 48px;}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));padding:16px 0 12px;}
+.titlerow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 auto;}
+.backlink{font-size:13px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);border-radius:9px;padding:7px 12px;font-weight:700;white-space:nowrap;}
+.ctrlbar{display:flex;align-items:center;gap:10px;margin-top:11px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:10px 13px;flex-wrap:wrap;}
+.datein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-family:inherit;}
+.datein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
+.btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.daynote{font-size:13px;color:var(--mute);}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:17px 18px;margin-top:16px;}
+.card h2{margin:0 0 11px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.meta{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.6;}
+.meta b{color:var(--white);}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:2px;}
+.pill.ok{background:rgba(95,211,138,.16);color:#9be9b8;}
+.pill.warn{background:rgba(245,197,66,.15);color:#f7d984;}
+.pill.bad{background:rgba(255,107,107,.16);color:#ffb4b4;}
+.cmt{border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin-top:13px;background:var(--navy3);}
+.cmt:first-child{margin-top:0;}
+.cmthead{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;}
+.cmthead .nm{font-size:17px;font-weight:700;color:var(--white);}
+.cmthead .mg{font-size:20px;font-weight:700;color:var(--gold);line-height:1;}
+.cmtstat{font-size:12.5px;margin-top:6px;}
+.cmtgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-top:11px;}
+.cmtcell{background:var(--navy2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;}
+.cmtcell .k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.03em;}
+.cmtcell .v{font-size:14px;font-weight:700;margin-top:2px;}
+.cmtcell .s{font-size:11.5px;color:var(--mute);margin-top:1px;}
+.trk{font-size:14px;color:var(--white);}
+.pathsvg{display:block;margin:11px 0 2px;width:100%;max-width:520px;height:auto;}
+.hint{font-size:12px;color:var(--mute);line-height:1.55;}
+.tsub{font-size:12px;color:var(--mute);}
+.btnrow{text-align:center;margin:20px 0 4px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btnrow a{color:var(--cyan);font-weight:700;font-size:13px;border:1px solid var(--cyan);border-radius:9px;padding:8px 16px;display:inline-block;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>☄️ Comets tonight</h1>
+      <div class="loc">Science Centre Observatory, Jurong · which comets are up, and how bright</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+    </div>
+    <div class="ctrlbar">
+      <input type="date" id="datePick" class="datein">
+      <button type="button" id="nextFri" class="btnmini">↺ Next Fri</button>
+      <button type="button" id="tonight" class="btnmini">● Tonight</button>
+      <button type="button" id="nightBtn" class="btnmini">🌙 Night</button>
+      <span class="daynote" id="dayNote"></span>
+    </div>
+  </header>
+
+  <div class="card">
+    <h2>Up tonight <small id="forDate">— computed for 8:30 pm SGT</small></h2>
+    <div id="activeList"><div class="tsub">Computing…</div></div>
+  </div>
+
+  <div class="card">
+    <h2>☄️ Comets we're tracking <small>— refreshed each apparition</small></h2>
+    <div id="trackList"></div>
+    <div class="hint" style="margin-top:10px">Positions and magnitudes are computed in your browser from published orbital elements (Minor Planet Center / aerith.net), so this page works offline in the dome. Comets fade and new ones appear — each entry carries a <b>review date</b>; once past its window a comet drops off the "up tonight" list automatically.</div>
+  </div>
+
+  <div class="card">
+    <h2>🔭 How to show a comet <small>— 20-second docent script</small></h2>
+    <div class="meta" style="margin-top:0">
+      A comet is a <b>city-sized ball of ice and dust</b> that grows a glowing head (coma) and sometimes a tail as it nears the Sun and its ices boil off. In a Jurong-bright sky most comets are a <b>soft, tailless smudge</b>, not a sharp point — so set expectations before the eyepiece.
+      Use <b>low power</b> (wide field) first to find and frame it, then step up only if the coma takes magnification. <b>Averted vision</b> — looking slightly to the side — pulls out far more of the faint glow than staring straight at it. Comets show best in the <b>dark of the Moon</b>; a bright Moon or nearby haze washes the coma flat. The deck <b>Seestar S30</b> or the <b>6" apo</b> and <b>binoculars</b> usually beat the big scope for a diffuse comet, because they give the low power and wide field a comet wants.
+    </div>
+  </div>
+
+  <div class="btnrow">
+    <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
+    <a href="meteors.html">☄️ Meteor showers</a>
+    <a href="sky-finder.html">🧭 What's up now</a>
+  </div>
+  <div class="foot">
+    Comet positions &amp; magnitudes computed in your browser for the chosen date at 8:30 pm SGT from heliocentric orbital elements (Minor Planet Center / <a href="https://www.aerith.net/" target="_blank" rel="noopener">aerith.net</a>), solved on-device — works offline. Magnitude uses each comet's published brightness law m = g + 5·log Δ + K·log r. Science Centre Observatory, Singapore.<br><span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+
+<script src="astro-core.js"></script>
+<script>
+(function(){
+  var A = window.Astro;
+  var GL = null; // {y,m,d}
+  function sgtNow(){ var n=new Date(); return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000); }
+  function nextFridayYMD(){ var d=sgtNow(),dow=d.getDay(),add=(5-dow+7)%7; if(add===0&&d.getHours()>22)add=7; d.setDate(d.getDate()+add); return {y:d.getFullYear(),m:d.getMonth(),d:d.getDate()}; }
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var WD=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  function dateLabel(y,m,d){ var wd=new Date(Date.UTC(y,m,d)).getUTCDay(); return WD[wd]+' '+d+' '+MON[m]+' '+y; }
+  function fmtJD(jd){ var dt=new Date((jd-2440587.5)*86400000); return dt.getUTCDate()+' '+MON[dt.getUTCMonth()]+' '+dt.getUTCFullYear(); }
+  function fmtMin(t){ var hh=Math.floor(t/60)%24, mm=t%60; var ap=hh<12?'am':'pm'; var h12=hh%12; if(h12===0)h12=12; return h12+':'+(mm<10?'0':'')+mm+' '+ap; }
+  function dateAt(y,m,d,hh,mm){ return new Date(Date.UTC(y,m,d,hh-8,mm,0)); } // SGT -> UTC
+
+  // scan the observing night (7 pm -> 5 am) for rise / culmination / set and the best dark-sky moment
+  function scanNight(c,y,m,d){
+    var best={alt:-99,az:0,t:0}, darkBest={alt:-99,az:0,t:0}, rise=null, set=null, prevUp=false;
+    for(var t=19*60;t<=29*60;t+=5){
+      var hh=Math.floor(t/60), mm=t%60;
+      var date=dateAt(y,m,d,hh,mm);
+      var p=A.positionOf(c,date), up=p.alt>0;
+      if(up&&!prevUp)rise={t:t,az:p.az};
+      if(!up&&prevUp)set={t:t};
+      if(p.alt>best.alt)best={alt:p.alt,az:p.az,t:t};
+      if(A.sunAltAt(date)<-12 && p.alt>darkBest.alt)darkBest={alt:p.alt,az:p.az,t:t};
+      prevUp=up;
+    }
+    if(prevUp&&!set)set={t:29*60};
+    return {best:best,darkBest:darkBest,rise:rise,set:set};
+  }
+
+  function moonEq(date){ var dd=A.jd(date)-2451543.5, mo=A.moon(dd); return A.eclToEq(mo.lon,mo.lat,dd); }
+
+  function pathSVG(c,y,m,d){
+    var W=520,H=96,pl=30,pr=8,pt=8,pb=18, x0=19*60,x1=29*60;
+    function X(t){ return pl+(t-x0)/(x1-x0)*(W-pl-pr); }
+    function Y(a){ return pt+(1-Math.max(0,Math.min(90,a))/90)*(H-pt-pb); }
+    var pts=[],night=[];
+    for(var t=x0;t<=x1;t+=10){ var hh=Math.floor(t/60),mm=t%60,date=dateAt(y,m,d,hh,mm); var p=A.positionOf(c,date); pts.push([X(t),Y(p.alt),p.alt]); night.push(A.sunAltAt(date)<-12); }
+    var poly=pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');
+    // shade the astronomically-dark span
+    var ds=null,de=null; for(var i=0;i<night.length;i++){ if(night[i]){ if(ds===null)ds=pts[i][0]; de=pts[i][0]; } }
+    var s='<svg class="pathsvg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Altitude of the comet through the night">';
+    if(ds!==null)s+='<rect x="'+ds.toFixed(1)+'" y="'+pt+'" width="'+(de-ds).toFixed(1)+'" height="'+(H-pt-pb)+'" fill="rgba(120,150,255,.10)"/>';
+    s+='<line x1="'+pl+'" y1="'+Y(0).toFixed(1)+'" x2="'+(W-pr)+'" y2="'+Y(0).toFixed(1)+'" stroke="#4a5a86" stroke-width="1"/>';
+    s+='<line x1="'+pl+'" y1="'+Y(30).toFixed(1)+'" x2="'+(W-pr)+'" y2="'+Y(30).toFixed(1)+'" stroke="#2c3a63" stroke-dasharray="3 4" stroke-width="1"/>';
+    s+='<text x="4" y="'+(Y(0)+3).toFixed(1)+'" fill="#7f8db3" font-size="9">0°</text>';
+    s+='<text x="2" y="'+(Y(30)+3).toFixed(1)+'" fill="#7f8db3" font-size="9">30°</text>';
+    s+='<polyline points="'+poly+'" fill="none" stroke="#f5c542" stroke-width="2"/>';
+    var xh=X(20*60+30); s+='<line x1="'+xh.toFixed(1)+'" y1="'+pt+'" x2="'+xh.toFixed(1)+'" y2="'+(H-pb)+'" stroke="#5fd38a" stroke-dasharray="2 3" stroke-width="1"/>';
+    s+='<text x="'+pl+'" y="'+(H-5)+'" fill="#7f8db3" font-size="9">7 pm</text>';
+    s+='<text x="'+(W-pr-30)+'" y="'+(H-5)+'" fill="#7f8db3" font-size="9">5 am</text>';
+    s+='<text x="'+(xh-10).toFixed(1)+'" y="'+(H-5)+'" fill="#5fd38a" font-size="9">8:30</text>';
+    s+='</svg>';
+    return s;
+  }
+
+  function status(c,J){
+    if(J<c.from)return {cls:'warn',txt:'Not yet — first visible around '+fmtJD(c.from)};
+    if(J>c.to)return {cls:'bad',txt:'Faded — dropped below tracking after '+fmtJD(c.to)};
+    return {cls:'ok',txt:'In its visibility window ('+fmtJD(c.from)+' – '+fmtJD(c.to)+')'};
+  }
+
+  function renderActive(y,m,d){
+    var el=document.getElementById('activeList'); if(!el)return;
+    var date=dateAt(y,m,d,20,30), J=A.jd(date), meq=moonEq(date);
+    var active=(A.COMETS||[]).filter(function(c){ return J>=c.from && J<=c.to; });
+    if(!active.length){
+      el.innerHTML='<div class="tsub">No tracked comet is above the magnitude/visibility threshold for this date. Comets come and go — check the tracking list below for what is coming up, and refresh the element table each apparition. On a dark night the deck Seestar can still image a fainter comet than the eye will show.</div>';
+      return;
+    }
+    el.innerHTML=active.map(function(c){
+      var ce=A.cometEq(c,date), p=A.positionOf(c,date), sn=scanNight(c,y,m,d);
+      var mag=(ce.mag).toFixed(1);
+      var up=p.alt>0;
+      var sep=A.angSep(ce.ra,ce.dec,meq.ra,meq.dec);
+      var upv = up? (p.alt>=30?{cls:'ok',t:'Well up — '+Math.round(p.alt)+'° in the '+A.compass(p.az)}
+                    :{cls:'warn',t:'Low — '+Math.round(p.alt)+'° in the '+A.compass(p.az)})
+                  : {cls:'bad',t:'Below the horizon at 8:30 pm'};
+      var scopeMag = ce.mag<6?'naked-eye / binoculars':ce.mag<9?'binoculars / 6" apo':ce.mag<11?'6" apo / 40 cm dome · Seestar':'40 cm dome · Seestar (imaging)';
+      var h='<div class="cmt">';
+      h+='<div class="cmthead"><span class="nm">'+c.name+'</span><span class="mg">mag '+mag+'</span><span class="pill '+upv.cls+'">'+(up?'up':'not up')+'</span></div>';
+      h+='<div class="cmtstat meta" style="margin-top:5px">'+upv.t+'</div>';
+      h+='<div class="cmtgrid">';
+      h+='<div class="cmtcell"><div class="k">Magnitude</div><div class="v">'+mag+'</div><div class="s">'+scopeMag+'</div></div>';
+      h+='<div class="cmtcell"><div class="k">Highest tonight</div><div class="v">'+(sn.best.alt>0?Math.round(sn.best.alt)+'°':'—')+'</div><div class="s">'+(sn.best.alt>0?'at '+fmtMin(sn.best.t)+' · '+A.compass(sn.best.az):'stays down')+'</div></div>';
+      h+='<div class="cmtcell"><div class="k">Best in the dark</div><div class="v">'+(sn.darkBest.alt>0?Math.round(sn.darkBest.alt)+'°':'—')+'</div><div class="s">'+(sn.darkBest.alt>0?'at '+fmtMin(sn.darkBest.t):'not up while dark')+'</div></div>';
+      h+='<div class="cmtcell"><div class="k">Moon distance</div><div class="v">'+Math.round(sep)+'°</div><div class="s">'+(sep<25?'Moon nearby — washes the coma':'clear of the Moon')+'</div></div>';
+      h+='<div class="cmtcell"><div class="k">Rises</div><div class="v">'+(sn.rise?fmtMin(sn.rise.t):(up?'already up':'—'))+'</div><div class="s">'+(sn.rise?A.compass(sn.rise.az):'')+'</div></div>';
+      h+='<div class="cmtcell"><div class="k">Sets</div><div class="v">'+(sn.set&&sn.set.t<29*60?fmtMin(sn.set.t):(up?'after dawn':'—'))+'</div><div class="s">'+(ce.r.toFixed(2))+' AU from Sun</div></div>';
+      h+='</div>';
+      h+=pathSVG(c,y,m,d);
+      h+='<div class="meta" style="margin-top:8px">'+(c.blurb||'')+'</div>';
+      if(c.look)h+='<div class="meta" style="color:var(--gold);margin-top:3px">👀 '+c.look+'</div>';
+      if(c.scope)h+='<div class="hint" style="margin-top:5px">Best instrument: '+c.scope+'.</div>';
+      h+='</div>';
+      return h;
+    }).join('');
+  }
+
+  function renderTrack(y,m,d){
+    var el=document.getElementById('trackList'); if(!el)return;
+    var date=dateAt(y,m,d,20,30), J=A.jd(date);
+    var list=(A.COMETS||[]);
+    if(!list.length){ el.innerHTML='<div class="tsub">No comets are currently loaded in the element table.</div>'; return; }
+    el.innerHTML=list.map(function(c){
+      var st=status(c,J), ce=A.cometEq(c,date);
+      return '<div class="cmt"><div class="cmthead"><span class="nm" style="font-size:15px">'+c.name+'</span>'
+        +'<span class="pill '+st.cls+'">'+(st.cls==='ok'?'active':st.cls==='warn'?'upcoming':'faded')+'</span></div>'
+        +'<div class="trk meta" style="margin-top:5px">'+st.txt+'. Perihelion '+fmtJD(c.Tp)+', now '+ce.mag.toFixed(1)+' mag at '+ce.r.toFixed(2)+' AU from the Sun.'
+        +(c.review?' <span class="tsub">· elements to review by '+c.review+'</span>':'')+'</div></div>';
+    }).join('');
+  }
+
+  function recompute(y,m,d){
+    GL={y:y,m:m,d:d};
+    var dp=document.getElementById('datePick'); if(dp)dp.value=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var fd=document.getElementById('forDate'); if(fd)fd.textContent='— '+dateLabel(y,m,d)+', 8:30 pm SGT';
+    var dn=document.getElementById('dayNote'); if(dn){ var isFri=new Date(Date.UTC(y,m,d)).getUTCDay()===5; dn.textContent=isFri?'Friday session night':''; }
+    renderActive(y,m,d); renderTrack(y,m,d);
+  }
+
+  function fromInput(){ var v=document.getElementById('datePick').value; if(!v)return; var p=v.split('-').map(Number); recompute(p[0],p[1]-1,p[2]); }
+  var dpk=document.getElementById('datePick'); if(dpk)dpk.addEventListener('change',fromInput);
+  var nf=document.getElementById('nextFri'); if(nf)nf.addEventListener('click',function(){ var f=nextFridayYMD(); recompute(f.y,f.m,f.d); });
+  var tn=document.getElementById('tonight'); if(tn)tn.addEventListener('click',function(){ var n=sgtNow(); recompute(n.getFullYear(),n.getMonth(),n.getDate()); });
+  function applyNight(on){ document.body.classList.toggle('night',on); var b=document.getElementById('nightBtn'); if(b)b.textContent=on?'☀️ Day':'🌙 Night'; try{localStorage.setItem('scobNight',on?'1':'0');}catch(e){} }
+  var nb=document.getElementById('nightBtn'); if(nb)nb.addEventListener('click',function(){ applyNight(!document.body.classList.contains('night')); });
+  try{ applyNight(localStorage.getItem('scobNight')==='1'); }catch(e){}
+  var f0=nextFridayYMD(); recompute(f0.y,f0.m,f0.d);
+  if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

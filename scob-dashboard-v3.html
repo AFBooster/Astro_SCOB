@@ -790,6 +790,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
       <a href="sky-finder.html">📱 Point your phone <small>— find or identify</small></a>
       <a href="kiosk.html">🖥️ Visitor kiosk display</a>
       <a href="moon-tonight.html">🌕 Tonight on the Moon</a>
+      <a href="comets.html">☄️ Comets tonight <small>— which are up &amp; how bright</small></a>
     </div>
   </div>
   <div class="ndsec" data-sec="explore">
@@ -920,7 +921,7 @@ const eclToEq=window.Astro.eclToEq;
 const PLAN=window.Astro.PLAN;
 const planetEq=window.Astro.planetEq;
 
-let LST=0, MOONEQ={ra:0,dec:0}, pct=0, illum=0, waxing=true, startUTC=0;
+let LST=0, MOONEQ={ra:0,dec:0}, pct=0, illum=0, waxing=true, startUTC=0, MOONALT=-99;
 let WXNOTE="";
 let DARK=true;
 let currentMode=(()=>{try{return localStorage.getItem('scobMode')||'visual';}catch(e){return'visual';}})();
@@ -977,9 +978,11 @@ function renderGlance(){
     +'<span class="gc">🌇 Sunset <b>'+(st.set||'—')+'</b></span>'
     +'<span class="gc">🌌 Fully dark <b>'+(st.dark||'—')+'</b></span>'
     +'<span class="gc">🌙 Moon <b>'+pct+'% · '+(ma.alt>0?'up '+Math.round(ma.alt)+'°':'down')+'</b></span>'
+    +(SEEREAD?'<span class="gc" title="Steadiness of the air at high power (planets, tight doubles) — '+SEEREAD.src+'">🌬️ Seeing <b>'+SEEREAD.label+'</b></span>':'')
     +(ml?'<span class="gc" title="The Chinese lunar mansion the Moon is in tonight">🐉 Moon lodges in <b>'+ml.zh+'宿 '+ml.en+'</b></span>':'')
     +(bp?'<span class="gc">🪐 Best planet <b>'+bp+'</b></span>':'')
     +(tt?'<span class="gc">🔭 Top target <b>'+tt+'</b></span>':'')
+    +(DARK?(function(){const L=dynLimitMag();const cut=(L.moon+L.haze);return '<span class="gc" title="Estimated faintest deep-sky visible now — Bortle '+BORTLE+' base '+L.base.toFixed(1)+', minus the Moon and live haze">🔭 Limiting mag <b>~'+L.mag.toFixed(1)+'</b>'+(cut>=0.3?' <span style="opacity:.7">(−'+cut.toFixed(1)+')</span>':'')+'</span>';})():'')
     +(EVT.length?'<span class="gc">'+EVT[0][1]+' <b>'+EVT[0][2]+'</b></span>':'')
     +(ISSCHIP?'<span class="gc">🛰️ Best pass <b>'+ISSCHIP+'</b></span>':'')
     +'<span class="gc">🌅 Sunrise <b>'+(st.rise||'—')+'</b></span>'
@@ -989,7 +992,7 @@ function renderGlance(){
 const CAP=30;
 function visualVerdict(r){const faint=(r.cls==='emission'||r.cls==='broadband');
   if(faint&&pct>=55)return['skip','Washed out (Moon)'];
-  if(faint&&r.mag!=null&&r.mag>lpLimitMag())return['skip','Faint — city sky'];
+  if(faint&&r.mag!=null&&r.mag>dynLimitMag().mag)return['skip','Below tonight’s limit'];
   if(r.alt>=45)return['exc','Excellent'];
   if(r.alt>=22)return['good','Good'];return['low','Low — early'];}
 function seestarVerdict(r){
@@ -1112,6 +1115,7 @@ function renderPlanetDetail(){
   const rb=saturnRingB(),sa2=altaz(rb.pe.ra,rb.pe.dec),ab=Math.abs(rb.B);
   const rngTxt=ab<3?'nearly <b>edge-on — a razor-thin line</b> even in the 40 cm':(ab<10?'a <b>narrow ellipse</b>, reopening after the 2025 ring-plane crossing':'<b>wide open</b> — the classic showpiece view');
   html+='<div style="font-size:13px;margin-top:9px"><b style="color:var(--gold)">♄ Saturn</b> <span class="tsub" style="display:inline">'+(sa2.alt>0?Math.round(sa2.alt)+'° '+compass(sa2.az):'below horizon at the chosen time')+'</span> — rings tilted <b>'+rb.B.toFixed(1)+'°</b>: '+rngTxt+'.</div>'
+    +(SEEREAD?'<div style="font-size:12.5px;margin-top:8px">🌬️ <b>Seeing '+SEEREAD.label+'</b>'+(SEEREAD.arc?' ('+SEEREAD.arc+')':'')+' — '+(/(poor|fair)/i.test(SEEREAD.label)?'the GRS, Jupiter&rsquo;s belts and the Cassini division will soften and shimmer; catch them in the steady moments and don&rsquo;t over-magnify.':'steady air — push magnification for the GRS, the belts and the Cassini division.')+' <span class="tsub" style="display:inline">('+SEEREAD.src+')</span></div>':'')
     +'<div class="tsub" style="margin-top:7px;margin-bottom:0">Computed on-device (Meeus low-precision series). GRS longitude assumed '+Math.round(grsLon(dt))+'° System II (JUPOS trend) — it drifts, so treat times as ±15 min.</div></div>';
   el.innerHTML=html;
 }
@@ -1326,7 +1330,7 @@ function recompute(y,m,d,hh,mm){
   const mo=moon(dS);
   const elong=Math.acos(Math.cos((mo.slon-mo.lon)*RAD)*Math.cos(mo.lat*RAD))*DEG;
   illum=(1-Math.cos(elong*RAD))/2;pct=Math.round(illum*100);waxing=rev(mo.lon-mo.slon)<180;
-  MOONEQ=eclToEq(mo.lon,mo.lat,dS);const maa=altaz(MOONEQ.ra,MOONEQ.dec);
+  MOONEQ=eclToEq(mo.lon,mo.lat,dS);const maa=altaz(MOONEQ.ra,MOONEQ.dec);MOONALT=maa.alt;
   document.getElementById('moonPct').textContent=pct+"%";
   function phaseName(ill,wax){if(ill<0.03)return"New Moon";if(ill>0.97)return"Full Moon";
     if(ill<0.47)return(wax?"Waxing":"Waning")+" Crescent";if(ill<0.53)return(wax?"First":"Last")+" Quarter";
@@ -1417,7 +1421,7 @@ try{const nv=localStorage.getItem('scobNight');
 // ---- live weather (Open-Meteo) for the chosen date & time ----
 const WMO={0:["Clear sky","☀️"],1:["Mainly clear","🌤️"],2:["Partly cloudy","⛅"],3:["Overcast","☁️"],45:["Fog","🌫️"],48:["Fog","🌫️"],51:["Light drizzle","🌦️"],53:["Drizzle","🌦️"],55:["Heavy drizzle","🌧️"],56:["Freezing drizzle","🌧️"],57:["Freezing drizzle","🌧️"],61:["Light rain","🌦️"],63:["Rain","🌧️"],65:["Heavy rain","🌧️"],66:["Freezing rain","🌧️"],67:["Freezing rain","🌧️"],71:["Snow","🌨️"],73:["Snow","🌨️"],75:["Snow","🌨️"],80:["Light showers","🌦️"],81:["Showers","🌧️"],82:["Violent showers","⛈️"],85:["Snow showers","🌨️"],86:["Snow showers","🌨️"],95:["Thunderstorm","⛈️"],96:["Thunderstorm, hail","⛈️"],99:["Thunderstorm, hail","⛈️"]};
 function wxCell(k,v){return '<div class="wxcell"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
-let WXCACHE=null,WXV=null,WXT=0,GL=null,WXTS=0,SEEAT=0,SEECACHE=null;
+let WXCACHE=null,WXV=null,WXT=0,GL=null,WXTS=0,SEEAT=0,SEECACHE=null,SEEREAD=null;
 let BORTLE=(()=>{try{const v=+localStorage.getItem('scobBortle');return(v===7||v===8||v===9)?v:8;}catch(e){return 8;}})();
 let TARGEXP=(()=>{try{return localStorage.getItem('scobTargExpand')==='1';}catch(e){return false;}})();
 let DBLEXP=(()=>{try{return localStorage.getItem('scobDblExpand')==='1';}catch(e){return false;}})();
@@ -1597,7 +1601,7 @@ document.getElementById('wxBtn').addEventListener('click',function(){loadWeather
 })();
 
 // ==== v3.2: special events · ISS passes · haze · session plan · briefing ====
-let EVT=[],ISSCHIP='',ISSFOR='',PSIAT=0;
+let EVT=[],ISSCHIP='',ISSFOR='',PSIAT=0,PSIVAL=null;
 const EVENTS=[
  ['2026-07-28','☄️','Delta Aquariids meteor shower peaks','Up to 20/hr after midnight, but the full Moon washes most out this year.',1],
  ['2026-08-02','🪐','Mercury at greatest western elongation','Morning object — low in the east before sunrise, not an evening-session target.',1],
@@ -1641,7 +1645,19 @@ const EVENTS=[
  ['2027-11-04','☄️','Taurids meteor shower peaks','Slow bright fireballs, ~5–10/hr after midnight.',1],
  ['2027-11-17','☄️','Leonids meteor shower peaks','Near-full Moon spoils all but the brightest this year.',1],
  ['2027-11-30','🪐','Uranus at opposition','Blue-green dot at its brightest for the year.',1],
- ['2027-12-13','☄️','Geminids meteor shower peaks','Up to 120/hr, but a full Moon hurts this year.',1]
+ ['2027-12-13','☄️','Geminids meteor shower peaks','Up to 120/hr, but a full Moon hurts this year.',1],
+ ['2028-01-04','☄️','Quadrantids meteor shower peaks','Up to 40/hr after midnight; a half Moon sets around midnight, and the radiant stays low from Singapore.',1],
+ ['2028-01-26','🌑','Annular solar eclipse — not visible from Singapore','A "ring of fire" over the eastern Pacific, the Americas and the Atlantic into Spain.',0],
+ ['2028-03-12','🪐','Jupiter at opposition','Closest & brightest of the year, up all night — cloud belts & the four Galilean moons in any scope.',1],
+ ['2028-04-22','☄️','Lyrids meteor shower peaks','Excellent year — a new Moon and dark skies. ~20/hr before dawn.',1],
+ ['2028-05-06','☄️','Eta Aquariids meteor shower peaks','Normally one of Singapore\'s best, but a nearly-full Moon washes most out this year; a few bright Halley\'s-dust meteors still show before dawn.',1],
+ ['2028-07-22','🌑','Total solar eclipse — partial from Singapore','Totality crosses Christmas & Cocos Islands, Australia (Sydney) and New Zealand; from Singapore a modest partial, low in the sky — a daytime event needing a certified solar filter.',1],
+ ['2028-08-12','☄️','Perseids meteor shower peaks','A gibbous Moon interferes until it sets after midnight; the radiant sits low from Singapore, so a quieter year.',1],
+ ['2028-10-21','☄️','Orionids meteor shower peaks','A good year — only a thin crescent Moon. Up to 20/hr after midnight from Halley\'s dust, well placed from Singapore.',1],
+ ['2028-10-30','🪐','Saturn at opposition','Closest & brightest of the year, up all night — rings on show for every scope on deck.',1],
+ ['2028-11-17','☄️','Leonids meteor shower peaks','New Moon, dark skies — up to ~15/hr after midnight.',1],
+ ['2028-12-13','☄️','Geminids meteor shower peaks','King of the showers — up to 120/hr and a new Moon this year. The radiant climbs from ~9 pm in Singapore; an excellent year.',1],
+ ['2028-12-31','🌕','Total lunar eclipse — visible from Singapore','A New Year\'s Eve total eclipse: the full Moon turns coppery-red, visible across Asia, Australia & the Pacific. A naked-eye, whole-sky event.',1]
 ];
 function renderEvents(){
   const el=document.getElementById('events');if(!el||!GL)return;
@@ -1651,7 +1667,14 @@ function renderEvents(){
     if(dd===0&&ev[4])EVT.push(ev);
     const when=dd===0?'chosen night':(dd===1?'next night':dateLabel(p[0],p[1]-1,p[2])+' · in '+dd+' days');
     html+='<div class="evrow'+(ev[4]?'':' dim')+'"><span class="evic">'+ev[1]+'</span><div><b>'+ev[2]+'</b> <span class="evwhen">'+when+'</span><div class="evnote">'+ev[3]+'</div></div></div>';});
-  el.innerHTML=html||'<div class="tsub">No major sky events in the 3 weeks after the chosen date — pick a later date to look further ahead.</div>';
+  // v3.86: expiry guard — the events list is hand-maintained, so warn when the chosen date reaches
+  // the end of it (within the 21-day look-ahead) rather than silently showing nothing.
+  const le=EVENTS[EVENTS.length-1][0].split('-').map(Number),lastT=Date.UTC(le[0],le[1]-1,le[2]);
+  let banner='';
+  if(cur>lastT-21*86400000){
+    banner='<div class="evrow" style="border:1px solid var(--gold);border-radius:9px;background:rgba(245,197,66,.10);margin-bottom:8px"><span class="evic">🗓️</span><div><b>Events calendar ends '+dateLabel(le[0],le[1]-1,le[2])+(cur>lastT?' — now in the past':'')+'</b><div class="evnote">Time to refresh — add the next year’s eclipses, oppositions, meteor showers &amp; supermoons to the <code>EVENTS</code> list so this panel keeps working (source: Sea &amp; Sky astronomy calendar).</div></div></div>';
+  }
+  el.innerHTML=banner+(html||'<div class="tsub">No major sky events in the 3 weeks after the chosen date — pick a later date to look further ahead.</div>');
 }
 function skyAt(hh,mm){
   const dt=new Date(Date.UTC(GL.y,GL.m,GL.d,hh-8,mm,0));
@@ -1688,7 +1711,8 @@ function renderPlan(){
     if(!rows.length)rows.push('Nothing well placed yet — sky tour & constellation talk.');
     html+='<div class="planslot"><h3>'+timeLabel(sl[0],sl[1])+'</h3><ul>'+rows.map(r=>'<li>'+r+'</li>').join('')+'</ul></div>';
   });
-  el.innerHTML=html+'<div class="tsub" style="margin-top:6px">Auto-generated from computed altitudes & the SCOB fleet for the chosen date — adjust on the night.</div>';
+  const seeNote=SEEREAD?'<div class="tsub" style="margin-top:6px">🌬️ Seeing <b>'+SEEREAD.label+'</b>'+(SEEREAD.arc?' ('+SEEREAD.arc+')':'')+' — '+(/(poor|fair)/i.test(SEEREAD.label)?'keep planetary, lunar &amp; tight-double magnification modest tonight; high-power detail will boil in and out.':'steady air — push high power on the planets, the Moon &amp; tight doubles.')+' <span style="opacity:.8">('+SEEREAD.src+')</span></div>':'';
+  el.innerHTML=html+seeNote+'<div class="tsub" style="margin-top:6px">Auto-generated from computed altitudes & the SCOB fleet for the chosen date — adjust on the night.</div>';
 }
 function loadScript(src){return new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=rej;document.head.appendChild(sc);});}
 const SATS=[
@@ -1777,12 +1801,13 @@ async function loadPSI(){
     const r=await fetch('https://api.data.gov.sg/v1/environment/psi',{cache:'no-store'});
     const j=await r.json();const it=j.items&&j.items[0];if(!it)throw 0;
     const psi=it.readings.psi_twenty_four_hourly.west;
-    PSIAT=Date.now();
+    PSIAT=Date.now();PSIVAL=psi;
     let band='Good',cls='ok',note='no haze penalty on transparency.';
     if(psi>100){band='Unhealthy';cls='bad';note='haze will noticeably dim stars and kill faint targets.';}
     else if(psi>50){band='Moderate';cls='warn';note='slight loss of transparency on faint fuzzies.';}
     el.style.display='block';
     el.innerHTML='🌫️ <b>Haze right now (West):</b> 24-h PSI <b class="'+cls+'">'+psi+' · '+band+'</b> — '+note+' <span style="opacity:.75">Live NEA reading — applies to tonight, not to future dates.</span>';
+    renderTargets();renderGlance();   // haze now folds into the dynamic limiting magnitude
   }catch(e){}
 }
 // v3.15: printable talking-point cards for tonight's showpieces (makes the briefing a full session pack)
@@ -1910,6 +1935,17 @@ function tonightBlurb(){
 })();
 // ==== v3.7: seeing/transparency · light-pollution realism · observing windows · live Now · data-health ====
 function lpLimitMag(){return BORTLE>=9?8.5:(BORTLE>=8?9.5:10.5);}
+// v3.86: dynamic limiting magnitude — the Bortle "clear, moonless" scope limit, reduced live for
+// the Moon (illuminated fraction × how high it is) and for haze (live west 24-h PSI). Feeds the
+// visual deep-sky verdicts and shows as a glance figure. Deliberately a rough estimate, not photometry.
+function dynLimitMag(){
+  const base=lpLimitMag();
+  let moon=0;
+  if(typeof MOONALT==='number'&&MOONALT>0) moon=(illum||0)*Math.sin(MOONALT*RAD)*2.2; // up to ~2.2 mag, high full Moon
+  let haze=0;
+  if(typeof PSIVAL==='number'&&PSIVAL>0) haze=Math.max(0,Math.min(1.6,(PSIVAL-40)/45)); // ~0 at 40 PSI, ~1.6 by ~110
+  return {base:base,moon:moon,haze:haze,mag:Math.max(3.5,base-moon-haze)};
+}
 
 // ---- observing windows within the session ----
 function altAtMin(ra,dec,y,m,d,t){const dt=new Date(Date.UTC(y,m,d,Math.floor(t/60)-8,t%60,0));
@@ -1945,6 +1981,7 @@ async function loadSeeing(force){
   let html;
   if(used){
     const sq=seeQual(used.seeing),tq=seeQual(used.transparency);
+    SEEREAD={label:sq[1],cls:sq[0],src:'7Timer! astro',arc:SEE_ARC[used.seeing]};
     html='<div class="seehead">🔭 Seeing &amp; transparency <span style="opacity:.7;font-weight:400">· 7Timer! astro forecast</span></div>'
       +'<div class="seegrid"><div class="seecell"><div class="k">Seeing</div><div class="v '+sq[0]+'">'+sq[1]+'</div><div class="s">'+SEE_ARC[used.seeing]+' at high power</div></div>'
       +'<div class="seecell"><div class="k">Transparency</div><div class="v '+tq[0]+'">'+tq[1]+'</div><div class="s">band '+used.transparency+'/8</div></div></div>'
@@ -1953,15 +1990,17 @@ async function loadSeeing(force){
     let cc=null,rh=null,ws=null;
     if(WXCACHE&&WXCACHE.date===dv){const h=WXCACHE.hourly;let i=h.time.indexOf(dv+'T'+pad(tp[0])+':00');if(i<0)i=Math.min(tp[0],h.time.length-1);
       cc=h.cloud_cover[i];rh=h.relative_humidity_2m[i];ws=h.wind_speed_10m[i];}
-    if(cc==null){el.style.display='none';return;}
+    if(cc==null){el.style.display='none';SEEREAD=null;return;}
     const tr=(cc<20&&rh<75)?['ok','good']:(cc<50&&rh<88)?['warn','fair']:['bad','poor'];
     const st=(ws<12)?['ok','good']:(ws<22)?['warn','fair']:['bad','poor'];
+    SEEREAD={label:st[1],cls:st[0],src:'weather estimate',arc:null};
     html='<div class="seehead">🔭 Seeing &amp; transparency <span style="opacity:.7;font-weight:400">· estimated from local weather</span></div>'
       +'<div class="seegrid"><div class="seecell"><div class="k">Steadiness</div><div class="v '+st[0]+'">'+st[1]+'</div><div class="s">wind '+Math.round(ws)+' km/h</div></div>'
       +'<div class="seecell"><div class="k">Transparency</div><div class="v '+tr[0]+'">'+tr[1]+'</div><div class="s">cloud '+cc+'% · RH '+rh+'%</div></div></div>'
       +'<div class="wxsrc">A rough estimate from the loaded forecast — the 7Timer! seeing model was unavailable or outside its ~week-ahead range. Surface wind &amp; humidity are only weak proxies for true seeing.</div>';
   }
   el.style.display='block';el.innerHTML=html;
+  renderGlance();renderPlanetDetail();renderPlan();   // surface the seeing read in the glance, run-sheet & planet detail
 }
 
 // ---- data-health indicator ----
