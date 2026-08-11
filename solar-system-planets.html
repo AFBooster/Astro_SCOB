@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Eight Planets — Orbits &amp; Facts — SCOB</title>
+<meta name="description" content="Every planet's orbit laid out on one horizontal scale — real perihelion-to-aphelion spans showing spacing and eccentricity — plus a detailed fact card for each of the eight planets. Science Centre Observatory, Jurong.">
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:var(--ui);font-size:15px;line-height:1.55;}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 46px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--orange);}
+.loc{color:var(--mute);font-size:13.5px;margin-top:3px;}
+.bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.bar a{color:var(--cyan);text-decoration:none;font-size:13.5px;border:1px solid var(--line);border-radius:9px;padding:6px 10px;}
+.bar a:hover{border-color:var(--cyan);}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 2px;}
+.pills a{font-size:13px;font-weight:700;text-decoration:none;color:var(--white);background:var(--navy3);border:1px solid var(--line);border-radius:20px;padding:7px 13px;}
+.pills a.on{border-color:var(--gold);color:var(--gold);}
+.pills a:hover{border-color:var(--cyan);}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:14px 0;}
+.card h2{margin:0 0 4px;font-size:17px;color:var(--orange);}
+.card .sub{color:var(--mute);font-size:13px;margin:0 0 10px;}
+.svgbox{width:100%;height:auto;display:block;background:linear-gradient(90deg,#0e1c40,#0a1430);border:1px solid var(--line);border-radius:12px;margin:8px 0;}
+.legend{font-size:12.5px;color:var(--mute);margin-top:4px;line-height:1.6;}
+.legend b{color:var(--white);}
+/* planet cards */
+.pcard{border:1px solid var(--line);border-left:5px solid var(--line);border-radius:13px;padding:14px 15px;margin:12px 0;background:rgba(255,255,255,.02);}
+.pcard .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.pcard .sym{font-size:26px;line-height:1;}
+.pcard h3{font-size:18px;margin:0;}
+.pcard .kind{font-size:12px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mute);}
+.pcard .tagline{color:var(--mute);font-size:13px;margin:3px 0 10px;font-style:italic;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:7px 12px;margin:6px 0 10px;}
+.stat{background:var(--navy3);border:1px solid var(--line);border-radius:9px;padding:7px 9px;}
+.stat .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);}
+.stat .v{font-size:13.5px;font-weight:700;margin-top:1px;}
+.pcard p{font-size:13.6px;line-height:1.62;margin:0 0 8px;color:#d7def0;}
+.pcard p b{color:var(--white);}
+.pcard .scob{margin-top:6px;padding:9px 11px;border-left:3px solid var(--cyan);background:rgba(91,214,224,.06);border-radius:0 8px 8px 0;font-size:13px;color:#bfeef2;}
+.pcard .scob b{color:#eafcff;}
+.pcard .fun{margin-top:7px;font-size:12.8px;color:var(--amber);}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🪐 The Eight Planets — Orbits &amp; Facts</h1>
+    <div class="loc">Every planet's orbit on one horizontal scale, then a detailed card for each world. Science Centre Observatory, Jurong.</div>
+    <div class="bar"><a href="scob-dashboard-v3.html">← Dashboard</a><a href="scale-model.html">🪐 Sizes to scale</a></div>
+    <div class="pills">
+      <a href="solar-system.html">◉ Overview &amp; orrery</a>
+      <a href="solar-system-planets.html" class="on">🪐 The planets</a>
+      <a href="solar-system-outer.html">☁️ Beyond Neptune</a>
+    </div>
+  </header>
+
+  <div class="card">
+    <h2>Every orbit, side by side</h2>
+    <p class="sub">Each bar is one world's orbit drawn on a <b>logarithmic</b> distance scale — it runs from its closest approach to the Sun (<b>perihelion</b>) to its farthest (<b>aphelion</b>), with a dot at the average. A wide bar means a stretched, eccentric orbit. Notice how <b>Pluto's</b> orbit actually crosses inside <b>Neptune's</b>.</p>
+    <svg class="svgbox" id="orbitChart" viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Horizontal chart of every planet's orbit from perihelion to aphelion"></svg>
+    <div class="legend">Distances in <b>AU</b> (1 AU = the Earth–Sun distance ≈ 149.6 million km). The four rocky planets huddle inside 1.7 AU; the four giants sweep from 5 to 30 AU. <b>Ceres</b> (asteroid belt) and <b>Pluto</b> (Kuiper belt) are shown for context.</div>
+  </div>
+
+  <div class="card">
+    <h2>Reading an orbit</h2>
+    <p class="sub" style="margin-bottom:0">Orbits are <b>ellipses</b> with the Sun at one focus (Kepler's 1st law). A planet moves fastest at perihelion and slowest at aphelion (2nd law), and the farther out it is, the longer its year — period² grows with distance³ (3rd law), which is why Neptune takes 165 years to lap the Sun while Mercury needs just 88 days. <b>Eccentricity</b> (how oval) and <b>inclination</b> (how tilted out of the flat ecliptic plane) are small for the eight planets, which is why they all track the same narrow zodiac band across our sky.</p>
+  </div>
+
+  <div class="card">
+    <h2>The planets in depth</h2>
+    <p class="sub">Rocky worlds first, then the giants. Tap nothing — it's all here.</p>
+    <div id="planetCards"></div>
+  </div>
+
+  <div class="foot">
+    Orbital elements after P. Schlyter / NASA-JPL Solar System Dynamics; physical data are standard published values. Distances and sizes are real; the chart's distance axis is logarithmic so every world fits on one picture.<br>
+    <a href="solar-system.html">← Back to the orrery</a> · <a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+  /* ---------------- horizontal orbit chart ---------------- */
+  // name, symbol, semi-major a (AU), eccentricity e, colour, family
+  var ORB = [
+    ['Mercury', '☿', 0.387, 0.2056, '#b9b1a4', 0],
+    ['Venus', '♀', 0.723, 0.0068, '#e6c98a', 0],
+    ['Earth', '⊕', 1.000, 0.0167, '#5bd6e0', 0],
+    ['Mars', '♂', 1.524, 0.0934, '#ff6b6b', 0],
+    ['Ceres', '⚳', 2.77, 0.079, '#9fb0d6', 2],
+    ['Jupiter', '♃', 5.203, 0.0489, '#f0b47a', 1],
+    ['Saturn', '♄', 9.537, 0.0565, '#f5d98c', 1],
+    ['Uranus', '♅', 19.19, 0.0463, '#8fe0d8', 1],
+    ['Neptune', '♆', 30.07, 0.0097, '#6ea8ff', 1],
+    ['Pluto', '♇', 39.48, 0.2488, '#c9b8e6', 2]
+  ];
+  function drawOrbitChart() {
+    var host = document.getElementById('orbitChart'); if (!host) return;
+    var W = 720, padL = 74, padR = 20, top = 30, rowH = 36;
+    var lo = Math.log10(0.28), hi = Math.log10(52);
+    var X = function (au) { return padL + (Math.log10(au) - lo) / (hi - lo) * (W - padL - padR); };
+    var s = '';
+    // vertical AU gridlines
+    [0.3, 1, 3, 10, 30, 50].forEach(function (au) {
+      var x = X(au);
+      s += '<line x1="' + x.toFixed(1) + '" y1="' + top + '" x2="' + x.toFixed(1) + '" y2="' + (top + ORB.length * rowH + 4) + '" stroke="#22325a" stroke-width="0.7"/>';
+      s += '<text x="' + x.toFixed(1) + '" y="' + (top - 8) + '" fill="#5a6683" font-size="10" text-anchor="middle">' + au + ' AU</text>';
+    });
+    // Sun at left
+    s += '<circle cx="' + (padL - 2) + '" cy="' + (top + ORB.length * rowH / 2) + '" r="5" fill="#ffd45e"/>';
+    s += '<text x="' + (padL - 2) + '" y="' + (top + ORB.length * rowH + 18) + '" fill="#9fb0d6" font-size="10" text-anchor="middle">Sun</text>';
+    ORB.forEach(function (o, i) {
+      var a = o[2], e = o[3], peri = a * (1 - e), aph = a * (1 + e);
+      var y = top + i * rowH + rowH / 2;
+      var x0 = X(peri), x1 = X(aph), xa = X(a);
+      var band = o[5] === 0 ? '#5bd6e0' : (o[5] === 1 ? '#f5d98c' : '#c9b8e6');
+      // faint family guide row
+      s += '<rect x="' + padL + '" y="' + (y - 13).toFixed(1) + '" width="' + (W - padL - padR) + '" height="26" fill="' + (i % 2 ? '#ffffff' : '#5bd6e0') + '" fill-opacity="0.02"/>';
+      // orbit bar
+      s += '<line x1="' + x0.toFixed(1) + '" y1="' + y.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="' + o[4] + '" stroke-width="5" stroke-linecap="round" stroke-opacity="0.85"/>';
+      // perihelion / aphelion ticks
+      s += '<line x1="' + x0.toFixed(1) + '" y1="' + (y - 6).toFixed(1) + '" x2="' + x0.toFixed(1) + '" y2="' + (y + 6).toFixed(1) + '" stroke="' + o[4] + '" stroke-width="1.4"/>';
+      s += '<line x1="' + x1.toFixed(1) + '" y1="' + (y - 6).toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + (y + 6).toFixed(1) + '" stroke="' + o[4] + '" stroke-width="1.4"/>';
+      // mean-distance dot
+      s += '<circle cx="' + xa.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.2" fill="#fff"/>';
+      // label
+      s += '<text x="' + (padL - 8) + '" y="' + (y + 4).toFixed(1) + '" fill="' + o[4] + '" font-size="12.5" font-weight="bold" text-anchor="end">' + o[1] + ' ' + o[0] + '</text>';
+      // mean-distance value — to the right of the bar, or to its left if that would overflow
+      var vtxt = (a < 3 ? a.toFixed(2) : a.toFixed(1)) + ' AU';
+      if (x1 > W - 70) s += '<text x="' + (x0 - 8).toFixed(1) + '" y="' + (y + 3.5).toFixed(1) + '" fill="#8b97b8" font-size="9.5" text-anchor="end">' + vtxt + '</text>';
+      else s += '<text x="' + (x1 + 6).toFixed(1) + '" y="' + (y + 3.5).toFixed(1) + '" fill="#8b97b8" font-size="9.5">' + vtxt + '</text>';
+    });
+    // Pluto-crosses-Neptune callout
+    var yN = top + 8 * rowH + rowH / 2, yP = top + 9 * rowH + rowH / 2;
+    s += '<text x="' + X(29).toFixed(1) + '" y="' + (yP + 20).toFixed(1) + '" fill="#c9b8e6" font-size="9.5" text-anchor="middle">Pluto dips inside Neptune here ↑</text>';
+    host.innerHTML = s;
+  }
+
+  /* ---------------- planet fact cards ---------------- */
+  var P = [
+    { nm: 'Mercury', sym: '☿', col: '#b9b1a4', kind: 'Rocky', tag: 'The swift, sun-scorched cinder',
+      stats: { Distance: '0.39 AU · 57.9M km', Year: '88 days', Day: '176 Earth days', 'Axial tilt': '0.03°', Diameter: '4,879 km (0.38×)', Mass: '0.055× Earth', Gravity: '0.38 g', Moons: '0', 'Mean temp': '−170 to 430 °C', Atmosphere: 'almost none' },
+      facts: [
+        'The <b>smallest and fastest</b> planet, whipping around the Sun in just 88 days — the origin of its "messenger" name.',
+        'With almost no atmosphere to trap heat, it swings from <b>430 °C in sunlight to −170 °C at night</b>, the biggest temperature range of any planet. Yet permanently shadowed polar craters hold <b>water ice</b>.',
+        'A single solar day (noon to noon) lasts <b>176 Earth days</b> — longer than its 88-day year, thanks to a strange 3:2 spin-orbit lock. It has a huge iron core filling most of the planet.'
+      ],
+      scob: 'Never strays far from the Sun, so it only appears low in bright twilight for a week or two at a time. A scope shows it as a tiny half-lit phase.',
+      fun: 'A year on Mercury is shorter than one of its days.' },
+    { nm: 'Venus', sym: '♀', col: '#e6c98a', kind: 'Rocky', tag: "Earth's overheated twin",
+      stats: { Distance: '0.72 AU · 108M km', Year: '225 days', Day: '117 Earth days', 'Axial tilt': '177° (flipped)', Diameter: '12,104 km (0.95×)', Mass: '0.82× Earth', Gravity: '0.90 g', Moons: '0', 'Mean temp': '465 °C', Atmosphere: '96% CO₂, 92× Earth' },
+      facts: [
+        'Almost Earth\'s size, but a <b>runaway greenhouse</b> of thick carbon-dioxide makes it the <b>hottest planet</b> at 465 °C — hot enough to melt lead — under crushing pressure and clouds of sulfuric acid.',
+        'It spins <b>backwards</b> and so slowly that its day (243 Earth days of rotation) is longer than its year. The Sun there rises in the west.',
+        'The <b>brightest object</b> in our sky after the Sun and Moon — the dazzling "Evening" or "Morning Star".'
+      ],
+      scob: 'Brilliant to the naked eye. Through a scope it shows crescent-to-gibbous <b>phases like a tiny moon</b>, the observation that helped Galileo confirm it orbits the Sun.',
+      fun: 'On Venus a day is longer than a year.' },
+    { nm: 'Earth', sym: '⊕', col: '#5bd6e0', kind: 'Rocky', tag: 'The only known living world',
+      stats: { Distance: '1.00 AU · 149.6M km', Year: '365.25 days', Day: '24 hours', 'Axial tilt': '23.4°', Diameter: '12,742 km', Mass: '1× (reference)', Gravity: '1.00 g', Moons: '1', 'Mean temp': '15 °C', Atmosphere: '78% N₂, 21% O₂' },
+      facts: [
+        'The <b>largest rocky planet</b> and the only one with liquid water on its surface, a breathable atmosphere and — so far as we know — <b>life</b>.',
+        'Its <b>23.4° tilt</b> gives us the seasons; its unusually large <b>Moon</b> stabilises that tilt and drives the tides.',
+        'The one world humans have ever stood on — the yardstick (the AU) against which every other distance here is measured.'
+      ],
+      scob: 'The ground under your feet at the observatory. Everything else on this page is being observed <i>from</i> here.',
+      fun: 'Earth is the densest planet in the solar system.' },
+    { nm: 'Mars', sym: '♂', col: '#ff6b6b', kind: 'Rocky', tag: 'The rusty Red Planet',
+      stats: { Distance: '1.52 AU · 228M km', Year: '1.9 years', Day: '24h 37m', 'Axial tilt': '25.2°', Diameter: '6,779 km (0.53×)', Mass: '0.11× Earth', Gravity: '0.38 g', Moons: '2', 'Mean temp': '−60 °C', Atmosphere: 'thin CO₂ (0.6%)' },
+      facts: [
+        'Rusty red from iron oxide in its dust. It has <b>polar ice caps</b>, dry riverbeds, seasons and a day almost exactly as long as ours.',
+        'Home to <b>Olympus Mons</b>, the tallest volcano in the solar system (three times the height of Everest), and <b>Valles Marineris</b>, a canyon that would stretch across the United States.',
+        'Two tiny potato-shaped moons, <b>Phobos and Deimos</b>. Mars is the focus of the search for past life and future human landing.'
+      ],
+      scob: 'Best near <b>opposition</b> (every ~26 months), when the 40 cm dome can tease out a white polar cap and dark surface markings on its small orange disc.',
+      fun: 'Olympus Mons is so wide its base would cover the whole of Italy.' },
+    { nm: 'Jupiter', sym: '♃', col: '#f0b47a', kind: 'Gas giant', tag: 'The giant that rules them all',
+      stats: { Distance: '5.20 AU · 778M km', Year: '11.9 years', Day: '9h 56m', 'Axial tilt': '3.1°', Diameter: '139,820 km (11×)', Mass: '318× Earth', Gravity: '2.53 g', Moons: '95+', 'Mean temp': '−110 °C', Atmosphere: 'H₂ / He' },
+      facts: [
+        'The <b>largest planet</b> — more massive than all the others combined, twice over. All the planets would fit inside it.',
+        'It spins fastest of all, once every <b>10 hours</b>, flinging its clouds into dark belts and bright zones. The <b>Great Red Spot</b> is a storm wider than Earth that has raged for centuries.',
+        'King of a mini-system of <b>95+ moons</b>, including the four big <b>Galilean moons</b> (Io, Europa, Ganymede, Callisto) — Europa hides a global ocean beneath its ice.'
+      ],
+      scob: 'A superb target. The 40 cm dome shows the two main cloud belts and the four Galilean moons strung out in a line that visibly shifts from night to night.',
+      fun: 'Jupiter\'s Great Red Spot has been storming for at least 190 years, maybe 350+.' },
+    { nm: 'Saturn', sym: '♄', col: '#f5d98c', kind: 'Gas giant', tag: 'The jewel of the solar system',
+      stats: { Distance: '9.54 AU · 1.43B km', Year: '29.4 years', Day: '10h 33m', 'Axial tilt': '26.7°', Diameter: '116,460 km (9.1×)', Mass: '95× Earth', Gravity: '1.06 g', Moons: '140+', 'Mean temp': '−140 °C', Atmosphere: 'H₂ / He' },
+      facts: [
+        'Famous for its magnificent <b>rings</b> — countless chips of ice and rock spanning 280,000 km yet only about 10 metres thick.',
+        'The <b>least dense</b> planet: it would float in a bathtub big enough to hold it. It has the <b>most moons</b> of any planet.',
+        'Its moon <b>Titan</b> has a thick atmosphere and lakes of liquid methane; tiny <b>Enceladus</b> jets water into space from a hidden ocean.'
+      ],
+      scob: 'The show-stopper of every session night — the rings snap into view even at modest power in the 40 cm dome and never fail to draw gasps.',
+      fun: 'Saturn is the only planet less dense than water.' },
+    { nm: 'Uranus', sym: '♅', col: '#8fe0d8', kind: 'Ice giant', tag: 'The world that rolls on its side',
+      stats: { Distance: '19.2 AU · 2.87B km', Year: '84 years', Day: '17h 14m', 'Axial tilt': '97.8°', Diameter: '50,724 km (4.0×)', Mass: '14.5× Earth', Gravity: '0.90 g', Moons: '28', 'Mean temp': '−195 °C', Atmosphere: 'H₂ / He / methane' },
+      facts: [
+        'An <b>ice giant</b> tipped over on its side (97.8° tilt), so it <b>rolls around its orbit</b> like a ball — each pole gets 42 years of sunlight then 42 years of night.',
+        'Methane in its air absorbs red light, giving it a serene <b>blue-green</b> colour. It has the coldest atmosphere in the solar system.',
+        'The <b>first planet discovered with a telescope</b> — William Herschel, 1781 — doubling the known size of the solar system overnight. It has faint rings.'
+      ],
+      scob: 'At the edge of naked-eye visibility. The 40 cm dome shows a small, steady <b>greenish dot</b> — you need a star chart to pick it out.',
+      fun: 'Uranus was nearly named "George" after King George III.' },
+    { nm: 'Neptune', sym: '♆', col: '#6ea8ff', kind: 'Ice giant', tag: 'The windswept blue frontier',
+      stats: { Distance: '30.1 AU · 4.50B km', Year: '165 years', Day: '16h 6m', 'Axial tilt': '28.3°', Diameter: '49,244 km (3.9×)', Mass: '17× Earth', Gravity: '1.14 g', Moons: '16', 'Mean temp': '−200 °C', Atmosphere: 'H₂ / He / methane' },
+      facts: [
+        'The <b>farthest planet</b>, a deep-blue ice giant 4.5 billion km out — sunlight there is 900× fainter than on Earth.',
+        'The <b>windiest</b> world known: supersonic gales reach 2,100 km/h. Voyager 2 spotted a Great Dark Spot the size of Earth.',
+        'Discovered in 1846 by <b>mathematics before the telescope</b> — predicted from Uranus\'s wobble, then found within a degree of the prediction. Its moon <b>Triton</b> orbits backwards and is likely a captured Kuiper-belt world.'
+      ],
+      scob: 'Telescope-only, with a chart — a tiny blue dot at the 40 cm dome. Having completed just one orbit since its discovery (in 2011), it is the perfect "edge of the planets" finale.',
+      fun: 'Neptune has orbited the Sun only once since humans found it.' }
+  ];
+  function drawCards() {
+    var host = document.getElementById('planetCards'); if (!host) return;
+    host.innerHTML = P.map(function (p) {
+      var stats = Object.keys(p.stats).map(function (k) {
+        return '<div class="stat"><div class="k">' + k + '</div><div class="v">' + p.stats[k] + '</div></div>';
+      }).join('');
+      var facts = p.facts.map(function (f) { return '<p>' + f + '</p>'; }).join('');
+      return '<div class="pcard" style="border-left-color:' + p.col + '">' +
+        '<div class="top"><span class="sym" style="color:' + p.col + '">' + p.sym + '</span>' +
+        '<h3 style="color:' + p.col + '">' + p.nm + '</h3>' +
+        '<span class="kind">' + p.kind + '</span></div>' +
+        '<div class="tagline">' + p.tag + '</div>' +
+        '<div class="grid">' + stats + '</div>' +
+        facts +
+        '<div class="scob">🔭 <b>At SCOB:</b> ' + p.scob + '</div>' +
+        '<div class="fun">✨ ' + p.fun + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  drawOrbitChart();
+  drawCards();
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Solar System — Orbits &amp; Outer Reaches — SCOB</title>
-<meta name="description" content="A live top-down orrery of the planets, an explainer of apparent retrograde motion, and a tour outward past the asteroid belt, Kuiper belt and extreme trans-Neptunian objects to the Oort cloud. Positions computed on your device. Science Centre Observatory, Jurong.">
+<title>Solar System — Live Orrery &amp; Retrograde — SCOB</title>
+<meta name="description" content="A live top-down orrery of the planets computed on your device, and an explainer of apparent retrograde motion, for the Science Centre Observatory, Jurong. Part of a three-page solar-system section covering the planets and everything out to the Oort cloud.">
 <link rel="stylesheet" href="scob-theme.css">
 <style>
 *{box-sizing:border-box;margin:0;}
@@ -16,6 +16,10 @@ h1{font-size:22px;margin:0;color:var(--orange);}
 .bar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .bar a{color:var(--cyan);text-decoration:none;font-size:13.5px;border:1px solid var(--line);border-radius:9px;padding:6px 10px;}
 .bar a:hover{border-color:var(--cyan);}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 2px;}
+.pills a{font-size:13px;font-weight:700;text-decoration:none;color:var(--white);background:var(--navy3);border:1px solid var(--line);border-radius:20px;padding:7px 13px;}
+.pills a.on{border-color:var(--gold);color:var(--gold);}
+.pills a:hover{border-color:var(--cyan);}
 .card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:14px 0;}
 .card h2{margin:0 0 4px;font-size:17px;color:var(--orange);}
 .card .sub{color:var(--mute);font-size:13px;margin:0 0 10px;}
@@ -30,58 +34,35 @@ input[type=range]{width:100%;accent-color:var(--gold);}
 .readout{font-size:13.5px;color:var(--mute);margin-top:4px;line-height:1.6;}
 .readout b{color:var(--white);}
 .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.3px;padding:2px 7px;border-radius:20px;margin-left:4px;vertical-align:middle;}
-.tag.retro{background:rgba(255,107,107,.16);color:var(--red);border:1px solid var(--red);}
-.tag.pro{background:rgba(95,211,138,.14);color:var(--green);border:1px solid var(--green);}
 .tag.up{background:rgba(91,214,224,.14);color:var(--cyan);border:1px solid var(--cyan);}
 .tstrip{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
 .tstrip .p{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:13px;}
 .tstrip .p b{color:var(--gold);}
-/* outward map */
-.zones{display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;}
-.zone{display:flex;align-items:center;gap:10px;text-align:left;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--line);color:var(--white);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;}
-.zone:hover{border-color:var(--cyan);}
-.zone.on{border-color:var(--gold);border-left-color:var(--gold);color:var(--gold);}
-.zone .rr{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--mute);white-space:nowrap;}
-.zone.on .rr{color:var(--gold);}
-.zdet{background:#0e1a38;border:1px solid var(--line);border-radius:10px;padding:12px 13px;font-size:13.5px;line-height:1.62;color:var(--mute);}
-.zdet b{color:var(--white);}
-.zdet .hd{color:var(--gold);font-weight:800;font-size:14.5px;display:block;margin-bottom:5px;}
-.zdet .scob{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12.8px;color:var(--cyan);}
-/* data table */
-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:13px;}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
-td{padding:7px 5px;border-bottom:1px solid var(--line);vertical-align:top;}
-td.n{font-weight:700;white-space:nowrap;}
-.tsc{color:var(--cyan);}.tgi{color:var(--amber);}
-/* encyclopedia */
-details.qa{border:1px solid var(--line);border-radius:11px;margin:9px 0;background:rgba(255,255,255,.02);overflow:hidden;}
-details.qa summary{cursor:pointer;padding:12px 14px;font-weight:800;font-size:14.5px;color:var(--white);list-style:none;display:flex;align-items:center;gap:9px;}
-details.qa summary::-webkit-details-marker{display:none;}
-details.qa summary .ic{font-size:17px;}
-details.qa summary .cx{margin-left:auto;color:var(--mute);font-weight:700;transition:transform .15s;}
-details.qa[open] summary .cx{transform:rotate(45deg);}
-details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
-.qa .body{padding:12px 14px;font-size:13.8px;line-height:1.66;color:#d7def0;}
-.qa .body b{color:var(--white);}
-.qa .body p{margin:0 0 9px;}
-.qa .body .hook{margin-top:8px;padding:9px 11px;border-left:3px solid var(--cyan);background:rgba(91,214,224,.06);border-radius:0 8px 8px 0;font-size:13px;color:var(--cyan);}
-.qa .body .hook b{color:#bfeef2;}
 .note{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.6;}
+.navcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.navcards a{display:block;text-decoration:none;background:var(--navy3);border:1px solid var(--line);border-radius:13px;padding:14px 15px;color:var(--white);}
+.navcards a:hover{border-color:var(--gold);}
+.navcards .t{font-size:15.5px;font-weight:800;color:var(--gold);}
+.navcards .d{font-size:12.8px;color:var(--mute);margin-top:4px;line-height:1.55;}
+@media(max-width:560px){.navcards{grid-template-columns:1fr;}}
 .foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
 .foot a{color:var(--cyan);}
-@media(max-width:520px){.hidesm{display:none;}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>🪐 Solar System — Orbits &amp; Outer Reaches</h1>
-    <div class="loc">The planets and their real orbits, why they seem to loop backwards, and everything out to the Oort cloud. Positions computed live on your device for the Science Centre Observatory, Jurong.</div>
+    <h1>🪐 Solar System — Live Orrery</h1>
+    <div class="loc">Watch the planets move on their real orbits, and see why they sometimes loop backwards. Positions computed live on your device for the Science Centre Observatory, Jurong.</div>
     <div class="bar">
       <a href="scob-dashboard-v3.html">← Dashboard</a>
       <a href="scale-model.html">🪐 Sizes to scale</a>
       <a href="sky-finder.html">🔭 What's up now</a>
-      <a href="comets.html">☄️ Comet tracker</a>
+    </div>
+    <div class="pills">
+      <a href="solar-system.html" class="on">◉ Overview &amp; orrery</a>
+      <a href="solar-system-planets.html">🪐 The planets</a>
+      <a href="solar-system-outer.html">☁️ Beyond Neptune</a>
     </div>
   </header>
 
@@ -126,121 +107,27 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     </div>
     <svg class="svgbox" id="retroOut" viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apparent path of a planet showing a retrograde loop"></svg>
     <div class="readout" id="retroCaption"></div>
-    <div class="note">The horizontal axis is position along the zodiac (ecliptic longitude); the vertical axis is how far the planet strays above or below the ecliptic. Red marks the weeks of backwards (retrograde) motion. Tip: switch the orrery above to <b>Inner</b> and tick <b>sight-lines</b> to watch the geometry that causes it.</div>
+    <div class="note">The horizontal axis is position along the zodiac (ecliptic longitude); the vertical axis is how far the planet strays above or below the ecliptic. Red marks the weeks of backwards (retrograde) motion. Tip: switch the orrery above to <b>Inner</b> and tick <b>sight-lines</b> to watch the geometry that causes it — the ancient Greeks needed extra "epicycles" to explain these loops; a Sun-centred solar system makes them fall out for free.</div>
   </div>
 
-  <!-- OUTWARD MAP -->
+  <!-- SECTION NAV -->
   <div class="card">
-    <h2>Outward to the edge — the whole solar system</h2>
-    <p class="sub">The planets are just the bright inner huddle. Beyond Neptune lie belts, scattered icy worlds and, far out, a shell of comets. This map is on a <b>logarithmic</b> scale — every step rightward is 10× further from the Sun — because the real distances are otherwise impossible to draw. Tap a region.</p>
-    <svg class="svgbox" id="mapOut" viewBox="0 0 720 168" style="background:linear-gradient(90deg,#0e1c40,#0a1430)" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logarithmic map of the solar system from the Sun to the Oort cloud"></svg>
-    <div class="zones" id="mapZones"></div>
-    <div class="zdet" id="mapDetail"></div>
-  </div>
-
-  <!-- ENCYCLOPEDIA -->
-  <div class="card">
-    <h2>The regions, one by one</h2>
-    <p class="sub">Tap any heading to open it.</p>
-
-    <details class="qa" open>
-      <summary><span class="ic">🌍</span> The eight planets <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>Four small <b>rocky (terrestrial)</b> worlds huddle close to the Sun; four giant worlds — two <b>gas giants</b> and two <b>ice giants</b> — sweep the cold outer system. They all orbit in nearly the same flat plane, the <b>ecliptic</b>, and all travel the same direction, because they condensed from one spinning disc of gas and dust 4.6 billion years ago.</p>
-        <table>
-          <thead><tr><th>Planet</th><th>Dist (AU)</th><th>Year</th><th>Width</th><th>Moons*</th></tr></thead>
-          <tbody>
-            <tr><td class="n tsc">☿ Mercury</td><td>0.39</td><td>88 d</td><td>0.38×</td><td>0</td></tr>
-            <tr><td class="n tsc">♀ Venus</td><td>0.72</td><td>225 d</td><td>0.95×</td><td>0</td></tr>
-            <tr><td class="n tsc">🌍 Earth</td><td>1.00</td><td>365 d</td><td>1.0×</td><td>1</td></tr>
-            <tr><td class="n tsc">♂ Mars</td><td>1.52</td><td>1.9 yr</td><td>0.53×</td><td>2</td></tr>
-            <tr><td class="n tgi">♃ Jupiter</td><td>5.20</td><td>11.9 yr</td><td>11×</td><td>95+</td></tr>
-            <tr><td class="n tgi">♄ Saturn</td><td>9.54</td><td>29.4 yr</td><td>9.1×</td><td>140+</td></tr>
-            <tr><td class="n tgi">♅ Uranus</td><td>19.2</td><td>84 yr</td><td>4.0×</td><td>28+</td></tr>
-            <tr><td class="n tgi">♆ Neptune</td><td>30.1</td><td>165 yr</td><td>3.9×</td><td>16+</td></tr>
-          </tbody>
-        </table>
-        <p class="note">Width is relative to Earth. *Moon counts keep rising as surveys find tiny outer moons — treat the giant-planet numbers as "at least".</p>
-        <div class="hook"><b>At SCOB:</b> the 40&nbsp;cm main-dome scope splits Saturn's rings and shows Jupiter's two dark belts with its four Galilean moons strung out like beads; near opposition it teases a polar cap out of Mars. Uranus and Neptune are tiny blue-green dots even at high power.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">🪐</span> Orbits: ellipses, tilts &amp; Kepler <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>Orbits are not perfect circles but <b>ellipses</b>, with the Sun at one focus — Johannes Kepler's first law (1609). A planet moves <b>fastest at perihelion</b> (closest) and slowest at aphelion (farthest), sweeping equal areas in equal times (second law). And the farther out a planet is, the slower it goes and the longer its year (third law: period² ∝ distance³).</p>
-        <p><b>Eccentricity</b> measures how stretched an orbit is. Venus is almost a perfect circle (e=0.007); Mercury is noticeably oval (e=0.21); many comets and outer icy bodies are wildly elongated. <b>Inclination</b> measures how tilted an orbit is out of the ecliptic — the planets are tilted by only a degree or a few, which is why they all track along the same narrow band of sky, the zodiac.</p>
-        <div class="hook"><b>See it in the orrery above:</b> the ovalness and slight off-centring of each ring is real, computed from the orbital elements — Mercury's ring is visibly off-centre from the Sun.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">↩️</span> Apparent retrograde motion <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>For most of the year a planet creeps eastward against the stars. But when <b>Earth, on its faster inner track, overtakes an outer planet</b> (around opposition), the outer planet appears to slow, stop, and slide backwards (westward) for a few weeks before looping forward again — like a slower car seeming to drift backwards as you pass it on the motorway.</p>
-        <p>The ancient Greeks bolted extra circles ("epicycles") onto their Earth-centred model to explain these loops. Copernicus's Sun-centred model made them fall out naturally: they are simply what a moving observer sees. Mercury and Venus, being <i>inside</i> Earth's orbit, go retrograde when they swing between us and the Sun instead.</p>
-        <div class="hook"><b>A session-night project:</b> sketch Mars against the same background stars once a week through a retrograde period and you will draw the loop yourself — the very observation that rewired our picture of the cosmos.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">🪨</span> The asteroid belt <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>Between Mars and Jupiter, roughly <b>2.1 to 3.3 AU</b> from the Sun, orbit more than a million rocky bodies larger than a kilometre. Yet their total mass is only about <b>4% of the Moon's</b> — the belt is mostly empty space, nothing like the crowded rubble of the movies. A third of that mass is a single object, the dwarf planet <b>Ceres</b> (940&nbsp;km).</p>
-        <p>No planet formed here because <b>Jupiter's gravity</b> kept stirring the region, so the material never coalesced. That same influence carves <b>Kirkwood gaps</b> — near-empty lanes at distances where an asteroid's orbit would resonate with Jupiter's (the 3:1 gap at 2.50 AU, 5:2 at 2.82, 2:1 at 3.28). Sharing Jupiter's own orbit, 60° ahead and behind, sit the <b>Trojan</b> asteroids, trapped in stable gravitational parking spots.</p>
-        <div class="hook"><b>At SCOB:</b> the brightest asteroids — Vesta, Ceres — look like slow "stars" that shift night to night; the Seestar can capture them and Vesta occasionally reaches naked-eye brightness at opposition.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">❄️</span> The Kuiper belt <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>Beyond Neptune, from about <b>30 to 50 AU</b>, lies a second, colder, far larger belt of icy bodies — the Kuiper belt, home to <b>Pluto</b> and thousands of known "KBOs". Its "classical" members (nicknamed cubewanos) orbit calmly at 42–48 AU. Others are locked in <b>resonance with Neptune</b>: the <b>plutinos</b>, including Pluto itself, circle exactly twice for every three Neptune orbits (a 3:2 resonance at 39.4 AU), which protects them from ever colliding with the giant that shepherds them.</p>
-        <p>This is the reservoir that feeds <b>short-period comets</b> like Halley. NASA's <i>New Horizons</i> flew past Pluto in 2015 and the KBO Arrokoth in 2019, revealing worlds far more varied than anyone expected.</p>
-        <div class="hook"><b>At SCOB:</b> individual KBOs are far too faint for the domes, but Pluto's realm is exactly where the story of "why Pluto is a dwarf planet" comes alive for visitors.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">⚪</span> Dwarf planets &amp; candidates <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>A <b>dwarf planet</b> orbits the Sun and is round under its own gravity, but has <i>not</i> cleared its orbital neighbourhood of other bodies. The IAU officially recognises five: <b>Ceres</b> (in the asteroid belt) and four out in the Kuiper region — <b>Pluto</b> (2,377&nbsp;km), <b>Eris</b> (2,326&nbsp;km, whose 2005 discovery triggered Pluto's reclassification), <b>Makemake</b> and <b>Haumea</b> (an egg-shaped world spinning end-over-end every four hours).</p>
-        <p>Many more are near-certain dwarf planets awaiting formal status: <b>Gonggong</b>, <b>Quaoar</b>, <b>Orcus</b> ("the anti-Pluto"), and the remote <b>Sedna</b>. Estimates suggest the outer solar system may hold <i>hundreds</i>.</p>
-        <div class="hook"><b>Teaching hook:</b> Pluto wasn't demoted for being small — it was reclassified because we found it is one of many similar icy worlds. Naming Eris, Makemake and Haumea turns "poor Pluto" into a much richer story.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">🌌</span> Scattered disc, extreme TNOs &amp; Planet Nine <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>Past the Kuiper belt, gravity has flung objects onto steeply tilted, wildly stretched orbits — the <b>scattered disc</b>. Some, like Eris, dip in near Neptune (30–40 AU) at perihelion; these Neptune could plausibly have scattered.</p>
-        <p>But a handful of <b>detached / extreme trans-Neptunian objects (ETNOs)</b> never come close enough for Neptune to have moved them: <b>Sedna</b> stays beyond 76 AU even at its nearest and swings out to ~937 AU; 2012&nbsp;VP113 and Leleākūhonua are similar. What could have lifted their orbits so far from the planets?</p>
-        <p>One striking clue: several of the most extreme of these orbits appear to <b>point the same way in space</b>. In 2016 Batygin and Brown argued this clustering could be the gravitational fingerprint of an unseen <b>"Planet Nine"</b> — perhaps 5–10 Earth masses, orbiting hundreds of AU out. It remains <b>unconfirmed and debated</b>: as of 2026 the Vera C. Rubin Observatory has begun a systematic search that could settle the question within a couple of years (astronomers put the odds of a find, if it exists, at 70–80%), while newly found bodies such as the June 2026 sednoid 2023&nbsp;KQ14 ("Ammonite"), whose orbit is <i>mis</i>aligned with the cluster, actually weaken the original evidence. No one has yet seen it.</p>
-        <div class="hook"><b>Why it matters:</b> whether the answer is a hidden planet, a subtler pattern, or observational bias, this is a genuine open frontier — the outer solar system is still being mapped in real time.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">🛰️</span> The heliosphere &amp; the Voyagers <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>The Sun blows a supersonic wind of charged particles that inflates a vast bubble around the whole planetary system — the <b>heliosphere</b>. Around <b>90 AU</b> the wind abruptly slows at the <b>termination shock</b>; near <b>120 AU</b> it finally gives way to true interstellar space at the <b>heliopause</b>. This is the edge of the Sun's <i>wind</i> — but not of its <i>gravity</i>.</p>
-        <p>Only two spacecraft have ever crossed it: <b>Voyager 1</b> (in 2012) and <b>Voyager 2</b> (in 2018), launched back in 1977 and still faintly calling home. Right now Voyager&nbsp;1 is about <b><span id="voy1">…</span></b> and Voyager&nbsp;2 about <b><span id="voy2">…</span></b> from the Sun, each receding a further ~3.5 and ~3.1 AU every year.</p>
-        <div class="hook"><b>Perspective:</b> those probes, our farthest emissaries, have not yet reached even the <i>inner</i> edge of the Oort cloud — and won't for another 300 years.</div>
-      </div>
-    </details>
-
-    <details class="qa">
-      <summary><span class="ic">☁️</span> The Oort cloud <span class="cx">＋</span></summary>
-      <div class="body">
-        <p>Far beyond everything else, a <b>spherical shell of perhaps trillions of icy bodies</b> is thought to surround the Sun from roughly <b>2,000 out to 100,000 AU</b> — the Oort cloud. Unlike the flat belts, it wraps the solar system in every direction. It is the source of the <b>long-period comets</b> that fall in on million-year orbits, occasionally nudged loose by a passing star or the tide of the galaxy itself.</p>
-        <p>The Oort cloud has <b>never been directly observed</b> — we infer it entirely from where these comets come from. Its outer edge, held only weakly by the Sun's gravity, reaches perhaps <b>a third of the way to the nearest star</b>, Proxima Centauri (268,000 AU). This — not Neptune, not the heliopause — is the true gravitational edge of the Sun's domain.</p>
-        <div class="hook"><b>At SCOB:</b> every bright long-period comet in the sky (see the comet tracker) is a visitor from this invisible shell, making its one plunge through the inner solar system in our lifetime.</div>
-      </div>
-    </details>
+    <h2>Go deeper</h2>
+    <p class="sub">This is page one of three. Continue the tour:</p>
+    <div class="navcards">
+      <a href="solar-system-planets.html">
+        <div class="t">🪐 The planets →</div>
+        <div class="d">Every orbit side by side on one scale (perihelion to aphelion), then a detailed fact card for each of the eight worlds.</div>
+      </a>
+      <a href="solar-system-outer.html">
+        <div class="t">☁️ Beyond Neptune →</div>
+        <div class="d">A map out to the Oort cloud, plus the asteroid &amp; Kuiper belts, dwarf planets, extreme TNOs, Planet Nine, the heliosphere and the Voyagers.</div>
+      </a>
+    </div>
   </div>
 
   <div class="foot">
-    Planet, Sun and Moon positions are computed on your device with the shared SCOB astronomy engine (P.&nbsp;Schlyter's method), validated to arc-minute accuracy. Belt, dwarf-planet, heliosphere and Oort-cloud distances are standard published values; the Oort cloud and Planet Nine have never been directly seen. Voyager distances are projected from mid-2026 tracking.<br>
+    Sun, Moon and planet positions are computed on your device with the shared SCOB astronomy engine (P. Schlyter's method), validated to arc-minute accuracy. Retrograde windows are derived live from the same engine.<br>
     <a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
@@ -255,7 +142,6 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
   var RAD = Math.PI / 180, DEG = 180 / Math.PI;
   var rev = function (x) { return ((x % 360) + 360) % 360; };
 
-  /* ---------- day number + heliocentric position (mirrors astro-core planetEq) ---------- */
   function dS(date) { return (date.getTime() / 86400000 + 2440587.5) - 2451543.5; }
   function helio(p, d) {
     var g = function (a) { return a[0] + a[1] * d; };
@@ -268,7 +154,6 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     var yh = r * (Math.sin(N * RAD) * Math.cos((v + w) * RAD) + Math.cos(N * RAD) * Math.sin((v + w) * RAD) * Math.cos(i * RAD));
     return { x: xh, y: yh, r: r };
   }
-  // orbit path: sweep mean anomaly across a full turn, elements fixed at epoch d
   function orbitPath(p, d) {
     var g = function (a) { return a[0] + a[1] * d; };
     var N = rev(g(p.N)), i = g(p.i), w = rev(g(p.w)), a = g(p.a), e = g(p.e);
@@ -285,7 +170,6 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     }
     return pts;
   }
-  // geocentric ecliptic lon/lat of a planet (for retrograde loop) via astro-core
   function geoLamBet(name, date) {
     var d = dS(date), s = A.sun(d), pe = A.planetEq(A.PLAN[name], d, s.lon, s.r);
     return { lam: pe.lam, bet: pe.bet };
@@ -293,10 +177,8 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
 
   var PLANETS = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
   var COL = { Mercury: '#b9b1a4', Venus: '#e6c98a', Earth: '#5bd6e0', Mars: '#ff6b6b', Jupiter: '#f0b47a', Saturn: '#f5d98c', Uranus: '#8fe0d8', Neptune: '#6ea8ff' };
-  // Earth's elements aren't in PLAN (astro-core derives Earth from the Sun). Provide them here.
   var EARTH_EL = { N: [0, 0], i: [0, 0], w: [282.9404, 4.70935e-5], a: [1.000000, 0], e: [0.016709, -1.151e-9], M: [356.0470, 0.9856002585] };
   function elements(name) { return name === 'Earth' ? EARTH_EL : (A ? A.PLAN[name] : null); }
-
   var SYM = { Mercury: '☿', Venus: '♀', Earth: '⊕', Mars: '♂', Jupiter: '♃', Saturn: '♄', Uranus: '♅', Neptune: '♆' };
 
   /* ================= LIVE ORRERY ================= */
@@ -306,28 +188,21 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
   function fAll(r) { return Math.pow(r, 0.55) * (150 / Math.pow(30.1, 0.55)); }
   function scaleFn() { return orrMode === 'inner' ? fInner : fAll; }
   function toPx(x, y) { var f = scaleFn(), rr = Math.sqrt(x * x + y * y) || 1e-9, k = f(rr) / rr; return [CX + x * k, CY - y * k]; }
-
+  function beltBand(r0, r1, col) { var a = fAll(r0), b = fAll(r1); return '<circle cx="' + CX + '" cy="' + CY + '" r="' + ((a + b) / 2).toFixed(1) + '" fill="none" stroke="' + col + '" stroke-width="' + (b - a).toFixed(1) + '" stroke-opacity="0.28"/>'; }
   function drawOrrery() {
     var host = document.getElementById('orrOut'); if (!host) return;
     if (!A) { host.innerHTML = '<text x="180" y="186" fill="#9fb0d6" font-size="13" text-anchor="middle">Live engine loading…</text>'; return; }
     var date = new Date(Date.now() + orrOffset * 86400000), d = dS(date);
     var set = orrMode === 'inner' ? ['Mercury', 'Venus', 'Earth', 'Mars'] : PLANETS;
     var s = '';
-    // reference rings / belts
     if (orrMode === 'inner') {
       s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + fInner(2.1).toFixed(1) + '" fill="none" stroke="#2a3a68" stroke-width="0.6" stroke-dasharray="1 3"/>';
-    } else {
-      // asteroid belt band 2.1-3.3, Kuiper band 30-50
-      s += beltBand(2.1, 3.3, '#3a4a7a'); s += beltBand(30, 50, '#2f5a8a');
-    }
-    // orbits
+    } else { s += beltBand(2.1, 3.3, '#3a4a7a'); s += beltBand(30, 50, '#2f5a8a'); }
     set.forEach(function (nm) {
       var pts = orbitPath(elements(nm), d).map(function (p) { return toPx(p[0], p[1]); });
       s += '<polygon points="' + pts.map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') + '" fill="none" stroke="' + COL[nm] + '" stroke-opacity="0.45" stroke-width="1"/>';
     });
-    // Sun
     s += '<circle cx="' + CX + '" cy="' + CY + '" r="6" fill="#ffd45e"/><circle cx="' + CX + '" cy="' + CY + '" r="10" fill="#ffd45e" fill-opacity="0.18"/>';
-    // sight-lines from Earth to superior planets
     var pos = {};
     set.forEach(function (nm) { var h = helio(elements(nm), d); pos[nm] = toPx(h.x, h.y); });
     if (orrSight && pos.Earth) {
@@ -339,7 +214,6 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
         s += '<line x1="' + ex.toFixed(1) + '" y1="' + ey.toFixed(1) + '" x2="' + (px + ux * 60).toFixed(1) + '" y2="' + (py + uy * 60).toFixed(1) + '" stroke="#ff6b6b" stroke-opacity="0.5" stroke-width="0.9" stroke-dasharray="3 3"/>';
       });
     }
-    // planet dots + labels
     set.forEach(function (nm) {
       var q = pos[nm], rad = nm === 'Jupiter' || nm === 'Saturn' ? 4 : 3;
       s += '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="' + rad + '" fill="' + COL[nm] + '"/>';
@@ -348,10 +222,6 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     s += '<text x="8" y="18" fill="#9fb0d6" font-size="10">North-up view · ' + (orrMode === 'inner' ? 'true scale to Mars' : 'outer distances √-compressed') + '</text>';
     host.innerHTML = s;
     updateOrrReadout(date);
-  }
-  function beltBand(r0, r1, col) {
-    var a = fAll(r0), b = fAll(r1);
-    return '<circle cx="' + CX + '" cy="' + CY + '" r="' + ((a + b) / 2).toFixed(1) + '" fill="none" stroke="' + col + '" stroke-width="' + (b - a).toFixed(1) + '" stroke-opacity="0.28"/>';
   }
   function retroFlag(name, date) {
     var y = geoLamBet(name, new Date(date.getTime() - 2 * 86400000)).lam;
@@ -377,7 +247,7 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
         var note = document.getElementById('orrScaleNote');
         if (note) note.textContent = orrMode === 'inner'
           ? 'Inner view is drawn to true scale — the ovalness of each orbit is real.'
-          : 'To fit Neptune and the inner planets on one picture, radial distance is compressed with a square-root scale, so gaps between the outer planets look smaller than they are. See the outward map below for honest (log) distances.';
+          : 'To fit Neptune and the inner planets on one picture, radial distance is compressed with a square-root scale, so gaps between the outer planets look smaller than they are. See "Beyond Neptune" for honest (log) distances.';
         drawOrrery();
       };
     });
@@ -391,10 +261,7 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     if (play) play.onclick = function () {
       orrPlaying = !orrPlaying; play.textContent = orrPlaying ? '⏸ Pause' : '▶ Play';
       if (orrPlaying) {
-        orrTimer = setInterval(function () {
-          orrOffset += 3; if (orrOffset > 450) orrOffset = -450;
-          if (sl) sl.value = orrOffset; drawOrrery();
-        }, 90);
+        orrTimer = setInterval(function () { orrOffset += 3; if (orrOffset > 450) orrOffset = -450; if (sl) sl.value = orrOffset; drawOrrery(); }, 90);
       } else if (orrTimer) { clearInterval(orrTimer); orrTimer = null; }
     };
   }
@@ -402,7 +269,6 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
   /* ================= RETROGRADE LOOP ================= */
   var retroPlanet = 'Mars';
   function findRetroWindow(name) {
-    // scan for retrograde segments within -1.5yr .. +2.5yr, choose the one nearest today
     var start = Date.now() - 540 * 86400000, end = Date.now() + 900 * 86400000, step = 2 * 86400000;
     var prev = null, inR = false, segStart = null, segs = [];
     for (var t = start; t <= end; t += step) {
@@ -428,15 +294,8 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     if (!win) { host.innerHTML = ''; if (cap) cap.textContent = 'No retrograde period found in the next couple of years.'; return; }
     var t0 = win[0] - 22 * 86400000, t1 = win[1] + 22 * 86400000, step = 2 * 86400000;
     var samples = [];
-    for (var t = t0; t <= t1; t += step) {
-      var g = geoLamBet(retroPlanet, new Date(t));
-      samples.push({ t: t, lam: g.lam, bet: g.bet });
-    }
-    // unwrap longitude
-    for (var i = 1; i < samples.length; i++) {
-      var dd = samples[i].lam - samples[i - 1].lam;
-      if (dd > 180) samples[i].lam -= 360; if (dd < -180) samples[i].lam += 360;
-    }
+    for (var t = t0; t <= t1; t += step) { var g = geoLamBet(retroPlanet, new Date(t)); samples.push({ t: t, lam: g.lam, bet: g.bet }); }
+    for (var i = 1; i < samples.length; i++) { var dd = samples[i].lam - samples[i - 1].lam; if (dd > 180) samples[i].lam -= 360; if (dd < -180) samples[i].lam += 360; }
     var lams = samples.map(function (o) { return o.lam; }), bets = samples.map(function (o) { return o.bet; });
     var lo = Math.min.apply(null, lams), hi = Math.max.apply(null, lams);
     var bl = Math.min.apply(null, bets), bh = Math.max.apply(null, bets);
@@ -445,16 +304,13 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     var bmid = (bl + bh) / 2, bspan = Math.max(bh - bl, 1.2);
     var sy = function (b) { return H / 2 - (b - bmid) / bspan * (H - 2 * pady) * 0.72; };
     var s = '';
-    // ecliptic guide line (label at left to avoid the right-hand stationary point)
     s += '<line x1="' + padx + '" y1="' + sy(bmid).toFixed(1) + '" x2="' + (W - padx) + '" y2="' + sy(bmid).toFixed(1) + '" stroke="#33406b" stroke-width="0.8" stroke-dasharray="4 4"/>';
     s += '<text x="' + (padx + 2) + '" y="' + (sy(bmid) - 4).toFixed(1) + '" fill="#5a6683" font-size="9" text-anchor="start">the ecliptic</text>';
-    // path, coloured by direction
     for (var j = 1; j < samples.length; j++) {
       var a = samples[j - 1], b = samples[j];
       var retro = (b.lam - a.lam) < 0;
       s += '<line x1="' + sx(a.lam).toFixed(1) + '" y1="' + sy(a.bet).toFixed(1) + '" x2="' + sx(b.lam).toFixed(1) + '" y2="' + sy(b.bet).toFixed(1) + '" stroke="' + (retro ? '#ff6b6b' : '#5bd6e0') + '" stroke-width="' + (retro ? 2.4 : 1.8) + '"/>';
     }
-    // stationary points (window bounds)
     function mark(tval, txt, anchor) {
       var o = null; for (var k = 0; k < samples.length; k++) { if (Math.abs(samples[k].t - tval) <= step) { o = samples[k]; break; } }
       if (!o) return '';
@@ -464,11 +320,9 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
     }
     s += mark(win[0], '⏸', 'top');
     s += mark(win[1], '⏸', 'bottom');
-    // start/end of whole track
     var first = samples[0], last = samples[samples.length - 1];
     s += '<circle cx="' + sx(first.lam).toFixed(1) + '" cy="' + sy(first.bet).toFixed(1) + '" r="2.4" fill="#5bd6e0"/>';
     s += '<circle cx="' + sx(last.lam).toFixed(1) + '" cy="' + sy(last.bet).toFixed(1) + '" r="2.4" fill="#5bd6e0"/>';
-    // axis hints
     s += '<text x="' + padx + '" y="' + (H - 8) + '" fill="#9fb0d6" font-size="9.5">← west</text>';
     s += '<text x="' + (W - padx) + '" y="' + (H - 8) + '" fill="#9fb0d6" font-size="9.5" text-anchor="end">east →</text>';
     s += '<text x="' + (W / 2) + '" y="16" fill="#9fb0d6" font-size="10" text-anchor="middle">apparent path against the stars</text>';
@@ -507,98 +361,9 @@ details.qa[open] summary{color:var(--gold);border-bottom:1px solid var(--line);}
       : 'No planet is in apparent retrograde tonight.';
   }
 
-  /* ================= OUTWARD LOG MAP ================= */
-  var ZONES = [
-    { id: 'terr', ic: '🌍', name: 'Terrestrial planets', rr: '0.4 – 1.5 AU', lo: 0.31, hi: 1.67, col: '#5bd6e0',
-      hd: 'Mercury, Venus, Earth, Mars',
-      body: 'The four small rocky worlds, packed into the warm inner system inside 1.5 AU. Light from the Sun reaches Mars in about 12 minutes.',
-      scob: 'All four are naked-eye or easy scope targets on session nights.' },
-    { id: 'ast', ic: '🪨', name: 'Asteroid belt', rr: '2.1 – 3.3 AU', lo: 2.1, hi: 3.3, col: '#f0b47a',
-      hd: 'A million rocks, ⅓ of them Ceres',
-      body: 'Rocky rubble that never formed a planet because Jupiter kept stirring it. Total mass only ~4% of the Moon. Jupiter’s resonances clear the Kirkwood gaps and trap the Trojan asteroids.',
-      scob: 'Vesta and Ceres appear as slow-moving "stars"; the Seestar can record them.' },
-    { id: 'giant', ic: '🪐', name: 'Giant planets', rr: '5 – 30 AU', lo: 4.95, hi: 30.3, col: '#f5d98c',
-      hd: 'Jupiter, Saturn, Uranus, Neptune',
-      body: 'Two gas giants and two ice giants ruling the cold middle system. Jupiter alone outweighs everything else that orbits the Sun combined, twice over.',
-      scob: 'The 40 cm dome shows Jupiter’s belts & moons and Saturn’s rings beautifully.' },
-    { id: 'kuiper', ic: '❄️', name: 'Kuiper belt', rr: '30 – 50 AU', lo: 30, hi: 50, col: '#6ea8ff',
-      hd: 'Pluto and thousands of icy worlds',
-      body: 'A second, colder, far larger belt beyond Neptune. Home to Pluto and the plutinos, locked 3:2 with Neptune at 39.4 AU. Source of short-period comets.',
-      scob: 'Too faint for the domes, but the heart of the "what is a planet?" conversation.' },
-    { id: 'etno', ic: '🌌', name: 'Scattered disc & extreme TNOs', rr: '30 – 1000+ AU', lo: 40, hi: 1000, col: '#b79cff',
-      hd: 'Sedna, 2012 VP113, detached worlds',
-      body: 'Icy bodies flung onto steep, stretched orbits. The most extreme (Sedna: never nearer than 76 AU, out to ~937) are too detached for Neptune to have moved them — and their clustered orientations fuel the Planet Nine debate.',
-      scob: 'Invisible to us, but a live scientific frontier — Rubin Observatory is hunting here now.' },
-    { id: 'helio', ic: '🛰️', name: 'Heliosphere edge & Voyagers', rr: '90 – 170 AU', lo: 85, hi: 175, col: '#5fd38a',
-      hd: 'Termination shock, heliopause',
-      body: 'Where the solar wind slows (~90 AU) then yields to interstellar space (~120 AU). Voyager 1 & 2 are the only craft to have crossed it, and are now the farthest human-made objects.',
-      scob: 'A vivid "edge of the Sun’s wind — but not its gravity" teaching moment.' },
-    { id: 'oort', ic: '☁️', name: 'Oort cloud', rr: '2,000 – 100,000 AU', lo: 2000, hi: 100000, col: '#f4f6fb',
-      hd: 'A comet shell wrapping the Sun',
-      body: 'A spherical cloud of perhaps trillions of icy bodies, never directly seen, reaching roughly a third of the way to the next star. It launches the long-period comets — and marks the true gravitational edge of the solar system.',
-      scob: 'Every bright long-period comet in our comet tracker is a visitor from here.' }
-  ];
-  var mapSel = 'giant';
-  function mapX(au) { var lo = Math.log10(0.3), hi = Math.log10(300000); return 20 + (Math.log10(au) - lo) / (hi - lo) * (720 - 40); }
-  function drawMap() {
-    var host = document.getElementById('mapOut'); if (!host) return;
-    var yB = 104, s = '';
-    s += '<rect x="20" y="' + yB + '" width="680" height="12" rx="3" fill="#0a1327" stroke="#33406b"/>';
-    // decade ticks + labels
-    for (var e = 0; e <= 5; e++) { var au = Math.pow(10, e), x = mapX(au); s += '<line x1="' + x.toFixed(1) + '" y1="' + yB + '" x2="' + x.toFixed(1) + '" y2="' + (yB + 12) + '" stroke="#22325a"/><text x="' + x.toFixed(1) + '" y="' + (yB + 24) + '" fill="#5a6683" font-size="9" text-anchor="middle">' + (au >= 1000 ? (au / 1000) + 'k' : au) + ' AU</text>'; }
-    // zone bands
-    ZONES.forEach(function (z) {
-      var x1 = mapX(z.lo), x2 = mapX(z.hi);
-      s += '<rect x="' + x1.toFixed(1) + '" y="' + (yB - 4) + '" width="' + Math.max(2, x2 - x1).toFixed(1) + '" height="20" rx="3" fill="' + z.col + '" fill-opacity="' + (z.id === mapSel ? 0.5 : 0.2) + '" stroke="' + z.col + '" stroke-opacity="' + (z.id === mapSel ? 1 : 0.5) + '"/>';
-    });
-    // point markers — each carries its own stagger level (0/1/2) to avoid collisions in the crowded 30–170 AU range
-    var MK = [
-      ['Earth', 1, 'top', 0], ['Ceres', 2.77, 'bot', 0], ['Jupiter', 5.2, 'top', 0],
-      ['Neptune', 30.1, 'top', 0], ['Pluto', 39.5, 'bot', 0], ['heliopause', 120, 'top', 1],
-      ['Voyager 1', 170.5, 'bot', 1], ['Sedna aphelion', 937, 'top', 0], ['inner Oort', 2000, 'bot', 0],
-      ['Proxima Centauri', 268000, 'top', 1]
-    ];
-    MK.forEach(function (m) {
-      var x = mapX(m[1]), top = m[2] === 'top', lvl = m[3] || 0;
-      var yTxt = top ? yB - 10 - lvl * 12 : yB + 34 + lvl * 12;
-      var yLine0 = top ? yB - 4 : yB + 16, yLine1 = top ? yTxt + 2 : yTxt - 8;
-      s += '<line x1="' + x.toFixed(1) + '" y1="' + yLine0 + '" x2="' + x.toFixed(1) + '" y2="' + yLine1 + '" stroke="#4a5a8c" stroke-width="0.7"/>';
-      s += '<circle cx="' + x.toFixed(1) + '" cy="' + (yB + 6) + '" r="2.3" fill="#f5c542"/>';
-      var anch = x < 60 ? 'start' : (x > 665 ? 'end' : 'middle');
-      s += '<text x="' + x.toFixed(1) + '" y="' + yTxt + '" fill="#c7d2ec" font-size="9.5" text-anchor="' + anch + '">' + m[0] + '</text>';
-    });
-    s += '<text x="20" y="16" fill="#9fb0d6" font-size="10">Sun</text><text x="700" y="16" fill="#5a6683" font-size="9" text-anchor="end">← each step is 10× farther from the Sun →</text>';
-    host.innerHTML = s;
-  }
-  function drawZones() {
-    var host = document.getElementById('mapZones'); if (!host) return;
-    host.innerHTML = ZONES.map(function (z) {
-      return '<button type="button" class="zone' + (z.id === mapSel ? ' on' : '') + '" data-z="' + z.id + '"><span>' + z.ic + '</span><span>' + z.name + '</span><span class="rr">' + z.rr + '</span></button>';
-    }).join('');
-    Array.prototype.forEach.call(host.querySelectorAll('.zone'), function (b) {
-      b.onclick = function () { mapSel = b.getAttribute('data-z'); drawZones(); drawMap(); drawZoneDetail(); };
-    });
-  }
-  function drawZoneDetail() {
-    var z = null; for (var i = 0; i < ZONES.length; i++) if (ZONES[i].id === mapSel) z = ZONES[i];
-    var host = document.getElementById('mapDetail'); if (!host || !z) return;
-    host.innerHTML = '<span class="hd">' + z.ic + ' ' + z.name + ' · ' + z.rr + '</span><b>' + z.hd + '.</b> ' + z.body + '<span class="scob">🔭 ' + z.scob + '</span>';
-  }
-
-  /* ================= VOYAGER (live projection) ================= */
-  function voyagers() {
-    var now = new Date(), yr = now.getFullYear() + (now.getMonth() + now.getDate() / 30) / 12;
-    var dt = yr - 2026.5;
-    var v1 = 170.5 + 3.5 * dt, v2 = 142.8 + 3.1 * dt;
-    var fmt = function (au) { return au.toFixed(1) + ' AU (' + (au * 0.1496).toFixed(1) + ' billion km)'; };
-    var e1 = document.getElementById('voy1'), e2 = document.getElementById('voy2');
-    if (e1) e1.textContent = fmt(v1); if (e2) e2.textContent = fmt(v2);
-  }
-
   /* ================= BOOT ================= */
   bindOrrery(); bindRetro();
   drawTonight(); drawOrrery(); drawRetro();
-  drawZones(); drawMap(); drawZoneDetail(); voyagers();
 })();
 </script>
 <script src="version.js"></script>
