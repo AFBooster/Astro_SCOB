@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solar System — Live Orrery &amp; Retrograde — SCOB</title>
-<meta name="description" content="A live top-down orrery of the planets computed on your device, and an explainer of apparent retrograde motion, for the Science Centre Observatory, Jurong. Part of a three-page solar-system section covering the planets and everything out to the Oort cloud.">
+<meta name="description" content="A live top-down orrery of the planets computed on your device, an animated explainer of apparent retrograde motion, and spinning planets showing their axial tilt, for the Science Centre Observatory, Jurong. Part of a three-page solar-system section.">
 <link rel="stylesheet" href="scob-theme.css">
 <style>
 *{box-sizing:border-box;margin:0;}
@@ -53,7 +53,7 @@ input[type=range]{width:100%;accent-color:var(--gold);}
 <div class="wrap">
   <header>
     <h1>🪐 Solar System — Live Orrery</h1>
-    <div class="loc">Watch the planets move on their real orbits, and see why they sometimes loop backwards. Positions computed live on your device for the Science Centre Observatory, Jurong.</div>
+    <div class="loc">Watch the planets move on their real orbits, see why they loop backwards, and see them spin on their tilted axes. Computed live on your device for the Science Centre Observatory, Jurong.</div>
     <div class="bar">
       <a href="scob-dashboard-v3.html">← Dashboard</a>
       <a href="scale-model.html">🪐 Sizes to scale</a>
@@ -102,23 +102,31 @@ input[type=range]{width:100%;accent-color:var(--gold);}
     <p class="sub">The orrery above looks straight down. Edge-on, two things appear that a top-down view hides: how each orbit <b>tilts</b> out of the flat plane, and how each planet's <b>spin axis</b> leans.</p>
     <div class="note" style="margin:0 0 2px"><b>1 · Orbital planes, edge-on.</b> How steeply each orbit tilts relative to Earth's (the ecliptic). The solar system is remarkably flat — tilts are exaggerated ×3 here to be visible. (Pluto, a dwarf planet, tilts a dramatic 17°.)</div>
     <svg class="svgbox" id="edgeOut" viewBox="0 0 720 165" style="background:linear-gradient(180deg,#0e1c40,#0a1430)" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Edge-on view of the planetary orbits showing their inclinations"></svg>
-    <div class="note" style="margin:10px 0 2px"><b>2 · Axial tilt &amp; rotation.</b> Each planet with its real spin axis (dashed) and equatorial — its <i>rotational</i> — plane, plus how long one full turn takes.</div>
-    <svg class="svgbox" id="tiltOut" viewBox="0 0 720 212" style="background:radial-gradient(ellipse at 50% 40%,#0d1c40,#081227)" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Each planet's axial tilt and rotation period"></svg>
+    <div class="note" style="margin:10px 0 2px"><b>2 · Axial tilt &amp; rotation.</b> Each planet spinning on its real axis (dashed) — the tilted oval is its equatorial (rotational) plane, and the white spot shows the turn. Labels give the true rotation time.</div>
+    <svg class="svgbox" id="tiltOut" viewBox="0 0 720 212" style="background:radial-gradient(ellipse at 50% 40%,#0d1c40,#081227)" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Each planet spinning on its axis with its axial tilt"></svg>
     <div class="note" id="tiltNote"></div>
   </div>
 
   <!-- RETROGRADE -->
   <div class="card">
     <h2>Why planets seem to go backwards</h2>
-    <p class="sub">Usually a planet drifts slowly eastward against the stars, night after night. But around the time Earth overtakes it (or it overtakes us), it appears to stop, loop <i>westward</i> for weeks, then resume. Nothing actually reverses — it is a trick of our moving vantage point. The curve below is the planet's real path traced across the sky.</p>
+    <p class="sub">Usually a planet drifts slowly eastward against the stars, night after night. But around the time Earth overtakes it, it appears to stop, loop <i>westward</i> for weeks, then resume. Nothing actually reverses — it is a trick of our moving vantage point. Press play and watch the two views together.</p>
     <div class="seg" id="retroBtns">
       <button data-p="Mars" class="on">♂ Mars</button>
       <button data-p="Jupiter">♃ Jupiter</button>
       <button data-p="Saturn">♄ Saturn</button>
     </div>
+    <div class="controls" style="gap:10px;margin-top:8px">
+      <button class="pill" id="retroPlay">▶ Play</button>
+      <button class="pill" id="retroReplay">⟲ Restart</button>
+      <span class="readout" id="retroDate" style="margin:0"></span>
+    </div>
+    <div class="note" style="margin:8px 0 2px"><b>Top-down — the cause.</b> Earth (inner, faster) sweeps past the planet; watch the orange sight-line's tip swing back across the distant stars as we overtake it.</div>
+    <svg class="svgbox" id="retroGeom" viewBox="0 0 360 232" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Top-down view of Earth overtaking a planet"></svg>
+    <div class="note" style="margin:8px 0 2px"><b>As seen from Earth — the effect.</b> The planet's real track across the sky; it loops backwards (red) exactly while we overtake it.</div>
     <svg class="svgbox" id="retroOut" viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apparent path of a planet showing a retrograde loop"></svg>
     <div class="readout" id="retroCaption"></div>
-    <div class="note">The horizontal axis is position along the zodiac (ecliptic longitude); the vertical axis is how far the planet strays above or below the ecliptic. Red marks the weeks of backwards (retrograde) motion. Tip: switch the orrery above to <b>Inner</b> and tick <b>sight-lines</b> to watch the geometry that causes it — the ancient Greeks needed extra "epicycles" to explain these loops; a Sun-centred solar system makes them fall out for free.</div>
+    <div class="note">The horizontal axis is position along the zodiac (ecliptic longitude); the vertical axis is how far the planet strays above or below the ecliptic. The ancient Greeks needed extra "epicycles" to explain these loops; a Sun-centred solar system makes them fall out for free.</div>
   </div>
 
   <!-- SECTION NAV -->
@@ -128,7 +136,7 @@ input[type=range]{width:100%;accent-color:var(--gold);}
     <div class="navcards">
       <a href="solar-system-planets.html">
         <div class="t">🪐 The planets →</div>
-        <div class="d">Every orbit side by side on one scale (perihelion to aphelion), then a detailed fact card for each of the eight worlds.</div>
+        <div class="d">Every orbit side by side on one scale (perihelion to aphelion), then a detailed fact card — moons, rotation and fun facts — for each of the eight worlds.</div>
       </a>
       <a href="solar-system-outer.html">
         <div class="t">☁️ Beyond Neptune →</div>
@@ -138,7 +146,7 @@ input[type=range]{width:100%;accent-color:var(--gold);}
   </div>
 
   <div class="foot">
-    Sun, Moon and planet positions are computed on your device with the shared SCOB astronomy engine (P. Schlyter's method), validated to arc-minute accuracy. Retrograde windows are derived live from the same engine.<br>
+    Sun, Moon and planet positions are computed on your device with the shared SCOB astronomy engine (P. Schlyter's method), validated to arc-minute accuracy. Retrograde windows are derived live from the same engine; spin speeds in the tilt diagram are compressed for visibility.<br>
     <a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
@@ -277,105 +285,9 @@ input[type=range]{width:100%;accent-color:var(--gold);}
     };
   }
 
-  /* ================= RETROGRADE LOOP ================= */
-  var retroPlanet = 'Mars';
-  function findRetroWindow(name) {
-    var start = Date.now() - 540 * 86400000, end = Date.now() + 900 * 86400000, step = 2 * 86400000;
-    var prev = null, inR = false, segStart = null, segs = [];
-    for (var t = start; t <= end; t += step) {
-      var lam = geoLamBet(name, new Date(t)).lam;
-      if (prev !== null) {
-        var dl = lam - prev.v; if (dl > 180) dl -= 360; if (dl < -180) dl += 360;
-        if (dl < 0 && !inR) { inR = true; segStart = prev.t; }
-        if (dl >= 0 && inR) { inR = false; segs.push([segStart, prev.t]); }
-      }
-      prev = { t: t, v: lam };
-    }
-    if (inR) segs.push([segStart, prev.t]);
-    if (!segs.length) return null;
-    var now = Date.now(), best = segs[0], bd = Infinity;
-    segs.forEach(function (sg) { var mid = (sg[0] + sg[1]) / 2, dd = Math.abs(mid - now); if (dd < bd) { bd = dd; best = sg; } });
-    return best;
-  }
-  function drawRetro() {
-    var host = document.getElementById('retroOut'); if (!host) return;
-    if (!A) { host.innerHTML = '<text x="180" y="126" fill="#9fb0d6" font-size="13" text-anchor="middle">Live engine loading…</text>'; return; }
-    var win = findRetroWindow(retroPlanet);
-    var cap = document.getElementById('retroCaption');
-    if (!win) { host.innerHTML = ''; if (cap) cap.textContent = 'No retrograde period found in the next couple of years.'; return; }
-    var t0 = win[0] - 22 * 86400000, t1 = win[1] + 22 * 86400000, step = 2 * 86400000;
-    var samples = [];
-    for (var t = t0; t <= t1; t += step) { var g = geoLamBet(retroPlanet, new Date(t)); samples.push({ t: t, lam: g.lam, bet: g.bet }); }
-    for (var i = 1; i < samples.length; i++) { var dd = samples[i].lam - samples[i - 1].lam; if (dd > 180) samples[i].lam -= 360; if (dd < -180) samples[i].lam += 360; }
-    var lams = samples.map(function (o) { return o.lam; }), bets = samples.map(function (o) { return o.bet; });
-    var lo = Math.min.apply(null, lams), hi = Math.max.apply(null, lams);
-    var bl = Math.min.apply(null, bets), bh = Math.max.apply(null, bets);
-    var padx = 46, pady = 30, W = 360, H = 250;
-    var sx = function (l) { return padx + (hi === lo ? 0.5 : (l - lo) / (hi - lo)) * (W - 2 * padx); };
-    var bmid = (bl + bh) / 2, bspan = Math.max(bh - bl, 1.2);
-    var sy = function (b) { return H / 2 - (b - bmid) / bspan * (H - 2 * pady) * 0.72; };
-    var s = '';
-    s += '<line x1="' + padx + '" y1="' + sy(bmid).toFixed(1) + '" x2="' + (W - padx) + '" y2="' + sy(bmid).toFixed(1) + '" stroke="#33406b" stroke-width="0.8" stroke-dasharray="4 4"/>';
-    s += '<text x="' + (padx + 2) + '" y="' + (sy(bmid) - 4).toFixed(1) + '" fill="#5a6683" font-size="9" text-anchor="start">the ecliptic</text>';
-    for (var j = 1; j < samples.length; j++) {
-      var a = samples[j - 1], b = samples[j];
-      var retro = (b.lam - a.lam) < 0;
-      s += '<line x1="' + sx(a.lam).toFixed(1) + '" y1="' + sy(a.bet).toFixed(1) + '" x2="' + sx(b.lam).toFixed(1) + '" y2="' + sy(b.bet).toFixed(1) + '" stroke="' + (retro ? '#ff6b6b' : '#5bd6e0') + '" stroke-width="' + (retro ? 2.4 : 1.8) + '"/>';
-    }
-    function mark(tval, txt, anchor) {
-      var o = null; for (var k = 0; k < samples.length; k++) { if (Math.abs(samples[k].t - tval) <= step) { o = samples[k]; break; } }
-      if (!o) return '';
-      var x = sx(o.lam), y = sy(o.bet), ds = new Date(tval).toLocaleDateString('en-SG', { day: 'numeric', month: 'short' });
-      return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="#f5c542"/>' +
-        '<text x="' + x.toFixed(1) + '" y="' + (y + (anchor === 'top' ? -8 : 15)).toFixed(1) + '" fill="#f5c542" font-size="9.5" font-weight="bold" text-anchor="middle">' + txt + ' ' + ds + '</text>';
-    }
-    s += mark(win[0], '⏸', 'top');
-    s += mark(win[1], '⏸', 'bottom');
-    var first = samples[0], last = samples[samples.length - 1];
-    s += '<circle cx="' + sx(first.lam).toFixed(1) + '" cy="' + sy(first.bet).toFixed(1) + '" r="2.4" fill="#5bd6e0"/>';
-    s += '<circle cx="' + sx(last.lam).toFixed(1) + '" cy="' + sy(last.bet).toFixed(1) + '" r="2.4" fill="#5bd6e0"/>';
-    s += '<text x="' + padx + '" y="' + (H - 8) + '" fill="#9fb0d6" font-size="9.5">← west</text>';
-    s += '<text x="' + (W - padx) + '" y="' + (H - 8) + '" fill="#9fb0d6" font-size="9.5" text-anchor="end">east →</text>';
-    s += '<text x="' + (W / 2) + '" y="16" fill="#9fb0d6" font-size="10" text-anchor="middle">apparent path against the stars</text>';
-    host.innerHTML = s;
-    var f = function (tv) { return new Date(tv).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }); };
-    var days = Math.round((win[1] - win[0]) / 86400000);
-    if (cap) cap.innerHTML = '<b>' + retroPlanet + '</b> moves backwards (red) from <b>' + f(win[0]) + '</b> to <b>' + f(win[1]) + '</b> — about ' + days + ' days. ⏸ marks the "stationary points" where it appears to pause and change direction.';
-  }
-  function bindRetro() {
-    var box = document.getElementById('retroBtns'); if (!box) return;
-    Array.prototype.forEach.call(box.querySelectorAll('button'), function (b) {
-      b.onclick = function () {
-        retroPlanet = b.getAttribute('data-p');
-        Array.prototype.forEach.call(box.querySelectorAll('button'), function (x) { x.className = x === b ? 'on' : ''; });
-        drawRetro();
-      };
-    });
-  }
-
-  /* ================= TONIGHT STRIP ================= */
-  function drawTonight() {
-    var strip = document.getElementById('tnStrip'), retroLine = document.getElementById('tnRetro');
-    if (!strip) return;
-    if (!A) { strip.innerHTML = '<div class="p">Live engine loading…</div>'; return; }
-    var now = new Date(), sk = A.sky(now), out = [];
-    ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'].forEach(function (nm) {
-      var p = sk.planets[nm]; if (!p) return;
-      var up = p.alt > 0;
-      var tag = up ? '<span class="tag up">' + Math.round(p.alt) + '° up</span>' : '<span class="tag" style="color:#5a6683;border:1px solid #33406b">below</span>';
-      out.push('<div class="p"><b>' + p.sym + ' ' + nm + '</b> ' + tag + '</div>');
-    });
-    strip.innerHTML = out.join('');
-    var retro = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'].filter(function (nm) { return retroFlag(nm, now); });
-    if (retroLine) retroLine.innerHTML = retro.length
-      ? '↩️ <b>Retrograde tonight:</b> ' + retro.join(', ') + ' — drifting westward against the stars.'
-      : 'No planet is in apparent retrograde tonight.';
-  }
-
   /* ================= SIDE VIEW: orbital inclination (edge-on) ================= */
   function drawEdge() {
     var host = document.getElementById('edgeOut'); if (!host) return;
-    // sym, name, semi-major a (AU), inclination (deg), colour
     var O = [
       ['☿', 'Mercury', 0.387, 7.00, '#b9b1a4'], ['♀', 'Venus', 0.723, 3.39, '#e6c98a'],
       ['⊕', 'Earth', 1.000, 0.0, '#5bd6e0'], ['♂', 'Mars', 1.524, 1.85, '#ff6b6b'],
@@ -398,47 +310,194 @@ input[type=range]{width:100%;accent-color:var(--gold);}
     host.innerHTML = s;
   }
 
-  /* ================= SIDE VIEW: axial tilt & rotation ================= */
-  function drawTilt() {
+  /* ================= SIDE VIEW: axial tilt & rotation (animated spin) ================= */
+  var TILT = [
+    ['☿', 'Mercury', 0.03, '58.6 d', false, 1407.6], ['♀', 'Venus', 177.4, '243 d', true, 5832.5],
+    ['⊕', 'Earth', 23.4, '23.9 h', false, 23.93], ['♂', 'Mars', 25.2, '24.6 h', false, 24.62],
+    ['♃', 'Jupiter', 3.1, '9.9 h', false, 9.93], ['♄', 'Saturn', 26.7, '10.7 h', false, 10.66],
+    ['♅', 'Uranus', 97.8, '17.2 h', true, 17.24], ['♆', 'Neptune', 28.3, '16.1 h', false, 16.11]
+  ];
+  var PC = { '☿': '#b9b1a4', '♀': '#e6c98a', '⊕': '#5bd6e0', '♂': '#ff6b6b', '♃': '#f0b47a', '♄': '#f5d98c', '♅': '#8fe0d8', '♆': '#6ea8ff' };
+  function drawTilt(phase) {
     var host = document.getElementById('tiltOut'); if (!host) return;
-    // sym, name, obliquity (deg), rotation label, retrograde
-    var T = [
-      ['☿', 'Mercury', 0.03, '58.6 d', false], ['♀', 'Venus', 177.4, '243 d', true],
-      ['⊕', 'Earth', 23.4, '23.9 h', false], ['♂', 'Mars', 25.2, '24.6 h', false],
-      ['♃', 'Jupiter', 3.1, '9.9 h', false], ['♄', 'Saturn', 26.7, '10.7 h', false],
-      ['♅', 'Uranus', 97.8, '17.2 h', true], ['♆', 'Neptune', 28.3, '16.1 h', false]
-    ];
-    var W = 720, R = 22, cy = 84, n = T.length, x0 = 52, step = (W - 2 * x0) / (n - 1);
-    var s = '';
-    T.forEach(function (t, i) {
-      var cx = x0 + i * step, th = t[2] * Math.PI / 180, col = '#cddcff';
-      var pcol = { '☿': '#b9b1a4', '♀': '#e6c98a', '⊕': '#5bd6e0', '♂': '#ff6b6b', '♃': '#f0b47a', '♄': '#f5d98c', '♅': '#8fe0d8', '♆': '#6ea8ff' }[t[0]];
-      // vertical reference (straight up)
+    phase = phase || 0;
+    var W = 720, R = 22, cy = 84, n = TILT.length, x0 = 52, step = (W - 2 * x0) / (n - 1), s = '';
+    TILT.forEach(function (t, i) {
+      var cx = x0 + i * step, thDeg = t[2], th = thDeg * RAD, pcol = PC[t[0]], axcol = '#cddcff';
+      var rx = R * 1.5, ry = R * 0.34, cth = Math.cos(th), sth = Math.sin(th);
+      var spd = 2.3 / Math.sqrt(t[5]) * (t[4] ? -1 : 1);
+      var phi = phase * spd + i * 1.3;
+      var lx = rx * Math.cos(phi), ly = ry * Math.sin(phi);
+      var mX = cx + lx * cth - ly * sth, mY = cy + lx * sth + ly * cth, front = Math.sin(phi) > 0;
       s += '<line x1="' + cx + '" y1="' + (cy - R - 16) + '" x2="' + cx + '" y2="' + (cy + R + 16) + '" stroke="#2a3a68" stroke-width="0.7" stroke-dasharray="2 3"/>';
-      // planet body
+      if (!front) s += '<circle cx="' + mX.toFixed(1) + '" cy="' + mY.toFixed(1) + '" r="2.6" fill="#fff" fill-opacity="0.32"/>';
       s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="' + pcol + '" fill-opacity="0.22" stroke="' + pcol + '" stroke-opacity="0.7"/>';
-      // equatorial (rotational) plane — an ellipse tilted with the axis
-      s += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + (R * 1.5).toFixed(1) + '" ry="' + (R * 0.34).toFixed(1) + '" fill="none" stroke="' + pcol + '" stroke-width="1.5" transform="rotate(' + t[2].toFixed(1) + ' ' + cx + ' ' + cy + ')"/>';
-      // spin axis (dashed) through the poles
+      s += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx.toFixed(1) + '" ry="' + ry.toFixed(1) + '" fill="none" stroke="' + pcol + '" stroke-width="1.5" transform="rotate(' + thDeg.toFixed(1) + ' ' + cx + ' ' + cy + ')"/>';
       var ax = Math.sin(th), ay = -Math.cos(th), La = R + 15;
-      s += '<line x1="' + (cx - ax * La).toFixed(1) + '" y1="' + (cy - ay * La).toFixed(1) + '" x2="' + (cx + ax * La).toFixed(1) + '" y2="' + (cy + ay * La).toFixed(1) + '" stroke="' + col + '" stroke-width="1.3" stroke-dasharray="4 3"/>';
-      // north-pole marker + spin glyph
-      s += '<circle cx="' + (cx + ax * La).toFixed(1) + '" cy="' + (cy + ay * La).toFixed(1) + '" r="2.4" fill="' + col + '"/>';
+      s += '<line x1="' + (cx - ax * La).toFixed(1) + '" y1="' + (cy - ay * La).toFixed(1) + '" x2="' + (cx + ax * La).toFixed(1) + '" y2="' + (cy + ay * La).toFixed(1) + '" stroke="' + axcol + '" stroke-width="1.3" stroke-dasharray="4 3"/>';
+      s += '<circle cx="' + (cx + ax * La).toFixed(1) + '" cy="' + (cy + ay * La).toFixed(1) + '" r="2.4" fill="' + axcol + '"/>';
+      if (front) s += '<circle cx="' + mX.toFixed(1) + '" cy="' + mY.toFixed(1) + '" r="3" fill="#fff"/>';
       s += '<text x="' + (cx - ax * La - (t[4] ? 12 : -4)).toFixed(1) + '" y="' + (cy + ay * La - 4).toFixed(1) + '" fill="' + (t[4] ? '#ff9d3c' : '#5fd38a') + '" font-size="12">' + (t[4] ? '↺' : '↻') + '</text>';
-      // labels
       s += '<text x="' + cx + '" y="' + (cy + R + 34) + '" fill="' + pcol + '" font-size="11.5" font-weight="bold" text-anchor="middle">' + t[0] + ' ' + t[1] + '</text>';
       s += '<text x="' + cx + '" y="' + (cy + R + 48) + '" fill="#c7d2ec" font-size="10.5" text-anchor="middle">' + t[3] + (t[4] ? ' ↺' : '') + '</text>';
-      s += '<text x="' + cx + '" y="' + (cy + R + 61) + '" fill="#8b97b8" font-size="9.5" text-anchor="middle">tilt ' + Math.round(t[2]) + '°</text>';
+      s += '<text x="' + cx + '" y="' + (cy + R + 61) + '" fill="#8b97b8" font-size="9.5" text-anchor="middle">tilt ' + Math.round(thDeg) + '°</text>';
     });
     host.innerHTML = s;
     var note = document.getElementById('tiltNote');
-    if (note) note.innerHTML = 'The tilted oval is each planet’s equatorial (rotational) plane; the dashed line is its spin axis. <b>Venus</b> and <b>Uranus</b> spin backwards (↺) — Uranus is tipped right over on its side, so it rolls around its orbit. Rotation times are one full spin (a sidereal day).';
+    if (note) note.innerHTML = 'The tilted oval is each planet’s equatorial (rotational) plane and the white spot marks the spin; the dashed line is the axis. <b>Venus</b> and <b>Uranus</b> spin backwards (↺); Uranus is tipped over on its side. Spin speeds are compressed to compare — really Jupiter turns once in 10 hours, Venus once in 243 days.';
+  }
+
+  /* ================= RETROGRADE (animated, two panels) ================= */
+  var retroPlanet = 'Mars', retroData = null, retroIdx = 0, retroPlaying = false;
+  function findRetroWindow(name) {
+    var start = Date.now() - 540 * 86400000, end = Date.now() + 900 * 86400000, step = 2 * 86400000;
+    var prev = null, inR = false, segStart = null, segs = [];
+    for (var t = start; t <= end; t += step) {
+      var lam = geoLamBet(name, new Date(t)).lam;
+      if (prev !== null) {
+        var dl = lam - prev.v; if (dl > 180) dl -= 360; if (dl < -180) dl += 360;
+        if (dl < 0 && !inR) { inR = true; segStart = prev.t; }
+        if (dl >= 0 && inR) { inR = false; segs.push([segStart, prev.t]); }
+      }
+      prev = { t: t, v: lam };
+    }
+    if (inR) segs.push([segStart, prev.t]);
+    if (!segs.length) return null;
+    var now = Date.now(), best = segs[0], bd = Infinity;
+    segs.forEach(function (sg) { var mid = (sg[0] + sg[1]) / 2, dd = Math.abs(mid - now); if (dd < bd) { bd = dd; best = sg; } });
+    return best;
+  }
+  function buildRetro(name) {
+    if (!A) return null;
+    var win = findRetroWindow(name); if (!win) return null;
+    var t0 = win[0] - 30 * 86400000, t1 = win[1] + 30 * 86400000, stp = 1.5 * 86400000, S = [];
+    for (var t = t0; t <= t1; t += stp) {
+      var d = dS(new Date(t)), g = geoLamBet(name, new Date(t)), pe = helio(A.PLAN[name], d), ea = helio(EARTH_EL, d);
+      S.push({ t: t, lam: g.lam, bet: g.bet, px: pe.x, py: pe.y, ex: ea.x, ey: ea.y });
+    }
+    for (var i = 1; i < S.length; i++) { var dd = S[i].lam - S[i - 1].lam; if (dd > 180) S[i].lam -= 360; if (dd < -180) S[i].lam += 360; }
+    var lams = S.map(function (o) { return o.lam; }), bets = S.map(function (o) { return o.bet; });
+    var a = A.PLAN[name].a[0];
+    var cap = document.getElementById('retroCaption');
+    var f = function (tv) { return new Date(tv).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }); };
+    if (cap) cap.innerHTML = '<b>' + name + '</b> moves backwards from <b>' + f(win[0]) + '</b> to <b>' + f(win[1]) + '</b> — about ' + Math.round((win[1] - win[0]) / 86400000) + ' days. ⏸ marks the "stationary points".';
+    return { win: win, S: S, lo: Math.min.apply(null, lams), hi: Math.max.apply(null, lams), bl: Math.min.apply(null, bets), bh: Math.max.apply(null, bets), g: 92 / (a * 1.06) };
+  }
+  function retroPathSVG(D, idx) {
+    var padx = 46, pady = 30, W = 360, H = 250, S = D.S;
+    var sx = function (l) { return padx + (D.hi === D.lo ? 0.5 : (l - D.lo) / (D.hi - D.lo)) * (W - 2 * padx); };
+    var bmid = (D.bl + D.bh) / 2, bspan = Math.max(D.bh - D.bl, 1.2);
+    var sy = function (b) { return H / 2 - (b - bmid) / bspan * (H - 2 * pady) * 0.72; };
+    var s = '';
+    s += '<line x1="' + padx + '" y1="' + sy(bmid).toFixed(1) + '" x2="' + (W - padx) + '" y2="' + sy(bmid).toFixed(1) + '" stroke="#33406b" stroke-width="0.8" stroke-dasharray="4 4"/>';
+    s += '<text x="' + (padx + 2) + '" y="' + (sy(bmid) - 4).toFixed(1) + '" fill="#5a6683" font-size="9">the ecliptic</text>';
+    for (var j = 1; j < S.length; j++) { var a = S[j - 1], b = S[j], retro = (b.lam - a.lam) < 0;
+      s += '<line x1="' + sx(a.lam).toFixed(1) + '" y1="' + sy(a.bet).toFixed(1) + '" x2="' + sx(b.lam).toFixed(1) + '" y2="' + sy(b.bet).toFixed(1) + '" stroke="' + (retro ? '#ff6b6b' : '#5bd6e0') + '" stroke-width="' + (retro ? 2.4 : 1.8) + '" stroke-opacity="0.42"/>'; }
+    for (var k = 1; k <= idx && k < S.length; k++) { var a2 = S[k - 1], b2 = S[k], r2 = (b2.lam - a2.lam) < 0;
+      s += '<line x1="' + sx(a2.lam).toFixed(1) + '" y1="' + sy(a2.bet).toFixed(1) + '" x2="' + sx(b2.lam).toFixed(1) + '" y2="' + sy(b2.bet).toFixed(1) + '" stroke="' + (r2 ? '#ff6b6b' : '#5bd6e0') + '" stroke-width="' + (r2 ? 2.9 : 2.3) + '"/>'; }
+    function mark(tval, txt, anchor) { var o = null; for (var m = 0; m < S.length; m++) { if (Math.abs(S[m].t - tval) <= 1.5 * 86400000) { o = S[m]; break; } } if (!o) return '';
+      var x = sx(o.lam), y = sy(o.bet), ds = new Date(tval).toLocaleDateString('en-SG', { day: 'numeric', month: 'short' });
+      return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="#f5c542"/><text x="' + x.toFixed(1) + '" y="' + (y + (anchor === 'top' ? -8 : 15)).toFixed(1) + '" fill="#f5c542" font-size="9.5" font-weight="bold" text-anchor="middle">' + txt + ' ' + ds + '</text>'; }
+    s += mark(D.win[0], '⏸', 'top'); s += mark(D.win[1], '⏸', 'bottom');
+    var c = S[Math.min(idx, S.length - 1)];
+    s += '<circle cx="' + sx(c.lam).toFixed(1) + '" cy="' + sy(c.bet).toFixed(1) + '" r="5.5" fill="#fff" stroke="#0b1733" stroke-width="1.5"/>';
+    s += '<text x="' + (W / 2) + '" y="16" fill="#9fb0d6" font-size="10" text-anchor="middle">apparent path against the stars</text>';
+    s += '<text x="' + padx + '" y="' + (H - 8) + '" fill="#9fb0d6" font-size="9.5">← west</text><text x="' + (W - padx) + '" y="' + (H - 8) + '" fill="#9fb0d6" font-size="9.5" text-anchor="end">east →</text>';
+    return s;
+  }
+  function skyHit(E, dir, CX, CY, Rr) {
+    var fx = E[0] - CX, fy = E[1] - CY, b = 2 * (dir[0] * fx + dir[1] * fy), cc = fx * fx + fy * fy - Rr * Rr, disc = b * b - 4 * cc;
+    var tt = disc > 0 ? (-b + Math.sqrt(disc)) / 2 : 150;
+    return [E[0] + dir[0] * tt, E[1] + dir[1] * tt];
+  }
+  function retroGeomSVG(D, idx) {
+    var CX = 180, CY = 116, Rr = 104, g = D.g, S = D.S, c = S[Math.min(idx, S.length - 1)];
+    function P(x, y) { return [CX + x * g, CY - y * g]; }
+    var a = A.PLAN[retroPlanet].a[0], pc = COL[retroPlanet] || '#ff6b6b';
+    var s = '';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + Rr + '" fill="none" stroke="#22325a" stroke-width="0.8" stroke-dasharray="2 4"/>';
+    s += '<text x="' + CX + '" y="16" fill="#5a6683" font-size="9" text-anchor="middle">distant stars</text>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (g * 1).toFixed(1) + '" fill="none" stroke="#5bd6e0" stroke-opacity="0.4" stroke-width="1"/>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (g * a).toFixed(1) + '" fill="none" stroke="' + pc + '" stroke-opacity="0.4" stroke-width="1"/>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="5" fill="#ffd45e"/>';
+    var E = P(c.ex, c.ey), Pl = P(c.px, c.py);
+    var dx = Pl[0] - E[0], dy = Pl[1] - E[1], L = Math.sqrt(dx * dx + dy * dy) || 1, dir = [dx / L, dy / L];
+    var Sk = skyHit(E, dir, CX, CY, Rr);
+    // fading trail of apparent points
+    var startk = Math.max(0, idx - 48);
+    for (var k = startk; k <= idx && k < S.length; k++) {
+      var cc2 = S[k], e2 = P(cc2.ex, cc2.ey), p2 = P(cc2.px, cc2.py);
+      var ax = p2[0] - e2[0], ay = p2[1] - e2[1], LL = Math.sqrt(ax * ax + ay * ay) || 1;
+      var sk2 = skyHit(e2, [ax / LL, ay / LL], CX, CY, Rr), op = 0.12 + 0.5 * (k - startk) / Math.max(1, idx - startk);
+      s += '<circle cx="' + sk2[0].toFixed(1) + '" cy="' + sk2[1].toFixed(1) + '" r="1.7" fill="#ff9d3c" fill-opacity="' + op.toFixed(2) + '"/>';
+    }
+    s += '<line x1="' + E[0].toFixed(1) + '" y1="' + E[1].toFixed(1) + '" x2="' + Sk[0].toFixed(1) + '" y2="' + Sk[1].toFixed(1) + '" stroke="#ff9d3c" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.85"/>';
+    s += '<circle cx="' + Sk[0].toFixed(1) + '" cy="' + Sk[1].toFixed(1) + '" r="4" fill="#ff9d3c"/>';
+    s += '<circle cx="' + E[0].toFixed(1) + '" cy="' + E[1].toFixed(1) + '" r="4" fill="#5bd6e0"/><text x="' + (E[0] + 6).toFixed(1) + '" y="' + (E[1] + 3).toFixed(1) + '" fill="#5bd6e0" font-size="9">Earth</text>';
+    s += '<circle cx="' + Pl[0].toFixed(1) + '" cy="' + Pl[1].toFixed(1) + '" r="4" fill="' + pc + '"/><text x="' + (Pl[0] + 6).toFixed(1) + '" y="' + (Pl[1] + 3).toFixed(1) + '" fill="' + pc + '" font-size="9">' + retroPlanet + '</text>';
+    return s;
+  }
+  function renderRetro() {
+    var go = document.getElementById('retroGeom'), ro = document.getElementById('retroOut'), dl = document.getElementById('retroDate');
+    if (!ro) return;
+    if (!A) { ro.innerHTML = '<text x="180" y="126" fill="#9fb0d6" font-size="13" text-anchor="middle">Live engine loading…</text>'; if (go) go.innerHTML = ''; return; }
+    if (!retroData) { ro.innerHTML = ''; if (go) go.innerHTML = ''; var cap = document.getElementById('retroCaption'); if (cap) cap.textContent = 'No retrograde period found in the next couple of years.'; return; }
+    var idx = Math.min(retroIdx, retroData.S.length - 1);
+    ro.innerHTML = retroPathSVG(retroData, idx);
+    if (go) go.innerHTML = retroGeomSVG(retroData, idx);
+    if (dl) { var c = retroData.S[idx], back = (idx > 0) && ((retroData.S[idx].lam - retroData.S[idx - 1].lam) < 0);
+      dl.innerHTML = '📅 <b>' + new Date(c.t).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }) + '</b> · ' + (back ? '<span style="color:#ff6b6b">moving backwards</span>' : 'moving forward'); }
+  }
+  function bindRetro() {
+    var box = document.getElementById('retroBtns');
+    if (box) Array.prototype.forEach.call(box.querySelectorAll('button'), function (b) {
+      b.onclick = function () {
+        retroPlanet = b.getAttribute('data-p');
+        Array.prototype.forEach.call(box.querySelectorAll('button'), function (x) { x.className = x === b ? 'on' : ''; });
+        retroData = buildRetro(retroPlanet); retroIdx = 0; renderRetro();
+      };
+    });
+    var play = document.getElementById('retroPlay');
+    if (play) play.onclick = function () { retroPlaying = !retroPlaying; play.textContent = retroPlaying ? '⏸ Pause' : '▶ Play'; };
+    var rep = document.getElementById('retroReplay');
+    if (rep) rep.onclick = function () { retroIdx = 0; renderRetro(); };
+  }
+
+  /* ================= TONIGHT STRIP ================= */
+  function drawTonight() {
+    var strip = document.getElementById('tnStrip'), retroLine = document.getElementById('tnRetro');
+    if (!strip) return;
+    if (!A) { strip.innerHTML = '<div class="p">Live engine loading…</div>'; return; }
+    var now = new Date(), sk = A.sky(now), out = [];
+    ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'].forEach(function (nm) {
+      var p = sk.planets[nm]; if (!p) return;
+      var up = p.alt > 0;
+      var tag = up ? '<span class="tag up">' + Math.round(p.alt) + '° up</span>' : '<span class="tag" style="color:#5a6683;border:1px solid #33406b">below</span>';
+      out.push('<div class="p"><b>' + p.sym + ' ' + nm + '</b> ' + tag + '</div>');
+    });
+    strip.innerHTML = out.join('');
+    var retro = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'].filter(function (nm) { return retroFlag(nm, now); });
+    if (retroLine) retroLine.innerHTML = retro.length
+      ? '↩️ <b>Retrograde tonight:</b> ' + retro.join(', ') + ' — drifting westward against the stars.'
+      : 'No planet is in apparent retrograde tonight.';
+  }
+
+  /* ================= MASTER ANIMATION LOOP ================= */
+  var master = null, spinPhase = 0;
+  function tick() {
+    spinPhase += 1;
+    drawTilt(spinPhase * 0.06);
+    if (retroPlaying && retroData && A) { retroIdx = (retroIdx + 1) % retroData.S.length; renderRetro(); }
   }
 
   /* ================= BOOT ================= */
   bindOrrery(); bindRetro();
-  drawTonight(); drawOrrery(); drawRetro();
-  drawEdge(); drawTilt();
+  drawTonight(); drawOrrery();
+  retroData = buildRetro(retroPlanet); renderRetro();
+  drawEdge(); drawTilt(0);
+  // auto-play the retrograde story for a lively first impression
+  if (A && retroData) { retroPlaying = true; var pb = document.getElementById('retroPlay'); if (pb) pb.textContent = '⏸ Pause'; }
+  if (typeof setInterval === 'function') { master = setInterval(tick, 66); }
 })();
 </script>
 <script src="version.js"></script>
