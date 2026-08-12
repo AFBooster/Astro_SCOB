@@ -8,7 +8,7 @@
 
 Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 
-**✅ COMPLETE — all 10 sky cultures built:** Chinese · Indian · Malay/Nusantara · Babylonian · Ancient Egyptian · Maya · Inca/Andean · Polynesian · Aboriginal Australian · Greek. The star-location engine is consolidated into `sky-culture-core.js` (the three newest cultures build on it; older pages can migrate to it incrementally).
+**✅ COMPLETE — all 11 sky cultures built:** Chinese · Indian · **Arabic** · Malay/Nusantara · Babylonian · Ancient Egyptian · Maya · Inca/Andean · Polynesian · Aboriginal Australian · Greek. The three lunar-mansion systems (Chinese 宿 / Indian nakshatra / Arabic manzil) are also compared side-by-side on `lunar-mansions.html`. The star-location engine is consolidated into `sky-culture-core.js` (the three newest cultures build on it; older pages can migrate to it incrementally).
 
 ---
 

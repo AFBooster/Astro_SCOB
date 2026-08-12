@@ -201,6 +201,7 @@ function frameFit(sizeMin){
 }
 function renderTable(){
   var now=new Date(), s=A.sky(now), tb=$('tbl').querySelector('tbody'), rows='';
+  var mWash=(s.moon.alt>0)&&(s.moon.illum>25);
   var scored=DSO.map(function(d){return {d:d,p:A.altazAt(d[1],d[2],now)};})
                 .sort(function(a,b){return b.p.alt-a.p.alt;});
   scored.forEach(function(o){
@@ -209,12 +210,12 @@ function renderTable(){
              :(mid?'<span class="tag" style="color:var(--orange)">'+Math.round(o.p.alt)+'° low</span>':'<span class="dn">down</span>');
     var ff=frameFit(d[3]);
     var frameCell=(d[3]>=60?(d[3]/60).toFixed(1)+'°':d[3]+'′')+'<span class="hint">'+ff[1]+'</span>';
-    var tag=d[4]?'<span class="tag em">emission · filter helps</span>':'<span class="tag bb">broadband · wants dark sky</span>';
+    var tag=d[4]?'<span class="tag em">emission · filter helps</span>':'<span class="tag bb">broadband · '+(mWash?'moon-washed now':'wants dark sky')+'</span>';
     rows+='<tr><td><span class="nm">'+d[0]+'</span><span class="hint">'+d[5]+'</span></td><td class="r">'+upCell+'</td><td class="r">'+frameCell+'</td><td>'+tag+'</td></tr>';
   });
   tb.innerHTML=rows;
   var upN=scored.filter(function(o){return o.p.alt>20;}).length;
-  $('tblNote').innerHTML='<b>'+upN+'</b> of these are usefully up right now. Emission nebulae are the safe bet under our sky — the built-in filter does the heavy lifting. The broadband targets (galaxies, reflection nebulae, clusters) reward a moonless night and a high, dark patch, so save them for when they are near the top of the sky.';
+  $('tblNote').innerHTML='<b>'+upN+'</b> of these are usefully up right now. Emission nebulae are the safe bet under our sky — the built-in filter does the heavy lifting. The broadband targets (galaxies, reflection nebulae, clusters) reward a moonless night and a high, dark patch, so save them for when they are near the top of the sky.'+(mWash?' <b style="color:var(--purple)">Tonight the Moon ('+Math.round(s.moon.illum)+'%) is up and washing the sky — lean hard on the emission nebulae.</b>':'');
 }
 function bestNow(){
   var now=new Date(), s=A.sky(now), box=$('tonight');
@@ -231,13 +232,16 @@ function bestNow(){
       '<div class="d">None of the marquee Seestar targets are above 20° at the moment. Check the table below for what is rising, or come back later in the session when Scorpius / Sagittarius (the Lagoon, Trifid and Swan nebulae) climb higher.</div>';
     return;
   }
+  var mUp=s.moon.alt>0, mIll=Math.round(s.moon.illum), mWash=mUp&&mIll>25;
+  if(mWash){var em=cand.filter(function(o){return o.d[4];}); if(em.length)cand=em;}
+  var moonNote = mUp ? (mWash?' 🌙 The Moon is up and '+mIll+'% lit, so broadband targets (galaxies, clusters, reflection nebulae) are washed out tonight — the narrowband emission nebulae are the safe pick.':' 🌙 The Moon is up but only '+mIll+'% lit, so the sky stays fairly dark.') : ' 🌙 The Moon is down — a dark window that suits the broadband targets too.';
   var w=cand[0], d=w.d, ff=frameFit(d[3]);
   box.innerHTML='<h2>A good Seestar target right now</h2><div class="big">'+(d[4]?'🌈 ':'✨ ')+d[0]+' — '+Math.round(w.p.alt)+'° up in the '+A.compass(w.p.az)+'</div>'+
     '<div class="d">'+d[5].charAt(0).toUpperCase()+d[5].slice(1)+'. '+
     (d[4]?'It is an <b>emission nebula</b>, so the Seestar’s narrowband filter cuts straight through Jurong’s sky-glow — one of the best things you can put it on tonight. '
          :'It is a <b>broadband</b> target, so it shows best while it is high and the Moon is down. ')+
     'At '+(d[3]>=60?(d[3]/60).toFixed(1)+'°':d[3]+'′')+' across it '+ff[1].replace(/^[^ ]+ /,'')+' the ~2.1° field. '+
-    'Start a stack now and let it build for ten minutes before the queue arrives.</div>';
+    'Start a stack now and let it build for ten minutes before the queue arrives.'+moonNote+'</div>';
 }
 function refresh(){bestNow();renderTable();}
 drawStackPair();refresh();

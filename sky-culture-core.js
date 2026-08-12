@@ -57,6 +57,7 @@
   var CULTURES = [
     { id:"chinese",    label:"Chinese",    global:"CSKY",  nameKey:"zh",   resolver:"chineseStarAt"   },
     { id:"indian",     label:"Indian",     global:"NAK",   nameKey:"sa",   resolver:"nakshatraStarAt" },
+    { id:"arabic",     label:"Arabic",     global:"AMANZIL", nameKey:"tr"  },
     { id:"babylonian", label:"Babylonian", global:"BSKY",  nameKey:"name" },
     { id:"egyptian",   label:"Egyptian",   global:"ESKY",  nameKey:"eg"   },
     { id:"greek",      label:"Greek",      global:"GREEK", nameKey:"name" },

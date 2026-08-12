@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="Set an in-app reminder for the next SCOB Friday public astronomy session (7:30 pm). A local notification fires while the app is open — no account, no server, works offline.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Session Reminder — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
+.big{background:var(--navy2);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px;text-align:center;}
+.big .when{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;}
+.big .date{font-size:clamp(20px,5vw,26px);font-weight:800;color:var(--gold);margin-top:4px;}
+.count{font-variant-numeric:tabular-nums;font-size:clamp(26px,8vw,44px);font-weight:800;color:var(--cyan);margin-top:8px;line-height:1;}
+.count small{font-size:14px;color:var(--mute);font-weight:600;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.leadrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.lead{border:1px solid var(--line);background:var(--navy3);color:#e7ecf7;border-radius:20px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.lead.on{border-color:var(--gold);background:#20345f;color:#fff;}
+.act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center;}
+.primary{border:none;background:var(--gold);color:#0b1733;font-weight:800;border-radius:10px;padding:11px 18px;font-size:14px;cursor:pointer;}
+.status{margin-top:14px;padding:11px 13px;border-radius:11px;font-size:13.5px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);color:#dbe4f5;}
+.status.on{border-left-color:var(--green);}
+.status.off{border-left-color:var(--orange);}
+.note{font-size:12.5px;color:var(--mute);margin-top:10px;line-height:1.6;}
+.note b{color:var(--cyan);}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🔔 Session Reminder</h1>
+      <div class="loc">Science Centre Observatory · Friday public nights, 7:30–10:00 pm</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="big">
+    <div class="when">Next session</div>
+    <div class="date" id="sessDate">—</div>
+    <div class="count" id="count">—</div>
+  </div>
+
+  <div class="card">
+    <h2>Remind me…</h2>
+    <div class="leadrow" id="leadRow"></div>
+    <div class="act">
+      <button type="button" class="primary" id="armBtn">🔔 Set reminder</button>
+      <button type="button" class="btnmini" id="cancelBtn" style="display:none">Cancel reminder</button>
+    </div>
+    <div class="status" id="status">No reminder set.</div>
+    <p class="note">This is an <b>in-app</b> reminder: the alert fires while this page (or the installed SCOB app) is <b>open in the background</b> — there's no server involved, so it works offline and needs no account. For a rock-solid nudge on session evenings, <b>install SCOB as an app</b> and leave it running, or also add the session to your phone's calendar. You can re-open this page any time to re-arm it.</p>
+  </div>
+
+  <div class="btnrow">
+    <a href="scob-dashboard-v3.html#weather">🌧️ Tonight's go / no-go</a>
+    <a href="now-showing.html">📺 Now Showing board</a>
+  </div>
+
+  <div class="foot">
+    <p>The reminder is scheduled on <b>this device</b> using the browser's Notifications API and a local timer; nothing is sent anywhere. Session time is fixed to the SCOB public-night schedule (Friday 7:30 pm SGT). If notifications are blocked, the page still shows a live countdown and will pop an on-screen alert while open.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="version.js"></script>
+<script>
+(function(){
+  var SkyCore=window.SkyCore||{};
+  var WD=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var LEADS=[{m:60,l:"1 hour before"},{m:30,l:"30 min before"},{m:15,l:"15 min before"},{m:5,l:"5 min before"},{m:0,l:"At start (7:30pm)"}];
+  var KEY="scobSessionReminder1";
+  var lead=15, timer=null, targetInstant=0;
+
+  // Next Friday session start = 7:30pm SGT (= 11:30 UTC) on the next Friday date.
+  function nextSessionInstant(){
+    var ymd = SkyCore.nextFridayYMD ? SkyCore.nextFridayYMD() : fallbackFri();
+    return Date.UTC(ymd.y, ymd.m, ymd.d, 11, 30, 0); // 19:30 SGT
+  }
+  function fallbackFri(){ var n=new Date(); var s=new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);
+    var add=(5-s.getDay()+7)%7; if(add===0&&s.getHours()>22)add=7; s.setDate(s.getDate()+add); return {y:s.getFullYear(),m:s.getMonth(),d:s.getDate()}; }
+  function fmtSGT(instant){ // format a UTC instant as SGT wall clock
+    var d=new Date(instant + 8*3600000); // shift to SGT, then read UTC fields
+    return WD[d.getUTCDay()]+", "+d.getUTCDate()+" "+MON[d.getUTCMonth()]+" · 7:30 pm";
+  }
+
+  targetInstant = nextSessionInstant();
+  document.getElementById("sessDate").textContent = fmtSGT(targetInstant);
+
+  // lead chips
+  var lr=document.getElementById("leadRow");
+  LEADS.forEach(function(o){ var b=document.createElement("button"); b.type="button"; b.className="lead"+(o.m===lead?" on":""); b.textContent=o.l; b.dataset.m=o.m;
+    b.addEventListener("click",function(){ lead=o.m; document.querySelectorAll(".lead").forEach(function(x){x.classList.toggle("on",+x.dataset.m===lead);}); });
+    lr.appendChild(b); });
+
+  function fireInstant(){ return targetInstant - lead*60000; }
+  function supported(){ return typeof Notification!=="undefined"; }
+
+  function showStatus(txt, cls){ var s=document.getElementById("status"); s.textContent=txt; s.className="status"+(cls?" "+cls:""); }
+
+  function doFire(){
+    var msg="🔭 SCOB session "+(lead>0?("starts in "+lead+" min"):("starts now — 7:30 pm"))+" at the Science Centre Observatory. Clear skies!";
+    try{ if(supported() && Notification.permission==="granted"){ new Notification("SCOB Night-Sky", {body:msg, icon:"icon-192.png"}); return; } }catch(e){}
+    try{ alert(msg); }catch(e){}
+  }
+  function arm(re){
+    var when=fireInstant(), delay=when-Date.now();
+    if(delay<=0){ showStatus("That reminder time has already passed for this session.", "off"); return; }
+    if(timer) clearTimeout(timer);
+    timer=setTimeout(doFire, Math.min(delay, 2147483000)); // cap to max setTimeout
+    try{ localStorage.setItem(KEY, JSON.stringify({target:targetInstant, lead:lead})); }catch(e){}
+    document.getElementById("cancelBtn").style.display="";
+    var leadTxt=lead>0?(lead+" min before ("+fmtHM(when)+")"):"at start (7:30 pm)";
+    showStatus((re?"Re-armed":"Reminder set")+" — you'll be alerted "+leadTxt+", as long as this page/app stays open.", "on");
+  }
+  function fmtHM(instant){ var d=new Date(instant+8*3600000); var hh=d.getUTCHours(),mm=d.getUTCMinutes(); return (hh%12||12)+":"+(mm<10?"0":"")+mm+" "+(hh<12?"am":"pm"); }
+
+  document.getElementById("armBtn").addEventListener("click",function(){
+    if(supported() && Notification.permission==="default"){
+      try{ Notification.requestPermission().then(function(){ arm(false); }); return; }catch(e){}
+    }
+    if(supported() && Notification.permission==="denied"){ showStatus("Notifications are blocked in your browser — I'll still pop an on-screen alert while this page is open. Countdown is running below.", "off"); }
+    arm(false);
+  });
+  document.getElementById("cancelBtn").addEventListener("click",function(){
+    if(timer)clearTimeout(timer); timer=null; try{localStorage.removeItem(KEY);}catch(e){}
+    document.getElementById("cancelBtn").style.display="none"; showStatus("Reminder cancelled.", null);
+  });
+
+  // countdown
+  function tick(){
+    var ms=targetInstant-Date.now();
+    if(ms<=0){ document.getElementById("count").innerHTML='Session is live now! 🔭'; return; }
+    var d=Math.floor(ms/86400000), h=Math.floor(ms/3600000)%24, m=Math.floor(ms/60000)%60;
+    document.getElementById("count").innerHTML=(d>0?d+'<small>d</small> ':'')+h+'<small>h</small> '+m+'<small>m</small> <small>to go</small>';
+  }
+  tick(); setInterval(tick,30000);
+
+  // re-arm a saved reminder for THIS upcoming session
+  try{ var saved=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(saved && saved.target===targetInstant && (saved.target - saved.lead*60000) > Date.now()){
+      lead=saved.lead; document.querySelectorAll(".lead").forEach(function(x){x.classList.toggle("on",+x.dataset.m===lead);}); arm(true);
+    } }catch(e){}
+
+  function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+  document.getElementById("nightBtn").addEventListener("click",function(){applyNight(!document.body.classList.contains("night"));});
+  try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+</body>
+</html>

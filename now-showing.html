@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="A big-screen 'Now Showing' board for SCOB public nights — what each telescope is pointed at right now and what's next, tapped in by the duty volunteer. Runs offline; state saved on the device.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Now Showing — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
+h1{display:flex;align-items:center;gap:8px;}
+.live{font-size:11px;font-weight:800;letter-spacing:.08em;color:#0b1733;background:var(--red);padding:2px 8px;border-radius:20px;text-transform:uppercase;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.clock{font-variant-numeric:tabular-nums;font-weight:800;color:var(--gold);font-size:15px;}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px;}
+.scope{border:1px solid var(--line);border-left-width:5px;border-radius:var(--radius);background:var(--navy2);padding:14px 15px;cursor:pointer;transition:.12s;position:relative;-webkit-tap-highlight-color:transparent;}
+.scope.sel{border-color:var(--gold);background:#1b2c58;box-shadow:0 0 0 1px var(--gold) inset;}
+.scope .sc{font-size:12px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:.05em;}
+.scope .apt{font-size:11px;color:var(--mute);font-weight:600;}
+.scope .nowlab{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin-top:9px;}
+.scope .now{font-size:clamp(19px,3.5vw,26px);font-weight:800;color:var(--white);line-height:1.15;margin-top:1px;min-height:1.15em;}
+.scope .nxt{font-size:12.5px;color:var(--mute);margin-top:8px;}
+.scope .nxt b{color:#cdd7ef;font-weight:700;}
+.promote{position:absolute;top:10px;right:10px;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:8px;font-size:12px;font-weight:800;padding:4px 9px;cursor:pointer;}
+.promote:disabled{opacity:.3;cursor:default;}
+.setter{margin-top:18px;background:var(--navy2);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;}
+.setter h2{margin:0 0 4px;font-size:14px;color:var(--gold);}
+.setter .hint{font-size:12.5px;color:var(--mute);margin:0 0 11px;}
+.setter .hint b{color:var(--cyan);}
+.moderow{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap;align-items:center;}
+.mbtn{border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:9px;padding:8px 15px;font-size:13px;font-weight:800;cursor:pointer;}
+.mbtn.on{border-color:var(--gold);background:#20345f;color:var(--white);}
+.pal{display:flex;flex-wrap:wrap;gap:7px;}
+.tchip{border:1px solid var(--line);background:var(--navy3);color:#e7ecf7;border-radius:20px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.tchip:hover{border-color:var(--cyan);}
+.tchip.dim{opacity:.5;}
+.custom{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
+.custom input{flex:1 1 180px;font-size:14px;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;}
+.tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>📺 Now Showing <span class="live">Live</span></h1>
+      <div class="loc">Science Centre Observatory · what each scope is on, right now <span class="clock" id="clock">—</span></div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="board" id="board"></div>
+
+  <div class="setter">
+    <h2>Update the board</h2>
+    <p class="hint">Tap a <b>telescope</b> above to select it, choose <b>Now</b> or <b>Next</b>, then tap a target — or type your own. <b id="selName">no scope selected</b>.</p>
+    <div class="moderow">
+      <button type="button" class="mbtn on" id="modeNow" data-mode="now">● Setting: Now</button>
+      <button type="button" class="mbtn" id="modeNext" data-mode="next">○ Setting: Next</button>
+    </div>
+    <div class="pal" id="pal"></div>
+    <div class="custom">
+      <input type="text" id="customIn" placeholder="Type a custom target (e.g. Comet 12P)…" maxlength="42" aria-label="Custom target">
+      <button type="button" class="btnmini" id="customSet">Set</button>
+    </div>
+    <div class="tools">
+      <button type="button" class="btnmini" id="clearAll">↺ Reset the whole board</button>
+      <a class="btnmini" href="tonights-tour.html" style="text-decoration:none">🎧 Tonight's guided tour</a>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>This board is a shared display for the duty volunteer to keep the public queue moving — it shows what each instrument is pointed at, not a computed prediction. State is saved on <b>this device</b> (<code>localStorage</code>) and survives a reload, so leave it open on the foyer screen all evening. Runs fully offline.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="version.js"></script>
+<script>
+(function(){
+  // SCOB fleet — from the observatory's instrument list
+  var FLEET=[
+    {id:"dome1a",sc:"Main dome",apt:'40 cm (16") Cassegrain',col:"#f5c542"},
+    {id:"dome1b",sc:"Main dome",apt:'15 cm (6") apo refractor',col:"#f5c542"},
+    {id:"dome2a",sc:"Second dome",apt:'11" SCT',col:"#5bd6e0"},
+    {id:"dome2b",sc:"Second dome",apt:'7" refractor',col:"#5bd6e0"},
+    {id:"deckcpc",sc:"Observation deck",apt:"Celestron CPC (8–11\")",col:"#5fd38a"},
+    {id:"deckc6",sc:"Observation deck",apt:"C6",col:"#5fd38a"},
+    {id:"seestar",sc:"Deck imaging",apt:"Seestar S30 (Hα/OIII)",col:"#b79cff"}
+  ];
+  var TARGETS=["🌙 The Moon","♄ Saturn","♃ Jupiter","♀ Venus","♂ Mars","Omega Centauri","47 Tucanae","Jewel Box (NGC 4755)","Southern Cross","η Carinae Nebula","M42 · Orion Nebula","Pleiades","Albireo","α Centauri","M13 · Hercules","Ring Nebula (M57)","Lagoon (M8)","Trifid (M20)","Sombrero (M104)","Centaurus A","Tarantula Nebula","Double Cluster","ISS pass","— Between targets —","Aligning…"];
+  var KEY="scobNowShowing1";
+  var state={}, sel=null, mode="now";
+  try{state=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){state={};}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function st(id){ if(!state[id]) state[id]={now:"— Between targets —",next:""}; return state[id]; }
+
+  var board=document.getElementById("board");
+  function drawBoard(){
+    board.innerHTML="";
+    FLEET.forEach(function(f){
+      var s=st(f.id);
+      var card=document.createElement("div");
+      card.className="scope"+(sel===f.id?" sel":"");
+      card.style.borderLeftColor=f.col;
+      card.innerHTML='<div class="sc">'+f.sc+'</div><div class="apt">'+f.apt+'</div>'+
+        '<div class="nowlab">Now showing</div><div class="now" style="color:'+(s.now.indexOf("—")===0||s.now.indexOf("Align")===0?"#8fa0c8":f.col)+'">'+esc(s.now)+'</div>'+
+        '<div class="nxt">'+(s.next?'Next: <b>'+esc(s.next)+'</b>':'<span style="opacity:.6">Next: —</span>')+'</div>'+
+        '<button type="button" class="promote" data-p="'+f.id+'"'+(s.next?"":" disabled")+' aria-label="Promote next to now">▶ next</button>';
+      card.addEventListener("click",function(ev){ if(ev.target.closest(".promote"))return; selectScope(f.id); });
+      board.appendChild(card);
+    });
+    board.querySelectorAll(".promote").forEach(function(b){ b.addEventListener("click",function(){ promote(b.dataset.p); }); });
+  }
+  function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function selectScope(id){ sel=id; var f=FLEET.filter(function(x){return x.id===id;})[0];
+    document.getElementById("selName").textContent=f?(f.sc+" · "+f.apt):"no scope selected"; drawBoard(); }
+  function promote(id){ var s=st(id); if(!s.next)return; s.now=s.next; s.next=""; save(); drawBoard(); }
+  function setTarget(v){ if(!sel){ flashHint(); return; } var s=st(sel); if(mode==="now")s.now=v; else s.next=v; save(); drawBoard(); }
+  function flashHint(){ var h=document.getElementById("selName"); h.style.color="var(--red)"; setTimeout(function(){h.style.color="";},900); }
+
+  // palette
+  var pal=document.getElementById("pal");
+  TARGETS.forEach(function(t){ var b=document.createElement("button"); b.type="button"; b.className="tchip"; b.textContent=t;
+    b.addEventListener("click",function(){ setTarget(t); }); pal.appendChild(b); });
+
+  // mode toggle
+  function setMode(m){ mode=m; document.getElementById("modeNow").classList.toggle("on",m==="now");
+    document.getElementById("modeNext").classList.toggle("on",m==="next"); }
+  document.getElementById("modeNow").addEventListener("click",function(){setMode("now");});
+  document.getElementById("modeNext").addEventListener("click",function(){setMode("next");});
+
+  // custom
+  function setCustom(){ var v=document.getElementById("customIn").value.trim(); if(!v)return; setTarget(v); document.getElementById("customIn").value=""; }
+  document.getElementById("customSet").addEventListener("click",setCustom);
+  document.getElementById("customIn").addEventListener("keydown",function(e){ if(e.key==="Enter"){e.preventDefault();setCustom();} });
+
+  document.getElementById("clearAll").addEventListener("click",function(){ if(confirm("Reset every scope on the board?")){ state={}; sel=null; document.getElementById("selName").textContent="no scope selected"; save(); drawBoard(); } });
+
+  // clock
+  function tick(){ var n=new Date(); var t=(n.getTimezoneOffset()!==-480)?new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000):n;
+    var hh=t.getHours(),mm=t.getMinutes(); document.getElementById("clock").textContent=(hh%12||12)+":"+(mm<10?"0":"")+mm+" "+(hh<12?"am":"pm"); }
+  tick(); setInterval(tick,15000);
+
+  // night mode
+  function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+  document.getElementById("nightBtn").addEventListener("click",function(){applyNight(!document.body.classList.contains("night"));});
+  try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+
+  drawBoard();
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+</body>
+</html>

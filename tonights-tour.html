@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tonight's Tour — SCOB Night-Sky</title>
-<meta name="description" content="An auto-generated docent tour: what to show the public tonight, in order, with plain-language talking points and the right SCOB telescope for each object.">
+<meta name="description" content="An auto-generated docent tour: what to show the public tonight, in order, with plain-language talking points and the right SCOB telescope for each object. Chrome available in English, 中文, Malay and Tamil.">
 <link rel="stylesheet" href="scob-theme.css">
 <style>
 body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;}
@@ -13,6 +13,9 @@ header{padding:18px 0 6px;}
 h1{font-size:22px;margin:0;color:var(--gold);}
 .backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
 .backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;display:inline-block;}
+.langbar{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 0;}
+.langbar button{border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:20px;padding:6px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.langbar button.on{border-color:var(--gold);background:#20345f;color:#fff;}
 .ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 6px;}
 .ctrl input{background:#0e1a38;color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:13px;}
 .btn{background:var(--navy3);color:var(--cyan);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
@@ -40,7 +43,7 @@ body.night{background:#0a0402;}
 body.night .stop,body.night .cond{background:#160b09;border-color:#3a1f1f;}
 body.night h1,body.night .num{color:#ff9a9a;}body.night .num{background:#ff9a9a;color:#160b09;}
 body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
-@media print{.backrow,.ctrl{display:none;}body{background:#fff;color:#000;}.stop,.cond{background:#fff;border-color:#bbb;}.num{background:#333;color:#fff;}.where,.chip b,h1{color:#000;}}
+@media print{.backrow,.ctrl,.langbar{display:none;}body{background:#fff;color:#000;}.stop,.cond{background:#fff;border-color:#bbb;}.num{background:#333;color:#fff;}.where,.chip b,h1{color:#000;}}
 @media(max-width:520px){body{font-size:14px;}.stop{padding:12px;}}
 </style>
 </head>
@@ -52,6 +55,12 @@ body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
     <div class="backrow">
       <a href="scob-dashboard-v3.html">← Night-sky dashboard</a>
       <a href="sky-finder.html">📱 Point-your-phone finder</a>
+    </div>
+    <div class="langbar" id="langbar" role="group" aria-label="Tour language">
+      <button type="button" data-l="en" class="on">English</button>
+      <button type="button" data-l="zh">中文</button>
+      <button type="button" data-l="ms">Bahasa Melayu</button>
+      <button type="button" data-l="ta">தமிழ்</button>
     </div>
   </header>
 
@@ -66,12 +75,12 @@ body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
     <button type="button" class="btn" id="print">🖨 Print</button>
   </div>
   <div class="cond" id="cond">—</div>
-  <div class="intro">Read down the list in order — each stop tells you where to point, what to say, and which scope suits it. Skip anything the queue can't see yet. Times & positions are for the moment above.</div>
+  <div class="intro" id="intro"></div>
   <div id="tour"></div>
 
   <div class="foot">
     Companion pages: <a href="scob-dashboard-v3.html">dashboard</a> · <a href="sky-finder.html">point-your-phone finder</a> · <a href="moon-tonight.html">Moon tonight</a> · <a href="eyepiece-fov.html">eyepiece &amp; field of view</a>.<br>
-    Positions computed on your device (P. Schlyter method) · talking points are docent guidance, keep it conversational. · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+    Positions computed on your device (P. Schlyter method) · the interface is available in Singapore's four languages; the talking points stay in English as docent guidance. · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 <script src="astro-core.js"></script>
@@ -79,12 +88,51 @@ body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
 <script>
 "use strict";
 var A=window.Astro, pad=A.pad;
+
+/* ---- four-language chrome (Singapore's official languages). Object names and the
+   docent talking points stay in English; only the interface + conditions line + the
+   "where to look" scaffolding are translated. Compass letters are kept as-is. ---- */
+var I18N={
+  en:{intro:"Read down the list in order — each stop tells you where to point, what to say, and which scope suits it. Skip anything the queue can't see yet. Times & positions are for the moment above.",
+    sunset:"Sunset",dark:"Fully dark",moonw:"Moon",notdark:"Sky isn't dark yet — great time to talk about the Moon & bright planets while you wait.",
+    look:"Look",low:"low",wellup:"well up",high:"high overhead",inthe:"in the",up:"up",magw:"mag",
+    empty:"Nothing is well placed for a public view at this moment. If the sky isn't dark yet, pick a time after full darkness; otherwise try a little later in the evening.",
+    bNow:"● Now",bFri:"↺ Next Fri 8:30pm",bFirst:"💬 First-timer",bEnth:"💬 Enthusiast",bPlay:"🔊 Play all",bStop:"⏸ Stop reading",bNight:"🌙 Night",bPrint:"🖨 Print",
+    DY:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MO:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    ph:{nm:'New Moon',wc:'waxing crescent',fq:'first quarter',wg:'waxing gibbous',fm:'Full Moon',ng:'waning gibbous',lq:'last quarter',oc:'waning crescent'}},
+  zh:{intro:"按顺序往下看——每一站都会告诉你往哪指、说什么、用哪台望远镜。队伍还看不到的可先跳过。时间与方位以上方时刻为准。",
+    sunset:"日落",dark:"天全黑",moonw:"月亮",notdark:"天还没黑——正好趁等待时聊聊月亮和明亮的行星。",
+    look:"请看",low:"低空",wellup:"较高",high:"接近天顶",inthe:"方位",up:"高",magw:"星等",
+    empty:"此刻没有适合公众观看的目标。若天还没黑，请选全黑之后的时间；否则请稍晚再试。",
+    bNow:"● 现在",bFri:"↺ 下周五 8:30pm",bFirst:"💬 新手",bEnth:"💬 进阶",bPlay:"🔊 全部朗读",bStop:"⏸ 停止朗读",bNight:"🌙 夜间",bPrint:"🖨 打印",
+    DY:['周日','周一','周二','周三','周四','周五','周六'],MO:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    ph:{nm:'新月',wc:'眉月',fq:'上弦月',wg:'盈凸月',fm:'满月',ng:'亏凸月',lq:'下弦月',oc:'残月'}},
+  ms:{intro:"Baca senarai ini ikut turutan — setiap perhentian memberitahu ke mana hendak halakan, apa hendak dikatakan, dan teleskop mana yang sesuai. Langkau apa yang belum kelihatan. Masa & kedudukan adalah untuk waktu di atas.",
+    sunset:"Matahari terbenam",dark:"Langit gelap",moonw:"Bulan",notdark:"Langit belum gelap — masa yang baik untuk bercerita tentang Bulan & planet terang sementara menunggu.",
+    look:"Lihat",low:"rendah",wellup:"agak tinggi",high:"tinggi di atas kepala",inthe:"di arah",up:"tinggi",magw:"mag",
+    empty:"Tiada objek yang sesuai untuk tontonan awam pada saat ini. Jika langit belum gelap, pilih waktu selepas gelap sepenuhnya; jika tidak, cuba sedikit lewat malam.",
+    bNow:"● Sekarang",bFri:"↺ Jumaat depan 8:30pm",bFirst:"💬 Baharu",bEnth:"💬 Peminat",bPlay:"🔊 Main semua",bStop:"⏸ Henti baca",bNight:"🌙 Malam",bPrint:"🖨 Cetak",
+    DY:['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'],MO:['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'],
+    ph:{nm:'Bulan Baharu',wc:'sabit membesar',fq:'suku pertama',wg:'hampir purnama',fm:'Bulan Purnama',ng:'selepas purnama',lq:'suku terakhir',oc:'sabit mengecil'}},
+  ta:{intro:"பட்டியலை வரிசையாகப் படியுங்கள் — ஒவ்வொரு நிறுத்தமும் எங்கு காட்ட வேண்டும், என்ன சொல்ல வேண்டும், எந்தத் தொலைநோக்கி பொருத்தம் என்பதைக் கூறும். வரிசைக்கு இன்னும் தெரியாததைத் தவிர்க்கவும். நேரமும் இடமும் மேலே உள்ள நேரத்திற்கு.",
+    sunset:"சூரிய அஸ்தமனம்",dark:"முழு இருள்",moonw:"நிலா",notdark:"வானம் இன்னும் இருளவில்லை — காத்திருக்கும்போது நிலா மற்றும் பிரகாசக் கோள்களைப் பற்றிப் பேச உகந்த நேரம்.",
+    look:"பாருங்கள்",low:"தாழ்வாக",wellup:"நன்கு உயரே",high:"உச்சிக்கு அருகில்",inthe:"திசையில்",up:"உயரம்",magw:"ஒளிர்வு",
+    empty:"இந்த நேரத்தில் பொதுப் பார்வைக்கு ஏற்ற பொருள் எதுவும் இல்லை. வானம் இருளவில்லை எனில் முழு இருளுக்குப் பிந்தைய நேரத்தைத் தேர்வுசெய்யவும்; இல்லையேல் சற்று பிற்பகல் முயலவும்.",
+    bNow:"● இப்போது",bFri:"↺ அடுத்த வெள்ளி 8:30pm",bFirst:"💬 புதியவர்",bEnth:"💬 ஆர்வலர்",bPlay:"🔊 அனைத்தையும் படி",bStop:"⏸ நிறுத்து",bNight:"🌙 இரவு",bPrint:"🖨 அச்சிடு",
+    DY:['ஞா','தி','செ','பு','வி','வெ','ச'],MO:['ஜன','பிப்','மார்','ஏப்','மே','ஜூன்','ஜூலை','ஆக','செப்','அக்','நவ','டிச'],
+    ph:{nm:'அமாவாசை',wc:'வளர் பிறை',fq:'வளர்பாதி',wg:'வளர் முக்கால்',fm:'பௌர்ணமி',ng:'தேய் முக்கால்',lq:'தேய்பாதி',oc:'தேய் பிறை'}}
+};
+var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+if(!I18N[LANG])LANG='en';
+function T(){return I18N[LANG];}
+function phaseName(ill,wax){var p=T().ph;if(ill<3)return p.nm;if(ill>97)return p.fm;if(ill<47)return wax?p.wc:p.oc;if(ill<53)return wax?p.fq:p.lq;return wax?p.wg:p.ng;}
+
 function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
 function nextFri(){var d=sgtNow();var add=(5-d.getDay()+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);return d;}
 function dateFromInputs(){var dv=document.getElementById('d').value,tv=document.getElementById('t').value;if(!dv||!tv)return null;var p=dv.split('-').map(Number),q=tv.split(':').map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2],q[0]-8,q[1],0));}
 function setInputs(dtSGT){document.getElementById('d').value=dtSGT.getFullYear()+'-'+pad(dtSGT.getMonth()+1)+'-'+pad(dtSGT.getDate());document.getElementById('t').value=pad(dtSGT.getHours())+':'+pad(dtSGT.getMinutes());}
 function tl(h,m){var ap=h<12?'am':'pm';var hh=h%12||12;return hh+':'+pad(m)+ap;}
-function altWord(a){return a<20?'low':(a<50?'well up':'high overhead');}
+function altWord(a){var t=T();return a<20?t.low:(a<50?t.wellup:t.high);}
 
 function sunCross(y,m,d,h0,h1,thr){var a=Date.UTC(y,m,d,h0-8,0,0),b=Date.UTC(y,m,d,h1-8,0,0);
   var f=function(t){return A.sunAltAt(new Date(t))-thr;};if((f(a)>0)===(f(b)>0))return null;
@@ -94,28 +142,24 @@ function sunCross(y,m,d,h0,h1,thr){var a=Date.UTC(y,m,d,h0-8,0,0),b=Date.UTC(y,m
 function build(){
   var date=dateFromInputs();if(!date){return;}
   if(typeof stopPlayAll==='function')stopPlayAll();
+  var t=T();
   var dSGT=new Date(date.getTime()+8*3600000);
   var y=dSGT.getUTCFullYear(),mo=dSGT.getUTCMonth(),da=dSGT.getUTCDate();
   var s=A.sky(date);
-  // conditions line
   var set=sunCross(y,mo,da,16,21,-0.833),dark=sunCross(y,mo,da,16,22,-18);
-  var phase=s.moon.illum<3?'New Moon':s.moon.illum>97?'Full Moon':(s.moon.illum<47?(s.moon.waxing?'waxing':'waning')+' crescent':s.moon.illum<53?(s.moon.waxing?'first':'last')+' quarter':(s.moon.waxing?'waxing':'waning')+' gibbous');
+  var phase=phaseName(s.moon.illum,s.moon.waxing);
   var cond=document.getElementById('cond');
   var when=tl(dSGT.getUTCHours(),dSGT.getUTCMinutes());
-  cond.innerHTML='<b>'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dSGT.getUTCDay()]+', '+da+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo]+' '+y+' · '+when+' SGT</b><br>'
-    +'🌇 Sunset <b>'+(set||'—')+'</b> · 🌌 Fully dark <b>'+(dark||'—')+'</b> · 🌙 Moon <b>'+s.moon.illum+'% ('+phase+')</b>'
-    +(s.sunAlt>-6?'<br><span style="color:var(--gold)">Sky isn\'t dark yet — great time to talk about the Moon &amp; bright planets while you wait.</span>':'');
+  cond.innerHTML='<b>'+t.DY[dSGT.getUTCDay()]+', '+da+' '+t.MO[mo]+' '+y+' · '+when+' SGT</b><br>'
+    +'🌇 '+t.sunset+' <b>'+(set||'—')+'</b> · 🌌 '+t.dark+' <b>'+(dark||'—')+'</b> · 🌙 '+t.moonw+' <b>'+s.moon.illum+'% ('+phase+')</b>'
+    +(s.sunAlt>-6?'<br><span style="color:var(--gold)">'+t.notdark+'</span>':'');
 
-  // assemble the tour
   var items=[];
   var SP=A.SHOWPIECES.concat(A.activeComets ? A.activeComets(date) : []);
   function get(id){return SP.find(function(x){return x.id===id;});}
   function pos(sp){return A.positionOf(sp,date);}
-  // 1) Moon opener
   var moon=get('moon'),mp=pos(moon);if(mp.alt>5)items.push({sp:moon,p:mp,pr:0});
-  // 2) planets by brightness
   SP.forEach(function(sp){if(sp.kind!=='planet')return;var p=pos(sp);var minA=(sp.planet==='Mercury')?3:8,needDark=(sp.planet==='Uranus'||sp.planet==='Neptune');if(p.alt>minA&&(!needDark||s.sunAlt<-8))items.push({sp:sp,p:p,pr:1+(p.mag||0)});});
-  // 3) deep-sky / doubles / stars when dark-ish, by altitude
   SP.forEach(function(sp){if(sp.kind==='planet'||sp.kind==='moon')return;var p=pos(sp);
     var need=(sp.kind==='star'||sp.kind==='double')?-6:-8;
     if(p.alt>12 && s.sunAlt<need)items.push({sp:sp,p:p,pr:100-p.alt});});
@@ -123,14 +167,14 @@ function build(){
   items=items.slice(0,10);
 
   var host=document.getElementById('tour');
-  if(!items.length){host.innerHTML='<div class="empty">Nothing is well placed for a public view at this moment. If the sky isn\'t dark yet, pick a time after full darkness; otherwise try a little later in the evening.</div>';return;}
+  if(!items.length){host.innerHTML='<div class="empty">'+t.empty+'</div>';return;}
   TOURITEMS=items;
   host.innerHTML=items.map(function(it,i){
     var p=it.p,sp=it.sp;
     var cx=(window.chineseStarAt?window.chineseStarAt(sp.ra,sp.dec):null);
     var cnChip=cx?'<span class="chip" title="Traditional Chinese name — see the Chinese Sky page">🐉 <b>'+cx.cn+'</b> · '+cx.men+' mansion</span>':'';
-    var where='Look '+altWord(p.alt)+' in the <b>'+A.compass(p.az)+'</b> · '+Math.round(p.alt)+'° up';
-    var magchip=(p.mag!=null)?'<span class="chip">mag <b>'+(p.mag>=0?'+':'')+p.mag.toFixed(1)+'</b></span>':(sp.mag!=null?'<span class="chip">mag <b>'+sp.mag+'</b></span>':'');
+    var where=t.look+' '+altWord(p.alt)+' '+t.inthe+' <b>'+A.compass(p.az)+'</b> · '+Math.round(p.alt)+'° '+t.up;
+    var magchip=(p.mag!=null)?'<span class="chip">'+t.magw+' <b>'+(p.mag>=0?'+':'')+p.mag.toFixed(1)+'</b></span>':(sp.mag!=null?'<span class="chip">'+t.magw+' <b>'+sp.mag+'</b></span>':'');
     return '<div class="stop"><div class="num">'+(i+1)+'</div><div>'
       +'<div class="thumb" aria-hidden="true">'+A.illus(sp,74)+'</div>'
       +'<h3>'+sp.name+'</h3>'
@@ -146,20 +190,19 @@ var TOURITEMS=[];
 var TTS_OK=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
 function speakStop(i){
   if(!TTS_OK||!TOURITEMS[i])return;var sp=TOURITEMS[i].sp,p=TOURITEMS[i].p;
-  var txt=sp.name+'. '+'Look '+altWord(p.alt)+' in the '+A.compass(p.az)+', '+Math.round(p.alt)+' degrees up. '+sayFor(sp)+' '+(sp.look||'');
+  var txt=sp.name+'. '+'Look '+Math.round(p.alt)+' degrees up in the '+A.compass(p.az)+'. '+sayFor(sp)+' '+(sp.look||'');
   try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.rate=0.98;u.pitch=1;window.speechSynthesis.speak(u);}catch(e){}
 }
 document.getElementById('tour').addEventListener('click',function(e){var b=e.target.closest('.spk');if(!b)return;stopPlayAll();speakStop(+b.getAttribute('data-i'));});
-// v3.37: continuous hands-free walkthrough (folds in the old audio-tour page)
 var playing=false, playIdx=0;
 function highlightStop(i){Array.prototype.forEach.call(document.querySelectorAll('#tour .stop'),function(el,k){el.style.outline=(playing&&k===i)?'2px solid var(--gold)':'';el.style.outlineOffset='2px';});}
-function updatePlayBtn(){var b=document.getElementById('playall');if(b)b.textContent=playing?'⏸ Stop reading':'🔊 Play all';}
+function updatePlayBtn(){var b=document.getElementById('playall');if(b)b.textContent=playing?T().bStop:T().bPlay;}
 function playChain(){
   if(!playing||!TOURITEMS[playIdx]){playing=false;updatePlayBtn();highlightStop(-1);return;}
   highlightStop(playIdx);
   var stops=document.querySelectorAll('#tour .stop');if(stops[playIdx])stops[playIdx].scrollIntoView({behavior:'smooth',block:'center'});
   var sp=TOURITEMS[playIdx].sp,p=TOURITEMS[playIdx].p;
-  var txt=sp.name+'. Look '+altWord(p.alt)+' in the '+A.compass(p.az)+', '+Math.round(p.alt)+' degrees up. '+sayFor(sp)+' '+(sp.look||'');
+  var txt=sp.name+'. Look '+Math.round(p.alt)+' degrees up in the '+A.compass(p.az)+'. '+sayFor(sp)+' '+(sp.look||'');
   try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.rate=0.98;
     u.onend=function(){if(!playing)return;if(playIdx<TOURITEMS.length-1){playIdx++;playChain();}else{playing=false;updatePlayBtn();highlightStop(-1);}};
     window.speechSynthesis.speak(u);}catch(e){}
@@ -170,15 +213,27 @@ if(pab){pab.style.display=TTS_OK?'':'none';pab.onclick=function(){if(playing){st
 document.addEventListener('visibilitychange',function(){if(document.hidden){stopPlayAll();if(TTS_OK)try{window.speechSynthesis.cancel();}catch(e){}}});
 var depthMode=(function(){try{return localStorage.getItem('scobDepth')||'simple';}catch(e){return'simple';}})();
 function sayFor(sp){var b=sp.blurb||'';if(depthMode!=='simple')return b;var m=b.match(/^[^.!?]*[.!?]/);return m?m[0]:b;}
-function depthLabel(){var el=document.getElementById('depth');if(el)el.textContent=depthMode==='simple'?'💬 First-timer':'💬 Enthusiast';}
+function depthLabel(){var el=document.getElementById('depth');if(el)el.textContent=depthMode==='simple'?T().bFirst:T().bEnth;}
 document.getElementById('depth').onclick=function(){depthMode=depthMode==='simple'?'full':'simple';try{localStorage.setItem('scobDepth',depthMode);}catch(e){}depthLabel();build();};
-depthLabel();
+
+function applyChrome(){var t=T();
+  document.getElementById('intro').textContent=t.intro;
+  document.getElementById('now').textContent=t.bNow;
+  document.getElementById('fri').textContent=t.bFri;
+  document.getElementById('night').textContent=t.bNight;
+  document.getElementById('print').textContent=t.bPrint;
+  depthLabel();updatePlayBtn();}
+
 document.getElementById('now').onclick=function(){setInputs(sgtNow());build();};
 document.getElementById('fri').onclick=function(){var f=nextFri();f.setHours(20,30,0,0);setInputs(f);build();};
 document.getElementById('print').onclick=function(){window.print();};
 document.getElementById('night').onclick=function(){document.body.classList.toggle('night');try{localStorage.setItem('scobNight',document.body.classList.contains('night')?'1':'0');}catch(e){}};
 ['d','t'].forEach(function(id){document.getElementById(id).addEventListener('change',build);});
+(function(){var lb=document.getElementById('langbar');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
+  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+    lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();build();});});})();
 try{if(localStorage.getItem('scobNight')==='1'||(localStorage.getItem('scobNight')===null&&A.sunAltAt(new Date())<-1))document.body.classList.add('night');}catch(e){}
+applyChrome();
 (function(){var f=nextFri();f.setHours(20,30,0,0);setInputs(f);build();})();
 </script>
 <script src="version.js"></script>

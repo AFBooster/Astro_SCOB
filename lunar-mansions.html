@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The three great lunar-mansion systems side by side — the Chinese 28 宿, the Indian 27 nakshatras and the Arabic 28 manāzil — matched star by star. One Moon, three ancient calendars, mostly the same stars. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Three Lunar-Mansion Systems — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.ar{font-family:"Segoe UI","Noto Naskh Arabic","Times New Roman",serif;direction:rtl;unicode-bidi:isolate;}
+.zh{font-family:"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",serif;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);}.essay .term{color:var(--cyan);}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:4px 0 0;font-size:12px;color:var(--mute);}
+.legend span{display:inline-flex;align-items:center;gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.d-cn{background:#5fd38a;}.d-in{background:#ff9d3c;}.d-ar{background:#f5c542;}
+.cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:6px;}
+@media(min-width:680px){.cards{grid-template-columns:repeat(2,1fr);}}
+.star{border:1px solid var(--line);border-radius:12px;background:var(--navy3);padding:13px 15px;}
+.star h3{margin:0 0 3px;font-size:16px;color:var(--gold);}
+.star .w{font-size:12px;color:var(--mute);margin:0 0 8px;}
+.three{display:grid;grid-template-columns:1fr;gap:6px;}
+.tr{display:flex;align-items:baseline;gap:8px;font-size:13.5px;padding:5px 8px;border-radius:8px;background:#16224a;border-left:3px solid var(--line);}
+.tr.cn{border-left-color:#5fd38a;}.tr.in{border-left-color:#ff9d3c;}.tr.ar{border-left-color:#f5c542;}
+.tr .lab{font-size:10.5px;color:var(--mute);width:58px;flex:0 0 58px;text-transform:uppercase;letter-spacing:.04em;}
+.tr .val{font-weight:600;}.tr .en{color:var(--mute);font-weight:400;font-size:12px;}
+.stat{margin-top:12px;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.stat b{color:var(--cyan);}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:top;}
+.mans{font-weight:600;color:var(--gold);}.mans .ar{color:var(--cyan);font-weight:400;font-size:12px;}
+.mk{color:var(--white);font-size:12.5px;}
+.cn{color:#9be9b8;}.in{color:#ffc98a;}
+.none{color:#6d7ba3;font-style:italic;font-size:12px;}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>☾ The Three Lunar-Mansion Systems</h1>
+      <div class="loc">Science Centre Observatory · Chinese 宿 · Indian nakshatra · Arabic manzil, side by side</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">Three great civilisations each divided the sky into the <b>way-stations of the Moon</b> — and, watching the same Moon on the same path, they mostly picked the <b>same stars</b>.</p>
+    <p>China marked <b class="zh">二十八宿</b> — <b>28 lodges</b> (xiù). India kept <b>27 nakshatras</b>, one for each day of the sidereal month. Arabia named <b>28 manāzil</b>, the mansions of the anwāʾ almanac. The counts differ by one or two, and the boundaries were drawn differently, but the marker stars line up again and again: this page lays all three over each other, star by star.</p>
+    <p>The clearest case is the red heart of the Scorpion, <span class="term">Antares</span>: the Chinese Fire Star <b class="zh">心宿二</b>, the Indian <b>Jyeṣṭhā</b> ("the eldest"), and the Arabic <b>al-Qalb</b> ("the heart"). One star, three ancient thrones — the same idea, three languages.</p>
+    <div class="legend">
+      <span><i class="dot d-cn"></i> Chinese 宿 (xiù)</span>
+      <span><i class="dot d-in"></i> Indian nakshatra</span>
+      <span><i class="dot d-ar"></i> Arabic manzil</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Signature stars <small>— one star, three names</small></h2>
+    <div class="cards" id="cards"></div>
+  </div>
+
+  <div class="card">
+    <h2>All 28 Arabic mansions, matched across the systems</h2>
+    <p style="margin:0 0 10px;color:var(--mute);font-size:13px">Walking the Moon's road by the Arabic mansions; for each marker star, its Chinese lodge and Indian nakshatra are resolved live from the shared coordinates.</p>
+    <div class="tablescroll">
+      <table>
+        <thead><tr><th>Arabic manzil</th><th>Marker star</th><th>Chinese 宿</th><th>Indian nakshatra</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="stat" id="stat"></div>
+  </div>
+
+  <div class="btnrow">
+    <a href="arabic-sky.html">🌙 The Arabic Sky</a>
+    <a href="chinese-sky.html">🐉 The Chinese Sky</a>
+    <a href="indian-sky.html">🪷 The Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>Matches are computed on-device: each Arabic mansion's marker star is looked up against the Chinese lodge stars and Indian junction stars using the shared <code>sky-culture-core.js</code> cross-link engine and the same J2000 coordinates the three culture pages use. Where a system drew no mansion on that star, it is shown as "—". Counts: Chinese 28 宿, Indian 27 nakshatras, Arabic 28 manāzil.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="arabic-sky-data.js"></script>
+<script>
+const {crossLinks}=window.SkyCore;
+const AMANZIL=window.AMANZIL;
+function cnOf(L){return L.chinese?{v:L.chinese.mzh||"",en:L.chinese.men||""}:null;}
+function inOf(L){return L.indian?{v:L.indian.iast||L.indian.sa||"",en:(L.indian.west||"").replace(/\s*\(.*/,"")}:null;}
+
+/* signature stars: marquee cross-culture anchors */
+const SIG=[
+  {ra:247.352,dec:-26.432,w:"Antares · α Scorpii"},
+  {ra:68.980,dec:16.509,w:"Aldebaran · α Tauri"},
+  {ra:56.871,dec:24.105,w:"The Pleiades · Alcyone"},
+  {ra:152.093,dec:11.967,w:"Regulus · α Leonis"},
+  {ra:201.298,dec:-11.161,w:"Spica · α Virginis"},
+  {ra:116.329,dec:28.026,w:"Pollux · β Geminorum"}
+];
+(function(){const box=document.getElementById("cards");SIG.forEach(s=>{const L=crossLinks(s.ra,s.dec);
+  const cn=cnOf(L),ind=inOf(L),ar=L.arabic?{v:L.arabic.name||"",en:L.arabic.en||""}:null;
+  const row=(cls,lab,o)=>o&&o.v?`<div class="tr ${cls}"><span class="lab">${lab}</span><span class="val ${cls==='cn'?'zh':cls==='ar'?'':''}">${o.v}</span>${o.en?`<span class="en">${o.en}</span>`:""}</div>`:"";
+  const d=document.createElement("div");d.className="star";
+  d.innerHTML=`<h3>${s.w.split(" · ")[0]}</h3><div class="w">${s.w.split(" · ")[1]||""}</div>
+    <div class="three">${row('cn','Chinese',cn)}${row('in','Indian',ind)}${row('ar','Arabic',ar)}</div>`;
+  box.appendChild(d);});})();
+
+/* full table */
+(function(){const tb=document.getElementById("tbody");let cc=0,ic=0;
+  AMANZIL.forEach(m=>{const s=m.stars[m.det];const L=crossLinks(s[0],s[1]);const cn=cnOf(L),ind=inOf(L);if(cn)cc++;if(ind)ic++;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td><span class="mans">${m.n}. ${m.tr}</span> <span class="ar">${m.ar}</span></td>
+      <td class="mk">${(s[4]||"").replace(/\s*\(/," (")}</td>
+      <td>${cn?`<span class="cn zh">${cn.v}</span>${cn.en?` <span class="none" style="font-style:normal">${cn.en}</span>`:""}`:'<span class="none">—</span>'}</td>
+      <td>${ind?`<span class="in">${ind.v}</span>${ind.en?` <span class="none" style="font-style:normal">${ind.en}</span>`:""}`:'<span class="none">—</span>'}</td>`;
+    tb.appendChild(tr);});
+  document.getElementById("stat").innerHTML=`✦ Of the 28 Arabic mansions, <b>${cc}</b> share their marker star with a Chinese lodge and <b>${ic}</b> with an Indian nakshatra — the deep common ground of the three skies. The rest fall on stars one tradition marked and another skipped.`;})();
+
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The Arabic sky — the 28 lunar mansions (manāzil al-qamar) the Moon crosses each month, the anwāʾ weather-star almanac, and the stars whose Arabic names the whole world still uses (Aldebaran, Altair, Deneb, Betelgeuse). Cross-referenced with the Chinese 28 宿 and Indian nakshatras. SCOB Night-Sky, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Arabic Sky — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.ar{font-family:"Segoe UI","Noto Naskh Arabic","Times New Roman",serif;direction:rtl;unicode-bidi:isolate;color:var(--cyan);}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay p:last-child{margin-bottom:0;}
+.essay b{color:var(--gold);font-weight:700;}.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:var(--cyan);}
+.symgrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:center;}
+@media(min-width:760px){.symgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}}
+#grp{width:100%;height:auto;display:block;max-width:400px;margin:0 auto;}
+.whint{font-size:12.5px;color:var(--mute);margin:10px 0 0;text-align:center;min-height:34px;}
+.groups{display:flex;flex-direction:column;gap:9px;}
+.gcard{cursor:pointer;border:1px solid var(--line);border-left-width:4px;background:var(--navy3);border-radius:11px;padding:11px 13px;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.gcard.active{background:#20345f;border-color:var(--gold);}
+.gcard .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.gcard .r{font-size:15px;font-weight:700;}.gcard .sub{font-size:12px;color:var(--mute);}
+.gcard .figs{font-size:11.5px;color:var(--mute);margin:5px 0 0;}
+.gcard .desc{font-size:12.5px;color:var(--mute);margin:5px 0 0;max-height:0;overflow:hidden;transition:max-height .25s;}
+.gcard.active .desc{max-height:220px;}
+.viewtoggle{display:flex;gap:7px;margin:2px 0 12px;}
+.vbtn{cursor:pointer;border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;transition:.15s;flex:1 1 auto;text-align:center;-webkit-tap-highlight-color:transparent;}
+.vbtn.active{border-color:var(--gold);background:#20345f;color:var(--white);}
+.mapview{display:none;}.mapview.show{display:block;}
+.stripscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+#strip{width:100%;min-width:560px;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.scrollhint{font-size:11.5px;color:var(--mute);text-align:center;margin:7px 0 0;}
+@media(min-width:760px){.scrollhint{display:none;}}
+#circle{width:100%;height:auto;max-width:470px;margin:0 auto;border-radius:12px;background-color:#0c1530;}
+.cap{font-size:13px;color:var(--mute);margin:11px 0 0;min-height:38px;text-align:center;line-height:1.5;}
+.eqline{stroke:#3a4c86;stroke-dasharray:4 4;opacity:.7;}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+tbody td{padding:8px 7px;border-bottom:1px solid #22305a;vertical-align:middle;}
+tbody tr{transition:.12s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+tbody tr.dim{opacity:.28;}tbody tr.hl{background:#20345f;}
+.nm{font-size:15px;font-weight:600;}.rom{color:var(--mute);font-size:12px;}
+.west{color:var(--white);}.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;}
+@media(max-width:620px){.col-west{display:none;}}
+.apick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+@media(min-width:620px){.apick{grid-template-columns:repeat(7,1fr);}}
+.achip{cursor:pointer;border:1px solid var(--line);border-left-width:3px;background:var(--navy3);border-radius:8px;padding:6px 3px;text-align:center;transition:.12s;-webkit-tap-highlight-color:transparent;}
+.achip .r{font-size:10px;font-weight:700;line-height:1.12;}
+.achip.active{border-color:var(--gold);background:#20345f;}
+.ddgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){.ddgrid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}}
+#dsky{width:100%;height:auto;display:block;border-radius:10px;background-color:#0c1530;}
+.starlabel{fill:var(--mute);font-size:9px;pointer-events:none;}
+.aline{stroke:#5bd6e0;stroke-width:1.2;opacity:.5;}
+.mdesc h3{margin:0 0 4px;font-size:18px;}
+.mdesc .mean{font-size:14px;color:var(--white);margin:0 0 8px;}
+.mdesc .fact{font-size:12.5px;color:var(--mute);margin:0 0 5px;}
+.cross{margin-top:9px;padding:9px 12px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:#dbe4f5;}
+.cross.cn{border-left:4px solid #5fd38a;}.cross.in{border-left:4px solid #ff9d3c;}
+.cross b{color:#fff;}
+.buruj{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px;}
+@media(min-width:620px){.buruj{grid-template-columns:repeat(4,1fr);}}
+.bcard{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--navy3);}
+.bcard .a{font-size:15px;font-weight:700;}.bcard .t{font-size:12px;color:var(--cyan);}.bcard .e{font-size:11px;color:var(--mute);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🌙 The Arabic Sky</h1>
+      <div class="loc">Science Centre Observatory, Jurong · the 28 lunar mansions &amp; the stars we still name in Arabic</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">Long before telescopes, the desert Arabs measured the year by the <b>Moon</b>. Each night it moves about 13° eastward against the stars, and in ~27 nights it circles the whole sky — passing through 28 <b>way-stations</b>, the <span class="term ar">منازل القمر</span> <span class="term">manāzil al-qamar</span>, "the mansions of the Moon".</p>
+    <p>Each mansion is a small star-group the Moon "lodges" in for a night. Together they form a calendar and a weather-almanac: the <span class="term">anwāʾ</span> system tied the dawn rising or setting of each mansion to a season of rain, heat, wind or harvest — a farmer's and herder's sky, read without a single instrument.</p>
+    <p>This is the <b>third</b> of the great lunar-mansion systems, alongside the Chinese <b>28 宿 (xiù)</b> and the Indian <b>27 nakshatras</b> — and they share most of their marker stars, because they all watch the same Moon on the same path. But the Arabic sky left a mark the others didn't: when this astronomy passed into medieval Europe, its star names came with it. <b>Aldebaran, Altair, Deneb, Rigel, Betelgeuse, Fomalhaut, Vega, Algol</b> — the everyday names of the brightest stars are Arabic, worn smooth by a thousand years of use.</p>
+    <div class="callout">☾ <b>One Moon, three calendars.</b> Every mansion below also shows its matching <a href="chinese-sky.html" style="color:var(--cyan)">Chinese mansion (宿)</a> and <a href="indian-sky.html" style="color:var(--cyan)">Indian nakshatra</a>. See all three lined up side by side on the <a href="lunar-mansions.html" style="color:var(--cyan)">Three Lunar-Mansion Systems</a> page.</div>
+  </div>
+
+  <div class="card">
+    <h2>The 28 mansions, by quarter <small>— the Moon's monthly round</small></h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">The belt of mansions, grouped into four quarters of the ecliptic. Tap a quarter to light up its mansions on the map and table.</p>
+    <div class="symgrid">
+      <div>
+        <svg id="grp" viewBox="0 0 360 360" role="img" aria-label="Polar chart of the 28 Arabic lunar mansions in four quarters"></svg>
+        <p class="whint" id="whint"></p>
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The sky map — the mansions along the Moon's path</h2>
+    <div class="viewtoggle">
+      <div class="vbtn" data-v="strip">Strip map</div>
+      <div class="vbtn active" data-v="circle">Circle chart</div>
+    </div>
+    <div style="margin:-4px 0 12px"><button type="button" id="westToggle" class="vbtn" style="flex:0 1 auto" aria-pressed="false">🌌 Overlay Western constellations</button></div>
+    <div class="stripscroll mapview" id="stripWrap"><svg id="strip" viewBox="0 0 980 320" role="img" aria-label="Full-sky strip map of the 28 lunar mansions"></svg></div>
+    <p class="scrollhint">← swipe the strip sideways →</p>
+    <svg id="circle" class="mapview show" viewBox="-40 -40 540 540" role="img" aria-label="Circular star chart of the 28 lunar mansions"></svg>
+    <p class="cap" id="cap"></p>
+  </div>
+
+  <div class="card">
+    <h2>Mansion ↔ Western sky</h2>
+    <div class="tablescroll">
+      <table>
+        <thead><tr><th>Quarter</th><th>Manzil</th><th class="col-west">Western stars</th><th>Stars</th></tr></thead>
+        <tbody id="tbodyA"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Every mansion, up close</h2>
+    <p style="margin:0 0 12px;color:var(--mute);font-size:13px">Pick a mansion to see its stars — with its meaning, its anwāʾ lore, and the Chinese mansion &amp; Indian nakshatra it shares.</p>
+    <div class="apick" id="apick"></div>
+    <div class="ddgrid">
+      <div><svg id="dsky" viewBox="0 0 460 360" role="img" aria-label="The selected lunar mansion"></svg></div>
+      <div><div class="mdesc" id="mdesc"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The framework — 28 mansions inside 12 signs <small>— al-burūj</small></h2>
+    <p style="margin:0 0 6px;color:#e7ecf7;font-size:14px">The Moon keeps 28 stations; the Sun keeps <b style="color:var(--gold)">12 signs</b>. Arabic astronomy carried these twelve <span class="ar">بروج</span> (burūj), sidereally reckoned, into medieval Europe — the zodiac we still use. The mansions are the finer ruler laid over the same circle.</p>
+    <div class="buruj" id="buruj"></div>
+    <div class="callout" style="margin-top:14px">🗺️ <b>A living legacy.</b> Roughly <b>two hundred</b> named stars carry Arabic names today — many are the very marker stars above. See the Moon ride through a real mansion tonight on the <a href="arabic-tonight.html" style="color:var(--cyan)">tonight page</a>, or compare all three lunar systems on the <a href="lunar-mansions.html" style="color:var(--cyan)">Three Systems</a> page.</div>
+  </div>
+
+  <div class="btnrow">
+    <a href="arabic-tonight.html">🌙 Which mansions are up tonight?</a>
+    <a href="lunar-mansions.html">☾ Compare the three systems</a>
+    <a href="chinese-sky.html">🐉 Chinese Sky</a>
+    <a href="indian-sky.html">🪷 Indian Sky</a>
+  </div>
+
+  <div class="foot">
+    <p>The 28-mansion roster follows the classical Arabic sources (Ibn Qutayba's <i>Kitāb al-Anwāʾ</i>; al-Ṣūfī's <i>Book of the Fixed Stars</i>) with star identifications after Kunitzsch &amp; Smart, <i>A Dictionary of Modern Star Names</i>; positions are Hipparcos J2000, the same coordinates used by <a href="chinese-sky.html">The Chinese Sky</a> and <a href="indian-sky.html">The Indian Sky</a> for shared stars. A few boundary mansions vary between sources. Live view: <a href="arabic-tonight.html">The Arabic Sky Tonight</a>.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="arabic-sky-data.js"></script>
+<script>
+const {el,rev,compass,eclLonOf,crossLinks}=window.SkyCore;
+const AMANZIL=window.AMANZIL, AGRP=window.AGRP, ABURUJ=window.ABURUJ;
+const QORDER=["q1","q2","q3","q4"];
+const lc=f=>AGRP[f.q].col;
+let activeQ=null;
+const START_RA=90;
+const DET=AMANZIL.map(f=>({n:f.n,tr:f.tr,en:f.en,q:f.q,west:f.west,ra:f.stars[f.det][0],dec:f.stars[f.det][1],mag:f.stars[f.det][2],nstars:f.stars.length}));
+
+/* ---------- grouping polar chart ---------- */
+const grp=document.getElementById("grp");
+const RCX=180,RCY=180,rOutR=162;
+const rrad=dec=>((90-dec)/(90-(-72)))*rOutR;
+const rpolar=(r,ra)=>{const a=(rev(ra-START_RA)-90)*Math.PI/180;return[RCX+r*Math.cos(a),RCY+r*Math.sin(a)];};
+function drawGrp(){grp.innerHTML="";
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:rOutR,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:rrad(0),fill:"none",class:"eqline"}));
+  grp.appendChild(el("circle",{cx:RCX,cy:RCY,r:2.4,fill:"#9fb0d6"}));
+  AMANZIL.forEach(f=>{const on=!activeQ||activeQ===f.q,c=lc(f);
+    f.lines.forEach(([p,q])=>{const[x1,y1]=rpolar(rrad(f.stars[p][1]),f.stars[p][0]),[x2,y2]=rpolar(rrad(f.stars[q][1]),f.stars[q][0]);grp.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.1,opacity:on?.55:.1}));});
+    f.stars.forEach(s=>{const[x,y]=rpolar(rrad(s[1]),s[0]);grp.appendChild(el("circle",{cx:x,cy:y,r:Math.max(1.6,4-s[2]*0.5),fill:c,stroke:"#0b1733","stroke-width":.4,opacity:on?1:.15}));});
+    const m=DET.find(d=>d.n===f.n);const[lx,ly]=rpolar(rrad(m.dec),m.ra);const g=el("g",{});g.style.cursor="pointer";
+    const t=el("text",{x:lx,y:ly-5,"text-anchor":"middle",fill:c,"font-size":8,"font-weight":700,opacity:on?1:.2});t.textContent=f.n;g.appendChild(t);
+    g.addEventListener("mouseenter",()=>{document.getElementById("whint").textContent=`${f.n}. ${f.tr} — ${f.en} · ${AGRP[f.q].en}`;});
+    g.addEventListener("click",()=>setQ(f.q));grp.appendChild(g);});}
+const gbox=document.getElementById("groups");
+function drawGroups(){gbox.innerHTML="";QORDER.forEach(k=>{const p=AGRP[k],figs=AMANZIL.filter(f=>f.q===k);
+  const d=document.createElement("div");d.className="gcard"+(activeQ===k?" active":"");d.dataset.k=k;d.style.borderLeftColor=p.col;
+  d.innerHTML=`<div class="top"><span class="r" style="color:${p.col}">${p.en}</span> <span class="sub">${p.sub}</span></div>
+    <div class="figs">${figs.map(f=>f.tr).join(" · ")}</div><div class="desc">${p.gloss}</div>`;
+  d.addEventListener("click",()=>setQ(k));gbox.appendChild(d);});}
+
+/* ---------- strip + circle ---------- */
+const strip=document.getElementById("strip");
+const SW=980,SH=320,mL=40,mR=14,mT=18,mB=30;
+let SDMIN=-72,SDMAX=90,westOverlay=false;
+const sx=rs=>mL+(rs/360)*(SW-mL-mR), sy=dec=>mT+((SDMAX-dec)/(SDMAX-SDMIN))*(SH-mT-mB);
+function drawWestern(){if(!window.WCONST)return;window.WCONST.forEach(c=>{const stars=c[1],ls=c[2];
+  ls.forEach(([a,b])=>{const x1=sx(rev(stars[a][0]-START_RA)),x2=sx(rev(stars[b][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(stars[a][1]),x2,y2:sy(stars[b][1]),stroke:"#41527e","stroke-width":1,opacity:.7}));});
+  stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:1.3,fill:"#8fa0c8",opacity:.8})));
+  const cx=stars.reduce((a,s)=>a+sx(rev(s[0]-START_RA)),0)/stars.length,cy=stars.reduce((a,s)=>a+sy(s[1]),0)/stars.length;
+  const t=el("text",{x:cx,y:cy,"text-anchor":"middle",fill:"#6d80ad","font-size":9,"font-style":"italic"});t.textContent=c[0];strip.appendChild(t);});}
+const srad=m=>Math.max(2,5.6-m*0.7);
+function drawStrip(){strip.innerHTML="";if(westOverlay)drawWestern();
+  strip.appendChild(el("line",{x1:mL,y1:sy(0),x2:SW-mR,y2:sy(0),class:"eqline"}));
+  const eqt=el("text",{x:SW-mR-2,y:sy(0)-4,"text-anchor":"end",fill:"#7d8cb5","font-size":9});eqt.textContent="celestial equator";strip.appendChild(eqt);
+  AMANZIL.forEach(f=>{const on=!activeQ||activeQ===f.q,c=lc(f);
+    f.lines.forEach(([p,q])=>{const x1=sx(rev(f.stars[p][0]-START_RA)),x2=sx(rev(f.stars[q][0]-START_RA));if(Math.abs(x1-x2)>SW*0.5)return;strip.appendChild(el("line",{x1,y1:sy(f.stars[p][1]),x2,y2:sy(f.stars[q][1]),stroke:c,"stroke-width":1.3,opacity:on?.6:.12}));});
+    f.stars.forEach(s=>strip.appendChild(el("circle",{cx:sx(rev(s[0]-START_RA)),cy:sy(s[1]),r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14})));
+    const m=f.stars[f.det];const t=el("text",{x:sx(rev(m[0]-START_RA)),y:sy(m[1])-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":10,opacity:on?1:.16});t.textContent=f.n+". "+f.tr;strip.appendChild(t);
+    const gg=el("g",{});gg.style.cursor="pointer";gg.appendChild(el("rect",{x:sx(rev(m[0]-START_RA))-16,y:sy(m[1])-12,width:32,height:22,fill:"transparent"}));
+    gg.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});strip.appendChild(gg);});}
+const circle=document.getElementById("circle");
+const OCX=230,OCY=230,rOut=200,rIn=14;
+const rr=dec=>rIn+((90-dec)/162)*(rOut-rIn);
+const cang=ra=>rev(ra-START_RA)-90;
+const cpolar=(r,deg)=>{const a=deg*Math.PI/180;return[OCX+r*Math.cos(a),OCY+r*Math.sin(a)];};
+function drawCircle(){circle.innerHTML="";
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rOut,fill:"none",stroke:"#2a3868","stroke-width":1}));
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:rr(0),fill:"none",class:"eqline"}));
+  AMANZIL.forEach(f=>{const on=!activeQ||activeQ===f.q,c=lc(f);
+    f.lines.forEach(([p,q])=>{const[x1,y1]=cpolar(rr(f.stars[p][1]),cang(f.stars[p][0])),[x2,y2]=cpolar(rr(f.stars[q][1]),cang(f.stars[q][0]));circle.appendChild(el("line",{x1,y1,x2,y2,stroke:c,"stroke-width":1.2,opacity:on?.55:.1}));});
+    f.stars.forEach(s=>{const[x,y]=cpolar(rr(s[1]),cang(s[0]));circle.appendChild(el("circle",{cx:x,cy:y,r:srad(s[2]),fill:c,stroke:"#0b1733","stroke-width":.5,opacity:on?1:.14}));});
+    const m=f.stars[f.det];const[lx,ly]=cpolar(rr(m[1]),cang(m[0]));const g=el("g",{});g.style.cursor="pointer";
+    g.appendChild(el("circle",{cx:lx,cy:ly,r:12,fill:"transparent"}));
+    const t=el("text",{x:lx,y:ly-srad(m[2])-4,"text-anchor":"middle",fill:c,"font-size":9,opacity:on?1:.16});t.textContent=f.n;g.appendChild(t);
+    g.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});circle.appendChild(g);});
+  circle.appendChild(el("circle",{cx:OCX,cy:OCY,r:2,fill:"#9fb0d6"}));
+  const pl=el("text",{x:OCX,y:OCY-9,"text-anchor":"middle",fill:"#9fb0d6","font-size":9});pl.textContent="N. pole";circle.appendChild(pl);}
+function capReset(){document.getElementById("cap").textContent=(mapView==="circle")
+  ?"North pole at the centre; the ecliptic belt of 28 mansions circles it. Tap a mansion for its story."
+  :"The 28 mansions laid out along the Moon's path. Tap one to open its story below.";}
+
+const tb=document.getElementById("tbodyA");
+function drawTable(){tb.innerHTML="";QORDER.forEach(k=>{AMANZIL.filter(f=>f.q===k).forEach(f=>{const tr=document.createElement("tr");tr.dataset.n=f.n;if(activeQ&&activeQ!==f.q)tr.classList.add("dim");
+  tr.innerHTML=`<td><span class="swatch" style="background:${lc(f)}"></span> <span class="rom">${AGRP[f.q].en}</span></td>
+    <td><span class="nm" style="color:${lc(f)}">${f.n}. ${f.tr}</span> <span class="ar">${f.ar}</span><br><span class="rom">${f.en}</span></td>
+    <td class="col-west west">${f.west}</td><td>${f.stars.length}</td>`;
+  tr.addEventListener("mouseenter",()=>hlRow(f.n,true));tr.addEventListener("mouseleave",()=>hlRow(null,false));
+  tr.addEventListener("click",()=>{openFig(f.n);document.getElementById("dsky").scrollIntoView({behavior:"smooth",block:"center"});});tb.appendChild(tr);});});}
+function hlRow(n,on){document.querySelectorAll("#tbodyA tr").forEach(tr=>tr.classList.toggle("hl",on&&Number(tr.dataset.n)===n));}
+function setQ(k){activeQ=activeQ===k?null:k;drawGrp();drawStrip();drawCircle();drawTable();
+  document.querySelectorAll(".gcard").forEach(c=>c.classList.toggle("active",c.dataset.k===activeQ));
+  document.getElementById("whint").textContent=activeQ?AGRP[activeQ].gloss:"The 28 mansions the Moon lodges in, one each night.";}
+
+let mapView="circle";
+document.querySelectorAll(".vbtn[data-v]").forEach(b=>b.addEventListener("click",()=>{mapView=b.dataset.v;
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x===b));
+  document.getElementById("stripWrap").classList.toggle("show",mapView==="strip");
+  document.getElementById("circle").classList.toggle("show",mapView==="circle");capReset();}));
+document.getElementById("westToggle").addEventListener("click",function(){westOverlay=!westOverlay;this.classList.toggle("active",westOverlay);this.setAttribute("aria-pressed",westOverlay);
+  if(westOverlay&&mapView!=="strip"){mapView="strip";document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+  drawStrip();document.getElementById("cap").innerHTML=westOverlay?"🌌 Western constellations (grey) behind the lunar mansions (coloured) — the same stars, the Moon's own road.":"";if(!westOverlay)capReset();});
+
+/* ---------- deep dive ---------- */
+const apick=document.getElementById("apick");let selFig=1;
+function drawPicker(){apick.innerHTML="";AMANZIL.forEach(f=>{const d=document.createElement("div");d.className="achip"+(selFig===f.n?" active":"");d.dataset.n=f.n;d.style.borderLeftColor=lc(f);
+  d.innerHTML=`<div class="r" style="color:${lc(f)}">${f.n}. ${f.tr.replace(/^al-/,"").replace(/^Saʿd /,"S. ")}</div>`;d.addEventListener("click",()=>openFig(f.n));apick.appendChild(d);});}
+const dsky=document.getElementById("dsky");
+function openFig(n){selFig=n;drawPicker();document.querySelectorAll(".achip").forEach(c=>c.classList.toggle("active",Number(c.dataset.n)===n));
+  const f=AMANZIL.find(x=>x.n===n),c=lc(f);
+  const ras=f.stars.map(s=>s[0]),decs=f.stars.map(s=>s[1]);let ra0=Math.min(...ras),ra1=Math.max(...ras);const rawrap=(ra1-ra0>180);
+  if(rawrap){const sh=ras.map(r=>r<180?r+360:r);ra0=Math.min(...sh);ra1=Math.max(...sh);}
+  const dc0=Math.min(...decs),dc1=Math.max(...decs);const padr=Math.max((ra1-ra0)*0.16,2),padd=Math.max((dc1-dc0)*0.16,2);
+  const W=460,H=360,pd=42,raMin=ra0-padr,raMax=ra1+padr,deMin=dc0-padd,deMax=dc1+padd;
+  const X=ra=>{let r=(rawrap&&ra<180)?ra+360:ra;return pd+(raMax-r)/(raMax-raMin)*(W-2*pd);};const Y=dec=>pd+(deMax-dec)/(deMax-deMin)*(H-2*pd);
+  const rad=mg=>Math.max(2.4,6.5-mg*0.7);dsky.innerHTML="";
+  f.lines.forEach(([p,q])=>{dsky.appendChild(el("line",{x1:X(f.stars[p][0]),y1:Y(f.stars[p][1]),x2:X(f.stars[q][0]),y2:Y(f.stars[q][1]),class:"aline"}));});
+  const shortLbl=w=>{if(!w||w.indexOf("HIP")===0)return "";const p=w.match(/\(([^)]+)\)/);return p?p[1]:w;};
+  f.stars.forEach((s,i)=>{const isDet=i===f.det,isBright=s[2]<1.6;const g=el("g",{});
+    g.appendChild(el("circle",{cx:X(s[0]),cy:Y(s[1]),r:rad(s[2]),fill:isDet?c:(isBright?"#f5c542":"#f4f6fb"),stroke:"#0b1733","stroke-width":.6}));
+    const lbl=shortLbl(s[4]);if(lbl){const t=el("text",{x:X(s[0])+rad(s[2])+4,y:Y(s[1])+3.5,class:"starlabel",fill:isDet?"#f5c542":"#8fa0c8"});t.textContent=lbl;g.appendChild(t);}dsky.appendChild(g);});
+  document.getElementById("mdesc").innerHTML=`<h3 style="color:${c}">${f.n}. ${f.tr} <span class="ar" style="font-size:16px">${f.ar}</span></h3>
+    <p class="mean"><b>${f.en}.</b> ${f.dEN}</p><p class="fact"><span class="pill" style="border-color:${c};color:${c}">${AGRP[f.q].en}</span><span class="pill">${f.west}</span><span class="pill">${f.stars.length} star${f.stars.length>1?"s":""}</span></p>`;
+  const box=document.getElementById("mdesc");const cn={},ind={};
+  f.stars.forEach(s=>{const L=crossLinks(s[0],s[1]);if(L.chinese)cn[L.chinese.mzh]=L.chinese.men||"";if(L.indian)ind[L.indian.iast]=(L.indian.west||"").replace(/\s*\(.*/,"");});
+  const ck=Object.keys(cn),ik=Object.keys(ind);
+  const cnEl=document.createElement("div");cnEl.className="cross cn";
+  cnEl.innerHTML=ck.length?`🐉 <b>Chinese sky:</b> shares stars with the ${ck.map(k=>`<span style="font-family:inherit">${k}</span>${cn[k]?" ("+cn[k]+")":""}`).join(", ")} mansion${ck.length>1?"s":""}. <a href="chinese-sky.html" style="color:var(--cyan)">See →</a>`:`🐉 <b>Chinese sky:</b> off the 28 宿 (this mansion's marker sits away from a Chinese lodge star).`;box.appendChild(cnEl);
+  const inEl=document.createElement("div");inEl.className="cross in";
+  inEl.innerHTML=ik.length?`🪷 <b>Indian sky:</b> shares stars with nakshatra ${ik.map(k=>`<b>${k}</b>${ind[k]?" ("+ind[k]+")":""}`).join(", ")}. <a href="indian-sky.html" style="color:var(--cyan)">See →</a>`:`🪷 <b>Indian sky:</b> no nakshatra shares this mansion's marker star.`;box.appendChild(inEl);}
+
+/* ---------- 12 burūj framework ---------- */
+(function(){const b=document.getElementById("buruj");if(!b)return;ABURUJ.forEach(z=>{const d=document.createElement("div");d.className="bcard";
+  d.innerHTML=`<div class="a ar">${z.ar}</div><div class="t">${z.tr}</div><div class="e">${z.en}</div>`;b.appendChild(d);});})();
+
+function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+document.getElementById("nightBtn").addEventListener("click",()=>applyNight(!document.body.classList.contains("night")));
+try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+if(window.matchMedia&&window.matchMedia("(min-width:760px)").matches){mapView="strip";
+  document.querySelectorAll(".vbtn[data-v]").forEach(x=>x.classList.toggle("active",x.dataset.v==="strip"));
+  document.getElementById("stripWrap").classList.add("show");document.getElementById("circle").classList.remove("show");}
+drawGrp();drawGroups();drawStrip();drawCircle();drawTable();drawPicker();openFig(selFig);
+document.getElementById("whint").textContent="The 28 mansions the Moon lodges in, one each night.";capReset();
+(function(){const nb=document.getElementById("nightBtn");if(nb)nb.setAttribute("aria-label","Toggle night (red) mode");
+  function enhance(){document.querySelectorAll(".vbtn,.gcard,.achip").forEach(e=>{if(!e.hasAttribute("tabindex")){e.setAttribute("tabindex","0");e.setAttribute("role","button");}});}
+  enhance();if(typeof MutationObserver!=="undefined"){["groups","apick"].forEach(id=>{const n=document.getElementById(id);if(n)try{new MutationObserver(enhance).observe(n,{childList:true});}catch(e){}});}
+  document.addEventListener("keydown",e=>{const t=e.target;if((e.key==="Enter"||e.key===" ")&&t.matches&&t.matches(".vbtn,.gcard,.achip")){e.preventDefault();t.click();}});})();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+</script>
+<script src="version.js"></script>
+</body>
+</html>
