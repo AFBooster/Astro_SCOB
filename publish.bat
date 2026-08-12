@@ -6,9 +6,10 @@ REM  Usage:
 REM    - Double-click this file, then type what changed when asked, OR
 REM    - From a terminal:   publish.bat "what changed"
 REM
-REM  What it does: (optionally) runs the local tests, then commits every change
-REM  and pushes to GitHub. The push triggers the GitHub Action, which runs the
-REM  full test suite again and - only if everything passes - publishes the site.
+REM  What it does: runs the local tests AND check-release.sh (auto-finding Git
+REM  Bash, so you never have to type a bash path), then commits every change and
+REM  pushes to GitHub. The push triggers the GitHub Action, which runs the full
+REM  test suite again and - only if everything passes - publishes the site.
 REM ============================================================================
 
 setlocal
@@ -43,6 +44,22 @@ if %errorlevel%==0 (
 
 echo.
 echo ============================================================
+echo  Release check (check-release.sh)
+echo ============================================================
+call :findbash
+if defined BASH (
+  echo Using bash: "%BASH%"
+  "%BASH%" check-release.sh  || goto :failed
+  echo Release check passed.
+) else (
+  echo Git Bash not found - skipping check-release.sh.
+  echo   ^(Install Git for Windows to enable this step. The GitHub Action still
+  echo    runs the test suite before the site is published, so this is a local
+  echo    convenience, not the only gate.^)
+)
+
+echo.
+echo ============================================================
 echo  Committing and pushing
 echo ============================================================
 git add -A
@@ -69,9 +86,40 @@ echo.
 pause
 exit /b 0
 
+REM ============================================================================
+REM  :findbash - locate a usable bash.exe without needing it on PATH.
+REM  Prefers Git for Windows' bash (safe, self-contained) over a bare
+REM  System32\bash.exe (the WSL launcher), which is only tried as a last resort.
+REM  Sets BASH to the full path if found; leaves it empty otherwise.
+REM ============================================================================
+:findbash
+set "BASH="
+set "GITEXE="
+set "GITROOT="
+
+REM 1) Derive it from wherever git itself lives (covers non-standard install dirs)
+for /f "delims=" %%I in ('where git 2^>nul') do if not defined GITEXE set "GITEXE=%%I"
+if defined GITEXE for %%A in ("%GITEXE%\..\..") do set "GITROOT=%%~fA"
+if defined GITROOT if exist "%GITROOT%\bin\bash.exe" set "BASH=%GITROOT%\bin\bash.exe"
+if defined BASH goto :eof
+if defined GITROOT if exist "%GITROOT%\usr\bin\bash.exe" set "BASH=%GITROOT%\usr\bin\bash.exe"
+if defined BASH goto :eof
+
+REM 2) The usual Git for Windows install locations
+if exist "%ProgramFiles%\Git\bin\bash.exe" set "BASH=%ProgramFiles%\Git\bin\bash.exe"
+if defined BASH goto :eof
+if exist "%ProgramFiles(x86)%\Git\bin\bash.exe" set "BASH=%ProgramFiles(x86)%\Git\bin\bash.exe"
+if defined BASH goto :eof
+if exist "%LOCALAPPDATA%\Programs\Git\bin\bash.exe" set "BASH=%LOCALAPPDATA%\Programs\Git\bin\bash.exe"
+if defined BASH goto :eof
+
+REM 3) Last resort: any bash on PATH (may be the WSL launcher)
+for /f "delims=" %%I in ('where bash 2^>nul') do if not defined BASH set "BASH=%%I"
+goto :eof
+
 :failed
 echo.
-echo *** Local tests FAILED - fix the problem above before publishing. ***
+echo *** Local checks FAILED - fix the problem above before publishing. ***
 echo *** Nothing was committed or pushed. ***
 echo.
 pause
