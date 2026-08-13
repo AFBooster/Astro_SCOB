@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="Solar and lunar eclipses explained, with a forecast of every eclipse from 2026 to 2030, a schematic world map of where each solar eclipse's shadow travels across Earth, and which ones can be seen from Singapore. SCOB Night-Sky, Science Centre Observatory.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Eclipses — Solar &amp; Lunar — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 11px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay b{color:var(--gold);}.essay .term{color:var(--cyan);}
+.safety{margin:0;padding:12px 14px;background:rgba(255,107,107,.10);border:1px solid var(--red);border-left:4px solid var(--red);border-radius:11px;font-size:13.5px;color:#ffd9d9;}
+.safety b{color:#ff8f8f;}
+.geo{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:760px){.geo{grid-template-columns:1fr 1fr;}}
+.geobox{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:12px 13px;}
+.geobox h3{margin:0 0 6px;font-size:14px;color:var(--cyan);}
+.geobox svg{width:100%;height:auto;display:block;background:#0a1020;border-radius:9px;}
+.geobox p{font-size:12.5px;color:var(--mute);margin:8px 0 0;line-height:1.55;}
+.types{display:grid;grid-template-columns:1fr;gap:8px;}
+@media(min-width:620px){.types{grid-template-columns:1fr 1fr;}}
+.type{border:1px solid var(--line);border-left-width:4px;border-radius:10px;background:var(--navy3);padding:9px 12px;font-size:13px;}
+.type b{color:#fff;}.type .s{color:var(--mute);font-size:12px;}
+/* forecast */
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin:2px 0 12px;}
+.filters button{border:1px solid var(--line);background:var(--navy3);color:var(--mute);border-radius:20px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.filters button.on{border-color:var(--gold);background:#20345f;color:#fff;}
+.ev{border:1px solid var(--line);border-left-width:5px;border-radius:12px;background:var(--navy2);padding:12px 14px;margin-top:10px;cursor:pointer;transition:.12s;}
+.ev:hover{border-color:var(--cyan);}
+.ev.solar{border-left-color:#f5c542;}.ev.lunar{border-left-color:#ff8ac2;}
+.ev .r1{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.ev .date{font-size:15px;font-weight:800;color:var(--gold);}
+.ev .cd{font-size:11.5px;color:var(--mute);font-weight:700;}
+.ev .badge{font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;}
+.b-total{background:rgba(255,107,107,.16);color:#ff9d9d;}.b-annular{background:rgba(245,197,66,.16);color:#f7d984;}
+.b-partial{background:rgba(91,214,224,.14);color:#8fe3ff;}.b-penumbral{background:rgba(159,176,214,.16);color:#c7d2ee;}
+.ev .kind{font-size:12.5px;color:#cdd7ef;font-weight:700;}
+.ev .region{font-size:13px;color:#e7ecf7;margin:6px 0 0;}
+.ev .sg{font-size:12px;margin:6px 0 0;font-weight:700;}
+.sg-yes{color:#9be9b8;}.sg-partial{color:#f7d984;}.sg-no{color:#8fa0c8;}.sg-subtle{color:#c7d2ee;}
+.ev .lk{font-size:12px;color:var(--cyan);margin-top:6px;display:inline-block}
+/* world map */
+#mapwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;}
+#emap{width:100%;min-width:640px;height:auto;display:block;background:#0a1428;border-radius:12px;}
+.mapbtns{display:flex;gap:7px;flex-wrap:wrap;margin:2px 0 12px;}
+.mapbtns button{border:1px solid var(--line);background:var(--navy3);color:#e7ecf7;border-radius:9px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.mapbtns button.on{border-color:var(--gold);background:#20345f;color:#fff;}
+.mapcap{font-size:12.5px;color:var(--mute);margin:10px 0 0;min-height:34px;line-height:1.5;}
+.mapcap b{color:var(--gold);}
+.sgcard{background:linear-gradient(160deg,#122a1e,#0d1533);border:1px solid var(--green);border-radius:13px;padding:14px 16px;}
+.sgcard h2{color:#9be9b8;}
+.sgcard .big{font-size:16px;font-weight:800;color:var(--gold);}
+.sgcard .d{font-size:13.5px;color:#dbe4f5;margin-top:6px;line-height:1.6;}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🌑 Eclipses — Solar &amp; Lunar</h1>
+      <div class="loc">Science Centre Observatory · what they are, when they're next, and where the shadow falls</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">An eclipse is a shadow. When the Sun, Earth and Moon fall into a straight line, one body's shadow lands on another — and for a few minutes the everyday sky does something astonishing.</p>
+    <p>In a <b>solar eclipse</b> the <b>Moon</b> passes between us and the Sun at <span class="term">New Moon</span>, and the Moon's shadow sweeps a narrow track across the Earth. In a <b>lunar eclipse</b> the <b>Earth</b> passes between the Sun and the Moon at <span class="term">Full Moon</span>, and the Moon glides through Earth's shadow, often glowing a deep copper-red.</p>
+    <div class="safety">☀️ <b>Never look at the Sun</b> — not with the naked eye, and never through a telescope or binoculars — without a proper <b>solar filter</b>. A partial or annular eclipse is still blindingly bright. A <b>lunar</b> eclipse, by contrast, is completely safe to watch with the naked eye or any scope. See our <a href="solar.html" style="color:#ffd9d9;text-decoration:underline">solar viewing</a> and <a href="filters.html" style="color:#ffd9d9;text-decoration:underline">filters</a> pages.</div>
+  </div>
+
+  <div class="card">
+    <h2>The geometry <small>— why a shadow, and why not every month</small></h2>
+    <div class="geo">
+      <div class="geobox">
+        <h3>☀️🌑 Solar — the Moon's shadow on Earth</h3>
+        <svg viewBox="0 0 320 120" role="img" aria-label="Sun, then Moon, then Earth in a line; the Moon's shadow cone touches Earth">
+          <circle cx="26" cy="60" r="20" fill="#ffcf4d"/><text x="26" y="98" fill="#9fb0d6" font-size="9" text-anchor="middle">Sun</text>
+          <circle cx="200" cy="60" r="7" fill="#cfd6e6"/><text x="200" y="40" fill="#9fb0d6" font-size="9" text-anchor="middle">Moon</text>
+          <polygon points="200,54 200,66 285,62 285,58" fill="rgba(90,110,160,.5)"/>
+          <circle cx="292" cy="60" r="16" fill="#3d6ea5"/><text x="292" y="94" fill="#9fb0d6" font-size="9" text-anchor="middle">Earth</text>
+          <line x1="46" y1="52" x2="200" y2="55" stroke="#ffe08a" stroke-width="1" opacity=".5"/>
+          <line x1="46" y1="68" x2="200" y2="65" stroke="#ffe08a" stroke-width="1" opacity=".5"/>
+        </svg>
+        <p>New Moon: the Moon blocks the Sun. Its shadow is tiny where it hits Earth, so <b>totality</b> is only ever seen along a narrow path a few tens of km wide.</p>
+      </div>
+      <div class="geobox">
+        <h3>☀️🌍 Lunar — Earth's shadow on the Moon</h3>
+        <svg viewBox="0 0 320 120" role="img" aria-label="Sun, then Earth, then Moon; Earth's shadow cone falls on the Moon">
+          <circle cx="26" cy="60" r="20" fill="#ffcf4d"/><text x="26" y="98" fill="#9fb0d6" font-size="9" text-anchor="middle">Sun</text>
+          <circle cx="190" cy="60" r="16" fill="#3d6ea5"/><text x="190" y="94" fill="#9fb0d6" font-size="9" text-anchor="middle">Earth</text>
+          <polygon points="190,46 190,74 300,64 300,56" fill="rgba(70,50,60,.6)"/>
+          <circle cx="288" cy="60" r="7" fill="#b5573e"/><text x="288" y="40" fill="#9fb0d6" font-size="9" text-anchor="middle">Moon</text>
+          <line x1="46" y1="48" x2="190" y2="48" stroke="#ffe08a" stroke-width="1" opacity=".5"/>
+          <line x1="46" y1="72" x2="190" y2="72" stroke="#ffe08a" stroke-width="1" opacity=".5"/>
+        </svg>
+        <p>Full Moon: the Moon enters Earth's long shadow. That shadow is huge, so a lunar eclipse is visible from the <b>entire night side</b> of Earth at once.</p>
+      </div>
+    </div>
+    <p class="essay" style="margin-top:12px">So why isn't there an eclipse every month? Because the Moon's orbit is tilted about <b style="color:var(--gold)">5°</b> to Earth's path around the Sun. Most months the Moon passes a little above or below the Sun or shadow and misses. Only when a New or Full Moon happens <b>near a node</b> — where the two orbits cross — do the three bodies line up well enough. Those alignments repeat in the famous <span class="term">saros</span> cycle of about <b>18 years 11 days</b>.</p>
+  </div>
+
+  <div class="card">
+    <h2>The kinds of eclipse</h2>
+    <p style="margin:0 0 8px;color:var(--mute);font-size:13px">Solar (at New Moon):</p>
+    <div class="types">
+      <div class="type" style="border-left-color:#ff6b6b"><b>Total</b> <span class="s">— the Moon fully covers the Sun; the corona appears; day briefly turns to twilight. Only on the narrow central path.</span></div>
+      <div class="type" style="border-left-color:#f5c542"><b>Annular</b> <span class="s">— the Moon is a little too far to cover the Sun, leaving a bright “ring of fire”. Still dangerously bright.</span></div>
+      <div class="type" style="border-left-color:#5bd6e0"><b>Partial</b> <span class="s">— off to the side of the path, the Moon takes only a bite out of the Sun.</span></div>
+      <div class="type" style="border-left-color:#b79cff"><b>Hybrid</b> <span class="s">— rare; the curve of the Earth makes it total along part of the track and annular along the rest.</span></div>
+    </div>
+    <p style="margin:12px 0 8px;color:var(--mute);font-size:13px">Lunar (at Full Moon):</p>
+    <div class="types">
+      <div class="type" style="border-left-color:#ff6b6b"><b>Total</b> <span class="s">— the whole Moon enters Earth's dark umbra and turns copper-red — the “Blood Moon”. Red because it's lit only by every sunrise and sunset on Earth at once.</span></div>
+      <div class="type" style="border-left-color:#5bd6e0"><b>Partial</b> <span class="s">— only part of the Moon dips into the umbra; a dark bite crosses it.</span></div>
+      <div class="type" style="border-left-color:#9fb0d6"><b>Penumbral</b> <span class="s">— the Moon grazes only the soft outer shadow; a subtle shading, easy to miss.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Forecast — every eclipse, 2026–2030</h2>
+    <div class="filters" id="filters">
+      <button type="button" data-f="all" class="on">All</button>
+      <button type="button" data-f="solar">☀️ Solar</button>
+      <button type="button" data-f="lunar">🌙 Lunar</button>
+      <button type="button" data-f="sg">🇸🇬 Seen from Singapore</button>
+    </div>
+    <div id="evlist"></div>
+    <p style="margin-top:12px;color:var(--mute);font-size:12px" id="fcnote"></p>
+  </div>
+
+  <div class="card">
+    <h2>Where the shadow travels <small>— schematic world map</small></h2>
+    <p style="margin:0 0 10px;color:var(--mute);font-size:13px">Pick a solar eclipse to trace the path of totality (or annularity) across the Earth. A lunar eclipse is visible from the whole night side, so its “region” is a hemisphere, not a line.</p>
+    <div class="mapbtns" id="mapbtns"></div>
+    <div id="mapwrap"><svg id="emap" viewBox="0 0 720 360" role="img" aria-label="World map showing the selected eclipse path"></svg></div>
+    <p class="mapcap" id="mapcap"></p>
+  </div>
+
+  <div class="card sgcard">
+    <h2>🇸🇬 From Singapore &amp; the observatory</h2>
+    <div class="big">The realistic events for a SCOB public night are the total lunar eclipses.</div>
+    <div class="d">A lunar eclipse is visible from anywhere the Moon is above the horizon — so whenever a total lunar eclipse falls on Singapore's night, it's a superb, safe, naked-eye crowd event that any of our scopes can share. The standout in this window is the <b>New Year's Eve total lunar eclipse of 31 December 2028</b>, with more total lunars in 2029. No <b>total or annular solar</b> eclipse crosses Singapore between 2026 and 2030 — the great <b>2 August 2027</b> total is a bucket-list trip to Spain, Egypt or Arabia, not a local sight. Always confirm exact local times for Singapore at the links below nearer the date, and for any solar eclipse, rig the deck's white-light and Hα solar filters (see the <a href="solar.html" style="color:#8fe3ff">solar page</a>).</div>
+  </div>
+
+  <div class="btnrow">
+    <a href="sky-events.html">📅 All sky events</a>
+    <a href="solar.html">☀️ Solar viewing</a>
+    <a href="moon-tonight.html">🌕 Tonight on the Moon</a>
+  </div>
+
+  <div class="foot">
+    <p>Eclipse dates, types, durations and paths are from NASA's Goddard <a href="https://eclipse.gsfc.nasa.gov/eclipse.html" target="_blank" rel="noopener">Eclipse Web Site</a> (Espenak &amp; Meeus) and cross-checked with <a href="https://www.timeanddate.com/eclipse/" target="_blank" rel="noopener">timeanddate.com</a>. The world map is <b>schematic</b> — the path lines are approximate; for the precise track and local circumstances use the per-eclipse links, and for Singapore's exact local times see <a href="https://www.timeanddate.com/eclipse/in/singapore/singapore" target="_blank" rel="noopener">timeanddate.com/eclipse/in/singapore</a>. This list runs to 2030 and should be reviewed before then. Countdown is computed on your device. Science Centre Observatory, Singapore.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="version.js"></script>
+<script>
+(function(){
+  var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var WD=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  /* Curated from NASA GSFC / timeanddate. path = approximate central-line [lat,lon] waypoints (solar).
+     sg: singapore visibility badge — yes/partial/subtle/no (confirm exact local times at timeanddate). */
+  var ECL=[
+    {d:"2027-08-02",t:"solar",kind:"Total solar",dur:"6m 23s",badge:"total",
+     region:"Path of totality: Spain · Morocco · Algeria · Tunisia · Libya · Egypt (greatest, near Luxor) · Sudan · Saudi Arabia · Yemen · Somalia.",
+     sg:"no",sgnote:"Not visible from Singapore — a travel eclipse. The longest totality until 2114.",
+     path:[[36.5,-6.5],[35.5,-4],[33.5,-1],[31,4],[29,12],[27,22],[25.8,32.6],[23,38],[19,44],[14,48],[9,50],[4,58]],
+     tl:"https://www.timeanddate.com/eclipse/solar/2027-august-2"},
+    {d:"2028-01-26",t:"solar",kind:"Annular solar",dur:"10m 27s (ring)",badge:"annular",
+     region:"Ring of fire: Pacific · Ecuador · Peru · Brazil · Suriname · French Guiana · Atlantic · Spain · Portugal.",
+     sg:"no",sgnote:"Not visible from Singapore.",
+     path:[[-5,-100],[-2,-82],[-4,-62],[-6,-45],[0,-33],[10,-25],[25,-20],[37,-10],[40,-7]],
+     tl:"https://www.timeanddate.com/eclipse/solar/2028-january-26"},
+    {d:"2028-07-22",t:"solar",kind:"Total solar",dur:"5m 10s",badge:"total",
+     region:"Path of totality: Indian Ocean · Australia (Kimberley → Sydney) · New Zealand. A small partial covers much of SE Asia.",
+     sg:"partial",sgnote:"A small partial phase may be visible low from Singapore — confirm local times nearer the date.",
+     path:[[-15,90],[-16,110],[-17,125],[-22,133],[-28,142],[-33.9,151.2],[-40,158],[-45,170]],
+     tl:"https://www.timeanddate.com/eclipse/solar/2028-july-22"},
+    {d:"2030-06-01",t:"solar",kind:"Annular solar",dur:"5m 21s (ring)",badge:"annular",
+     region:"Ring of fire: Algeria · Tunisia · Greece · Turkey · Russia · Kazakhstan · China · Japan.",
+     sg:"no",sgnote:"Not visible from Singapore.",
+     path:[[34,-4],[36,8],[38,20],[41,31],[46,46],[52,62],[50,86],[48,106],[45,126],[43,143]],
+     tl:"https://www.timeanddate.com/eclipse/solar/2030-june-1"},
+    {d:"2030-11-25",t:"solar",kind:"Total solar",dur:"3m 44s",badge:"total",
+     region:"Path of totality: Botswana · South Africa · Indian Ocean · Australia.",
+     sg:"no",sgnote:"Not visible from Singapore.",
+     path:[[-24,20],[-26,27],[-28,42],[-30,72],[-31,102],[-31,126],[-32,148]],
+     tl:"https://www.timeanddate.com/eclipse/solar/2030-november-25"},
+    /* ---- lunar ---- */
+    {d:"2026-08-28",t:"lunar",kind:"Partial lunar",dur:"—",badge:"partial",
+     region:"Visible from: east Pacific, the Americas, Europe, Africa.",sg:"no",sgnote:"Moon is below Singapore's horizon (daytime) — not visible.",tl:"https://www.timeanddate.com/eclipse/lunar/2026-august-28"},
+    {d:"2027-02-20",t:"lunar",kind:"Penumbral lunar",dur:"—",badge:"penumbral",
+     region:"Visible from: the Americas, Europe, Africa, western Asia.",sg:"subtle",sgnote:"At most a faint penumbral shading if the Moon is up — hard to notice.",tl:"https://www.timeanddate.com/eclipse/lunar/2027-february-20"},
+    {d:"2027-08-17",t:"lunar",kind:"Penumbral lunar",dur:"—",badge:"penumbral",
+     region:"Visible from: the Pacific and the Americas.",sg:"no",sgnote:"Not visible from Singapore.",tl:"https://www.timeanddate.com/eclipse/lunar/2027-august-17"},
+    {d:"2028-01-12",t:"lunar",kind:"Partial lunar",dur:"—",badge:"partial",
+     region:"Visible from: the Americas, Europe, Africa.",sg:"no",sgnote:"Not visible from Singapore.",tl:"https://www.timeanddate.com/eclipse/lunar/2028-january-12"},
+    {d:"2028-07-06",t:"lunar",kind:"Partial lunar",dur:"—",badge:"partial",
+     region:"Visible from: the Americas, Europe, Africa, Asia, Australia.",sg:"partial",sgnote:"A partial phase is likely visible from Singapore — confirm exact local times.",tl:"https://www.timeanddate.com/eclipse/lunar/2028-july-6"},
+    {d:"2028-12-31",t:"lunar",kind:"Total lunar",dur:"~1h 11m totality",badge:"total",
+     region:"Visible from: Europe, Africa, Asia, Australia. A New Year's Eve Blood Moon.",sg:"yes",sgnote:"Visible from Singapore when the Moon is up — the standout event of this window. Confirm exact local times.",tl:"https://www.timeanddate.com/eclipse/lunar/2028-december-31"},
+    {d:"2029-06-26",t:"lunar",kind:"Total lunar",dur:"~1h 42m totality",badge:"total",
+     region:"Near-worldwide: the Americas, Europe, Africa, and much of Asia.",sg:"partial",sgnote:"May be visible from Singapore around the Moon's setting/rising — confirm local times.",tl:"https://www.timeanddate.com/eclipse/lunar/2029-june-26"},
+    {d:"2029-12-20",t:"lunar",kind:"Total lunar",dur:"~54m totality",badge:"total",
+     region:"Visible from: the Americas, Europe, Africa, western Asia.",sg:"partial",sgnote:"Possibly visible low from Singapore near moonset — confirm local times.",tl:"https://www.timeanddate.com/eclipse/lunar/2029-december-20"},
+    {d:"2030-06-15",t:"lunar",kind:"Partial lunar",dur:"—",badge:"partial",
+     region:"Visible from: Europe, Africa, Asia, Australia.",sg:"partial",sgnote:"A partial phase is likely visible from Singapore — confirm local times.",tl:"https://www.timeanddate.com/eclipse/lunar/2030-june-15"},
+    {d:"2030-12-09",t:"lunar",kind:"Penumbral lunar",dur:"—",badge:"penumbral",
+     region:"Visible from: the Americas, Europe, Africa, Asia.",sg:"subtle",sgnote:"At most a faint penumbral shading from Singapore.",tl:"https://www.timeanddate.com/eclipse/lunar/2030-december-9"}
+  ];
+  // keep only upcoming (relative to today), sorted
+  var today=new Date(); today.setHours(0,0,0,0);
+  ECL=ECL.filter(function(e){return new Date(e.d+"T00:00:00")>=today;}).sort(function(a,b){return a.d<b.d?-1:1;});
+
+  function fmt(iso){var p=iso.split("-").map(Number);var dt=new Date(Date.UTC(p[0],p[1]-1,p[2],12));return WD[dt.getUTCDay()]+", "+p[2]+" "+MON[p[1]-1]+" "+p[0];}
+  function countdown(iso){var d=Math.round((new Date(iso+"T12:00:00")-Date.now())/86400000);return d<=0?"today/now":(d<31?("in "+d+" days"):(d<400?("in ~"+Math.round(d/30.4)+" months"):("in ~"+(d/365).toFixed(1)+" years")));}
+  var sgLabel={yes:"🇸🇬 Visible from Singapore",partial:"🇸🇬 Partly visible from Singapore",subtle:"🇸🇬 Only a faint penumbral shading",no:"🇸🇬 Not visible from Singapore"};
+  var sgClass={yes:"sg-yes",partial:"sg-partial",subtle:"sg-subtle",no:"sg-no"};
+
+  var FILT="all";
+  function renderList(){
+    var host=document.getElementById("evlist");
+    var list=ECL.filter(function(e){
+      if(FILT==="all")return true; if(FILT==="solar")return e.t==="solar"; if(FILT==="lunar")return e.t==="lunar";
+      if(FILT==="sg")return e.sg==="yes"||e.sg==="partial"; return true;});
+    if(!list.length){host.innerHTML='<p style="color:var(--mute);font-size:13.5px">No eclipses match this filter in the 2026–2030 window.</p>';return;}
+    host.innerHTML=list.map(function(e){
+      return '<div class="ev '+e.t+'" data-d="'+e.d+'">'
+        +'<div class="r1"><span class="date">'+fmt(e.d)+'</span><span class="cd">'+countdown(e.d)+'</span>'
+        +'<span class="badge b-'+e.badge+'">'+(e.t==="solar"?"☀️ ":"🌙 ")+e.badge+'</span>'
+        +'<span class="kind">'+e.kind+(e.dur&&e.dur!=="—"?' · '+e.dur:'')+'</span></div>'
+        +'<div class="region">'+e.region+'</div>'
+        +'<div class="sg '+sgClass[e.sg]+'">'+sgLabel[e.sg]+(e.sgnote?' — '+e.sgnote:'')+'</div>'
+        +'<a class="lk" href="'+e.tl+'" target="_blank" rel="noopener">Path map &amp; local times →</a></div>';
+    }).join('');
+    // click an event -> if solar with a path, show it on the map
+    host.querySelectorAll('.ev').forEach(function(el){el.addEventListener('click',function(ev){
+      if(ev.target.closest('a'))return; var e=ECL.filter(function(x){return x.d===el.dataset.d;})[0];
+      if(e){selectEcl(e);document.getElementById('emap').scrollIntoView({behavior:'smooth',block:'center'});}
+    });});
+  }
+  document.getElementById("filters").querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){
+    FILT=b.dataset.f;document.querySelectorAll("#filters button").forEach(function(x){x.classList.toggle("on",x===b);});renderList();});});
+  document.getElementById("fcnote").textContent="Tap any eclipse to trace it on the world map below. Dates & paths from NASA GSFC; confirm Singapore local times at the per-eclipse links.";
+
+  /* ---------------- world map ---------------- */
+  var map=document.getElementById("emap"), NS="http://www.w3.org/2000/svg";
+  var W=720,H=360;
+  function X(lon){return (lon+180)/360*W;}
+  function Y(lat){return (90-lat)/180*H;}
+  // very rough continent silhouettes [lat,lon]
+  var LAND=[
+    [[70,-165],[72,-95],[60,-64],[45,-52],[30,-82],[25,-97],[18,-105],[33,-118],[48,-125],[60,-140],[70,-165]],
+    [[12,-72],[6,-50],[-5,-35],[-23,-40],[-40,-63],[-52,-70],[-38,-73],[-18,-70],[-5,-81],[2,-79],[12,-72]],
+    [[60,-10],[71,28],[60,40],[45,40],[36,-6],[43,-9],[50,-5],[60,-10]],
+    [[35,-6],[32,10],[30,32],[12,44],[0,42],[-15,40],[-34,20],[-30,15],[-5,9],[5,-8],[21,-17],[35,-6]],
+    [[71,32],[76,104],[70,160],[60,178],[45,140],[30,122],[20,110],[8,98],[20,72],[26,60],[36,46],[46,42],[60,42],[71,32]],
+    [[-11,131],[-13,142],[-25,153],[-38,147],[-35,138],[-32,116],[-22,114],[-14,126],[-11,131]]
+  ];
+  function drawBase(){
+    map.innerHTML="";
+    // graticule
+    for(var lon=-180;lon<=180;lon+=30){var l=document.createElementNS(NS,"line");l.setAttribute("x1",X(lon));l.setAttribute("y1",0);l.setAttribute("x2",X(lon));l.setAttribute("y2",H);l.setAttribute("stroke","#16233f");l.setAttribute("stroke-width","1");map.appendChild(l);}
+    for(var lat=-60;lat<=60;lat+=30){var g=document.createElementNS(NS,"line");g.setAttribute("x1",0);g.setAttribute("y1",Y(lat));g.setAttribute("x2",W);g.setAttribute("y2",Y(lat));g.setAttribute("stroke","#16233f");g.setAttribute("stroke-width","1");map.appendChild(g);}
+    // continents
+    LAND.forEach(function(poly){var p=document.createElementNS(NS,"polygon");p.setAttribute("points",poly.map(function(pt){return X(pt[1]).toFixed(1)+","+Y(pt[0]).toFixed(1);}).join(" "));p.setAttribute("fill","#1d3050");p.setAttribute("stroke","#2c466b");p.setAttribute("stroke-width","0.6");map.appendChild(p);});
+    // equator emphasis
+    var eq=document.createElementNS(NS,"line");eq.setAttribute("x1",0);eq.setAttribute("y1",Y(0));eq.setAttribute("x2",W);eq.setAttribute("y2",Y(0));eq.setAttribute("stroke","#33507f");eq.setAttribute("stroke-dasharray","5 5");eq.setAttribute("stroke-width","1");map.appendChild(eq);
+    // Singapore marker
+    var sg=document.createElementNS(NS,"circle");sg.setAttribute("cx",X(103.8));sg.setAttribute("cy",Y(1.33));sg.setAttribute("r","3.4");sg.setAttribute("fill","#5fd38a");sg.setAttribute("stroke","#0b1733");sg.setAttribute("stroke-width","1");map.appendChild(sg);
+    var sgt=document.createElementNS(NS,"text");sgt.setAttribute("x",X(103.8)+5);sgt.setAttribute("y",Y(1.33)-5);sgt.setAttribute("fill","#9be9b8");sgt.setAttribute("font-size","10");sgt.setAttribute("font-weight","700");sgt.textContent="Singapore";map.appendChild(sgt);
+  }
+  function drawPath(e){
+    drawBase();
+    if(e.t==="solar"&&e.path){
+      var pts=e.path.map(function(pt){return X(pt[1]).toFixed(1)+","+Y(pt[0]).toFixed(1);}).join(" ");
+      var col=e.badge==="annular"?"#f5c542":"#ff6b6b";
+      var pl=document.createElementNS(NS,"polyline");pl.setAttribute("points",pts);pl.setAttribute("fill","none");pl.setAttribute("stroke",col);pl.setAttribute("stroke-width","3");pl.setAttribute("stroke-linecap","round");pl.setAttribute("opacity",".95");map.appendChild(pl);
+      // start / greatest / end markers
+      var mid=e.path[Math.floor(e.path.length/2)];
+      [[e.path[0],"start"],[mid,"greatest"],[e.path[e.path.length-1],"end"]].forEach(function(m){
+        var c=document.createElementNS(NS,"circle");c.setAttribute("cx",X(m[0][1]));c.setAttribute("cy",Y(m[0][0]));c.setAttribute("r",m[1]==="greatest"?"5":"3.5");c.setAttribute("fill",m[1]==="greatest"?"#fff":col);c.setAttribute("stroke","#0b1733");c.setAttribute("stroke-width","1");map.appendChild(c);
+      });
+    } else if(e.t==="lunar"){
+      // shade a broad night-side region (schematic) — the whole map dims, listed continents implied
+      var r=document.createElementNS(NS,"rect");r.setAttribute("x",0);r.setAttribute("y",0);r.setAttribute("width",W);r.setAttribute("height",H);r.setAttribute("fill","rgba(255,138,194,.10)");map.appendChild(r);
+    }
+  }
+  var mapcap=document.getElementById("mapcap");
+  function selectEcl(e){
+    drawPath(e);
+    document.querySelectorAll("#mapbtns button").forEach(function(b){b.classList.toggle("on",b.dataset.d===e.d);});
+    if(e.t==="solar"){
+      mapcap.innerHTML='<b>'+fmt(e.d)+' · '+e.kind+'</b> — '+e.region+' <span style="color:#8fa0c8">(schematic path; '+
+        '<a href="'+e.tl+'" target="_blank" rel="noopener" style="color:var(--cyan)">precise map →</a>)</span>';
+    } else {
+      mapcap.innerHTML='<b>'+fmt(e.d)+' · '+e.kind+'</b> — a lunar eclipse is seen from the whole night side of Earth. '+e.region+
+        ' <a href="'+e.tl+'" target="_blank" rel="noopener" style="color:var(--cyan)">details →</a>';
+    }
+  }
+  // map buttons: the solar eclipses with a path (most map-worthy)
+  var mb=document.getElementById("mapbtns");
+  ECL.filter(function(e){return e.t==="solar"&&e.path;}).forEach(function(e){
+    var b=document.createElement("button");b.type="button";b.dataset.d=e.d;
+    b.textContent=(e.badge==="annular"?"⭕ ":"● ")+e.d.slice(0,4)+" "+MON[+e.d.slice(5,7)-1];
+    b.addEventListener("click",function(){selectEcl(e);});mb.appendChild(b);
+  });
+
+  drawBase();
+  renderList();
+  // default: show the next solar eclipse with a path, else just the base map
+  var firstSolar=ECL.filter(function(e){return e.t==="solar"&&e.path;})[0];
+  if(firstSolar)selectEcl(firstSolar); else mapcap.textContent="Pick a solar eclipse above to trace its path.";
+
+  function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+  document.getElementById("nightBtn").addEventListener("click",function(){applyNight(!document.body.classList.contains("night"));});
+  try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+</body>
+</html>

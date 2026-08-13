@@ -13,7 +13,7 @@
  *   ./check-release.sh
  * to confirm everything is in sync before uploading.
  */
-window.SCOB_VERSION   = 'v3.96';   /* keep in lockstep with sw.js cache scob-sky-v100 */
+window.SCOB_VERSION   = 'v3.97';   /* keep in lockstep with sw.js cache scob-sky-v101 */
 window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do not roll forward
 
 (function () {
