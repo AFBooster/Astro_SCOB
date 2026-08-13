@@ -27,6 +27,10 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#0b1733;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px;}
 .stop h3{margin:0 0 2px;font-size:16px;color:var(--white);}
 .where{font-size:12.5px;color:var(--cyan);font-weight:700;margin-bottom:6px;}
+.mtl{display:flex;align-items:center;gap:9px;margin:0 0 6px;flex-wrap:wrap;}
+.mtl svg{border-radius:6px;background:#0c1530;flex:0 0 auto;}
+.mtl .cap{font-size:11px;color:var(--mute);}
+.mtl .cap b{color:var(--gold);}
 .say{font-size:14px;margin:6px 0;}
 .thumb{float:right;width:74px;height:74px;margin:0 0 8px 12px;border-radius:12px;background:#0b1020;border:1px solid var(--line);padding:3px;box-sizing:border-box;}
 .thumb svg{width:100%;height:100%;display:block;}
@@ -133,6 +137,36 @@ function dateFromInputs(){var dv=document.getElementById('d').value,tv=document.
 function setInputs(dtSGT){document.getElementById('d').value=dtSGT.getFullYear()+'-'+pad(dtSGT.getMonth()+1)+'-'+pad(dtSGT.getDate());document.getElementById('t').value=pad(dtSGT.getHours())+':'+pad(dtSGT.getMinutes());}
 function tl(h,m){var ap=h<12?'am':'pm';var hh=h%12||12;return hh+':'+pad(m)+ap;}
 function altWord(a){var t=T();return a<20?t.low:(a<50?t.wellup:t.high);}
+var TL={en:{best:"best ~",sets:"sets ~",climb:"climbing all evening",high:"high all evening",win:"7:30–10pm"},
+        zh:{best:"最佳 ~",sets:"落下 ~",climb:"整晚升高",high:"整晚高挂",win:"晚7:30–10点"},
+        ms:{best:"terbaik ~",sets:"terbenam ~",climb:"naik sepanjang malam",high:"tinggi sepanjang malam",win:"7:30–10mlm"},
+        ta:{best:"சிறந்தது ~",sets:"மறையும் ~",climb:"இரவு முழுவதும் உயர்கிறது",high:"இரவு முழுவதும் உயரே",win:"7:30–10 மணி"}};
+function hm12(mins){var h=Math.floor(mins/60),m=mins%60,ap=h<12?"am":"pm";return (h%12||12)+":"+(m<10?"0":"")+m+ap;}
+function miniTimeline(sp,y,mo,da,chH,chM){
+  var W=150,H=36,pad=4,startMin=19*60,endMin=22*60+30,step=15;
+  var pts=[],maxAlt=-90,maxT=startMin;
+  for(var tt=startMin;tt<=endMin;tt+=step){var hh=Math.floor(tt/60),mm=tt%60;
+    var alt=A.positionOf(sp,new Date(Date.UTC(y,mo,da,hh-8,mm,0))).alt;pts.push([tt,alt]);if(alt>maxAlt){maxAlt=alt;maxT=tt;}}
+  var x=function(tt){return pad+(tt-startMin)/(endMin-startMin)*(W-2*pad);};
+  var yF=function(a){var c=Math.max(0,Math.min(90,a));return H-pad-(c/90)*(H-2*pad);};
+  var horizonY=H-pad;
+  var path=pts.map(function(p,i){return (i?"L":"M")+x(p[0]).toFixed(1)+" "+yF(p[1]).toFixed(1);}).join(" ");
+  var chT=Math.max(startMin,Math.min(endMin,chH*60+chM));
+  var chAlt=A.positionOf(sp,new Date(Date.UTC(y,mo,da,chH-8,chM,0))).alt;
+  var t=TL[LANG]||TL.en,cap="";
+  if(maxAlt>=8){var minAlt=Math.min.apply(null,pts.map(function(p){return p[1];}));
+    if(minAlt>55)cap=t.high;
+    else if(maxT>=endMin-step)cap=t.climb;
+    else if(maxT<=startMin+step){var setT=endMin;for(var k=0;k<pts.length;k++){if(pts[k][1]<10){setT=pts[k][0];break;}}cap=t.sets+hm12(setT);}
+    else cap=t.best+hm12(maxT);}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" aria-hidden="true">'
+    +'<line x1="'+pad+'" y1="'+horizonY+'" x2="'+(W-pad)+'" y2="'+horizonY+'" stroke="#2a3a63" stroke-width="1"/>'
+    +'<path d="'+path+'" fill="none" stroke="#5bd6e0" stroke-width="1.6"/>'
+    +(maxAlt>=8?'<circle cx="'+x(maxT).toFixed(1)+'" cy="'+yF(maxAlt).toFixed(1)+'" r="2.2" fill="#f5c542"/>':'')
+    +'<circle cx="'+x(chT).toFixed(1)+'" cy="'+yF(chAlt).toFixed(1)+'" r="2.6" fill="#fff" stroke="#0b1733" stroke-width="0.8"/>'
+    +'</svg>';
+  return svg+'<span class="cap">'+t.win+(cap?' · <b>'+cap+'</b>':'')+'</span>';
+}
 
 function sunCross(y,m,d,h0,h1,thr){var a=Date.UTC(y,m,d,h0-8,0,0),b=Date.UTC(y,m,d,h1-8,0,0);
   var f=function(t){return A.sunAltAt(new Date(t))-thr;};if((f(a)>0)===(f(b)>0))return null;
@@ -179,6 +213,7 @@ function build(){
       +'<div class="thumb" aria-hidden="true">'+A.illus(sp,74)+'</div>'
       +'<h3>'+sp.name+'</h3>'
       +'<div class="where">'+where+'</div>'
+      +'<div class="mtl">'+miniTimeline(sp,y,mo,da,dSGT.getUTCHours(),dSGT.getUTCMinutes())+'</div>'
       +'<div class="say">'+sayFor(sp)+'</div>'
       +'<div class="meta"><span class="chip">👀 '+sp.look+'</span>'+cnChip+'</div>'
       +'<div class="meta">'+magchip+'<span class="chip scope">🔭 '+sp.scope+'</span>'+(TTS_OK?'<button type="button" class="spk" data-i="'+i+'" title="Read this aloud" aria-label="Read this aloud">🔊 Read</button>':'')+'</div>'

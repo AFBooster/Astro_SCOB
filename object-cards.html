@@ -4,14 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Object Cards — SCOB Night-Sky</title>
-<meta name="description" content="Printable one-per-object cards for the SCOB showpieces — a fact, where to look, and the right telescope — to place beside each scope.">
+<meta name="description" content="Printable one-per-object cards for the SCOB showpieces — a fact, where to look, and the right telescope — to place beside each scope. Interface in English, 中文, Malay and Tamil.">
 <link rel="stylesheet" href="scob-theme.css">
 <style>
 *{box-sizing:border-box;margin:0;}
 body{background:#eef1f8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
 .wrap{max-width:900px;margin:0 auto;padding:16px 16px 40px;}
 header h1{font-size:22px;color:#0b1733;margin:0;}
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0;}
+.langbar{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 0;}
+.langbar button{background:#fff;color:#33406b;border:1px solid var(--line);border-radius:20px;padding:7px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.langbar button.on{border-color:var(--gold);background:#fff7e0;color:#0b1733;}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0;}
 .bar button,.bar select{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;}
 .bar .print{background:var(--gold);color:#fff;border-color:var(--gold);}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
@@ -33,7 +36,7 @@ header h1{font-size:22px;color:#0b1733;margin:0;}
 .hint{font-size:12.5px;color:var(--mute);margin-bottom:10px;}
 @media print{
   body{background:#fff;font-size:12px;}
-  .bar,.hint,.foot,header .loc{display:none;}
+  .bar,.hint,.foot,.langbar,header .loc{display:none;}
   .grid{grid-template-columns:repeat(3,1fr);gap:8px;}
   .card{border:1px solid #999;border-radius:8px;padding:9px 10px;}
   .card h3{font-size:13px;} .card .ic{width:38px;height:38px;} .card .ic svg{width:38px;height:38px;} .card .fact{font-size:11px;margin:6px 0;}
@@ -43,34 +46,70 @@ header h1{font-size:22px;color:#0b1733;margin:0;}
 <body class="paper">
 <div class="wrap">
   <header>
-    <h1>🃏 Object Cards</h1>
-    <div class="loc">Printable one-per-object cards — a fact, where to look &amp; the right scope. Place them beside each telescope. Science Centre Observatory, Jurong.</div>
+    <h1 id="hTitle">🃏 Object Cards</h1>
+    <div class="loc" id="hLoc">Printable one-per-object cards — a fact, where to look &amp; the right scope. Place them beside each telescope. Science Centre Observatory, Jurong.</div>
+    <div class="langbar" id="langbar" role="group" aria-label="Card language">
+      <button type="button" data-l="en" class="on">English</button>
+      <button type="button" data-l="zh">中文</button>
+      <button type="button" data-l="ms">Bahasa Melayu</button>
+      <button type="button" data-l="ta">தமிழ்</button>
+    </div>
   </header>
   <div class="bar">
-    <a href="scob-dashboard-v3.html">← Dashboard</a>
-    <select id="filter">
-      <option value="all">All objects</option>
-      <option value="planet">Planets &amp; Moon</option>
-      <option value="dso">Deep-sky (clusters &amp; nebulae)</option>
-      <option value="star">Stars &amp; double stars</option>
-    </select>
+    <a href="scob-dashboard-v3.html" style="text-decoration:none">← Dashboard</a>
+    <select id="filter"></select>
     <button type="button" class="print" id="print">🖨 Print cards</button>
   </div>
-  <div class="hint">Tip: print double-sided or on card stock, cut along the boxes, and laminate for reuse on the observing deck.</div>
+  <div class="hint" id="hHint">Tip: print double-sided or on card stock, cut along the boxes, and laminate for reuse on the observing deck.</div>
   <div class="grid" id="grid"></div>
 
   <div class="foot">
-    Facts are docent talking points — keep it conversational. Positions aren't shown here (they change nightly) — use the <a href="scob-dashboard-v3.html">dashboard</a> or <a href="tonights-tour.html">Tonight's Tour</a> for what's up. · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+    Facts are docent talking points — keep it conversational. Positions aren't shown here (they change nightly) — use the <a href="scob-dashboard-v3.html">dashboard</a> or <a href="tonights-tour.html">Tonight's Tour</a> for what's up. The interface is available in Singapore's four languages; object names and the facts stay in their catalogue/English form as docent guidance. · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 <script src="astro-core.js"></script>
 <script>
 "use strict";
 var A=window.Astro;
+var I18N={
+  en:{title:"🃏 Object Cards",loc:"Printable one-per-object cards — a fact, where to look & the right scope. Place them beside each telescope. Science Centre Observatory, Jurong.",
+    hint:"Tip: print double-sided or on card stock, cut along the boxes, and laminate for reuse on the observing deck.",print:"🖨 Print cards",bestin:"Best in:",
+    scan:"Scan to find it",scansub:"opens the point-your-phone finder aimed at this object",
+    filt:["All objects","Planets & Moon","Deep-sky (clusters & nebulae)","Stars & double stars"],
+    kind:{planet:"Planet",moon:"Moon",double:"Double star",star:"Star",dso:"Deep-sky object"}},
+  zh:{title:"🃏 天体卡",loc:"每个天体一张的可打印卡片——一个知识点、往哪看、用哪台望远镜。放在每台望远镜旁。科学馆天文台，裕廊。",
+    hint:"提示：双面打印或用卡纸，沿框裁剪，护贝后可在观测甲板重复使用。",print:"🖨 打印卡片",bestin:"最佳观测：",
+    scan:"扫码寻找",scansub:"打开对准此天体的手机寻星器",
+    filt:["全部天体","行星与月亮","深空（星团与星云）","恒星与双星"],
+    kind:{planet:"行星",moon:"月亮",double:"双星",star:"恒星",dso:"深空天体"}},
+  ms:{title:"🃏 Kad Objek",loc:"Kad boleh cetak, satu bagi setiap objek — satu fakta, arah mencari & teleskop yang sesuai. Letak di sebelah setiap teleskop. Balai Cerap Pusat Sains, Jurong.",
+    hint:"Petua: cetak dua muka atau pada kad tebal, potong ikut kotak, dan laminat untuk guna semula di dek pemerhatian.",print:"🖨 Cetak kad",bestin:"Terbaik dengan:",
+    scan:"Imbas untuk cari",scansub:"buka pencari telefon yang dihala ke objek ini",
+    filt:["Semua objek","Planet & Bulan","Langit dalam (gugusan & nebula)","Bintang & bintang berkembar"],
+    kind:{planet:"Planet",moon:"Bulan",double:"Bintang berkembar",star:"Bintang",dso:"Objek langit dalam"}},
+  ta:{title:"🃏 பொருள் அட்டைகள்",loc:"ஒவ்வொரு பொருளுக்கும் ஒரு அச்சிடக்கூடிய அட்டை — ஒரு தகவல், எங்கே பார்ப்பது & சரியான தொலைநோக்கி. ஒவ்வொரு தொலைநோக்கிக்கும் அருகில் வைக்கவும். அறிவியல் மைய வான்காணகம், ஜூரோங்.",
+    hint:"குறிப்பு: இரு பக்கமும் அல்லது தடிமன் அட்டையில் அச்சிட்டு, கோடுகளில் வெட்டி, மீண்டும் பயன்படுத்த லேமினேட் செய்யவும்.",print:"🖨 அட்டைகளை அச்சிடு",bestin:"சிறந்தது:",
+    scan:"கண்டறிய ஸ்கேன் செய்",scansub:"இந்தப் பொருளை நோக்கிய தொலைபேசி கண்டுபிடிப்பானைத் திறக்கும்",
+    filt:["அனைத்தும்","கோள்கள் & நிலா","ஆழ்வான் (கொத்துகள் & நெபுலா)","நட்சத்திரங்கள் & இரட்டை நட்சத்திரங்கள்"],
+    kind:{planet:"கோள்",moon:"நிலா",double:"இரட்டை நட்சத்திரம்",star:"நட்சத்திரம்",dso:"ஆழ்வான் பொருள்"}}
+};
+var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+if(!I18N[LANG])LANG='en';
+function L(){return I18N[LANG];}
 function ic(sp){return sp.kind==='moon'?'🌙':sp.kind==='planet'?'🪐':sp.kind==='double'?'✨':sp.kind==='star'?'⭐':'🌌';}
-function kindLabel(sp){return sp.kind==='planet'?'Planet':sp.kind==='moon'?'Moon':sp.kind==='double'?'Double star':sp.kind==='star'?'Star':'Deep-sky object';}
+function kindLabel(sp){return L().kind[sp.kind]||L().kind.dso;}
+function applyChrome(){
+  var t=L();
+  document.getElementById('hTitle').textContent=t.title;
+  document.getElementById('hLoc').textContent=t.loc;
+  document.getElementById('hHint').textContent=t.hint;
+  document.getElementById('print').textContent=t.print;
+  var f=document.getElementById('filter'),vals=['all','planet','dso','star'],cur=f.value||'all';
+  f.innerHTML=vals.map(function(v,i){return '<option value="'+v+'">'+t.filt[i]+'</option>';}).join('');
+  f.value=cur;
+}
 function render(){
-  var f=document.getElementById('filter').value;
+  var t=L(), f=document.getElementById('filter').value;
   var list=A.SHOWPIECES.filter(function(sp){
     if(f==='all')return true;
     if(f==='planet')return sp.kind==='planet'||sp.kind==='moon';
@@ -81,21 +120,18 @@ function render(){
     return '<div class="card"><div class="top"><span class="ic">'+A.illus(sp,48)+'</span><div><h3>'+sp.name+'</h3><div class="kind">'+kindLabel(sp)+'</div></div></div>'
       +'<div class="fact">'+sp.blurb+'</div>'
       +'<div class="look">👀 '+sp.look+'</div>'
-      +'<div class="scope">🔭 Best in: '+sp.scope+'</div>'
-      +'<div class="qrrow"><div class="qr" id="qr_'+sp.id+'"></div><div class="qrcap"><b>Scan to find it</b><br>opens the point-your-phone finder aimed at this object</div></div></div>';
+      +'<div class="scope">🔭 '+t.bestin+' '+sp.scope+'</div>'
+      +'<div class="qrrow"><div class="qr" id="qr_'+sp.id+'"></div><div class="qrcap"><b>'+t.scan+'</b><br>'+t.scansub+'</div></div></div>';
   }).join('');
   LASTLIST=list;
   loadQRlib(function(){paintQRs(list);});
 }
-// deep link to the finder, pre-aimed at this object
 function deepLink(id){try{return new URL('sky-finder.html?target='+encodeURIComponent(id),location.href).href;}catch(e){return 'sky-finder.html?target='+id;}}
 function paintQRs(list){
-  if(typeof QRCode==='undefined'||!/^https?:/.test(location.href))return;   // needs a real URL to be scannable
+  if(typeof QRCode==='undefined'||!/^https?:/.test(location.href))return;
   list.forEach(function(sp){var box=document.getElementById('qr_'+sp.id);if(!box)return;box.innerHTML='';
     try{new QRCode(box,{text:deepLink(sp.id),width:74,height:74,colorDark:'#0b1733',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}});
 }
-// Offline-capable QR: load a known-good library, caching it in localStorage on first (online)
-// load so cards render QRs with no internet afterwards.
 function loadQRlib(cb){
   if(typeof QRCode!=='undefined')return cb();
   var inject=function(txt){try{var sc=document.createElement('script');sc.textContent=txt;document.head.appendChild(sc);}catch(e){}};
@@ -109,7 +145,10 @@ function loadQRlib(cb){
 var LASTLIST=[];
 document.getElementById('filter').addEventListener('change',render);
 document.getElementById('print').addEventListener('click',function(){window.print();});
-render();
+(function(){var lb=document.getElementById('langbar');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
+  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+    lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();render();});});})();
+applyChrome();render();
 </script>
 <script src="version.js"></script>
 </body>

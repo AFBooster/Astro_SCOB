@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="A private, on-device logbook for SCOB public nights — record the date, conditions, objects shown and rough attendance, auto-seeded from the Now Showing board, with CSV export for planning and reporting. Nothing leaves your device.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Session Logbook — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
+.card h2{margin:0 0 10px;font-size:15px;color:var(--gold);}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:2px;}
+@media(min-width:620px){.stats{grid-template-columns:repeat(4,1fr);}}
+.stat{background:var(--navy3);border:1px solid var(--line);border-radius:11px;padding:11px 13px;text-align:center;}
+.stat .n{font-size:23px;font-weight:800;color:var(--gold);line-height:1;}
+.stat .l{font-size:11px;color:var(--mute);margin-top:4px;}
+.form{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:620px){.form .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}}
+label{font-size:12px;color:var(--mute);font-weight:700;display:block;margin:0 0 4px;}
+input,select,textarea{width:100%;font-size:14px;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;}
+textarea{min-height:66px;resize:vertical;}
+.btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px;}
+.primary{border:none;background:var(--gold);color:#0b1733;font-weight:800;border-radius:10px;padding:11px 18px;font-size:14px;cursor:pointer;}
+.seed{border:1px solid var(--cyan);background:transparent;color:var(--cyan);font-weight:700;border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer;}
+.entry{border:1px solid var(--line);border-left-width:4px;border-left-color:var(--cyan);border-radius:12px;background:var(--navy2);padding:12px 14px;margin-top:11px;}
+.entry .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;}
+.entry .dt{font-size:15px;font-weight:800;color:var(--gold);}
+.entry .cond{font-size:12.5px;color:var(--mute);}
+.entry .obj{font-size:13.5px;margin:7px 0 0;}
+.entry .obj b{color:#cdd7ef;}
+.entry .nt{font-size:13px;color:#dbe4f5;margin:6px 0 0;font-style:italic;}
+.entry .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px;}
+.tag{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--navy3);border:1px solid var(--line);color:var(--mute);}
+.tag.head{color:#9be9b8;border-color:#2f6b45;}
+.del{margin-left:auto;font-size:12px;color:var(--red);background:transparent;border:1px solid #5a2a2a;border-radius:8px;padding:5px 10px;cursor:pointer;}
+.tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px;}
+.tool{border:1px solid var(--line);background:var(--navy3);color:var(--cyan);border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:700;cursor:pointer;}
+.empty{color:var(--mute);font-size:13.5px;padding:8px 2px;}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>📔 Session Logbook</h1>
+      <div class="loc">Science Centre Observatory · a private record of each public night — stays on this device</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card">
+    <h2>At a glance</h2>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="card">
+    <h2>Log tonight's session</h2>
+    <div class="form">
+      <div class="row2">
+        <div><label for="fDate">Date</label><input type="date" id="fDate"></div>
+        <div><label for="fCond">Sky / conditions</label>
+          <select id="fCond">
+            <option>Clear</option><option>Mostly clear</option><option>Partly cloudy</option>
+            <option>Hazy</option><option>Cloudy — planetarium only</option><option>Rained off</option>
+          </select></div>
+      </div>
+      <div>
+        <label for="fObjects">Objects shown <span style="font-weight:400">(one per line, or comma-separated)</span></label>
+        <textarea id="fObjects" placeholder="e.g. Saturn, the Moon, Omega Centauri, M8 Lagoon…"></textarea>
+        <div class="btns"><button type="button" class="seed" id="seedBtn">📺 Pull from Now Showing board</button></div>
+      </div>
+      <div class="row2">
+        <div><label for="fHead">Rough attendance</label><input type="number" id="fHead" min="0" step="5" placeholder="e.g. 120"></div>
+        <div><label for="fScopes">Instruments out</label><input type="text" id="fScopes" placeholder="e.g. 40cm dome, 11″, CPC, Seestar"></div>
+      </div>
+      <div><label for="fNotes">Notes <span style="font-weight:400">(what drew crowds, issues, weather changes…)</span></label>
+        <textarea id="fNotes" placeholder="Saturn was the hit again; Seestar on the Lagoon pulled a queue; clouds rolled in ~9:30."></textarea></div>
+      <div class="btns"><button type="button" class="primary" id="saveBtn">＋ Save this session</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Past sessions <small style="color:var(--mute);font-weight:400" id="count"></small></h2>
+    <div class="tools">
+      <button type="button" class="tool" id="csvBtn">⬇ Export all as CSV</button>
+      <button type="button" class="tool" id="topBtn">★ Most-shown objects</button>
+    </div>
+    <div id="topBox" style="display:none"></div>
+    <div id="list"></div>
+  </div>
+
+  <div class="foot">
+    <p>Everything here is stored only in this browser (<code>localStorage</code>) — nothing is uploaded anywhere. Use <b>Export CSV</b> to back it up or open it in a spreadsheet for planning and Science Centre reporting. The <b>Pull from Now Showing board</b> button reads whatever the <a href="now-showing.html">Now Showing</a> display currently has, so you can log a night with one tap. Clearing your browser data will erase the log, so export periodically.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="version.js"></script>
+<script>
+(function(){
+  var SkyCore=window.SkyCore||{};
+  var KEY="scobSessionLog1", NOWKEY="scobNowShowing1";
+  var WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var log=[];
+  try{log=JSON.parse(localStorage.getItem(KEY)||"[]")||[];}catch(e){log=[];}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(log));}catch(e){}}
+  function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function fmtDate(iso){if(!iso)return"";var p=iso.split("-").map(Number);var d=new Date(Date.UTC(p[0],p[1]-1,p[2],12));return WD[d.getUTCDay()]+", "+p[2]+" "+MON[p[1]-1]+" "+p[0];}
+  function parseObjects(t){return String(t||"").split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean);}
+
+  // default date = next Friday if available, else today
+  (function(){var f=SkyCore.nextFridayYMD?SkyCore.nextFridayYMD():null;var d=f?new Date(Date.UTC(f.y,f.m,f.d,12)):new Date();
+    var y=f?f.y:d.getFullYear(),m=(f?f.m:d.getMonth())+1,dd=f?f.d:d.getDate();
+    document.getElementById("fDate").value=y+"-"+String(m).padStart(2,"0")+"-"+String(dd).padStart(2,"0");})();
+
+  function renderStats(){
+    var n=log.length, heads=log.reduce(function(a,e){return a+(+e.head||0);},0);
+    var objs=log.reduce(function(a,e){return a+((e.objects||[]).length);},0);
+    var last=n?fmtDate(log[0].date):"—";
+    document.getElementById("stats").innerHTML=
+      '<div class="stat"><div class="n">'+n+'</div><div class="l">sessions logged</div></div>'+
+      '<div class="stat"><div class="n">'+(heads||"—")+'</div><div class="l">visitors (total)</div></div>'+
+      '<div class="stat"><div class="n">'+objs+'</div><div class="l">object-showings</div></div>'+
+      '<div class="stat"><div class="n" style="font-size:14px;font-weight:700;padding-top:5px">'+last+'</div><div class="l">most recent</div></div>';
+  }
+  function renderList(){
+    var host=document.getElementById("list"), c=document.getElementById("count");
+    c.textContent=log.length?("· "+log.length+" logged"):"";
+    if(!log.length){host.innerHTML='<div class="empty">No sessions logged yet. Fill in the form above after a public night — it takes ten seconds.</div>';return;}
+    host.innerHTML=log.map(function(e,i){
+      var objs=(e.objects||[]);
+      return '<div class="entry"><div class="top"><span class="dt">'+fmtDate(e.date)+'</span><span class="cond">'+esc(e.cond||"")+'</span></div>'
+        +(objs.length?'<div class="obj"><b>Showed:</b> '+objs.map(esc).join(" · ")+'</div>':'')
+        +(e.notes?'<div class="nt">'+esc(e.notes)+'</div>':'')
+        +'<div class="row">'+(e.head?'<span class="tag head">👥 ~'+esc(e.head)+' visitors</span>':'')
+        +(e.scopes?'<span class="tag">🔭 '+esc(e.scopes)+'</span>':'')
+        +'<span class="tag">'+objs.length+' objects</span>'
+        +'<button type="button" class="del" data-i="'+i+'">Delete</button></div></div>';
+    }).join('');
+    host.querySelectorAll(".del").forEach(function(b){b.addEventListener("click",function(){
+      if(confirm("Delete this session entry?")){log.splice(+b.dataset.i,1);save();renderAll();}});});
+  }
+  function renderAll(){renderStats();renderList();}
+
+  document.getElementById("saveBtn").addEventListener("click",function(){
+    var e={date:document.getElementById("fDate").value||"",cond:document.getElementById("fCond").value,
+      objects:parseObjects(document.getElementById("fObjects").value),
+      head:document.getElementById("fHead").value||"",scopes:document.getElementById("fScopes").value.trim(),
+      notes:document.getElementById("fNotes").value.trim(),ts:Date.now()};
+    if(!e.date){alert("Please set a date.");return;}
+    log.unshift(e); log.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
+    save(); renderAll();
+    document.getElementById("fObjects").value="";document.getElementById("fHead").value="";document.getElementById("fNotes").value="";document.getElementById("fScopes").value="";
+    var s=document.getElementById("saveBtn");var t=s.textContent;s.textContent="✓ Saved";setTimeout(function(){s.textContent=t;},1400);
+  });
+
+  document.getElementById("seedBtn").addEventListener("click",function(){
+    var st=null;try{st=JSON.parse(localStorage.getItem(NOWKEY)||"null");}catch(e){}
+    if(!st){alert("The Now Showing board is empty (or hasn't been used on this device yet). Open it and set a few scopes first.");return;}
+    var seen={},order=[];
+    Object.keys(st).forEach(function(k){var v=st[k];[v.now,v.next].forEach(function(o){
+      if(o&&o.indexOf("—")!==0&&o.indexOf("Align")!==0&&!seen[o]){seen[o]=1;order.push(o);}});});
+    if(!order.length){alert("The board has no real targets set yet.");return;}
+    var cur=document.getElementById("fObjects").value.trim();
+    document.getElementById("fObjects").value=(cur?cur+"\n":"")+order.join("\n");
+    var scopes=document.getElementById("fScopes");if(!scopes.value)scopes.value="from Now Showing board";
+  });
+
+  document.getElementById("csvBtn").addEventListener("click",function(){
+    if(!log.length){alert("Nothing to export yet.");return;}
+    function q(s){s=String(s==null?"":s);return '"'+s.replace(/"/g,'""')+'"';}
+    var rows=[["Date","Conditions","Attendance","Instruments","Objects shown","Notes"]];
+    log.forEach(function(e){rows.push([e.date,e.cond,e.head,e.scopes,(e.objects||[]).join("; "),e.notes]);});
+    var csv=rows.map(function(r){return r.map(q).join(",");}).join("\r\n");
+    try{var b=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="scob-session-log.csv";document.body.appendChild(a);a.click();a.remove();}catch(e){}
+  });
+
+  document.getElementById("topBtn").addEventListener("click",function(){
+    var box=document.getElementById("topBox");
+    if(box.style.display==="block"){box.style.display="none";return;}
+    var tally={};log.forEach(function(e){(e.objects||[]).forEach(function(o){var k=o.trim();if(k)tally[k]=(tally[k]||0)+1;});});
+    var arr=Object.keys(tally).map(function(k){return[k,tally[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
+    box.style.display="block";
+    box.innerHTML=arr.length?('<div style="margin:10px 0 2px;font-size:13px;color:var(--mute)">Across '+log.length+' logged sessions:</div>'
+      +arr.map(function(x){return '<div style="display:flex;justify-content:space-between;padding:5px 2px;border-bottom:1px solid var(--line);font-size:13.5px"><span>'+esc(x[0])+'</span><b style="color:var(--gold)">'+x[1]+'×</b></div>';}).join(''))
+      :'<div class="empty">No objects logged yet.</div>';
+  });
+
+  function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+  document.getElementById("nightBtn").addEventListener("click",function(){applyNight(!document.body.classList.contains("night"));});
+  try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+  renderAll();
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+</body>
+</html>

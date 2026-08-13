@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="The sky through the ages — how eleven civilisations, from the 65,000-year-old Aboriginal sky to the modern IAU, named the same stars, and how the names passed from Babylon to Greece to Arabia to the world. A capstone tour of SCOB Night-Sky's cultural pages, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>The Sky Through the Ages — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+.ar{font-family:"Segoe UI","Noto Naskh Arabic","Times New Roman",serif;direction:rtl;unicode-bidi:isolate;}
+.zh{font-family:"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",serif;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.loc{font-size:13px;color:var(--mute);flex:1 1 140px;min-width:0;}
+.card h2{margin:0 0 8px;font-size:15px;color:var(--gold);}
+.card h2 small{color:var(--mute);font-weight:400;font-size:12px;}
+.lede{font-size:clamp(15px,4vw,17px);margin:0 0 12px;}
+.essay p{margin:0 0 12px;font-size:clamp(14px,3.7vw,15.5px);color:#e7ecf7;}
+.essay b{color:var(--gold);}.essay .term{color:var(--cyan);}
+.callout{margin:2px 0 0;padding:11px 13px;background:var(--navy3);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;font-size:13.5px;color:#dbe4f5;}
+.callout b{color:var(--cyan);}
+/* timeline */
+.tl{position:relative;margin:6px 0 0;padding-left:26px;}
+.tl::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,#3a4c86,#233158);}
+.ev{position:relative;margin:0 0 14px;}
+.ev::before{content:"";position:absolute;left:-22px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--dot,#5bd6e0);border:2px solid #0b1733;box-shadow:0 0 0 2px var(--dot,#5bd6e0);}
+.ev .era{font-size:11.5px;font-weight:800;letter-spacing:.03em;color:var(--mute);text-transform:uppercase;}
+.ev .nm{font-size:15.5px;font-weight:800;}
+.ev .ct{font-size:13.5px;color:#e7ecf7;margin:2px 0 3px;}
+.ev a{color:var(--cyan);font-weight:700;font-size:12.5px;text-decoration:none;}
+/* star explorer */
+.pick{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 14px;}
+.pick button{border:1px solid var(--line);background:var(--navy3);color:#e7ecf7;border-radius:20px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+.pick button.on{border-color:var(--gold);background:#20345f;color:#fff;}
+.names{display:grid;grid-template-columns:1fr;gap:8px;}
+@media(min-width:620px){.names{grid-template-columns:1fr 1fr;}}
+.nrow{display:flex;align-items:baseline;gap:10px;padding:9px 12px;border-radius:10px;background:var(--navy3);border-left:3px solid var(--c,#33406b);}
+.nrow .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);width:82px;flex:0 0 82px;}
+.nrow .val{font-weight:700;font-size:14.5px;}
+.nrow .en{color:var(--mute);font-weight:400;font-size:12.5px;}
+.starhdr{font-size:16px;font-weight:800;color:var(--gold);margin:2px 0 10px;}
+.starhdr small{color:var(--mute);font-weight:400;font-size:13px;}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🕰️ The Sky Through the Ages</h1>
+      <div class="loc">Science Centre Observatory · eleven civilisations, one sky, forty thousand years of looking up</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+      <button type="button" id="nightBtn" class="btnmini">🌙</button>
+    </div>
+  </header>
+
+  <div class="card essay">
+    <p class="lede">Every culture that ever lived under a clear sky drew its own pictures among the stars — and, watching the very same stars, they kept arriving at the same handful of landmarks: the Pleiades, red Antares, the belt of Orion, the Southern Cross.</p>
+    <p>SCOB Night-Sky has a page for each of <b>eleven</b> of those traditions. This page lines them up on a single thread of time — from the <b>oldest continuous star-knowledge on Earth</b> to the <b>modern IAU</b> — and lets you pick a bright star and hear <span class="term">every name it has ever been given</span>, resolved live from the culture pages' own data.</p>
+    <div class="callout">🧵 <b>One thread, many hands.</b> The dates for oral traditions are broad — a living sky isn't a dated document. What matters is the shape: knowledge handed on, borrowed, translated and renamed, star by star, for tens of thousands of years.</div>
+  </div>
+
+  <div class="card">
+    <h2>One star, every age <small>— pick a star</small></h2>
+    <p style="margin:0 0 10px;color:var(--mute);font-size:13px">Choose a bright star to see what each tradition on this site calls it — computed live from the same coordinates the culture pages use.</p>
+    <div class="pick" id="pick"></div>
+    <div class="starhdr" id="starHdr">—</div>
+    <div class="names" id="names"></div>
+  </div>
+
+  <div class="card">
+    <h2>The thread of time <small>— when each sky was mapped</small></h2>
+    <div class="tl" id="tl"></div>
+  </div>
+
+  <div class="card essay">
+    <h2>How a name travels <small>— Babylon → Greece → Arabia → the world</small></h2>
+    <p>Look at the star names on any modern chart and you are reading a <b>4,000-year relay</b>. Babylon drew the first zodiac and the figures of the ecliptic. The Greeks inherited those figures and fixed 48 constellations in Ptolemy's <i>Almagest</i> (c. 150 CE). When that book was translated into <b>Arabic</b>, scholars kept the Greek figures but attached their own star names — and added the astronomy of the <span class="term">manāzil</span>, the Moon's mansions.</p>
+    <p>Centuries later the Arabic <i>Almagest</i> was translated on into Latin Europe, and the <b>Arabic star names came with it</b>, often garbled by copyists: <b>Aldebaran, Betelgeuse, Rigel, Altair, Deneb, Vega, Fomalhaut, Algol</b>. In 1922 the IAU fixed the <b>88 constellations</b> we use today, and in 2016 its Working Group on Star Names began standardising the spellings — most of them still Arabic, worn smooth by that thousand-year journey. The star explorer above is that relay, made clickable.</p>
+    <div class="callout">☾ For the deepest case of shared sky, see the <a href="lunar-mansions.html" style="color:var(--cyan)">Three Lunar-Mansion Systems</a> — Chinese 宿, Indian nakshatra and Arabic manzil matched star by star.</div>
+  </div>
+
+  <div class="btnrow">
+    <a href="lunar-mansions.html">☾ The three lunar-mansion systems</a>
+    <a href="sky-guide.html">🧭 All the culture pages</a>
+  </div>
+
+  <div class="foot">
+    <p>Cultural names and the star coordinates are drawn live from this site's own culture-page data files via the shared <code>sky-culture-core.js</code> cross-link engine; where a tradition drew no figure on a star, it is omitted. Era dates are approximate and, for oral traditions, deliberately broad. This is a synthesis page — each claim is developed on the individual culture pages linked in the timeline. Science Centre Observatory, Singapore.</p>
+    <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
+    <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
+  </div>
+</div>
+
+<script src="sky-culture-core.js"></script>
+<script src="chinese-sky-data.js"></script>
+<script src="nakshatra-sky-data.js"></script>
+<script src="arabic-sky-data.js"></script>
+<script src="babylonian-sky-data.js"></script>
+<script src="egyptian-sky-data.js"></script>
+<script src="greek-sky-data.js"></script>
+<script src="malay-sky-data.js"></script>
+<script src="maya-sky-data.js"></script>
+<script src="inca-sky-data.js"></script>
+<script src="polynesian-sky-data.js"></script>
+<script src="aboriginal-sky-data.js"></script>
+<script>
+(function(){
+  var SkyCore=window.SkyCore;
+  var COLOR={chinese:"#5fd38a",indian:"#ff9d3c",arabic:"#f5c542",babylonian:"#6ea8ff",egyptian:"#ffb454",greek:"#dfe4ee",malay:"#5bd6e0",maya:"#ff8ac2",inca:"#b98cff",polynesian:"#6fe0a0",aboriginal:"#c58b6a"};
+
+  /* marquee stars with rich cross-culture coverage */
+  var STARS=[
+    {nm:"Aldebaran",w:"α Tauri · the Bull's eye",ra:68.980,dec:16.509},
+    {nm:"The Pleiades",w:"M45 · Alcyone",ra:56.871,dec:24.105},
+    {nm:"Antares",w:"α Scorpii · the Scorpion's heart",ra:247.352,dec:-26.432},
+    {nm:"Orion's Belt",w:"Alnilam, ε Orionis",ra:84.053,dec:-1.202},
+    {nm:"Spica",w:"α Virginis",ra:201.298,dec:-11.161},
+    {nm:"Regulus",w:"α Leonis",ra:152.093,dec:11.967},
+    {nm:"The Southern Cross",w:"Acrux, α Crucis",ra:186.650,dec:-63.099},
+    {nm:"Sirius",w:"α Canis Majoris · the brightest star",ra:101.287,dec:-16.716}
+  ];
+
+  var pick=document.getElementById("pick"), names=document.getElementById("names"), hdr=document.getElementById("starHdr");
+  var sel=0;
+  function draw(){
+    var s=STARS[sel];
+    hdr.innerHTML=s.nm+' <small>'+s.w+'</small>';
+    var list=SkyCore.crossLinkList(s.ra,s.dec);
+    if(!list.length){names.innerHTML='<div class="nrow"><span class="val" style="color:var(--mute)">No traditional figure on this site draws on this star.</span></div>';return;}
+    names.innerHTML=list.map(function(h){
+      var c=COLOR[h.culture]||"#33406b";
+      var val=h.name||h.starNative||"—";
+      var extra=[h.en, h.starNative && h.starNative!==h.name ? h.starNative : ""].filter(Boolean).join(" · ");
+      return '<div class="nrow" style="--c:'+c+'"><span class="lab" style="color:'+c+'">'+h.label+'</span>'
+        +'<span><span class="val'+(h.culture==="chinese"?" zh":h.culture==="arabic"?" ar":"")+'">'+val+'</span>'
+        +(extra?' <span class="en">'+extra+'</span>':'')+'</span></div>';
+    }).join('');
+  }
+  STARS.forEach(function(s,i){var b=document.createElement("button");b.type="button";b.textContent=s.nm;b.className=i===0?"on":"";
+    b.addEventListener("click",function(){sel=i;pick.querySelectorAll("button").forEach(function(x,k){x.classList.toggle("on",k===i);});draw();});pick.appendChild(b);});
+  draw();
+
+  /* timeline */
+  var TL=[
+    {era:"~65,000 years ago",nm:"Aboriginal Australian",dot:"#c58b6a",ct:"The oldest continuous sky-knowledge on Earth — dark constellations like the Emu in the Sky, traced in the Milky Way's dust lanes.",href:"aboriginal-sky.html"},
+    {era:"~2500 BCE",nm:"Ancient Egyptian",dot:"#ffb454",ct:"The 36 decans that gave us the 24-hour day; Sopdet (Sirius) whose dawn rising foretold the Nile flood.",href:"egyptian-sky.html"},
+    {era:"~1200–1000 BCE",nm:"Babylonian (MUL.APIN)",dot:"#6ea8ff",ct:"The Three Paths of the sky and the first 12-sign zodiac — the ecliptic figures the whole world would inherit.",href:"babylonian-sky.html"},
+    {era:"~1000 BCE (Vedic)",nm:"Indian — nakshatras",dot:"#ff9d3c",ct:"The 27 lunar mansions, one for each day of the Moon's sidereal month, with their lords and deities.",href:"indian-sky.html"},
+    {era:"~500 BCE (roots older)",nm:"Chinese — 28 宿",dot:"#5fd38a",ct:"The 28 lodges, Four Symbols and Three Enclosures, backed by the longest continuous astronomical records anywhere.",href:"chinese-sky.html"},
+    {era:"~800 BCE myth · 150 CE Almagest",nm:"Greek / Ptolemaic",dot:"#dfe4ee",ct:"48 constellations fixed in Ptolemy's Almagest — the direct backbone of the modern Western sky.",href:"greek-sky.html"},
+    {era:"pre-Islamic · al-Ṣūfī 964 CE",nm:"Arabic — manāzil",dot:"#f5c542",ct:"The 28 mansions and the anwāʾ almanac — and the star names the entire world still uses today.",href:"arabic-sky.html"},
+    {era:"~250–900 CE",nm:"Maya",dot:"#ff8ac2",ct:"Venus tracked to the day across centuries, woven into the Tzolk'in and the Long Count calendar.",href:"maya-sky.html"},
+    {era:"~1000–1500 CE (older at sea)",nm:"Polynesian",dot:"#6fe0a0",ct:"The star compass and the great star lines — a sky read for navigation across a third of the planet.",href:"polynesian-sky.html"},
+    {era:"~1400 CE (Inca state)",nm:"Inca / Andean",dot:"#b98cff",ct:"Dark-cloud constellations along the Mayu (Milky Way) — the Llama, the Fox, the Toad — a sky of shadows.",href:"inca-sky.html"},
+    {era:"living oral tradition",nm:"Malay / Nusantara",dot:"#5bd6e0",ct:"Star-pictures for the monsoon, the rice calendar and the sea — a regional sky still spoken, not fixed.",href:"malay-sky.html"},
+    {era:"1922 · 1930 · 2016",nm:"Modern — the IAU",dot:"#ffffff",ct:"The 88 official constellations with fixed boundaries, and standardised star names — most of them, still, Arabic.",href:"singapore-sky.html"}
+  ];
+  document.getElementById("tl").innerHTML=TL.map(function(e){
+    return '<div class="ev" style="--dot:'+e.dot+'"><div class="era">'+e.era+'</div><div class="nm">'+e.nm+'</div><div class="ct">'+e.ct+'</div>'
+      +(e.href?'<a href="'+e.href+'">Open the '+e.nm.replace(/ —.*/,'').replace(/ \(.*/,'')+' page →</a>':'')+'</div>';
+  }).join('');
+
+  function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
+  document.getElementById("nightBtn").addEventListener("click",function(){applyNight(!document.body.classList.contains("night"));});
+  try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

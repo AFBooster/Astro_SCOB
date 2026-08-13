@@ -22,6 +22,9 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .datein{font-size:15px;font-weight:700;background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-family:inherit;}
 .datein::-webkit-calendar-picker-indicator{filter:invert(.85);opacity:.85;}
 .btnmini{background:transparent;color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.langbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.langbar button{background:var(--navy3);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.langbar button.on{border-color:var(--gold);background:#20345f;color:#fff;}
 .daynote{font-size:13px;color:var(--mute);}
 .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:6px;}
 @media(min-width:860px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);}}
@@ -71,6 +74,12 @@ h1{font-size:22px;margin:0;color:var(--gold);}
       <button type="button" id="nightBtn" class="btnmini">🌙 Night</button>
       <span class="daynote" id="dayNote"></span>
     </div>
+    <div class="langbar" id="mtLang" role="group" aria-label="Language">
+      <button type="button" data-l="en" class="on">English</button>
+      <button type="button" data-l="zh">中文</button>
+      <button type="button" data-l="ms">Bahasa Melayu</button>
+      <button type="button" data-l="ta">தமிழ்</button>
+    </div>
   </header>
 
   <div class="grid">
@@ -118,6 +127,23 @@ const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI;
 const w180=x=>{let v=rev(x);return v>180?v-360:v;};
 
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MT_I18N={
+  en:{title:"🌕 Tonight on the Moon",loc:"Science Centre Observatory, Jurong · what to point at along the terminator",bFri:"↺ Next Fri",bTonight:"● Tonight",night:"🌙 Night",day:"☀️ Day",
+    phase:{nw:"New Moon",fl:"Full Moon",wc:"Waxing Crescent",oc:"Waning Crescent",fq:"First Quarter",lq:"Last Quarter",wg:"Waxing Gibbous",og:"Waning Gibbous"},
+    chip:{all:"up all session",sets:"sets mid-session — catch it early",rises:"rises during the session",no:"not up 7:30–10 pm"},dfri:"Friday — session night ✓",dother:"Sessions run Fridays"},
+  zh:{title:"🌕 今晚的月亮",loc:"科学馆天文台，裕廊 · 沿明暗界线观测的目标",bFri:"↺ 下周五",bTonight:"● 今晚",night:"🌙 夜间",day:"☀️ 白天",
+    phase:{nw:"新月",fl:"满月",wc:"娥眉月",oc:"残月",fq:"上弦月",lq:"下弦月",wg:"盈凸月",og:"亏凸月"},
+    chip:{all:"整场可见",sets:"中途落下——趁早观看",rises:"活动期间升起",no:"晚7:30–10点不可见"},dfri:"周五——活动之夜 ✓",dother:"活动于每周五举行"},
+  ms:{title:"🌕 Bulan Malam Ini",loc:"Balai Cerap Pusat Sains, Jurong · apa yang perlu ditunjuk sepanjang terminator",bFri:"↺ Jumaat depan",bTonight:"● Malam ini",night:"🌙 Malam",day:"☀️ Siang",
+    phase:{nw:"Bulan Baharu",fl:"Bulan Purnama",wc:"Sabit Membesar",oc:"Sabit Mengecil",fq:"Suku Pertama",lq:"Suku Terakhir",wg:"Hampir Purnama",og:"Selepas Purnama"},
+    chip:{all:"naik sepanjang sesi",sets:"terbenam pertengahan sesi — lihat awal",rises:"terbit semasa sesi",no:"tidak naik 7:30–10 mlm"},dfri:"Jumaat — malam sesi ✓",dother:"Sesi pada hari Jumaat"},
+  ta:{title:"🌕 இன்றிரவு நிலா",loc:"அறிவியல் மைய வான்காணகம், ஜூரோங் · டெர்மினேட்டர் வழியே எதைக் காட்டுவது",bFri:"↺ அடுத்த வெள்ளி",bTonight:"● இன்றிரவு",night:"🌙 இரவு",day:"☀️ பகல்",
+    phase:{nw:"அமாவாசை",fl:"பௌர்ணமி",wc:"வளர் பிறை",oc:"தேய் பிறை",fq:"வளர்பாதி",lq:"தேய்பாதி",wg:"வளர் முக்கால்",og:"தேய் முக்கால்"},
+    chip:{all:"முழு அமர்வும் மேலே",sets:"அமர்வின் நடுவே மறையும் — சீக்கிரம் பாருங்கள்",rises:"அமர்வின்போது உதிக்கும்",no:"7:30–10 மணிக்கு இல்லை"},dfri:"வெள்ளி — அமர்வு இரவு ✓",dother:"அமர்வுகள் வெள்ளிக்கிழமை"}
+};
+var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+if(!MT_I18N[LANG])LANG='en';
+function L(){return MT_I18N[LANG];}
 function dateLabel(y,m,d){const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();return `${WD[wd]}, ${d} ${MON[m]} ${y}`;}
 function timeLabel(hh,mm){const ap=hh<12?'am':'pm';let h=hh%12||12;return h+':'+pad(mm)+' '+ap;}
 
@@ -200,9 +226,8 @@ const MARIA=[ // [lon,lat,rx°,ry°] approximate blobs for the disc drawing
  [-15.6,32.8,19,15],[-31.5,44.1,7,6],[-57.0,18.0,22,26],[-38.6,-24.4,10,9],[-15.0,-21.0,13,10],
  [0,56,25,7],[-68.6,-5.2,5,5],[16,-1,7,6]
 ];
-function phaseName(ill,wax){if(ill<0.03)return"New Moon";if(ill>0.97)return"Full Moon";
-  if(ill<0.47)return(wax?"Waxing":"Waning")+" Crescent";if(ill<0.53)return(wax?"First":"Last")+" Quarter";
-  return(wax?"Waxing":"Waning")+" Gibbous";}
+function phaseName(ill,wax){var p=L().phase;if(ill<0.03)return p.nw;if(ill>0.97)return p.fl;
+  if(ill<0.47)return wax?p.wc:p.oc;if(ill<0.53)return wax?p.fq:p.lq;return wax?p.wg:p.og;}
 
 function recompute(y,m,d){
   const dt=new Date(Date.UTC(y,m,d,12,30,0)); // 20:30 SGT
@@ -225,17 +250,18 @@ function recompute(y,m,d){
   const rs=moonRiseSet(y,m,d);
   const a1930=moonAltAt(new Date(Date.UTC(y,m,d,11,30))),a2200=moonAltAt(new Date(Date.UTC(y,m,d,14,0)));
   let chip;
-  if(a1930>5&&a2200>5)chip='<span class="pill ok">up all session</span>';
-  else if(a1930>5)chip='<span class="pill warn">sets mid-session — catch it early</span>';
-  else if(a2200>5)chip='<span class="pill warn">rises during the session</span>';
-  else chip='<span class="pill bad">not up 7:30–10 pm</span>';
+  var _c=L().chip;
+  if(a1930>5&&a2200>5)chip='<span class="pill ok">'+_c.all+'</span>';
+  else if(a1930>5)chip='<span class="pill warn">'+_c.sets+'</span>';
+  else if(a2200>5)chip='<span class="pill warn">'+_c.rises+'</span>';
+  else chip='<span class="pill bad">'+_c.no+'</span>';
   document.getElementById('upChip').innerHTML=chip;
   document.getElementById('meta').innerHTML=
     '🌗 Rises <b>'+(rs.rise||'—')+'</b> · sets <b>'+(rs.set||'—')+'</b> &nbsp;·&nbsp; age <b>'+age.toFixed(1)+' days</b> &nbsp;·&nbsp; colongitude <b>'+colong.toFixed(0)+'°</b>'
     +(V!=null?' &nbsp;·&nbsp; '+Vkind+' terminator at selenographic <b>'+Math.abs(V).toFixed(0)+'° '+(V>=0?'E':'W')+'</b>':'')
     +(pct<12&&pct>2?'<br>🌒 Thin crescent — look for <b>earthshine</b>: the night side glowing faintly with light reflected off Earth.':'');
   const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();
-  document.getElementById('dayNote').innerHTML=wd===5?'<span style="color:var(--green)">Friday — session night ✓</span>':'Sessions run Fridays';
+  document.getElementById('dayNote').innerHTML=wd===5?'<span style="color:var(--green)">'+L().dfri+'</span>':L().dother;
 
   drawDisc(l0,V,pct);
   renderFeatured(l0,V,Vkind,waxing,pct,illum);
@@ -345,9 +371,16 @@ function fromInput(){const v=document.getElementById('datePick').value;if(!v)ret
 document.getElementById('datePick').addEventListener('change',fromInput);
 document.getElementById('nextFri').addEventListener('click',()=>{const f=nextFridayYMD();recompute(f.y,f.m,f.d);});
 document.getElementById('tonight').addEventListener('click',()=>{const n=sgtNow();recompute(n.getFullYear(),n.getMonth(),n.getDate());});
-function applyNight(on){document.body.classList.toggle('night',on);document.getElementById('nightBtn').textContent=on?'☀️ Day':'🌙 Night';try{localStorage.setItem('scobNight',on?'1':'0');}catch(e){}}
+function applyNight(on){document.body.classList.toggle('night',on);document.getElementById('nightBtn').textContent=on?L().day:L().night;try{localStorage.setItem('scobNight',on?'1':'0');}catch(e){}}
 document.getElementById('nightBtn').addEventListener('click',()=>applyNight(!document.body.classList.contains('night')));
 try{applyNight(localStorage.getItem('scobNight')==='1');}catch(e){}
+function applyChrome(){var t=L();var h=document.querySelector('h1');if(h)h.textContent=t.title;var lc=document.querySelector('header .loc');if(lc)lc.textContent=t.loc;
+  document.getElementById('nextFri').textContent=t.bFri;document.getElementById('tonight').textContent=t.bTonight;
+  document.getElementById('nightBtn').textContent=document.body.classList.contains('night')?t.day:t.night;}
+applyChrome();
+(function(){var lb=document.getElementById('mtLang');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
+  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+    lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();fromInput();});});})();
 const f0=nextFridayYMD();recompute(f0.y,f0.m,f0.d);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1733">
+<meta name="description" content="A stargazer's passport for SCOB public nights — tick off each object as you see it through a telescope, on-screen or printed for kids to carry and collect. Science Centre Observatory, Singapore.">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Stargazer's Passport — SCOB Night-Sky</title>
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+body{margin:0;background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;}
+.titlerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+h1{font-size:22px;margin:0;color:var(--gold);}
+.loc{font-size:13px;color:var(--mute);flex:1 1 160px;min-width:0;}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0 4px;}
+.bar a,.bar button,.bar select{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:8px 13px;text-decoration:none;background:none;cursor:pointer;font-family:inherit;}
+.bar .print{background:var(--gold);color:#0b1733;border-color:var(--gold);}
+.bar select{color:var(--white);border-color:var(--line);background:var(--navy2);}
+.prog{margin:12px 0;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;}
+.prog .barbg{height:14px;border-radius:8px;background:#22305a;overflow:hidden;margin-top:8px;}
+.prog .barfill{height:100%;border-radius:8px;background:linear-gradient(90deg,#5bd6e0,#f5c542);transition:width .35s;}
+.prog .lbl{font-size:14px;font-weight:700;}
+.prog .lbl b{color:var(--gold);font-size:18px;}
+.prog .reward{margin-top:8px;font-size:13.5px;color:#9be9b8;font-weight:700;display:none;}
+.hint{font-size:12.5px;color:var(--mute);margin:2px 0 8px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
+.stamp{position:relative;background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:12px 12px 13px;cursor:pointer;text-align:center;transition:.15s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.stamp:hover{border-color:var(--cyan);}
+.stamp.done{border-color:var(--gold);background:#1b2c58;}
+.stamp .ic{width:52px;height:52px;margin:0 auto 6px;}
+.stamp .ic svg{width:52px;height:52px;display:block;border-radius:9px;background:#0b1020;}
+.stamp .nm{font-size:13.5px;font-weight:700;line-height:1.2;}
+.stamp .kd{font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.03em;margin-top:2px;}
+.stamp .tick{position:absolute;top:8px;right:9px;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);color:transparent;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.stamp.done .tick{background:var(--gold);border-color:var(--gold);color:#0b1733;}
+.stamp .look{font-size:11px;color:var(--mute);margin-top:5px;line-height:1.35;display:none;}
+.foot{margin-top:22px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
+/* print: a clean paper passport with hand-stamp boxes */
+@media print{
+  body{background:#fff;color:#111;}
+  .bar,.foot,.hint,.prog .reward,header .loc,.backlink{display:none;}
+  h1{color:#111;}
+  .prog{border:1px solid #bbb;background:#fff;}
+  .grid{grid-template-columns:repeat(3,1fr);gap:8px;}
+  .stamp{border:1.5px solid #333;border-radius:9px;background:#fff;color:#111;break-inside:avoid;}
+  .stamp .ic svg{background:#eef;}
+  .stamp .nm{color:#111;} .stamp .kd{color:#555;}
+  .stamp .tick{border-color:#333;color:#fff;}
+  .stamp.done .tick,.stamp .tick{background:#fff;border-color:#333;color:#fff;}
+  .stamp .look{display:block;color:#555;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="titlerow">
+      <h1>🪪 Stargazer's Passport</h1>
+      <div class="loc">Science Centre Observatory · tick off each wonder as you see it through our telescopes</div>
+      <a class="backlink" href="scob-dashboard-v3.html">← Dashboard</a>
+    </div>
+    <div class="bar">
+      <select id="filter" aria-label="Filter objects">
+        <option value="all">Everything</option>
+        <option value="easy">Easy wins (Moon, planets, bright)</option>
+        <option value="planet">Planets &amp; Moon</option>
+        <option value="dso">Clusters &amp; nebulae</option>
+        <option value="star">Stars &amp; doubles</option>
+      </select>
+      <button type="button" class="print" id="print">🖨 Print a passport</button>
+      <button type="button" id="reset">↺ Reset my stamps</button>
+    </div>
+  </header>
+
+  <div class="prog">
+    <div class="lbl"><b id="pn">0</b> / <span id="pt">0</span> collected tonight 🌟</div>
+    <div class="barbg"><div class="barfill" id="pf" style="width:0%"></div></div>
+    <div class="reward" id="reward">🏆 Full house! You've seen every object on the card — show a volunteer for a high-five.</div>
+  </div>
+  <div class="hint" id="hint">Tap a card when you've seen that object through a scope. Your stamps are saved on this device for the evening. Or print a paper passport for the kids to carry.</div>
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    Stamps are saved only in this browser (<code>localStorage</code>) and reset when you clear it. The object list is SCOB's showpiece set — not everything is up on any given night, so check the <a href="tonights-tour.html">Tonight's Tour</a> or <a href="now-showing.html">Now Showing</a> board for what's actually visible. Printed passports are perfect for younger visitors to carry between the domes and the deck. · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+(function(){
+  var A=window.Astro;
+  var KEY="scobPassport1";
+  var done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){done={};}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(done));}catch(e){}}
+  var EASY={moon:1,venus:1,jupiter:1,saturn:1,mars:1,m45:1,m42:1,m8:1,omega:1,antares:1,sirius:1,albireo:1,alphacen:1,acrux:1,jewelbox:1};
+  function kindLabel(sp){return sp.kind==='planet'?'Planet':sp.kind==='moon'?'Moon':sp.kind==='double'?'Double star':sp.kind==='star'?'Star':'Deep-sky';}
+  function list(){
+    var f=document.getElementById('filter').value;
+    return (A.SHOWPIECES||[]).filter(function(sp){
+      if(f==='all')return true;
+      if(f==='easy')return !!EASY[sp.id];
+      if(f==='planet')return sp.kind==='planet'||sp.kind==='moon';
+      if(f==='dso')return sp.kind==='dso';
+      if(f==='star')return sp.kind==='star'||sp.kind==='double';
+      return true;});
+  }
+  function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function render(){
+    var L=list(), g=document.getElementById('grid');
+    g.innerHTML=L.map(function(sp){
+      return '<div class="stamp'+(done[sp.id]?' done':'')+'" data-id="'+sp.id+'" role="button" tabindex="0" aria-pressed="'+(done[sp.id]?'true':'false')+'">'
+        +'<div class="tick">✓</div>'
+        +'<div class="ic">'+A.illus(sp,52)+'</div>'
+        +'<div class="nm">'+esc(sp.name)+'</div><div class="kd">'+kindLabel(sp)+'</div>'
+        +'<div class="look">'+esc(sp.look||"")+'</div></div>';
+    }).join('');
+    g.querySelectorAll('.stamp').forEach(function(el){
+      el.addEventListener('click',function(){toggle(el.dataset.id);});
+      el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(el.dataset.id);}});
+    });
+    updateProg();
+  }
+  function toggle(id){if(done[id])delete done[id];else done[id]=1;save();
+    var el=document.querySelector('.stamp[data-id="'+id+'"]');if(el){el.classList.toggle('done',!!done[id]);el.setAttribute('aria-pressed',done[id]?'true':'false');}
+    updateProg();}
+  function updateProg(){
+    var all=(A.SHOWPIECES||[]);var total=all.length;var n=all.filter(function(sp){return done[sp.id];}).length;
+    document.getElementById('pn').textContent=n;document.getElementById('pt').textContent=total;
+    document.getElementById('pf').style.width=(total?Math.round(n/total*100):0)+'%';
+    document.getElementById('reward').style.display=(total&&n>=total)?'block':'none';
+  }
+  document.getElementById('filter').addEventListener('change',render);
+  document.getElementById('print').addEventListener('click',function(){window.print();});
+  document.getElementById('reset').addEventListener('click',function(){if(confirm("Clear all your stamps?")){done={};save();render();}});
+  render();
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>
