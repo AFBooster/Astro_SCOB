@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Northern vs Southern Hemisphere Skies — SCOB</title>
+<meta name="description" content="Why the night sky looks completely different from the northern and southern hemispheres — the two celestial poles, circumpolar stars, the seasonal flip, Polaris versus the Southern Cross, and why Orion and the Moon appear upside down down south. Computed live for the Science Centre Observatory, Singapore.">
+<meta name="theme-color" content="#0b1733">
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--cyan);}
+.hero{background:linear-gradient(160deg,#16294f,#0d1a3a);border:1px solid var(--gold);border-radius:16px;padding:20px 18px;margin:14px 0;text-align:center;}
+.hero .big{font-size:40px;font-weight:900;color:var(--gold);line-height:1.05;letter-spacing:-.5px;}
+.hero .sub{font-size:14px;color:var(--white);margin-top:8px;}
+.hero .fine{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.55;}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.fact{font-size:13.5px;color:var(--mute);line-height:1.65;}
+.fact b{color:var(--white);}
+.fact p{margin:0 0 10px;}
+.fact p:last-child{margin-bottom:0;}
+svg.band{width:100%;height:auto;display:block;margin:4px 0 2px;}
+table{width:100%;border-collapse:collapse;margin-top:4px;}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line);}
+th.l{text-align:left;}
+td{padding:7px 4px;border-bottom:1px solid var(--line);font-size:13px;text-align:right;}
+td.l{text-align:left;}
+td .nm{font-weight:700;}
+td .hint{color:var(--mute);font-size:11.5px;display:block;}
+.y{color:var(--green);font-weight:700;}
+.n{color:var(--red);}
+.marg{color:var(--orange);font-weight:700;}
+.up{color:var(--gold);font-weight:700;}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.pair{border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:11px;padding:11px 13px;margin-bottom:9px;background:var(--navy3);font-size:13.5px;}
+.pair b{color:var(--cyan);}
+.pair .p2{color:var(--mute);font-size:12.5px;margin-top:5px;line-height:1.55;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.col h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;margin:0 0 7px;}
+.col.north h3{color:var(--cyan);}
+.col.south h3{color:var(--gold);}
+.cons{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:7px;background:var(--navy3);font-size:12.5px;}
+.cons .cn{font-weight:700;color:var(--white);font-size:13px;}
+.cons .cd{color:var(--mute);font-size:11.5px;margin-top:2px;line-height:1.45;}
+.cons .cnow{font-size:11px;font-weight:700;margin-top:4px;}
+.warn{background:rgba(255,157,60,.12);border:1px solid var(--orange);border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13.5px;line-height:1.6;color:var(--mute);}
+.warn b{color:var(--orange);}
+.flip{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:6px 0;}
+.flip figure{margin:0;text-align:center;}
+.flip figcaption{font-size:11.5px;color:var(--mute);margin-top:5px;}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+@media(max-width:560px){.two{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌍 Two hemispheres, two different skies</h1>
+    <div class="loc">Why a stargazer in London and one in Sydney never see the same night sky — and why, from the equator at the Science Centre Observatory, we get to see both. Jurong, Singapore.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="singapore-sky.html">🌏 Singapore sees it all</a>
+      <a href="constellation-story.html">✨ Constellation stories</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="big">One sky, split in two</div>
+    <div class="sub">The Earth cuts the sky into a northern half and a southern half — and where you stand on the planet decides which half you get.</div>
+    <div class="fine" id="heroFine"></div>
+  </div>
+
+  <div class="card">
+    <h2>The one idea behind all of it</h2>
+    <div class="fact">
+      <p>Picture the Earth's axis extended out into space. It points at two fixed spots on the sky: the <b>north celestial pole</b> (almost exactly where Polaris sits) and the <b>south celestial pole</b>. The whole sky wheels around those two points every night as the Earth spins.</p>
+      <p>Your latitude tilts that wheel. Stand at the North Pole and the north celestial pole is straight overhead — the entire northern half of the sky circles above you and you <b>never</b> see anything south of the celestial equator. Stand at the South Pole and it is the mirror image. Stand somewhere in between and you see your own pole lifted up by an angle equal to your latitude, while the opposite pole sits the same angle <i>below</i> your horizon — hiding a cap of sky you can never reach.</p>
+      <p id="ruleLine"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>How high your pole sits — and how much sky you lose</h2>
+    <div class="fact" style="margin-bottom:8px">Each bar is the slice of declination a place can ever see over a year. A far-northern site loses the far south; a far-southern site loses the far north; the equator loses almost nothing.</div>
+    <svg class="band" id="bandsvg" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chart of the declination range visible from a northern site, the equator, and a southern site"></svg>
+    <div class="fact" id="bandNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>The two pole stars</h2>
+    <div class="fact" style="margin-bottom:9px">Every sky-watcher needs a way to find their pole. The two hemispheres could not do it more differently.</div>
+    <div id="poles"></div>
+  </div>
+
+  <div class="card">
+    <h2>Circumpolar — the stars that never set</h2>
+    <div class="fact">
+      <p>Close enough to your raised pole, a star never dips below the horizon: it just circles the pole all night, every night of the year. These are your <b>circumpolar</b> stars. The higher your latitude, the bigger that never-setting circle.</p>
+      <p id="circLine"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Which constellations belong to which half</h2>
+    <div class="fact" style="margin-bottom:10px">Some patterns are signatures of one hemisphere and are simply unreachable from the other. Here are the classics on each side — with, for each, whether it is above the horizon <b>right now</b> over Singapore.</div>
+    <div class="two">
+      <div class="col north">
+        <h3>▲ Northern sky</h3>
+        <div id="northCons"></div>
+      </div>
+      <div class="col south">
+        <h3>▼ Southern sky</h3>
+        <div id="southCons"></div>
+      </div>
+    </div>
+    <div class="fact" style="margin-top:10px">Between them runs a broad band of <b>shared</b> sky — the zodiac and the celestial equator — where Orion, Scorpius, Leo and the planets ride. Everyone on Earth gets those, which is why Orion is the one pattern almost every culture names.</div>
+  </div>
+
+  <div class="card">
+    <h2>The evidence, object by object</h2>
+    <div class="fact" style="margin-bottom:8px">The highest each landmark <i>ever</i> climbs, from a typical northern site (45°N), from SCOB (1.3°N), and from a typical southern site (45°S). &ldquo;Never&rdquo; means it stays below the horizon forever. Computed live from each latitude — nothing here is a stored number.</div>
+    <div class="scroll"><table id="tbl"></table></div>
+    <div class="fact" id="tblNote" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card">
+    <h2>Same stars, opposite time of year</h2>
+    <div class="fact">
+      <p>The seasons are flipped across the equator — December is midsummer in Sydney and midwinter in London — and the night sky flips with them. The constellations you can see at all from <i>both</i> hemispheres (the zodiac and the equatorial band) appear at <b>opposite times of the year</b>. Orion rules the northern winter, from about December to March; south of the equator that same Orion rules the <b>summer</b>. The Milky Way's bright core in Sagittarius and Scorpius is a winter object for the north and, again, a summer showpiece for the south.</p>
+      <p>The reason is simply that it is the same Earth going around the same Sun: whichever constellations sit opposite the Sun are the ones on view at midnight, and the calendar label on that month is reversed between the two halves of the planet.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Why Orion — and the Moon — look upside down down south</h2>
+    <div class="fact">
+      <p>A traveller from the north who reaches Australia often does a double-take at Orion. Nothing has changed about the stars; the observer has been turned upside down relative to them. Facing the celestial equator, a northerner looks <b>south</b> to see Orion and a southerner looks <b>north</b> — so each sees the pattern rotated 180° from the other. Betelgeuse and Rigel swap corners; Orion's &ldquo;sword&rdquo; hangs up instead of down.</p>
+      <p>The same happens to the <b>Moon</b>. The face is identical, but a southern observer sees it rotated half a turn, so the &ldquo;Man in the Moon&rdquo; and the lit crescent tip the other way. A waxing crescent that curves like a smile from the north looks like a frown from the south. Even the <b>Sun</b> tracks across the northern part of the sky as seen from down south, rather than the southern part as we are used to in the north.</p>
+      <p id="equatorLine"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>And Singapore, right on the line</h2>
+    <div class="fact">
+      <p>At 1.3° north, the Science Centre Observatory sits almost exactly on the equator, where both celestial poles lie on the horizon at once. That is the rare place where the split stops mattering: over a year, <b>the far north and the far south of the sky both come past us</b>. On a single clear night we can show a visitor the Big Dipper low in the north and the Southern Cross low in the south — two emblems that no single-hemisphere observatory on Earth can put in the same sky.</p>
+      <p>It comes at a price: both poles being on the horizon means the far-northern and far-southern showpieces are always <i>low</i>, seen through the thickest, haziest air. Wide access, never easy access. The companion page on <a href="singapore-sky.html">why Singapore sees almost the whole sky</a> works through exactly how much — and where the one small blind spot is.</p>
+    </div>
+  </div>
+
+  <div class="warn" id="honest"></div>
+
+  <div class="foot">
+    Every altitude on this page is computed in your browser from each site's latitude and each object's J2000 declination, using the standard result that an object of declination δ culminates at altitude <b>90° − |φ − δ|</b> and never rises when that is negative; a star is circumpolar from latitude φ when its declination exceeds <b>90° − |φ|</b> on the same side as the pole. Refraction (about half a degree at the horizon) is ignored, so objects sitting within a degree of the boundary are marginal in practice. Current positions come from the site's own astronomy engine.<br>
+    Representative latitudes used for the comparison: northern site 45.0°N, SCOB 1.3342°N, southern site 45.0°S. Object coordinates: standard J2000 positions.<br>
+    Learn more (opens external sites): <a href="https://science.nasa.gov/skywatching/" target="_blank" rel="noopener">NASA Skywatching</a> · <a href="https://in-the-sky.org/" target="_blank" rel="noopener">In-The-Sky.org planner</a>.<br>
+    Companion pages: <a href="singapore-sky.html">why Singapore sees almost the whole sky</a> · <a href="constellation-story.html">constellation stories &amp; 3D depth</a> · <a href="light-pollution.html">why the Milky Way is hard to see here</a>.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+"use strict";
+var A=window.Astro, LAT=A.SCOB.LAT;
+var NORTH=45.0, SOUTH=-45.0;   // representative mid-latitude sites for the two hemispheres
+
+function maxAlt(lat,dec){return 90-Math.abs(lat-dec);}
+function f1(x){return (x>=0?'':'−')+Math.abs(x).toFixed(1);}
+function capPct(lat){return (1-Math.cos(Math.abs(lat)*Math.PI/180))/2*100;}
+/* declination beyond which a star is circumpolar (never sets) from latitude lat */
+function circDec(lat){return lat>=0?(90-lat):-(90+lat);}
+
+/* ---------- hero ---------- */
+document.getElementById('heroFine').innerHTML=
+  'From a mid-northern city you can reach declinations down to about <b>'+f1(NORTH-90)+'°</b> and no further; from a mid-southern city, up to about <b>'+f1(90+SOUTH)+'°</b>. '+
+  'Those two windows barely overlap — which is why the two halves of the world genuinely see two different skies.';
+
+document.getElementById('ruleLine').innerHTML=
+  'The rule in one line: from latitude φ, every star south of declination <b>φ − 90°</b> (in the north) or north of <b>φ + 90°</b> (in the south) is lost to you forever. '+
+  'For SCOB that southern cutoff is just <b>'+f1(LAT-90)+'°</b> — so low that essentially the whole sky clears our horizon at some point in the year.';
+
+document.getElementById('circLine').innerHTML=
+  'From <b>45°N</b>, everything north of declination <b>+'+circDec(45).toFixed(0)+'°</b> is circumpolar — the Big Dipper, Cassiopeia and Cepheus wheel round Polaris all night. '+
+  'From <b>45°S</b>, everything south of <b>'+f1(circDec(-45))+'°</b> circles the south pole the same way — the Southern Cross and the Pointers never set. '+
+  'From SCOB at <b>'+LAT.toFixed(1)+'°N</b>, the circle is a pinprick: essentially <b>nothing</b> is circumpolar — everything rises and sets, and over a year almost everything passes through.';
+
+document.getElementById('equatorLine').innerHTML=
+  'From Singapore we get the in-between view: facing due south we see the southern sky the &ldquo;southern&rdquo; way up, facing due north we see the northern sky the &ldquo;northern&rdquo; way up — and the Sun and Moon pass nearly overhead, leaning north for half the year and south for the other half.';
+
+/* ---------- declination band chart ---------- */
+(function(){
+  var SITES=[['Northern site · 45°N',NORTH,'45°N'],['SCOB · 1.3°N',LAT,'SCOB'],['Southern site · 45°S',SOUTH,'45°S']];
+  var W=720,H=220,L=118,R=18,top=30,rowH=(H-top-40)/SITES.length;
+  function x(dec){return L+(dec+90)/180*(W-L-R);}
+  var s='';
+  for(var d=-90;d<=90;d+=30){
+    s+='<line x1="'+x(d).toFixed(1)+'" y1="'+(top-8)+'" x2="'+x(d).toFixed(1)+'" y2="'+(H-34)+'" stroke="#22325a" stroke-width="'+(d===0?1.4:0.7)+'"/>';
+    s+='<text x="'+x(d).toFixed(1)+'" y="'+(H-20)+'" fill="#9fb0d6" font-size="10.5" text-anchor="middle">'+(d>0?'+':'')+d+'°</text>';
+  }
+  s+='<text x="'+x(0).toFixed(1)+'" y="'+(top-14)+'" fill="#9fb0d6" font-size="10.5" text-anchor="middle">celestial equator</text>';
+  s+='<text x="'+(W/2).toFixed(0)+'" y="'+(H-4)+'" fill="#7d8db8" font-size="10.5" text-anchor="middle">declination — south celestial pole at left, north at right</text>';
+  SITES.forEach(function(st,i){
+    var lat=st[1], lo=lat>0?lat-90:-90, hi=lat>0?90:lat+90;
+    var y=top+i*rowH+rowH/2, home=(i===1);
+    s+='<rect x="'+x(-90).toFixed(1)+'" y="'+(y-9)+'" width="'+(x(90)-x(-90)).toFixed(1)+'" height="18" rx="4" fill="#ff6b6b" fill-opacity="0.13"/>';
+    s+='<rect x="'+x(lo).toFixed(1)+'" y="'+(y-9)+'" width="'+(x(hi)-x(lo)).toFixed(1)+'" height="18" rx="4" fill="'+(home?'#f5c542':'#5bd6e0')+'" fill-opacity="'+(home?0.85:0.5)+'"/>';
+    s+='<text x="'+(L-10)+'" y="'+(y+4)+'" fill="'+(home?'#f5c542':'#c6d2ee')+'" font-size="11.5" font-weight="'+(home?'bold':'normal')+'" text-anchor="end">'+st[2]+'</text>';
+    var pct=(100-capPct(lat)).toFixed(1)+'%';
+    s+='<text x="'+(x(hi)-6).toFixed(1)+'" y="'+(y+4)+'" fill="#08101f" font-size="10.5" font-weight="bold" text-anchor="end">'+pct+'</text>';
+  });
+  document.getElementById('bandsvg').innerHTML=s;
+  document.getElementById('bandNote').innerHTML='Pale red is sky that site can never see. The 45°N and 45°S bars barely share ground — the north loses the deep south, the south loses the far north. Ours runs almost the full width.';
+})();
+
+/* ---------- the two pole stars ---------- */
+(function(){
+  var polaris={ra:37.9529,dec:89.2641}, sigOct={ra:317.195,dec:-88.956};
+  var pairs=[
+    ['★ North: Polaris, the North Star',
+     'Sits within a degree of the north celestial pole, so it barely moves all night — every other northern star wheels around it. Its height above the northern horizon equals your latitude, which is how sailors read their latitude straight off the sky.',
+     'Rides '+maxAlt(45,polaris.dec).toFixed(0)+'° up from 45°N (all night, unmoving), just '+maxAlt(LAT,polaris.dec).toFixed(1)+'° up from SCOB, and never rises at all from 45°S ('+f1(maxAlt(-45,polaris.dec))+'°).'],
+    ['✚ South: no bright pole star at all',
+     'The south celestial pole has no useful marker — the nearest naked-eye star, Sigma Octantis, is a dim magnitude 5.4. So southern navigators learn to find the pole by projecting the long axis of the Southern Cross, backed up by the two bright Pointers, α and β Centauri.',
+     'Sigma Octantis climbs to '+maxAlt(-45,sigOct.dec).toFixed(0)+'° from 45°S but is barely visible; it only grazes '+f1(maxAlt(LAT,sigOct.dec))+'° from SCOB and never clears the horizon from 45°N ('+f1(maxAlt(45,sigOct.dec))+'°).']
+  ];
+  document.getElementById('poles').innerHTML=pairs.map(function(p){
+    return '<div class="pair"><b>'+p[0]+'</b><div class="p2">'+p[1]+'</div><div class="p2">'+p[2]+'</div></div>';}).join('');
+})();
+
+/* ---------- signature constellations (name, RA deg, dec deg J2000 approx centre, note) ---------- */
+var NCONS=[
+  ['Ursa Major — the Big Dipper',165.9,55.4,'The great northern signpost; its Pointers lead to Polaris.'],
+  ['Ursa Minor — Polaris',37.95,77.0,'The Little Bear, holding the North Star at the tip of its tail.'],
+  ['Cassiopeia',15.0,60.7,'The unmistakable W, opposite the Dipper across the pole.'],
+  ['Cygnus — the Northern Cross',307.0,42.0,'The swan flying down the summer Milky Way.'],
+  ['Perseus',52.0,45.0,'Home of Algol and the Double Cluster.'],
+  ['Andromeda',12.0,40.0,'Carries the Andromeda Galaxy, the furthest naked-eye object.']
+];
+var SCONS=[
+  ['Crux — the Southern Cross',187.0,-59.7,'The compact cross that points the way to the south pole; on five national flags.'],
+  ['Centaurus',210.0,-50.0,'Holds the Pointers and Omega Centauri, the finest globular cluster.'],
+  ['Carina — the keel',160.0,-60.0,'Contains Canopus and the vast Eta Carinae Nebula.'],
+  ['Triangulum Australe',229.0,-65.0,'The bright southern triangle, near the pole.'],
+  ['Musca — the fly',190.0,-70.0,'A small pattern almost no northerner has ever seen.'],
+  ['Phoenix',20.0,-48.0,'One of the southern &ldquo;birds&rdquo; charted by 16th-century voyagers.']
+];
+function consHTML(list){
+  var now=new Date();
+  return list.map(function(c){
+    var aa=A.altazAt(c[1],c[2],now);
+    var nowTxt, cls;
+    if(aa.alt>8){nowTxt='● Up now — '+Math.round(aa.alt)+'° in the '+A.compass(aa.az);cls='up';}
+    else if(aa.alt>0){nowTxt='○ Just above the horizon ('+Math.round(aa.alt)+'°)';cls='marg';}
+    else{nowTxt='· Below the horizon right now';cls='';}
+    return '<div class="cons"><div class="cn">'+c[0]+'</div><div class="cd">'+c[3]+'</div><div class="cnow '+cls+'">'+nowTxt+'</div></div>';
+  }).join('');
+}
+document.getElementById('northCons').innerHTML=consHTML(NCONS);
+document.getElementById('southCons').innerHTML=consHTML(SCONS);
+
+/* ---------- evidence table ---------- */
+(function(){
+  var SITES=[['45°N',NORTH],['SCOB',LAT],['45°S',SOUTH]];
+  /* name, RA, dec (J2000), one-line why it matters */
+  var OBJ=[
+   ['Polaris',37.9529,89.2641,'the North Star'],
+   ['Big Dipper (Dubhe)',165.932,61.751,'the northern signpost'],
+   ['Andromeda Galaxy (M31)',10.685,41.269,'furthest naked-eye object'],
+   ['Vega',279.234,38.784,'the Summer Triangle'],
+   ['Orion (Betelgeuse)',88.793,7.407,'the shared winter/summer giant'],
+   ['Sirius',101.287,-16.716,'the brightest star of all'],
+   ['Antares · Scorpius',247.352,-26.432,'heart of the Scorpion'],
+   ['Omega Centauri',201.697,-47.479,'finest globular cluster'],
+   ['Canopus',95.988,-52.696,'second-brightest star'],
+   ['Southern Cross (Acrux)',186.650,-63.099,'the southern emblem'],
+   ['Large Magellanic Cloud',80.894,-69.756,'a naked-eye satellite galaxy'],
+   ['South pole star (σ Oct)',317.195,-88.956,'marks the south pole']
+  ];
+  var now=new Date();
+  var h='<thead><tr><th class="l">Object</th><th>Now (SCOB)</th>'+SITES.map(function(s){return '<th>'+s[0]+'</th>';}).join('')+'</tr></thead><tbody>';
+  OBJ.forEach(function(o){
+    var aa=A.altazAt(o[1],o[2],now);
+    var nowCell=aa.alt>8?'<span class="up">'+Math.round(aa.alt)+'° '+A.compass(aa.az)+'</span>'
+              :(aa.alt>0?'<span class="marg">'+Math.round(aa.alt)+'° low</span>':'<span style="color:var(--mute)">down</span>');
+    h+='<tr><td class="l"><span class="nm">'+o[0]+'</span><span class="hint">'+o[3]+'</span></td><td>'+nowCell+'</td>';
+    SITES.forEach(function(s){
+      var m=maxAlt(s[1],o[2]);
+      var cls=m<0?'n':(m<10?'marg':'y');
+      h+='<td class="'+cls+'">'+(m<0?'never':f1(m)+'°')+'</td>';
+    });
+    h+='</tr>';
+  });
+  document.getElementById('tbl').innerHTML=h+'</tbody>';
+  var nN=OBJ.filter(function(o){return maxAlt(NORTH,o[2])<0;}).length;
+  var nS=OBJ.filter(function(o){return maxAlt(SOUTH,o[2])<0;}).length;
+  var nSC=OBJ.filter(function(o){return maxAlt(LAT,o[2])<0;}).length;
+  document.getElementById('tblNote').innerHTML=
+    'Green = comfortably observable · orange = above the horizon but under 10° (haze and rooftops) · red = never rises. '+
+    'Of these twelve landmarks, the 45°N site misses <b>'+nN+'</b> and the 45°S site misses <b>'+nS+'</b> — a nearly opposite set. '+
+    'SCOB reaches <b>'+(OBJ.length-nSC)+' of '+OBJ.length+'</b> — everything except the south pole star itself, which misses by about a third of a degree. '+
+    'The &ldquo;Now&rdquo; column is live for this moment over Singapore — reload later and it will have changed.';
+})();
+
+/* ---------- honest part ---------- */
+(function(){
+  document.getElementById('honest').innerHTML=
+    '<b>The honest footnote.</b> Splitting the sky into a &ldquo;northern&rdquo; and a &ldquo;southern&rdquo; half is a statement about geometry, not about beauty.'+
+    '<br><br>&bull; <b>Neither half is richer than the other</b> — but if pressed, many observers give the edge to the south: the Milky Way’s core, the two Magellanic Clouds, Omega Centauri, the Southern Cross and Eta Carinae are all southern, and there is no northern list quite that spectacular.'+
+    '<br><br>&bull; <b>Circumpolar does not mean easy.</b> A star that never sets from your latitude may spend all night skimming low through thick air — impressive that it is up, hard to actually observe.'+
+    '<br><br>&bull; <b>The equator’s prize is access, not altitude.</b> Singapore reaching both hemispheres is real and rare, but the far-northern and far-southern gems are always low here, and Jurong’s city glow is the same handicap it is anywhere near a big city.';
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>
