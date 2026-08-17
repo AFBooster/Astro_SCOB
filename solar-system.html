@@ -80,15 +80,15 @@ input[type=range]{width:100%;accent-color:var(--gold);}
     <p class="sub">Looking down on the solar system from the north. Every planet sits at its real position for the chosen date, on its true (slightly oval) orbit. Drag the slider to run time forwards or back.</p>
     <div class="controls">
       <div class="seg" id="orrScale">
-        <button data-m="inner" class="on">Inner (Sun → Mars)</button>
-        <button data-m="all">All 8 planets</button>
+        <button type="button" data-m="inner" class="on">Inner (Sun → Mars)</button>
+        <button type="button" data-m="all">All 8 planets</button>
       </div>
       <label class="ck"><input type="checkbox" id="orrSight"> show Earth → planet sight-lines</label>
     </div>
     <svg class="svgbox" id="orrOut" viewBox="0 0 360 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Top-down orrery of the planets"></svg>
     <div class="controls" style="gap:10px">
-      <button class="pill" id="orrPlay">▶ Play</button>
-      <button class="pill" id="orrToday">⦿ Today</button>
+      <button type="button" class="pill" id="orrPlay">▶ Play</button>
+      <button type="button" class="pill" id="orrToday">⦿ Today</button>
       <div style="flex:1;min-width:180px"><input type="range" id="orrSlider" min="-450" max="450" step="1" value="0"></div>
     </div>
     <div class="readout" id="orrDate"></div>
@@ -112,13 +112,13 @@ input[type=range]{width:100%;accent-color:var(--gold);}
     <h2>Why planets seem to go backwards</h2>
     <p class="sub">Usually a planet drifts slowly eastward against the stars, night after night. But around the time Earth overtakes it, it appears to stop, loop <i>westward</i> for weeks, then resume. Nothing actually reverses — it is a trick of our moving vantage point. Press play and watch the two views together.</p>
     <div class="seg" id="retroBtns">
-      <button data-p="Mars" class="on">♂ Mars</button>
-      <button data-p="Jupiter">♃ Jupiter</button>
-      <button data-p="Saturn">♄ Saturn</button>
+      <button type="button" data-p="Mars" class="on">♂ Mars</button>
+      <button type="button" data-p="Jupiter">♃ Jupiter</button>
+      <button type="button" data-p="Saturn">♄ Saturn</button>
     </div>
     <div class="controls" style="gap:10px;margin-top:8px">
-      <button class="pill" id="retroPlay">▶ Play</button>
-      <button class="pill" id="retroReplay">⟲ Restart</button>
+      <button type="button" class="pill" id="retroPlay">▶ Play</button>
+      <button type="button" class="pill" id="retroReplay">⟲ Restart</button>
       <span class="readout" id="retroDate" style="margin:0"></span>
     </div>
     <div class="note" style="margin:8px 0 2px"><b>Top-down — the cause.</b> Earth (inner, faster) sweeps past the planet; watch the orange sight-line's tip swing back across the distant stars as we overtake it.</div>
