@@ -189,9 +189,10 @@ header{transition:padding .24s ease;}
 /* the two collapsible groups animate their height + fade, so the header slides shut smoothly
    (rather than snapping via display:none, which jumps the page content). The exact height is
    driven from JS (measured per collapse) so there's no dead time and open content never clips. */
-.hdr-top,.hdr-bot{overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .22s ease;}
-.hdr-top{max-height:140px;}
-.hdr-bot{max-height:360px;}
+.hdr-top,.hdr-bot{overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .22s ease;max-height:var(--openH,640px);}
+.hdr-top{--openH:180px;}
+.hdr-bot{--openH:640px;}
+#desktopRoot header.hdr-min .hdr-top,#desktopRoot header.hdr-min .hdr-bot{max-height:0;opacity:0;}
 #desktopRoot header.hdr-min{padding-top:10px;padding-bottom:10px;}
 #desktopRoot header.hdr-min .ctrlbar{margin-top:0;padding:8px 14px;}
 #desktopRoot header.hdr-min .ctrlbar .btnmini{display:none;}
@@ -924,18 +925,20 @@ if(!IS_MOBILE){(function(){
   const hdr=document.querySelector('#desktopRoot header'); if(!hdr) return;
   const groups=[].slice.call(hdr.querySelectorAll('.hdr-top,.hdr-bot'));
   let min=false;
-  // Open: animate to the group's real height, then release the cap (max-height:none) so later
-  // content growth — e.g. the glance/weather filling in — is never clipped.
-  function openG(g){g.style.maxHeight=g.scrollHeight+'px';g.style.opacity='1';
-    const done=e=>{if(e.propertyName!=='max-height')return;g.style.maxHeight='none';g.removeEventListener('transitionend',done);};
-    g.addEventListener('transitionend',done);}
-  // Close: pin the current (exact) height, force a reflow, then collapse to 0 — no dead time.
-  function closeG(g){g.style.maxHeight=g.scrollHeight+'px';g.getBoundingClientRect();
-    requestAnimationFrame(()=>{g.style.maxHeight='0px';g.style.opacity='0';});}
-  function set(m){if(m===min)return;min=m;hdr.classList.toggle('hdr-min',m);groups.forEach(m?closeG:openG);}
-  function onScroll(){const y=window.pageYOffset||document.documentElement.scrollTop||0;
-    if(!min&&y>72)set(true);else if(min&&y<20)set(false);}
+  // The collapsed vs open state is driven ENTIRELY by the .hdr-min class in CSS, so the class and
+  // the rendered height can never desync (the old approach juggled inline max-height + transitionend
+  // and could settle with the class minimised but the groups still expanded — a tall dead band).
+  // We only measure each group's real content height into --openH so the open cap is exact: the
+  // slide animates cleanly with no dead time, and async header content (glance/weather) never clips.
+  function cap(){ groups.forEach(function(g){ var h=g.scrollHeight; if(h) g.style.setProperty('--openH',(h+6)+'px'); }); }
+  function set(m){ if(m===min)return; if(!m)cap(); min=m; hdr.classList.toggle('hdr-min',m); }
+  function onScroll(){ var y=window.pageYOffset||document.documentElement.scrollTop||0;
+    if(!min&&y>72)set(true); else if(min&&y<20)set(false); }
+  cap();
   window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){ if(!min)cap(); },{passive:true});
+  // Header content (day-note, glance, dark-bar) fills in after fetches — keep the open cap fresh.
+  try{ new MutationObserver(function(){ if(!min)cap(); }).observe(hdr,{childList:true,subtree:true,characterData:true}); }catch(e){}
   onScroll();
 })();}
 
