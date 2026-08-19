@@ -171,7 +171,7 @@ function render(){
     var items=TILES.filter(function(t){return t[0]===g[0];});
     return '<div class="grp"><h2>'+g[1]+'</h2><div class="tiles">'+items.map(function(t){return '<a class="tile" href="'+t[2]+'"><span class="em">'+t[1]+'</span><span class="tl">'+L(t[3])+'</span><span class="ds">'+L(t[4])+'</span></a>';}).join('')+'</div></div>';
   }).join('');
-  document.getElementById('foot').innerHTML=T('foot')+'<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.7"></span>';
+  document.getElementById('foot').innerHTML=T('foot')+'<br><a href="about.html">About &amp; credits</a> · <a href="site-map.html">All pages</a> · <span class="scob-version" style="opacity:.7"></span>';
   document.getElementById('caveat').textContent=T('caveat');
   if(window.SCOB_VERSION){var sv=document.querySelector('.scob-version');if(sv&&!sv.innerHTML)sv.textContent='SCOB Night-Sky '+window.SCOB_VERSION;}
   if(typeof renderInstall==='function')renderInstall();
@@ -202,7 +202,7 @@ function renderInstall(){
   var b=document.getElementById('a2hs');if(b)b.onclick=function(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;renderInstall();});};
   makeGuideQR();
 }
-function loadQRlib(cb){if(typeof QRCode!=='undefined')return cb();var inj=function(t){try{var s=document.createElement('script');s.textContent=t;document.head.appendChild(s);}catch(e){}};var c=null;try{c=localStorage.getItem('scobQRlib');}catch(e){}if(c){inj(c);if(typeof QRCode!=='undefined')return cb();}fetch('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js').then(function(r){return r.text();}).then(function(t){try{localStorage.setItem('scobQRlib',t);}catch(e){}inj(t);cb();}).catch(function(){cb();});}
+function loadQRlib(cb){if(typeof QRCode!=='undefined')return cb();var inj=function(t){try{var s=document.createElement('script');s.textContent=t;document.head.appendChild(s);}catch(e){}};var c=null;try{c=localStorage.getItem('scobQRlib');}catch(e){}if(c){inj(c);if(typeof QRCode!=='undefined')return cb();}fetch('qrcode.min.js').then(function(r){return r.text();}).then(function(t){try{localStorage.setItem('scobQRlib',t);}catch(e){}inj(t);cb();}).catch(function(){cb();});}
 starsBg();render();renderInstall();
 loadQRlib(function(){makeGuideQR();});
 setInterval(function(){render();renderInstall();},120000);

@@ -42,6 +42,16 @@ jobs:
         run: |
           if [ -f test-logic.js ]; then node test-logic.js; else echo "test-logic.js not present — skipping."; fi
 
+      - name: Real-browser smoke test (headless Chromium)
+        run: |
+          if [ -f test-browser.js ]; then
+            npm i -D playwright@1.55.0
+            npx playwright install --with-deps chromium
+            node test-browser.js
+          else
+            echo "test-browser.js not present — skipping the real-browser smoke test."
+          fi
+
       - name: Pre-flight release check (optional gate)
         run: |
           if [ -f check-release.sh ]; then
@@ -63,7 +73,7 @@ jobs:
           cp -v *.webmanifest   _site/ 2>/dev/null || true
           cp -v icon-*.png      _site/ 2>/dev/null || true
           # Dev-only scripts must never reach the live site.
-          rm -f _site/test-astro.js _site/test-logic.js _site/test-pages.js _site/migrate-theme.js
+          rm -f _site/test-astro.js _site/test-logic.js _site/test-pages.js _site/test-browser.js _site/migrate-theme.js
           # Make the bare site URL open the dashboard directly.
           if [ -f scob-dashboard-v3.html ]; then cp -v scob-dashboard-v3.html _site/index.html; fi
           # Custom domain — written on every build so the GitHub Actions deploy never resets it.

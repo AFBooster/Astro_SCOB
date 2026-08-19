@@ -605,6 +605,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
     <div id="haze" style="display:none"></div>
     <div id="nowcast" style="display:none"></div>
     <div id="radar" style="display:none"></div>
+    <div id="allsky" style="display:none"></div>
       <div class="btns">
         <a class="btn" href="https://www.weather.gov.sg/weather-forecast-2hrnowcast-2/" target="_blank" rel="noopener">MSS 2-hr Nowcast ↗</a>
         <a class="btn alt" href="https://www.facebook.com/ScienceCentreObservatory/" target="_blank" rel="noopener">SCOB Facebook ↗</a>
@@ -733,6 +734,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
     <div id="haze" style="display:none"></div>
     <div id="nowcast" style="display:none"></div>
     <div id="radar" style="display:none"></div>
+    <div id="allsky" style="display:none"></div>
     <div class="btns">
       <a class="btn" href="https://www.weather.gov.sg/weather-forecast-2hrnowcast-2/" target="_blank" rel="noopener">MSS 2-hr Nowcast ↗</a>
       <a class="btn alt" href="https://www.facebook.com/ScienceCentreObservatory/" target="_blank" rel="noopener">SCOB Facebook ↗</a>
@@ -786,6 +788,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
   <div class="ndsec" data-sec="session">
     <button type="button" class="ndgroup" aria-expanded="true">Tonight's session</button>
     <div class="ndlinks">
+      <a href="first-night.html">🌟 Your first night <small>— new-volunteer quickstart</small></a>
       <a href="tonights-tour.html">🎟️ Tonight's Tour <small>— docent script, read-aloud</small></a>
       <a href="sky-finder.html">📱 Point your phone <small>— find or identify</small></a>
       <a href="moon-tonight.html">🌕 Tonight on the Moon</a>
@@ -866,6 +869,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
       <a href="eyepiece-fov.html">🔎 Eyepiece &amp; field of view</a>
       <a href="filters.html">🎚️ Imaging &amp; visual filters</a>
       <a href="solar.html">☀️ Daytime / solar mode</a>
+      <a href="site-map.html">🗺️ All pages &amp; search</a>
       <a href="about.html">ℹ️ About &amp; credits</a>
     </div>
   </div>
@@ -908,6 +912,10 @@ const {compass, jd, nextFridayYMD, pad, rev, sgtNow} = window.SkyCore;   /* shar
 "use strict";
 const CAT=window.CAT, CONST=window.CONST;   // catalogue + constellation data moved to sky-data.js
 const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI; // SCOB, Jurong
+/* All-sky camera (optional): paste the live still-image URL of the observatory's
+   all-sky / cloud camera here and the weather card will show it, refreshing each
+   minute. Leave '' and the tile stays hidden — nothing changes. */
+const ALLSKY_CAM='';
 const IS_MOBILE=!!document.getElementById('mobileRoot');
 // Desktop: minimise the tall sticky header once the user scrolls, so the sky map and cards get the
 // screen back. Keeps the date, time and the time-scrubber; hides title, day-note, glance & dark-bar.
@@ -1253,6 +1261,21 @@ function loadRadar(){
     img.src='https://www.weather.gov.sg/files/rainarea/50km/v2/dpsri_70km_'+stamp+'0000dBR.dpsri.png';
   };
   attempt();
+}
+
+let ALLSKYAT=0;
+function loadAllSky(){
+  if(!ALLSKY_CAM)return;                 // no camera configured → tile stays hidden, no change to the site
+  const el=document.getElementById('allsky');if(!el)return;
+  const sep=ALLSKY_CAM.indexOf('?')>=0?'&':'?';
+  const url=ALLSKY_CAM+sep+'_t='+Date.now();
+  const img=new Image();
+  img.onload=function(){el.style.display='block';
+    el.innerHTML='<div style="border-radius:10px;overflow:hidden;margin-top:11px"><img src="'+url+'" alt="Observatory all-sky camera" style="width:100%;display:block"></div>'
+      +'<div class="wxsrc">📷 Observatory all-sky camera · live now — the true on-the-night view of cloud &amp; haze overhead.</div>';
+    ALLSKYAT=Date.now();};
+  img.onerror=function(){el.style.display='block';el.innerHTML='<div class="wxsrc">All-sky camera image unavailable right now.</div>';ALLSKYAT=Date.now();};
+  img.src=url;
 }
 
 function moonRiseSet(y,m,d){
@@ -1777,7 +1800,7 @@ async function loadISS(){
   if(ISSFOR===key)return;ISSFOR=key;ISSCHIP='';SATTRACKS=[];
   box.innerHTML='<div class="tsub">Computing evening passes…</div>';
   try{
-    if(typeof satellite==='undefined')await loadScript('https://cdnjs.cloudflare.com/ajax/libs/satellite.js/5.0.0/satellite.min.js');
+    if(typeof satellite==='undefined')await loadScript('satellite.min.js');
     const obs={latitude:LAT*RAD,longitude:LON*RAD,height:0.02};
     const base=Date.UTC(GL.y,GL.m,GL.d,0,0,0)-8*3600000;
     const all=[];let maxAge=0,got=0;
@@ -1891,7 +1914,7 @@ function buildBriefing(){
     document.getElementById('briefClose').addEventListener('click',()=>{bW.style.display='none';document.body.classList.remove('briefing-open');});
     document.getElementById('briefPrint').addEventListener('click',()=>window.print());
   }
-  const wb=document.getElementById('wxBtn');if(wb)wb.addEventListener('click',()=>{PSIAT=0;loadPSI();RADAT=0;loadRadar();NCAT=0;loadNowcast();});
+  const wb=document.getElementById('wxBtn');if(wb)wb.addEventListener('click',()=>{PSIAT=0;loadPSI();RADAT=0;loadRadar();NCAT=0;loadNowcast();loadAllSky();});
 })();
 
 // ==== v3.36: "tonight in one line" shareable blurb (WhatsApp/Facebook) ====
@@ -2182,7 +2205,7 @@ function renderDarkBar(){
   el.innerHTML=s+'<div class="dbcap">🌇 sunset '+tl(sset)+' · 🌌 astro-dark '+tl(darkS)+'–'+tl(darkE)+' · '+moonTxt+' · 🌅 sunrise '+tl(srise)+'<br><span style="opacity:.7">Gold ticks = sun up/down · cyan = full dark · amber band = Moon above horizon (washes faint objects).</span></div>';
 }
 function renderExtras(){renderEvents();renderConj();renderPlanetDetail();renderDoubles();renderPlan();loadISS();renderDataHealth();}
-loadPSI();loadRadar();loadNowcast();
+loadPSI();loadRadar();loadNowcast();loadAllSky();if(ALLSKY_CAM)setInterval(loadAllSky,60000);
 
 const f0=nextFridayYMD();
 recompute(f0.y,f0.m,f0.d,20,30);

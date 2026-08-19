@@ -94,7 +94,7 @@ function loadQRlib(cb){
   var inject=function(txt){try{var sc=document.createElement('script');sc.textContent=txt;document.head.appendChild(sc);}catch(e){}};
   var cached=null;try{cached=localStorage.getItem('scobQRlib');}catch(e){}
   if(cached){inject(cached);if(typeof QRCode!=='undefined')return cb();}
-  fetch('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
+  fetch('qrcode.min.js')
     .then(function(r){return r.text();})
     .then(function(txt){try{localStorage.setItem('scobQRlib',txt);}catch(e){}inject(txt);cb();})
     .catch(function(){cb();});

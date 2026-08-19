@@ -91,13 +91,15 @@ textarea{min-height:66px;resize:vertical;}
     <div class="tools">
       <button type="button" class="tool" id="csvBtn">⬇ Export all as CSV</button>
       <button type="button" class="tool" id="topBtn">★ Most-shown objects</button>
+      <button type="button" class="tool" id="fcBtn">🔮 Forecast accuracy</button>
     </div>
     <div id="topBox" style="display:none"></div>
+    <div id="fcBox" style="display:none"></div>
     <div id="list"></div>
   </div>
 
   <div class="foot">
-    <p>Everything here is stored only in this browser (<code>localStorage</code>) — nothing is uploaded anywhere. Use <b>Export CSV</b> to back it up or open it in a spreadsheet for planning and Science Centre reporting. The <b>Pull from Now Showing board</b> button reads whatever the <a href="now-showing.html">Now Showing</a> display currently has, so you can log a night with one tap. Clearing your browser data will erase the log, so export periodically.</p>
+    <p>Everything here is stored only in this browser (<code>localStorage</code>) — nothing is uploaded anywhere. Use <b>Export CSV</b> to back it up or open it in a spreadsheet for planning and Science Centre reporting. The only network call is an optional weather-forecast lookup (fixed observatory coordinates, no personal data) so the go/no-go call can be graded against the night that actually happened &mdash; the <b>🔮 Forecast accuracy</b> button. The <b>Pull from Now Showing board</b> button reads whatever the <a href="now-showing.html">Now Showing</a> display currently has, so you can log a night with one tap. Clearing your browser data will erase the log, so export periodically.</p>
     <p style="margin-top:8px"><a href="about.html">ℹ️ About &amp; credits</a></p>
     <p class="scob-version" style="margin-top:8px;opacity:.85"></p>
   </div>
@@ -116,6 +118,30 @@ textarea{min-height:66px;resize:vertical;}
   function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
   function fmtDate(iso){if(!iso)return"";var p=iso.split("-").map(Number);var d=new Date(Date.UTC(p[0],p[1]-1,p[2],12));return WD[d.getUTCDay()]+", "+p[2]+" "+MON[p[1]-1]+" "+p[0];}
   function parseObjects(t){return String(t||"").split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean);}
+
+  // ---- Forecast-vs-reality calibration ----
+  // On save we fetch the forecast the app would have given for that night and store it (e.fc);
+  // later we grade it against the conditions actually logged (e.cond). Over a season this tells
+  // you how well the go/no-go call matches Singapore's real Friday skies.
+  function verdictOf(cc,pp){ if(cc==null)return null; if(cc<=30&&(pp==null||pp<30))return"GO"; if(cc<=65&&(pp==null||pp<55))return"CAUTION"; return"NO-GO"; }
+  function outcomeOf(cond){ // bucket the logged condition
+    if(/^Clear|^Mostly clear/i.test(cond))return"clear";
+    if(/^Partly|^Hazy/i.test(cond))return"partial";
+    if(/^Cloudy|^Rained/i.test(cond))return"clouded";
+    return null; }
+  function gradeFc(e){ // returns {v, ok:true/false/null}
+    if(!e.fc||!e.fc.v)return null; var o=outcomeOf(e.cond); if(!o)return{v:e.fc.v,ok:null};
+    var ok=(e.fc.v==="GO"&&o==="clear")||(e.fc.v==="NO-GO"&&o==="clouded")||(e.fc.v==="CAUTION"&&o==="partial");
+    return {v:e.fc.v,ok:ok,outcome:o}; }
+  function attachForecast(e){ // fetch the forecast for e.date at 8:30pm SGT, store on the entry
+    if(!e.date||e.fc)return;
+    var url="https://api.open-meteo.com/v1/forecast?latitude=1.3342&longitude=103.7357&hourly=cloud_cover,precipitation_probability&timezone=Asia%2FSingapore&start_date="+e.date+"&end_date="+e.date+"&_t="+Date.now();
+    fetch(url,{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){
+      var h=j.hourly; if(!h||!h.time)return; var i=h.time.indexOf(e.date+"T20:00"); if(i<0)return;
+      var cc=h.cloud_cover[i], pp=h.precipitation_probability?h.precipitation_probability[i]:null;
+      var v=verdictOf(cc,pp); if(!v)return; e.fc={v:v,cc:cc,pp:pp}; save(); renderAll();
+    }).catch(function(){});
+  }
 
   // default date = next Friday if available, else today
   (function(){var f=SkyCore.nextFridayYMD?SkyCore.nextFridayYMD():null;var d=f?new Date(Date.UTC(f.y,f.m,f.d,12)):new Date();
@@ -144,6 +170,7 @@ textarea{min-height:66px;resize:vertical;}
         +'<div class="row">'+(e.head?'<span class="tag head">👥 ~'+esc(e.head)+' visitors</span>':'')
         +(e.scopes?'<span class="tag">🔭 '+esc(e.scopes)+'</span>':'')
         +'<span class="tag">'+objs.length+' objects</span>'
+        +(function(){var g=gradeFc(e);if(!g)return"";var sym=g.ok===null?"":(g.ok?" ✓":" ✗");var col=g.ok===null?"var(--mute)":(g.ok?"#9be9b8":"#ffb4b4");return '<span class="tag" style="color:'+col+';border-color:'+col+'" title="Forecast said '+g.v+(g.outcome?'; actually '+g.outcome:'')+'">🔮 '+g.v+sym+'</span>';})()
         +'<button type="button" class="del" data-i="'+i+'">Delete</button></div></div>';
     }).join('');
     host.querySelectorAll(".del").forEach(function(b){b.addEventListener("click",function(){
@@ -159,6 +186,7 @@ textarea{min-height:66px;resize:vertical;}
     if(!e.date){alert("Please set a date.");return;}
     log.unshift(e); log.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
     save(); renderAll();
+    attachForecast(e);
     document.getElementById("fObjects").value="";document.getElementById("fHead").value="";document.getElementById("fNotes").value="";document.getElementById("fScopes").value="";
     var s=document.getElementById("saveBtn");var t=s.textContent;s.textContent="✓ Saved";setTimeout(function(){s.textContent=t;},1400);
   });
@@ -193,6 +221,19 @@ textarea{min-height:66px;resize:vertical;}
     box.innerHTML=arr.length?('<div style="margin:10px 0 2px;font-size:13px;color:var(--mute)">Across '+log.length+' logged sessions:</div>'
       +arr.map(function(x){return '<div style="display:flex;justify-content:space-between;padding:5px 2px;border-bottom:1px solid var(--line);font-size:13.5px"><span>'+esc(x[0])+'</span><b style="color:var(--gold)">'+x[1]+'×</b></div>';}).join(''))
       :'<div class="empty">No objects logged yet.</div>';
+  });
+
+  document.getElementById("fcBtn").addEventListener("click",function(){
+    var box=document.getElementById("fcBox");
+    if(box.style.display==="block"){box.style.display="none";return;}
+    var graded=log.map(gradeFc).filter(function(g){return g&&g.ok!==null;});
+    box.style.display="block";
+    if(!graded.length){box.innerHTML='<div class="empty">No graded nights yet. Once you log sessions on their own night (so the forecast can be captured), the go/no-go call is scored against what the sky actually did.</div>';return;}
+    var hits=graded.filter(function(g){return g.ok;}).length;
+    var byV={};["GO","CAUTION","NO-GO"].forEach(function(v){var rows=graded.filter(function(g){return g.v===v;});if(rows.length)byV[v]=[rows.filter(function(g){return g.ok;}).length,rows.length];});
+    box.innerHTML='<div style="margin:10px 0 4px;font-size:13px;color:var(--mute)">Across '+graded.length+' graded nights, the go/no-go call matched the sky <b style="color:var(--gold)">'+Math.round(100*hits/graded.length)+'%</b> of the time:</div>'
+      +Object.keys(byV).map(function(v){var x=byV[v];return '<div style="display:flex;justify-content:space-between;padding:5px 2px;border-bottom:1px solid var(--line);font-size:13.5px"><span>🔮 '+v+'</span><b style="color:var(--gold)">'+x[0]+'/'+x[1]+' right</b></div>';}).join('')
+      +'<div style="margin-top:8px;font-size:11.5px;color:var(--mute)">A run of misses in one direction (e.g. GO nights that clouded over) is the signal to nudge the forecast thresholds for our site.</div>';
   });
 
   function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}

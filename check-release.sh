@@ -29,10 +29,10 @@ FIX=0; [ "${1:-}" = "--fix" ] && FIX=1
 
 # Files that are deliberately NOT shipped/cached (dev-only, never served).
 EXCLUDE_PAGES=()                                    # pages exempt from the version footer
-EXCLUDE_ASSETS=(sw.js test-astro.js test-logic.js test-pages.js migrate-theme.js)
+EXCLUDE_ASSETS=(sw.js test-astro.js test-logic.js test-pages.js test-browser.js migrate-theme.js)
 # Redirect stubs kept alive for people who installed the PWA from an old URL.
 # They are deliberately unlinked, so the orphan check should not nag about them.
-STUBS=(main.html scob-dashboard.html occultations.html iss-transits.html identify.html audio-tour.html)
+STUBS=(index.html main.html scob-dashboard.html occultations.html iss-transits.html identify.html audio-tour.html)
 
 pass=0; fail=0
 ok(){      printf '  \033[32m/\033[0m %s\n' "$1"; pass=$((pass+1)); }

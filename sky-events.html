@@ -247,7 +247,7 @@ async function run(force){
   $('out').innerHTML='';
   var results=[],ages=[],failed=[];
   try{
-    if(typeof satellite==='undefined')await loadScript('https://cdnjs.cloudflare.com/ajax/libs/satellite.js/5.0.0/satellite.min.js');
+    if(typeof satellite==='undefined')await loadScript('satellite.min.js');
   }catch(e){
     $('out').innerHTML='<div class="card"><div class="none">⚠️ <b>Could not load the orbit propagator.</b> This page needs one online visit to cache satellite.js and the current orbital elements. Once cached it works offline.</div></div>';
     $('prog').style.display='none';btn.disabled=false;btn.textContent='🔍 Find transits';BUSY=false;return;
