@@ -217,6 +217,15 @@ header{padding:0 0 10px;}
 #slimbar .btnmini{font-size:12px;padding:6px 9px;border-radius:8px;}
 #slimbar .sb3{display:flex;align-items:center;gap:8px;margin-top:7px;}
 #slimbar #timeSlider{flex:1;margin:0;min-width:0;}
+/* Scroll-collapse (mirrors desktop): once scrolled, drop the title/countdown row and tighten the
+   sticky bar so only the date, time and scrubber stay pinned — handing the page more screen.
+   State is driven entirely by the #mobileRoot.mob-min class (no inline juggling → cannot desync). */
+#mobileRoot #slimbar .sb1{overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .2s ease,margin .3s ease;max-height:40px;}
+#mobileRoot #slimbar{transition:padding .3s ease;}
+#mobileRoot #slimbar .sb2,#mobileRoot #slimbar .sb3{transition:margin .3s ease;}
+#mobileRoot.mob-min #slimbar .sb1{max-height:0;opacity:0;margin:0;}
+#mobileRoot.mob-min #slimbar{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:7px;}
+#mobileRoot.mob-min #slimbar .sb2{margin-top:0;}
 h1{font-size:17px;margin:0;color:var(--gold);}
 .loc{font-size:12px;color:var(--mute);margin-top:6px;}
 .daterow{display:flex;align-items:center;gap:8px;margin-top:10px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex-wrap:wrap;}
@@ -939,6 +948,20 @@ if(!IS_MOBILE){(function(){
   window.addEventListener('resize',function(){ if(!min)cap(); },{passive:true});
   // Header content (day-note, glance, dark-bar) fills in after fetches — keep the open cap fresh.
   try{ new MutationObserver(function(){ if(!min)cap(); }).observe(hdr,{childList:true,subtree:true,characterData:true}); }catch(e){}
+  onScroll();
+})();}
+
+// Mobile: same idea for the slim sticky bar. The extra header block (menu, day-note, glance, dark-bar)
+// already scrolls away because it isn't sticky; here we also collapse the title/countdown row of the
+// pinned slim bar on scroll, so only date, time and the scrubber stay at the top. Class-driven, with
+// hysteresis (collapse >56px, expand <14px) to avoid flicker at the fold.
+if(IS_MOBILE){(function(){
+  const root=document.getElementById('mobileRoot'); if(!root) return;
+  let min=false;
+  function set(m){ if(m===min)return; min=m; root.classList.toggle('mob-min',m); }
+  function onScroll(){ var y=window.pageYOffset||document.documentElement.scrollTop||0;
+    if(!min&&y>56)set(true); else if(min&&y<14)set(false); }
+  window.addEventListener('scroll',onScroll,{passive:true});
   onScroll();
 })();}
 
