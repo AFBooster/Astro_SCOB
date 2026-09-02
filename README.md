@@ -238,6 +238,8 @@ The version number lives in **one** place now. To ship a change:
 - **Telescopes-Reference.md** — notes on the telescopes available at SCOB.
 - **version.js** — single source of truth for the site version; injects the version/copyright footer into every page. Bump `SCOB_VERSION` here on each release.
 - **check-release.sh** — pre-flight check; run `./check-release.sh` before uploading to confirm everything is in sync.
+- **og-image.png** — the 1200×630 branded social-share card referenced by every page's Open Graph / Twitter Card tags.
+- **sitemap.xml / robots.txt** — a machine sitemap of all content pages and the crawler directives pointing to it (both published by the deploy workflow).
 - **test-astro.js / test-pages.js / test-logic.js** — the three regression suites (astronomy engine · page smoke tests · interactive logic). Dependency-free Node; run before every release and in CI. Not web assets — do not upload.
 - **INSTALL-as-app.md** — how to install the dashboard as a home-screen app.
 
