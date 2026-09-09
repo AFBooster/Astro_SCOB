@@ -66,6 +66,24 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 .mech p b{color:var(--white);}
 .foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
 .stale{font-size:12px;border:1px dashed var(--line);border-radius:10px;padding:9px 11px;color:var(--mute);margin-top:10px;}
+/* regional satellite view */
+.satwrap{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#05080f;margin-top:4px;}
+.satwrap img{width:100%;height:auto;display:block;}
+.satwrap.loading::after{content:"Loading the satellite view\2026";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px;background:#05080f;}
+.satmark{position:absolute;transform:translate(-50%,-50%);pointer-events:none;}
+.satmark i{display:block;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.65),0 0 9px 2px rgba(245,197,66,.85);margin:0 auto;}
+.satmark span{display:block;font-size:10px;font-weight:800;color:var(--gold);white-space:nowrap;margin-top:2px;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000;}
+.satmark.src i{width:7px;height:7px;background:#ff8a5c;box-shadow:0 0 0 2px rgba(0,0,0,.6);}
+.satmark.src span{color:#ffb49a;font-weight:700;}
+.satfail{padding:22px 16px;text-align:center;color:var(--mute);font-size:13px;line-height:1.6;}
+.satcap{font-size:12px;color:var(--mute);line-height:1.6;margin-top:9px;}
+.satcap b{color:var(--white);}
+.windbox{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px;background:var(--navy3);font-size:13.5px;line-height:1.6;}
+.windbox.high{border-color:rgba(255,107,107,.5);background:rgba(255,107,107,.09);}
+.windbox.medium{border-color:rgba(245,197,66,.45);background:rgba(245,197,66,.08);}
+.windbox.low{border-color:rgba(95,211,138,.4);background:rgba(95,211,138,.08);}
+.windbox .wh{font-weight:800;font-size:14.5px;display:block;margin-bottom:3px;}
+.windrose{float:right;margin:0 0 6px 12px;}
 </style>
 <!-- Social sharing / SEO metadata -->
 <link rel="canonical" href="https://afbooster.online/haze.html">
@@ -107,6 +125,19 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
     <h2>Today so far — is it clearing or closing in?</h2>
     <div class="fact"><p>The 24-hour PSI is a <b>rolling 24-hour average</b>, so it turns slowly and lags the real air by many hours. The 1-hour PM2.5 is what the sky looks like <b>this hour</b>. When the two disagree, the PM2.5 is telling you where the PSI is heading.</p></div>
     <div id="trendBox"><div class="fine">Loading today's readings…</div></div>
+  </div>
+
+  <!-- ── REGIONAL: WHERE THE SMOKE IS ─────────────────────────────────── -->
+  <div class="card">
+    <h2>Where the smoke is — and whether it is coming here</h2>
+    <div class="fact"><p>A ground sensor in Jurong can only tell you what has <b>already arrived</b>. Whether tonight gets better or worse depends on two things it cannot see: where the fires are burning, and which way the wind aloft is carrying their smoke.</p></div>
+    <div class="ctl" id="satBtns"></div>
+    <div class="satwrap loading" id="satWrap">
+      <img id="satImg" alt="Satellite view of Southeast Asia showing smoke and active fires" decoding="async">
+    </div>
+    <div class="satcap" id="satCap"></div>
+    <div id="windBox"></div>
+    <div class="fine">Imagery: <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener">NASA Worldview / GIBS</a> (public, no key — the same imagery Worldview serves, composited into one picture). Transport wind: Open-Meteo. For the official regional product — hotspot counts by country and the ASEAN haze map — see the <a href="https://asmc.asean.org/" target="_blank" rel="noopener">ASEAN Specialised Meteorological Centre ↗</a> (run by MSS Singapore) and <a href="https://www.weather.gov.sg/warning-haze-information/" target="_blank" rel="noopener">MSS's haze page ↗</a>; both are interactive map viewers, so they are linked rather than embedded here.</div>
   </div>
 
   <!-- ── COST TO THE SKY ──────────────────────────────────────────────── -->
@@ -357,6 +388,96 @@ function renderForecast(nights) {
     + '<div class="fine">Open-Meteo\'s global air-quality model, averaged over 7–11 pm each night. Its “aerosol optical depth” is measured by satellite and is the same quantity the model above derives from the ground reading — when the two agree, have more confidence in the forecast. At ~40 km resolution this is a <b>trend across nights</b>, not a Jurong nowcast; for tonight, trust the live NEA reading at the top of this page and NEA\'s own 24-hour PSI forecast.</div>';
 }
 
+/* ── regional satellite view ─────────────────────────────────────────── */
+var SATKEY = 'truecolor', SATTRY = 0;
+/* The daily layers are not published for the current day until well after the
+   early-afternoon overpass, so walk back a day at a time until one loads. */
+function satDates() {
+  var out = [], now = Date.now();
+  for (var i = 0; i < 4; i++) out.push(new Date(now - i * 86400000).toISOString().slice(0, 10));
+  return out;
+}
+function renderSat() {
+  var L = H.satLayer(SATKEY), wrap = $('satWrap'), img = $('satImg');
+  $('satBtns').innerHTML = H.SAT_LAYERS.map(function (l) {
+    return '<button type="button" data-k="' + l.key + '"' + (l.key === SATKEY ? ' class="on"' : '') + '>' + esc(l.label) + '</button>';
+  }).join('');
+  Array.prototype.forEach.call($('satBtns').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () { SATKEY = b.getAttribute('data-k'); SATTRY = 0; renderSat(); });
+  });
+
+  /* clear any previous markers, keep the <img> */
+  Array.prototype.forEach.call(wrap.querySelectorAll('.satmark,.satfail'), function (n) { n.remove(); });
+  wrap.classList.add('loading');
+  img.style.display = '';
+
+  var when = L.daily ? satDates()[SATTRY] : H.satInstant();
+  img.onload = function () {
+    wrap.classList.remove('loading');
+    /* pin SCOB and the two burning regions onto the picture */
+    var pins = [
+      { lon: 103.7357, lat: 1.3342, label: 'SCOB', cls: '' },
+      { lon: 101.45,   lat: 0.53,   label: 'Riau', cls: 'src' },
+      { lon: 109.33,   lat: -0.02,  label: 'W Kalimantan', cls: 'src' }
+    ];
+    pins.forEach(function (p) {
+      var q = H.satPct(p.lon, p.lat);
+      var d = document.createElement('div');
+      d.className = 'satmark ' + p.cls;
+      d.style.left = q.x.toFixed(2) + '%'; d.style.top = q.y.toFixed(2) + '%';
+      d.innerHTML = '<i></i><span>' + p.label + '</span>';
+      wrap.appendChild(d);
+    });
+    var stamp = L.daily
+      ? new Date(when + 'T12:00:00Z').toUTCString().slice(5, 16)
+      : (when.slice(11, 16) + ' UTC · ' + H.fmtTime(when) + ' SGT');
+    $('satCap').innerHTML = '<b>' + esc(L.label) + '</b> — ' + esc(L.blurb)
+      + '<br><b>Showing:</b> ' + esc(stamp)
+      + (L.daily && SATTRY > 0 ? ' <span class="warn">(the last ' + SATTRY + ' day' + (SATTRY > 1 ? 's' : '') + ' are not published yet)</span>' : '')
+      + ' · <span style="opacity:.85">' + esc(L.caveat) + '</span>';
+  };
+  img.onerror = function () {
+    if (L.daily && SATTRY < satDates().length - 1) { SATTRY++; renderSat(); return; }
+    wrap.classList.remove('loading');
+    img.style.display = 'none';
+    var d = document.createElement('div');
+    d.className = 'satfail';
+    d.innerHTML = 'This satellite view could not be loaded — you may be offline, or NASA GIBS may not have published it yet.<br>'
+      + '<a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener">Open NASA Worldview ↗</a>';
+    wrap.appendChild(d);
+    $('satCap').innerHTML = '';
+  };
+  img.src = H.satURL(SATKEY, when, 1080, 640);
+}
+
+/* ── transport wind: is it coming our way? ───────────────────────────── */
+function renderWind(t) {
+  var el = $('windBox');
+  if (!t || !t.source) {
+    el.innerHTML = '<div class="windbox"><span class="wh">Transport wind unavailable</span>'
+      + 'The upwind read needs the Open-Meteo forecast, which did not load — you may be offline. NEA publishes its own 24-hour PSI forecast at <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a>, and the ASEAN centre publishes the regional wind analysis at <a href="https://asmc.asean.org/" target="_blank" rel="noopener">asmc.asean.org</a>.</div>';
+    return;
+  }
+  var s = t.source, spd = t.speed == null ? null : Math.round(t.speed);
+  var hrs = t.hours;
+  var lead = s.risk === 'low'
+    ? 'Nothing burning upwind'
+    : (s.confident ? 'Upwind of us: ' + s.name : 'Roughly upwind: ' + s.name);
+  var body = 'The transport wind at ' + esc(t.level) + ' is from the <b>' + H.compass16(t.dir) + '</b> ('
+    + Math.round(t.dir) + '°)' + (spd != null ? ' at <b>' + spd + ' km/h</b>' : '') + '. '
+    + esc(s.note);
+  if (s.km && hrs) {
+    body += ' At this speed, smoke leaving there takes about <b>' + (hrs < 1 ? '<1' : Math.round(hrs)) + ' hours</b> to cover the '
+      + s.km + ' km to Jurong'
+      + (hrs > 20 ? ' — long enough that it will have thinned and spread on the way.' : '.');
+  }
+  if (!s.confident && s.risk !== 'low') {
+    body += ' <span style="opacity:.8">The bearing is ' + s.off + '° off that source, so treat it as a glancing flow rather than a direct line.</span>';
+  }
+  body += '<br><span style="opacity:.75">Smoke rides the boundary-layer wind about a kilometre up, not the surface breeze — which is why this uses the 850 hPa flow and not the wind you feel on the deck.</span>';
+  el.innerHTML = '<div class="windbox ' + s.risk + '"><span class="wh">' + esc(lead) + '</span>' + body + '</div>';
+}
+
 /* ── bands table ─────────────────────────────────────────────────────── */
 (function renderBands() {
   var lo = 0;
@@ -404,6 +525,7 @@ $('pmLive').addEventListener('click', function () {
 /* ── boot ────────────────────────────────────────────────────────────── */
 renderBortle();
 renderCost();
+renderSat();
 
 function load() {
   H.fetchNow().then(function (d) {
@@ -421,6 +543,9 @@ function load() {
     H.fetchTrend('psi', H.HOME_REGION).catch(function () { return null; }),
     H.fetchTrend('pm25', H.HOME_REGION).catch(function () { return null; })
   ]).then(function (r) { renderTrend(r[0], r[1]); });
+
+  H.fetchTransport(H.localDateISO(), 21)
+    .then(renderWind).catch(function () { renderWind(null); });
 
   H.fetchForecast(5).then(function (h) {
     window._fcNights = H.nightlyFromForecast(h, 19, 23);

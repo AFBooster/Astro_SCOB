@@ -855,7 +855,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
       <a href="singapore-sky.html">🌏 Why Singapore sees the whole sky</a>
       <a href="hemispheres.html">🌍 Northern vs southern skies</a>
       <a href="light-pollution.html">🌃 Where did all the stars go?</a>
-      <a href="haze.html">🌫️ Haze &amp; the night sky <small>— live PSI &amp; what it costs</small></a>
+      <a href="haze.html">🌫️ Haze &amp; the night sky <small>— live PSI, satellite &amp; what it costs</small></a>
       <a href="phone-astrophotography.html">📱 Shoot the sky with your phone</a>
       <a href="seestar.html">🤖 The Seestar smart telescope</a>
       <a href="constellation-story.html">✨ Constellation of tonight</a>
@@ -1723,6 +1723,8 @@ let EVT=[],ISSCHIP='',ISSFOR='',PSIAT=0,PSIVAL=null;
 // to); PM25VAL is the 1-hour PM2.5 (what the sky at 8 pm actually follows, and what
 // the optical model uses). HAZE holds the full five-region reading.
 let PM25VAL=null,HAZE=null,HAZETREND=null,HAZEERR=false,HAZETS=0;
+// v4.09: the transport wind aloft — which upwind region, if any, is feeding us.
+let HAZEWIND=null;
 const EVENTS=[
  ['2026-07-28','☄️','Delta Aquariids meteor shower peaks','Up to 20/hr after midnight, but the full Moon washes most out this year.',1],
  ['2026-08-02','🪐','Mercury at greatest western elongation','Morning object — low in the east before sunrise, not an evening-session target.',1],
@@ -1960,6 +1962,18 @@ function renderHaze(){
       ? '<div>No real transparency penalty tonight — the air is as clean as Jurong gets.</div>'
       : '<div>Costs roughly <b class="'+(hi<0.6?'warn':'bad')+'">'+hi.toFixed(1)+' mag</b> on a well-placed target and <b class="'+(lo<1?'warn':'bad')+'">'+lo.toFixed(1)+' mag</b> on anything still down at 20° — low objects lose most, because you look through three times the air. The smoke also scatters Jurong\'s streetlights back down, so the sky itself glows brighter.</div>';
   }
+  // v4.09: a ground sensor only reports what has already arrived. One line on
+  // where tonight's air is coming FROM — the full picture is on the haze page.
+  if(HAZEWIND&&HAZEWIND.source){
+    const w=HAZEWIND,sc=w.source;
+    s+='<div>→ Transport wind from the <b>'+Hz.compass16(w.dir)+'</b>'
+      +(w.speed!=null?' at '+Math.round(w.speed)+' km/h':'')+' — '
+      +(sc.risk==='low'
+        ? '<b class="ok">nothing burning upwind</b>.'
+        : '<b class="'+(sc.risk==='high'?'bad':'warn')+'">'+sc.name+' is upwind</b>'
+          +(sc.km&&w.hours?', about '+Math.round(w.hours)+' h away at this speed':'')+'.')
+      +'</div>';
+  }
   const call=Hz.sessionCall(psi);
   if(call&&call.cls!=='ok')s+='<div class="hzcall '+call.cls+'"><b>'+call.verdict+'</b> — '+call.note+'</div>';
   s+='<div style="margin-top:6px;opacity:.8">Live NEA reading — applies to tonight, not to future dates. <a class="hzmore" href="haze.html">Today\'s trend, the 5-night outlook &amp; what haze does to the view →</a></div>';
@@ -1981,6 +1995,11 @@ async function loadPSI(){
     // the day's readings are a second, cheap call — it only adds the trend arrow
     window.Haze.fetchTrend('pm25',R).then(function(sr){
       HAZETREND=window.Haze.trendOf(sr,3);renderHaze();}).catch(function(){});
+    // and the transport wind for the chosen night, at the middle of the session
+    if(window.Haze.fetchTransport){
+      const dv=document.getElementById('datePick').value||window.Haze.localDateISO();
+      window.Haze.fetchTransport(dv,21).then(function(w){HAZEWIND=w;renderHaze();}).catch(function(){});
+    }
   }catch(e){
     HAZEERR=true;PSIAT=Date.now()-13*60000;   // retry in ~2 min rather than 15
     renderHaze();renderDataHealth();

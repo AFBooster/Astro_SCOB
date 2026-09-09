@@ -385,6 +385,175 @@ function fmtTime(ts) {
   return (h % 12 || 12) + ':' + (m < 10 ? '0' : '') + m + (h < 12 ? 'am' : 'pm');
 }
 
+/* ── Regional view: where the smoke is ────────────────────────────────────
+   The 24-hour PSI tells you what the air is doing over Jurong. It cannot tell
+   you whether it is about to get worse, because that depends on something a
+   ground sensor cannot see: where the fires are, and which way the wind is
+   carrying their smoke. These two blocks answer that.
+
+   SATELLITE — NASA's Global Imagery Browse Services (GIBS). It is a public
+   WMS with no API key, and it composites several layers into ONE image, so a
+   whole regional view is a single <img> tag with no mapping library. NEA and
+   the ASEAN Specialised Meteorological Centre are the authoritative regional
+   sources, but both publish through JavaScript map viewers with no stable
+   image URL and no open API, so they are linked rather than embedded.
+
+   Layer identifiers below were read from the live GIBS GetCapabilities, and
+   every URL was loaded and checked before shipping. Note that the daily
+   VIIRS/MODIS layers are NOT published for the current day until well after
+   the satellite's early-afternoon overpass, so the page walks back a day at a
+   time until an image loads. */
+
+var GIBS_WMS = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi';
+
+/* The window that matters to Singapore: Sumatra and Riau to the west, the
+   Peninsula and the Strait through the middle, Borneo/Kalimantan to the east,
+   Java along the bottom. Every fire that has ever hazed Singapore is in here. */
+var SAT_BBOX = { south: -7, west: 94, north: 9, east: 121 };
+
+var SAT_LAYERS = [
+  { key: 'truecolor',
+    label: 'True colour + fires',
+    layers: 'VIIRS_NOAA20_CorrectedReflectance_TrueColor,VIIRS_NOAA20_Thermal_Anomalies_375m_All,Coastlines_15m',
+    format: 'image/jpeg', daily: true,
+    blurb: 'What the region looked like from orbit, with every active fire the satellite detected marked in red. Smoke shows as a flat grey-brown pall with no cloud texture — follow it back to the red dots and you can see which fires are feeding it.',
+    caveat: 'One polar-orbiter pass, early afternoon local time. It is a snapshot of the day, not of tonight.' },
+
+  { key: 'aod',
+    label: 'Aerosol optical depth',
+    layers: 'MODIS_Combined_Value_Added_AOD,Coastlines_15m,Reference_Labels_15m',
+    format: 'image/png', daily: true,
+    blurb: 'The satellite’s own measurement of how much aerosol is in the column — the same physical quantity this site derives from the ground PM2.5 reading. Where the two agree, trust the number; where the satellite is much higher than the ground sensor, the smoke is aloft and has not reached the surface yet.',
+    caveat: 'Retrieval fails under cloud, so gaps are missing data, not clean air.' },
+
+  { key: 'himawari',
+    label: 'Himawari — through the day',
+    layers: 'Himawari_AHI_Band3_Red_Visible_1km,Coastlines_15m',
+    format: 'image/jpeg', daily: false,
+    blurb: 'The geostationary view, refreshed every ten minutes rather than once a day — the one to use when you want to watch a plume actually move. A single visible band, so it is greyscale: smoke reads as a smooth grey veil against the sharper white of cloud.',
+    caveat: 'A visible band sees only sunlight, so it goes black after about 7 pm local. Useless for an evening session; use it in the afternoon to see what is heading over.' },
+
+  { key: 'dnb',
+    label: 'Night lights',
+    layers: 'VIIRS_SNPP_DayNightBand_ENCC,Coastlines_15m',
+    format: 'image/jpeg', daily: true,
+    blurb: 'The night-time view. Singapore is the bright knot in the middle — this is the light our haze scatters back down at us, and a good companion to the light-pollution page. Thick smoke blurs and dims the city lights beneath it.',
+    caveat: 'Brightness also tracks the Moon, so a full-Moon night looks lit up everywhere.' }
+];
+function satLayer(key) {
+  for (var i = 0; i < SAT_LAYERS.length; i++) if (SAT_LAYERS[i].key === key) return SAT_LAYERS[i];
+  return SAT_LAYERS[0];
+}
+/* Build one GetMap URL. `when` is 'YYYY-MM-DD' for the daily layers, or a full
+   ISO instant for Himawari. WMS 1.3.0 with CRS=EPSG:4326 takes BBOX
+   latitude-first — getting that backwards silently returns the wrong part of
+   the world, so it is spelled out here rather than inlined at the call site. */
+function satURL(key, when, w, h) {
+  var L = satLayer(key), B = SAT_BBOX;
+  var p = [
+    'SERVICE=WMS', 'REQUEST=GetMap', 'VERSION=1.3.0',
+    'LAYERS=' + encodeURIComponent(L.layers),
+    'FORMAT=' + encodeURIComponent(L.format),
+    'WIDTH=' + (w || 1080), 'HEIGHT=' + (h || 640),
+    'CRS=EPSG:4326',
+    'BBOX=' + B.south + ',' + B.west + ',' + B.north + ',' + B.east,
+    'TIME=' + encodeURIComponent(when)
+  ];
+  return GIBS_WMS + '?' + p.join('&');
+}
+/* Himawari timestamps: 10-minute slots, and allow ~30 min for processing. */
+function satInstant(d) {
+  var t = new Date((d ? d.getTime() : Date.now()) - 30 * 60000);
+  t.setUTCMinutes(Math.floor(t.getUTCMinutes() / 10) * 10, 0, 0);
+  return t.toISOString().slice(0, 19) + 'Z';
+}
+/* Where a place falls on the image, as percentages — used to pin SCOB and the
+   fire regions onto the picture with plain CSS. */
+function satPct(lon, lat) {
+  var B = SAT_BBOX;
+  return {
+    x: (lon - B.west) / (B.east - B.west) * 100,
+    y: (B.north - lat) / (B.north - B.south) * 100
+  };
+}
+
+/* ── Which way is the smoke blowing? ──────────────────────────────────────
+   Smoke does not travel with the surface wind — it rides in the boundary
+   layer a kilometre or so up. The 850 hPa wind (~1.5 km) is the standard
+   proxy for that transport, and Open-Meteo serves it free, from the same
+   model the dashboard already uses for cloud and rain.
+
+   The bearings and distances below are computed from the real coordinates of
+   the burning regions relative to SCOB (1.3342N, 103.7357E), not guessed:
+   great-circle bearing FROM Singapore TO each source, so a wind blowing FROM
+   that bearing is a wind carrying that region's smoke to us. */
+var SMOKE_SOURCES = [
+  { name: 'Riau / central Sumatra', from: 251, spread: 28, km: 270, risk: 'high',
+    note: 'The classic Singapore haze bearing — the peat fires closest to us, and the source of every major episode.' },
+  { name: 'northern Sumatra & the Strait', from: 300, spread: 30, km: 450, risk: 'medium',
+    note: 'Fires up the Strait. Usually a thinner haze than a Riau event.' },
+  { name: 'southern Sumatra', from: 167, spread: 25, km: 490, risk: 'medium',
+    note: 'The Palembang/Jambi peatlands. Further away, so it arrives more diluted but can last for days.' },
+  { name: 'Kalimantan (Borneo)', from: 105, spread: 32, km: 640, risk: 'medium',
+    note: 'West and central Kalimantan. A long haul, so it takes a day or more and usually needs a big fire season to reach us.' },
+  { name: 'the South China Sea', from: 30, spread: 55, km: null, risk: 'low',
+    note: 'Clean maritime air with no fires upwind — the bearing that clears an episode.' },
+  { name: 'the Java Sea', from: 200, spread: 20, km: null, risk: 'low',
+    note: 'Mostly open water upwind, so little to pick up.' }
+];
+function angDiff(a, b) { var d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; }
+/* `fromDeg` is the meteorological wind direction: the bearing the wind blows FROM. */
+function upwindSource(fromDeg) {
+  if (fromDeg == null || isNaN(fromDeg)) return null;
+  var best = null, bestD = 1e9;
+  for (var i = 0; i < SMOKE_SOURCES.length; i++) {
+    var s = SMOKE_SOURCES[i], d = angDiff(fromDeg, s.from);
+    if (d < bestD) { bestD = d; best = s; }
+  }
+  if (!best) return null;
+  var confident = bestD <= best.spread;
+  return {
+    name: best.name, km: best.km, risk: confident ? best.risk : 'low',
+    note: best.note, off: Math.round(bestD), confident: confident,
+    bearing: Math.round(fromDeg)
+  };
+}
+/* Hours for smoke to cover the distance at the transport wind speed. */
+function transitHours(km, kmh) {
+  if (!km || !kmh || kmh < 2) return null;
+  return km / kmh;
+}
+/* Transport wind for the chosen date, at the observing hour. Falls back to the
+   10 m wind if the pressure-level fields are unavailable. */
+function fetchTransport(dateISO, hour) {
+  var u = 'https://api.open-meteo.com/v1/forecast'
+        + '?latitude=' + SCOB.lat + '&longitude=' + SCOB.lon
+        + '&hourly=wind_speed_850hPa,wind_direction_850hPa,wind_speed_10m,wind_direction_10m'
+        + '&timezone=Asia%2FSingapore&start_date=' + dateISO + '&end_date=' + dateISO;
+  return fetchJSON(u).then(function (j) {
+    var h = j && j.hourly; if (!h || !h.time) throw new Error('no wind data');
+    var hh = (hour == null ? 21 : hour);
+    var key = dateISO + 'T' + (hh < 10 ? '0' : '') + hh + ':00';
+    var i = h.time.indexOf(key); if (i < 0) i = Math.min(hh, h.time.length - 1);
+    var dir = h.wind_direction_850hPa ? h.wind_direction_850hPa[i] : null;
+    var spd = h.wind_speed_850hPa ? h.wind_speed_850hPa[i] : null;
+    var level = '850 hPa (~1.5 km)';
+    if (dir == null || isNaN(dir)) {
+      dir = h.wind_direction_10m ? h.wind_direction_10m[i] : null;
+      spd = h.wind_speed_10m ? h.wind_speed_10m[i] : null;
+      level = 'surface';
+    }
+    if (dir == null || isNaN(dir)) throw new Error('no wind direction');
+    var src = upwindSource(dir);
+    return { dir: dir, speed: spd, level: level, source: src,
+             hours: src ? transitHours(src.km, spd) : null };
+  });
+}
+function compass16(deg) {
+  var C = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  return C[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+}
+
 global.Haze = {
   SCOB: SCOB,
   REGIONS: REGIONS,
@@ -410,7 +579,19 @@ global.Haze = {
   fetchForecast: fetchForecast,
   nightlyFromForecast: nightlyFromForecast,
   localDateISO: localDateISO,
-  fmtTime: fmtTime
+  fmtTime: fmtTime,
+  /* v4.09 — the regional picture */
+  SAT_BBOX: SAT_BBOX,
+  SAT_LAYERS: SAT_LAYERS,
+  satLayer: satLayer,
+  satURL: satURL,
+  satInstant: satInstant,
+  satPct: satPct,
+  SMOKE_SOURCES: SMOKE_SOURCES,
+  upwindSource: upwindSource,
+  transitHours: transitHours,
+  fetchTransport: fetchTransport,
+  compass16: compass16
 };
 
 })(typeof window !== 'undefined' ? window : this);
