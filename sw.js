@@ -1,5 +1,5 @@
 /* SCOB Night-Sky — service worker: offline cache so the installed app opens with no signal */
-const CACHE = 'scob-sky-v113';
+const CACHE = 'scob-sky-v114';
 const ASSETS = [
   'aboriginal-sky.html',
   'aboriginal-tonight.html',
@@ -127,7 +127,9 @@ self.addEventListener('fetch', e => {
   // This is what prevents a stale cached version.js from pinning the footer to an old version.
   const url = e.request.url;
   const isPage = e.request.mode === 'navigate' || url.endsWith('.html');
-  const isLive = url.endsWith('version.js') || url.endsWith('astro-core.js') || url.endsWith('sky-culture-core.js');
+  // nea-haze.json is rewritten by a scheduled Action between releases, so it must
+  // never come from the cache first — otherwise the NEA layer pins to a stale image.
+  const isLive = url.endsWith('version.js') || url.endsWith('astro-core.js') || url.endsWith('sky-culture-core.js') || url.endsWith('nea-haze.json');
   if (isPage || isLive) {
     e.respondWith(
       fetch(e.request).then(res => {

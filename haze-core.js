@@ -447,6 +447,26 @@ var SAT_LAYERS = [
     blurb: 'The geostationary view, refreshed every ten minutes rather than once a day — the one to use when you want to watch a plume actually move. A single visible band, so it is greyscale: smoke reads as a smooth grey veil against the sharper white of cloud.',
     caveat: 'A visible band sees only sunlight, so it goes black after about 7 pm local. Useless for an evening session; use it in the afternoon to see what is heading over.' },
 
+  /* MSS/NEA's OWN product, not a NASA one: a false-colour NOAA-20 scene over
+     Sumatra with their forecasters' hotspot-confidence markers burnt in. It is
+     the picture behind Singapore's official haze bulletins.
+
+     It needs three special cases. (1) The filename is stamped to the second
+     and there is no "latest" alias, the directory 403s, and the page naming
+     the current file sends no CORS headers — so the URL is looked up by a
+     scheduled GitHub Action and written to nea-haze.json, which this page
+     reads same-origin. (2) weather.gov.sg sends no CORS headers on the image
+     either, so it must load WITHOUT crossOrigin, which means the pixels cannot
+     be sampled — no blank check for this one. (3) It is centred on Sumatra on
+     its own projection, not our bounding box, so the SCOB/Riau pins must not
+     be drawn over it. */
+  { key: 'nea',
+    label: 'NEA / MSS haze image',
+    source: 'nea', noCors: true, noPins: true, daily: true,
+    layers: '', format: 'image/jpeg',
+    blurb: 'Singapore\u2019s own haze satellite product, from the Meteorological Service Singapore — a false-colour NOAA-20 scene chosen to separate smoke from cloud, with MSS\u2019s hotspot detections marked by confidence. This is the imagery behind the national haze bulletins.',
+    caveat: 'Centred on Sumatra on its own projection, so it is not aligned with the other layers and carries no SCOB marker. Issued roughly once a day.' },
+
   { key: 'dnb',
     label: 'Night lights',
     layers: 'VIIRS_SNPP_DayNightBand_At_Sensor_Radiance,Coastlines_15m',
@@ -495,6 +515,16 @@ function satPct(lon, lat) {
     x: (lon - B.west) / (B.east - B.west) * 100,
     y: (B.north - lat) / (B.north - B.south) * 100
   };
+}
+
+/* The Action-maintained pointer to MSS's current haze image. Same-origin, so
+   no CORS problem; cache-busted because the service worker must not serve a
+   stale one. Resolves to null rather than throwing when it is missing, so the
+   layer degrades to a link instead of an error. */
+function fetchNeaSat() {
+  return fetchJSON('nea-haze.json?_=' + Date.now())
+    .then(function (j) { return (j && j.image) ? j : null; })
+    .catch(function () { return null; });
 }
 
 /* ── Which way is the smoke blowing? ──────────────────────────────────────
@@ -607,6 +637,7 @@ global.Haze = {
   satLayer: satLayer,
   satURL: satURL,
   satInstant: satInstant,
+  fetchNeaSat: fetchNeaSat,
   satPct: satPct,
   SMOKE_SOURCES: SMOKE_SOURCES,
   upwindSource: upwindSource,

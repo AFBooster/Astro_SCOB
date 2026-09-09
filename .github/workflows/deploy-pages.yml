@@ -74,6 +74,10 @@ jobs:
           cp -v icon-*.png      _site/ 2>/dev/null || true
           # Share image, sitemap and robots (referenced by the pages' Open Graph tags).
           cp -v og-image.png robots.txt sitemap.xml _site/ 2>/dev/null || true
+          # Data files the pages fetch at runtime. nea-haze.json is the pointer to
+          # MSS's current haze satellite image, refreshed by refresh-nea-haze.yml;
+          # without this line the haze page's NEA layer has nothing to read.
+          cp -v nea-haze.json   _site/ 2>/dev/null || true
           # Dev-only scripts must never reach the live site.
           rm -f _site/test-astro.js _site/test-logic.js _site/test-pages.js _site/test-browser.js _site/migrate-theme.js
           # Make the bare site URL open the dashboard directly.

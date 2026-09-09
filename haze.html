@@ -137,7 +137,7 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
     </div>
     <div class="satcap" id="satCap"></div>
     <div id="windBox"></div>
-    <div class="fine">Imagery: <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener">NASA Worldview / GIBS</a> (public, no key — the same imagery Worldview serves, composited into one picture). Transport wind: Open-Meteo. For the official regional product — hotspot counts by country and the ASEAN haze map — see the <a href="https://asmc.asean.org/" target="_blank" rel="noopener">ASEAN Specialised Meteorological Centre ↗</a> (run by MSS Singapore) and <a href="https://www.weather.gov.sg/warning-haze-information/" target="_blank" rel="noopener">MSS's haze page ↗</a>; both are interactive map viewers, so they are linked rather than embedded here.</div>
+    <div class="fine">Imagery: the <b>NEA / MSS</b> layer is Singapore's own haze satellite product from the <a href="https://www.weather.gov.sg/warning-haze-satellite-image/" target="_blank" rel="noopener">Meteorological Service Singapore</a>; the other four are <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener">NASA Worldview / GIBS</a>. Transport wind: Open-Meteo. For hotspot counts by country and the regional haze map, see the <a href="https://asmc.asean.org/" target="_blank" rel="noopener">ASEAN Specialised Meteorological Centre ↗</a> (operated by MSS Singapore) and <a href="https://www.weather.gov.sg/warning-haze-information/" target="_blank" rel="noopener">MSS's haze information page ↗</a> — both are interactive map viewers, so they are linked rather than embedded.</div>
   </div>
 
   <!-- ── COST TO THE SKY ──────────────────────────────────────────────── -->
@@ -389,7 +389,7 @@ function renderForecast(nights) {
 }
 
 /* ── regional satellite view ─────────────────────────────────────────── */
-var SATKEY = 'truecolor', SATTRY = 0, SATNOCORS = false;
+var SATKEY = 'truecolor', SATTRY = 0, SATNOCORS = false, NEAPTR = null;
 /* The daily layers are not published for the current day until well after the
    early-afternoon overpass, so walk back a day at a time until one has data. */
 function satDates() {
@@ -435,6 +435,10 @@ function renderSat() {
   Array.prototype.forEach.call(wrap.querySelectorAll('.satmark,.satfail'), function (n) { n.remove(); });
   wrap.classList.add('loading');
   img.style.display = '';
+
+  /* MSS/NEA's own image is fetched by name from the Action-maintained pointer,
+     not built from a WMS query, and it needs none of the CORS/pin machinery. */
+  if (L.source === 'nea') { renderNea(L, wrap, img); return; }
 
   var when = L.daily ? satDates()[SATTRY] : H.satInstant();
   /* CORS is needed to read the pixels; if the request fails with it set, retry
@@ -491,6 +495,45 @@ function renderSat() {
     $('satCap').innerHTML = '';
   };
   img.src = H.satURL(SATKEY, when, 1080, 640);
+}
+
+/* MSS/NEA's own haze scene. The filename changes every issue and cannot be
+   discovered from the browser (no CORS on their page), so a scheduled GitHub
+   Action writes the current one into nea-haze.json beside this page. */
+function renderNea(L, wrap, img) {
+  img.removeAttribute('crossorigin');   /* weather.gov.sg sends no CORS headers */
+  function fail(msg) {
+    wrap.classList.remove('loading');
+    img.style.display = 'none';
+    var d = document.createElement('div');
+    d.className = 'satfail';
+    d.innerHTML = msg + '<br><a href="https://www.weather.gov.sg/warning-haze-satellite-image/" target="_blank" rel="noopener">Open MSS\u2019s haze satellite page \u2197</a>';
+    wrap.appendChild(d);
+    $('satCap').innerHTML = '<b>' + esc(L.label) + '</b> — ' + esc(L.blurb);
+  }
+  img.onerror = function () { fail('MSS\u2019s image could not be loaded — it may have been superseded since this page last refreshed its link.'); };
+  img.onload = function () {
+    wrap.classList.remove('loading');
+    var when = NEAPTR && NEAPTR.captured ? NEAPTR.captured : null;
+    /* pin to Singapore time — the issue stamp is SGT, and a visitor reading this
+       from another timezone should still see the hour MSS actually issued it */
+    var shown = when ? new Date(when).toLocaleString('en-SG', { timeZone: 'Asia/Singapore',
+      day: '2-digit', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true }) + ' SGT'
+      : 'see the image caption';
+    $('satCap').innerHTML = '<b>' + esc(L.label) + '</b> — ' + esc(L.blurb)
+      + '<br><b>Issued:</b> ' + esc(shown)
+      + ' · Source: <a href="https://www.weather.gov.sg/warning-haze-satellite-image/" target="_blank" rel="noopener">Meteorological Service Singapore</a>, the national meteorological authority under NEA.'
+      + ' <span style="opacity:.85">' + esc(L.caveat) + '</span>';
+  };
+  H.fetchNeaSat().then(function (ptr) {
+    NEAPTR = ptr;
+    if (!ptr || !ptr.image) {
+      fail('The pointer to MSS\u2019s current haze image (<code>nea-haze.json</code>) has not been published yet.');
+      return;
+    }
+    img.style.display = '';
+    img.src = ptr.image;
+  });
 }
 
 /* ── transport wind: is it coming our way? ───────────────────────────── */

@@ -1,0 +1,85 @@
+name: Refresh the NEA/MSS haze-image link
+
+# WHY THIS EXISTS
+# ---------------
+# The Meteorological Service Singapore publishes its haze satellite scene at
+#   https://www.weather.gov.sg/files/warnadv/haze/sat/suma_YYYYMMDD_HHMMSS.jpg
+# The image itself hotlinks fine from the site. Finding its NAME does not:
+#   * the filename is stamped to the second, so it cannot be guessed;
+#   * there is no "latest" alias;
+#   * the directory returns 403, so it cannot be listed;
+#   * the page that names the current file sends no CORS headers, so the
+#     browser cannot read it from afbooster.online.
+# So this job does the lookup on a schedule and commits the answer as a small
+# same-origin JSON that haze.html can read without any cross-origin problem.
+#
+# It is deliberately conservative: if the lookup fails, or the image does not
+# answer 200, it changes NOTHING and leaves the previous pointer in place.
+# robots.txt on weather.gov.sg disallows only /wp-admin/ and /wp-login.php.
+
+on:
+  schedule:
+    - cron: '25 */3 * * *'     # every three hours; MSS issue roughly daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nea-haze-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Look up MSS's current haze satellite image
+        id: look
+        run: |
+          set -uo pipefail
+          UA='SCOB-Night-Sky/1.0 (+https://afbooster.online; Science Centre Observatory Singapore)'
+          page=$(curl -sS --max-time 30 -A "$UA" \
+                 'https://www.weather.gov.sg/warning-haze-satellite-image/' || true)
+          url=$(printf '%s' "$page" \
+                | grep -oE 'https://www\.weather\.gov\.sg/files/warnadv/haze/sat/suma_[0-9]{8}_[0-9]{6}\.jpg' \
+                | head -n1 || true)
+          if [ -z "$url" ]; then
+            echo "::warning::no suma_*.jpg URL found on the MSS page - leaving the existing pointer untouched"
+            exit 0
+          fi
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 -A "$UA" "$url" || echo 000)
+          if [ "$code" != "200" ]; then
+            echo "::warning::found $url but it answered HTTP $code - not committing"
+            exit 0
+          fi
+          stamp=$(printf '%s' "$url" | grep -oE '[0-9]{8}_[0-9]{6}')
+          d=${stamp%_*}; t=${stamp#*_}
+          captured="${d:0:4}-${d:4:2}-${d:6:2}T${t:0:2}:${t:2:2}:${t:4:2}+08:00"
+          cat > nea-haze.json <<JSON
+          {
+            "_comment": "Written by .github/workflows/refresh-nea-haze.yml. Do not edit by hand - it is overwritten on a schedule.",
+            "source": "Meteorological Service Singapore (MSS), the national meteorological authority under NEA",
+            "page": "https://www.weather.gov.sg/warning-haze-satellite-image/",
+            "image": "$url",
+            "captured": "$captured",
+            "refreshed": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          JSON
+          # the heredoc above is indented, so strip the leading spaces back off
+          sed -i 's/^          //' nea-haze.json
+          node -e "JSON.parse(require('fs').readFileSync('nea-haze.json','utf8'));console.log('valid JSON')"
+          cat nea-haze.json
+
+      - name: Commit only when the image has actually changed
+        run: |
+          if git diff --quiet -- nea-haze.json; then
+            echo "pointer unchanged - nothing to commit"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add nea-haze.json
+          git commit -m "chore: refresh the NEA/MSS haze-image pointer"
+          git push
