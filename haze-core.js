@@ -398,11 +398,25 @@ function fmtTime(ts) {
    sources, but both publish through JavaScript map viewers with no stable
    image URL and no open API, so they are linked rather than embedded.
 
-   Layer identifiers below were read from the live GIBS GetCapabilities, and
-   every URL was loaded and checked before shipping. Note that the daily
-   VIIRS/MODIS layers are NOT published for the current day until well after
-   the satellite's early-afternoon overpass, so the page walks back a day at a
-   time until an image loads. */
+   Layer identifiers below were read from the live GIBS GetCapabilities.
+
+   TWO TRAPS, both found by measuring real pixels rather than trusting a 200:
+
+   1. A daily layer is NOT published for the current day until well after the
+      satellite's early-afternoon overpass — and GIBS does not 404 in the
+      meantime. It answers 200 with a FULLY BLACK image. So "did it load" is
+      not the same question as "is there anything in it", and the page has to
+      sample the picture and walk back a day when it is empty.
+
+   2. Layer identifiers that look right can still be empty over OUR region.
+      Measured across three days for the Singapore/Sumatra/Kalimantan box:
+        VIIRS_SNPP_DayNightBand_ENCC ............ black every day  (rejected)
+        VIIRS_SNPP_DayNightBand_At_Sensor_Radiance  96-99% covered (chosen)
+        MODIS_Combined_Value_Added_AOD .......... 15-25% covered
+        VIIRS_NOAA20_AOD_Dark_Target_Land_Ocean . 34-39% covered   (chosen)
+      Aerosol retrieval genuinely fails under cloud, so its gaps are real
+      missing data; the day-night band should be near-total, so gaps there
+      mean the wrong product. */
 
 var GIBS_WMS = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi';
 
@@ -421,7 +435,7 @@ var SAT_LAYERS = [
 
   { key: 'aod',
     label: 'Aerosol optical depth',
-    layers: 'MODIS_Combined_Value_Added_AOD,Coastlines_15m,Reference_Labels_15m',
+    layers: 'VIIRS_NOAA20_AOD_Dark_Target_Land_Ocean,Coastlines_15m,Reference_Labels_15m',
     format: 'image/png', daily: true,
     blurb: 'The satellite’s own measurement of how much aerosol is in the column — the same physical quantity this site derives from the ground PM2.5 reading. Where the two agree, trust the number; where the satellite is much higher than the ground sensor, the smoke is aloft and has not reached the surface yet.',
     caveat: 'Retrieval fails under cloud, so gaps are missing data, not clean air.' },
@@ -435,11 +449,17 @@ var SAT_LAYERS = [
 
   { key: 'dnb',
     label: 'Night lights',
-    layers: 'VIIRS_SNPP_DayNightBand_ENCC,Coastlines_15m',
+    layers: 'VIIRS_SNPP_DayNightBand_At_Sensor_Radiance,Coastlines_15m',
     format: 'image/jpeg', daily: true,
     blurb: 'The night-time view. Singapore is the bright knot in the middle — this is the light our haze scatters back down at us, and a good companion to the light-pollution page. Thick smoke blurs and dims the city lights beneath it.',
     caveat: 'Brightness also tracks the Moon, so a full-Moon night looks lit up everywhere.' }
 ];
+/* Percentage of pixels that must be brighter than near-black before an image
+   counts as carrying data. Measured: genuinely empty tiles sit at 2-5%; a real
+   true-colour or day-night image is 90-100%; a real aerosol retrieval, which
+   is legitimately patchy under cloud, is 34-39%. 10% separates them safely. */
+var SAT_MIN_LIT = 10;
+
 function satLayer(key) {
   for (var i = 0; i < SAT_LAYERS.length; i++) if (SAT_LAYERS[i].key === key) return SAT_LAYERS[i];
   return SAT_LAYERS[0];
@@ -583,6 +603,7 @@ global.Haze = {
   /* v4.09 — the regional picture */
   SAT_BBOX: SAT_BBOX,
   SAT_LAYERS: SAT_LAYERS,
+  SAT_MIN_LIT: SAT_MIN_LIT,
   satLayer: satLayer,
   satURL: satURL,
   satInstant: satInstant,
