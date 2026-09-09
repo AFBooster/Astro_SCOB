@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Haze &amp; the Night Sky — SCOB</title>
+<meta name="description" content="Live NEA haze readings for Singapore — 24-hour PSI, 1-hour PM2.5 by region, the day's trend and a 5-day outlook — with what the smoke costs the view from the Science Centre Observatory and what it means for a public session.">
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 42px;}
+header{padding:18px 0 6px;}
+h1{font-size:22px;margin:0;color:var(--orange);}
+.card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin:12px 0;}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--gold);}
+.fact{font-size:13.5px;color:var(--mute);line-height:1.65;}
+.fact b{color:var(--white);}
+.fact p{margin:0 0 10px;}
+.fact p:last-child{margin-bottom:0;}
+.fine{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.55;}
+.pull{background:rgba(91,214,224,.1);border-left:4px solid var(--cyan);border-radius:0 10px 10px 0;padding:11px 14px;margin:12px 0;font-size:13.5px;line-height:1.6;}
+.pull b{color:var(--cyan);}
+.ok{color:var(--green);}.warn{color:var(--gold);}.bad{color:var(--red);}
+/* live readings */
+.nowgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:620px){.nowgrid{grid-template-columns:1fr;}}
+.big{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--navy3);}
+.big .k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);}
+.big .n{font-size:40px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;}
+.big .b{font-size:15px;font-weight:700;margin-top:2px;}
+.big .s{font-size:12px;color:var(--mute);margin-top:5px;line-height:1.5;}
+.big .tr{font-size:12.5px;font-weight:700;margin-top:6px;}
+.verdictbox{border-radius:12px;padding:12px 14px;margin-top:12px;font-size:14px;line-height:1.6;border:1px solid var(--line);}
+.verdictbox.ok{background:rgba(95,211,138,.13);border-color:rgba(95,211,138,.45);}
+.verdictbox.warn{background:rgba(245,197,66,.12);border-color:rgba(245,197,66,.45);}
+.verdictbox.bad{background:rgba(255,107,107,.13);border-color:rgba(255,107,107,.45);}
+.verdictbox .vh{font-weight:800;font-size:15px;display:block;margin-bottom:3px;}
+/* region strip */
+.regions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
+.reg{flex:1 1 90px;border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:var(--navy3);}
+.reg.home{border-color:var(--gold);}
+.reg .rn{font-size:11px;color:var(--mute);}
+.reg .rv{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15;}
+.reg .rp{font-size:11px;color:var(--mute);margin-top:2px;}
+/* charts */
+.chart{border:1px solid var(--line);border-radius:12px;background:#05080f;padding:10px;margin-top:10px;}
+.chart svg{width:100%;height:auto;display:block;}
+/* tables */
+table{width:100%;border-collapse:collapse;}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
+td{padding:8px 5px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;}
+td.v{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.scroll{overflow-x:auto;}
+/* controls */
+.ctl{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;align-items:center;}
+.ctl button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.ctl button.on{border-color:var(--gold);color:var(--gold);}
+.ctl label{font-size:12.5px;color:var(--mute);}
+input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:680px){.two{grid-template-columns:1fr;}}
+.mech{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--navy3);}
+.mech h3{margin:0 0 6px;font-size:14px;color:var(--cyan);}
+.mech p{font-size:13px;color:var(--mute);line-height:1.6;margin:0;}
+.mech p b{color:var(--white);}
+.foot{margin-top:24px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.stale{font-size:12px;border:1px dashed var(--line);border-radius:10px;padding:9px 11px;color:var(--mute);margin-top:10px;}
+</style>
+<!-- Social sharing / SEO metadata -->
+<link rel="canonical" href="https://afbooster.online/haze.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SCOB Night-Sky">
+<meta property="og:title" content="Haze &amp; the Night Sky — SCOB">
+<meta property="og:description" content="Live NEA haze readings for Singapore — 24-hour PSI, 1-hour PM2.5 by region, the day's trend and a 5-day outlook — with what the smoke costs the view from the Science Centre Observatory and what it means for a public session.">
+<meta property="og:url" content="https://afbooster.online/haze.html">
+<meta property="og:image" content="https://afbooster.online/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Haze &amp; the Night Sky — SCOB">
+<meta name="twitter:description" content="Live NEA haze readings for Singapore — 24-hour PSI, 1-hour PM2.5 by region, the day's trend and a 5-day outlook — with what the smoke costs the view from the Science Centre Observatory.">
+<meta name="twitter:image" content="https://afbooster.online/og-image.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌫️ Haze &amp; the night sky</h1>
+    <div class="loc">What the smoke is doing to Singapore's air right now — and what it costs the view from Jurong. Science Centre Observatory.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="light-pollution.html">🌃 Light pollution</a>
+      <a href="plan-ahead.html">🗓️ Plan ahead</a>
+      <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">NEA haze portal ↗</a>
+    </div>
+  </header>
+
+  <!-- ── LIVE ─────────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>Right now, over Jurong</h2>
+    <div id="liveBox"><div class="fact">Loading live NEA readings…</div></div>
+    <div id="regionBox"></div>
+    <div id="callBox"></div>
+    <div id="staleBox"></div>
+  </div>
+
+  <!-- ── TREND ────────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>Today so far — is it clearing or closing in?</h2>
+    <div class="fact"><p>The 24-hour PSI is a <b>rolling 24-hour average</b>, so it turns slowly and lags the real air by many hours. The 1-hour PM2.5 is what the sky looks like <b>this hour</b>. When the two disagree, the PM2.5 is telling you where the PSI is heading.</p></div>
+    <div id="trendBox"><div class="fine">Loading today's readings…</div></div>
+  </div>
+
+  <!-- ── COST TO THE SKY ──────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>What it costs tonight's sky</h2>
+    <div class="ctl" id="bortleBtns"></div>
+    <div class="ctl">
+      <label for="pmSlider">Try a PM2.5 level:</label>
+      <input type="range" id="pmSlider" min="5" max="260" step="5" value="20" aria-label="PM2.5 concentration">
+      <button type="button" id="pmLive">↺ Use the live reading</button>
+    </div>
+    <div id="costHead" class="fact"></div>
+    <div class="scroll"><table id="altTable"></table></div>
+    <div class="fine">Estimated, not measured. The model converts the PM2.5 concentration into an aerosol optical depth (allowing for how smoke particles swell in Singapore's humidity), then applies the loss along the actual path length to each altitude, and separately adds the sky brightening as the haze scatters Jurong's streetlights back down. Good to a few tenths of a magnitude on a normal night; treat it as guidance, not photometry.</div>
+  </div>
+
+  <!-- ── FORECAST ─────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>The next few nights <small style="color:var(--mute);font-weight:400;font-size:12px">— averaged across the 7–11 pm observing window</small></h2>
+    <div id="fcBox"><div class="fine">Loading the air-quality forecast…</div></div>
+  </div>
+
+  <!-- ── WHY ──────────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>Why haze hurts astronomy twice over</h2>
+    <div class="two">
+      <div class="mech">
+        <h3>1 · It dims the stars</h3>
+        <p>Smoke particles absorb and scatter starlight out of the beam before it reaches the eyepiece. Crucially this scales with <b>how much air you look through</b> — an object 20° above the horizon is seen through roughly <b>three times</b> the atmosphere of one overhead, so it loses three times as much. This is why haze finishes off a low Sagittarius globular long before it touches something at the zenith, and why "wait for it to rise higher" is even better advice on a hazy night than a clear one.</p>
+      </div>
+      <div class="mech">
+        <h3>2 · It brightens the sky</h3>
+        <p>Every particle that scatters starlight away also scatters <b>Jurong's streetlights back down at you</b>. Under a Bortle 8–9 sky there is a great deal of light to scatter, so the background gets brighter at the same time as the stars get fainter — the floor rises while the ceiling drops. On a bad night this is the larger of the two effects, and it is why a hazy Singapore sky looks orange rather than merely dim.</p>
+      </div>
+    </div>
+    <div class="pull"><b>The practical rule for the deck:</b> haze is a <i>contrast</i> problem, not a brightness problem. Anything that beats the sky by a wide margin — the Moon, Jupiter, Saturn, Venus, bright double stars, tight clusters — sails through almost untouched, though it will soften at high power. Anything faint and spread out — nebulae, galaxies, the Milky Way — loses first and loses most. On a hazy Friday, run the session on the Solar System and the doubles and save the faint fuzzies for a clear week.</div>
+    <div class="fact" style="margin-top:12px">
+      <p><b>Does the Seestar's dual-band filter help?</b> Partly. The Hα/OIII filter rejects most of the <i>added sky glow</i>, so an emission nebula still stacks usefully in haze that would defeat the eye. But no filter can recover light that was scattered out of the beam on the way in — the target itself is genuinely fainter, so exposures need to be longer for the same result. Broadband targets (galaxies, reflection nebulae) get no help at all.</p>
+      <p><b>Does haze affect seeing?</b> Not directly. Seeing is about turbulence — the steadiness of the air — and a smoke layer is not necessarily turbulent. In practice hazy Singapore evenings are often <i>calm</i>, so planetary detail can hold up well even as the deep sky disappears. That is another reason a hazy night is a Solar System night.</p>
+    </div>
+  </div>
+
+  <!-- ── HEALTH ───────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2>The bands, and what they mean for a public session</h2>
+    <div class="fact"><p>A Friday night at SCOB puts visitors of every age on an open deck for a couple of hours. That is a health question as much as an observing one, and it is keyed to the <b>24-hour PSI</b>, because that is the index NEA's official advisories use — the 1-hour PM2.5 bands are published for information only and carry no advisory of their own.</p></div>
+    <div class="scroll"><table id="bandTable"></table></div>
+    <div class="fine">Health advice is the National Environment Agency's; the session guidance is SCOB's own reading of it and is not a substitute for a duty officer's judgement or any Science Centre policy. Check <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a> for the official advisory and forecast on the night.</div>
+  </div>
+
+  <div class="foot">
+    Live readings: 24-hour PSI and 1-hour PM2.5 from the <b>National Environment Agency</b> via <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg</a>, refreshed on load and every 15 minutes. Forecast: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> air quality (global model — coarse resolution, use it for the trend across nights, not as a nowcast). Official advisories and the 24-hour PSI forecast: <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a>. Airmass after Kasten &amp; Young (1989); the aerosol extinction and sky-glow figures are SCOB's own estimate and are described in <code>haze-core.js</code>.<br>
+    Companion pages: <a href="light-pollution.html">where did all the stars go?</a> · <a href="plan-ahead.html">plan ahead — best Fridays</a> · <a href="scob-dashboard-v3.html">tonight's dashboard</a>.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+
+<script src="haze-core.js"></script>
+<script>
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+var H = window.Haze;
+var LIVE = null, PMLIVE = null, USER_PM = null;
+var BORTLE = (function () { try { var v = +localStorage.getItem('scobBortle'); return (v === 7 || v === 8 || v === 9) ? v : 8; } catch (e) { return 8; } })();
+
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function n1(v) { return (v == null || isNaN(v)) ? '—' : (Math.round(v * 10) / 10).toFixed(1); }
+function n0(v) { return (v == null || isNaN(v)) ? '—' : String(Math.round(v)); }
+
+/* ── live readings ───────────────────────────────────────────────────── */
+function renderLive() {
+  var box = $('liveBox');
+  if (!LIVE) {
+    box.innerHTML = '<div class="fact"><p>⚠️ Could not reach the NEA feed — you may be offline, or data.gov.sg may be having a moment. Everything below still works: use the PM2.5 slider to see what a given level would cost the sky, and check <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a> for the live number.</p></div>';
+    return;
+  }
+  var psi = LIVE.psi ? LIVE.psi[H.HOME_REGION] : null;
+  var pm  = LIVE.pm  ? LIVE.pm[H.HOME_REGION]  : null;
+  var pb  = H.psiBand(psi), mb = H.pmBand(pm);
+  box.innerHTML =
+    '<div class="nowgrid">'
+    + '<div class="big"><div class="k">24-hour PSI · west</div>'
+      + '<div class="n ' + (pb ? pb.cls : '') + '">' + n0(psi) + '</div>'
+      + '<div class="b ' + (pb ? pb.cls : '') + '">' + (pb ? pb.name : 'no reading') + '</div>'
+      + '<div class="s">' + (pb ? esc(pb.sky) : '') + '</div>'
+      + '<div class="s" style="opacity:.75">The index NEA\'s health advisories use. Rolling 24-hour average'
+        + (LIVE.psiTime ? ' · updated ' + H.fmtTime(LIVE.psiTime) : '') + '.</div>'
+      + '<div class="tr" id="psiTrend"></div></div>'
+    + '<div class="big"><div class="k">1-hour PM2.5 · west</div>'
+      + '<div class="n ' + (mb ? mb.cls : '') + '">' + n0(pm) + '<span style="font-size:16px;font-weight:600;color:var(--mute)"> µg/m³</span></div>'
+      + '<div class="b ' + (mb ? mb.cls : '') + '">' + (mb ? mb.name : 'no reading') + '</div>'
+      + '<div class="s">What the sky looks like <b>this hour</b> — the number the view actually follows.</div>'
+      + '<div class="s" style="opacity:.75">Informational band; no health advisory attached'
+        + (LIVE.pmTime ? ' · updated ' + H.fmtTime(LIVE.pmTime) : '') + '.</div>'
+      + '<div class="tr" id="pmTrend"></div></div>'
+    + '</div>';
+
+  /* five-region strip — where the smoke actually is */
+  var rb = $('regionBox');
+  if (LIVE.pm || LIVE.psi) {
+    rb.innerHTML = '<div class="regions">' + H.REGIONS.map(function (r) {
+      var p = LIVE.psi ? LIVE.psi[r] : null, m = LIVE.pm ? LIVE.pm[r] : null;
+      var b = H.psiBand(p) || H.pmBand(m);
+      return '<div class="reg' + (r === H.HOME_REGION ? ' home' : '') + '">'
+        + '<div class="rn">' + H.REGION_LABEL[r] + (r === H.HOME_REGION ? ' · SCOB' : '') + '</div>'
+        + '<div class="rv ' + (b ? b.cls : '') + '">' + n0(p) + '</div>'
+        + '<div class="rp">PM2.5 ' + n0(m) + '</div></div>';
+    }).join('') + '</div>'
+    + '<div class="fine">PSI large, 1-hour PM2.5 below. A big spread across the island means the smoke is arriving on a wind and the west may be next — or may be clearing first. <b>Central</b> and <b>south</b> matter to us beyond their own air: that is where the city light dome sits, and haze over it scatters Singapore\'s own lights back onto our sky.</div>';
+  } else rb.innerHTML = '';
+
+  /* the public-session call */
+  var call = H.sessionCall(psi);
+  $('callBox').innerHTML = call
+    ? '<div class="verdictbox ' + call.cls + '"><span class="vh">' + esc(call.verdict) + '</span>' + esc(call.note)
+      + '<div style="font-size:12.5px;color:var(--mute);margin-top:7px">NEA advice at this level: ' + esc(H.psiBand(psi).health) + '</div></div>'
+    : '';
+}
+
+/* ── trend ───────────────────────────────────────────────────────────── */
+function sparkline(series, label, breaks) {
+  if (!series || series.length < 2) return '<div class="fine">Not enough readings yet today to draw a trend.</div>';
+  var W = 640, Ht = 130, PADL = 30, PADB = 20, PADT = 10;
+  var vals = series.map(function (p) { return p.v; });
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  lo = Math.max(0, Math.floor((lo - 5) / 10) * 10); hi = Math.ceil((hi + 5) / 10) * 10;
+  if (hi - lo < 20) hi = lo + 20;
+  var X = function (i) { return PADL + i * (W - PADL - 6) / (series.length - 1); };
+  var Y = function (v) { return PADT + (1 - (v - lo) / (hi - lo)) * (Ht - PADT - PADB); };
+  var s = '';
+  /* banded background so the reader can see which band the line sits in —
+     the PSI bands break at 50/100, the 1-hour PM2.5 bands at 55/150 */
+  var bk = breaks || [50, 100];
+  [[0, bk[0], '#39c97e'], [bk[0], bk[1], '#f5c542'], [bk[1], 1e9, '#ff6b6b']].forEach(function (b) {
+    var a = Math.max(b[0], lo), c = Math.min(b[1], hi);
+    if (c > a) s += '<rect x="' + PADL + '" y="' + Y(c).toFixed(1) + '" width="' + (W - PADL - 6) + '" height="' + (Y(a) - Y(c)).toFixed(1) + '" fill="' + b[2] + '" opacity="0.07"/>';
+  });
+  s += '<polyline fill="none" stroke="#5bd6e0" stroke-width="2" points="'
+     + series.map(function (p, i) { return X(i).toFixed(1) + ',' + Y(p.v).toFixed(1); }).join(' ') + '"/>';
+  var last = series[series.length - 1];
+  s += '<circle cx="' + X(series.length - 1).toFixed(1) + '" cy="' + Y(last.v).toFixed(1) + '" r="3.5" fill="#f5c542"/>';
+  s += '<text x="' + PADL + '" y="' + (Y(hi) + 4) + '" fill="#8ea3d8" font-size="9" text-anchor="end" dx="-4">' + hi + '</text>';
+  s += '<text x="' + PADL + '" y="' + (Y(lo) + 4) + '" fill="#8ea3d8" font-size="9" text-anchor="end" dx="-4">' + lo + '</text>';
+  /* a few hour labels */
+  var step = Math.max(1, Math.round(series.length / 6));
+  for (var i = 0; i < series.length; i += step) {
+    s += '<text x="' + X(i).toFixed(1) + '" y="' + (Ht - 5) + '" fill="#8ea3d8" font-size="9" text-anchor="middle">' + H.fmtTime(series[i].t).replace(':00', '') + '</text>';
+  }
+  return '<div class="chart"><svg viewBox="0 0 ' + W + ' ' + Ht + '" role="img" aria-label="'
+       + esc(label) + '">' + s + '</svg></div>';
+}
+
+function renderTrend(psiSeries, pmSeries) {
+  var out = '';
+  var tp = H.trendOf(psiSeries, 4), tm = H.trendOf(pmSeries, 3);
+  if (tm) {
+    var el = $('pmTrend');
+    if (el) el.innerHTML = '<span class="' + tm.cls + '">' + tm.arrow + ' ' + tm.text + '</span> '
+      + '<span style="color:var(--mute);font-weight:400">(' + (tm.delta >= 0 ? '+' : '') + n0(tm.delta) + ' µg/m³ ' + tm.since + ')</span>';
+  }
+  if (tp) {
+    var el2 = $('psiTrend');
+    if (el2) el2.innerHTML = '<span class="' + tp.cls + '">' + tp.arrow + ' ' + tp.text + '</span> '
+      + '<span style="color:var(--mute);font-weight:400">(' + (tp.delta >= 0 ? '+' : '') + n0(tp.delta) + ' ' + tp.since + ')</span>';
+  }
+  if (pmSeries && pmSeries.length > 1) {
+    out += '<div style="font-size:13px;font-weight:700;margin-top:6px">1-hour PM2.5 · west (µg/m³)</div>'
+         + sparkline(pmSeries, "Today's 1-hour PM2.5 readings for the west of Singapore", [55, 150]);
+  }
+  if (psiSeries && psiSeries.length > 1) {
+    out += '<div style="font-size:13px;font-weight:700;margin-top:12px">24-hour PSI · west</div>'
+         + sparkline(psiSeries, "Today's 24-hour PSI readings for the west of Singapore", [50, 100]);
+  }
+  $('trendBox').innerHTML = out || '<div class="fine">Today\'s readings could not be loaded. The live figures above (if present) are still current.</div>';
+}
+
+/* ── cost to the sky ─────────────────────────────────────────────────── */
+var ALTS = [
+  [80, 'Overhead (zenith)'],
+  [60, 'High — the best of the sky'],
+  [45, 'Well placed'],
+  [30, 'Getting low'],
+  [20, 'Low — into the murk'],
+  [12, 'Just clearing the trees']
+];
+function lpLimitMag(b) { return b >= 9 ? 8.5 : (b >= 8 ? 9.5 : 10.5); }
+
+function renderCost() {
+  var pm = (USER_PM != null) ? USER_PM : (PMLIVE != null ? PMLIVE : 20);
+  var rh = 82;   /* a typical Singapore evening; the model is not very sensitive to it */
+  var mb = H.pmBand(pm);
+  var base = lpLimitMag(BORTLE);
+  var zen = H.excess(pm, rh, 80, BORTLE);
+
+  $('costHead').innerHTML = '<p>At <b class="' + (mb ? mb.cls : '') + '">' + n0(pm) + ' µg/m³</b> PM2.5'
+    + ((USER_PM == null && PMLIVE != null) ? ' <span style="color:var(--mute)">(the live west reading)</span>' : ' <span style="color:var(--mute)">(your slider setting)</span>')
+    + ' under a <b>Bortle ' + BORTLE + '</b> sky, the aerosol layer has an optical depth of about <b>' + n1(H.aod(pm, rh)) + '</b>. '
+    + 'Compared with a clean Singapore night, that dims starlight overhead by about <b>' + n1(zen.ext) + ' magnitudes</b> and brightens the background by a further <b>' + n1(zen.glow) + '</b> — '
+    + 'and both get worse the lower you look:</p>';
+
+  var rows = ALTS.map(function (a) {
+    var im = H.excess(pm, rh, a[0], BORTLE);
+    var lim = Math.max(3.5, base - im.total);
+    var cls = im.total < 0.4 ? 'ok' : (im.total < 1.2 ? 'warn' : 'bad');
+    var verdict = im.total < 0.4 ? 'Barely touched'
+                : im.total < 0.9 ? 'Faint targets soften'
+                : im.total < 1.8 ? 'Deep sky struggling'
+                : 'Deep sky gone';
+    return '<tr><td><b>' + a[0] + '°</b> <span style="color:var(--mute)">' + a[1] + '</span></td>'
+      + '<td class="v">' + n1(H.airmass(a[0])) + '×</td>'
+      + '<td class="v ' + cls + '">−' + n1(im.total) + '</td>'
+      + '<td class="v">' + n1(lim) + '</td>'
+      + '<td class="' + cls + '" style="font-weight:700">' + verdict + '</td></tr>';
+  }).join('');
+
+  $('altTable').innerHTML =
+    '<tr><th>Altitude</th><th>Air path</th><th>Magnitudes lost to haze</th><th>Faintest visible</th><th>Verdict</th></tr>' + rows
+    + '<tr><td colspan="5" style="border-bottom:0;padding-top:10px;font-size:12.5px;color:var(--mute)">'
+    + 'On a clean night this sky reaches about magnitude <b style="color:var(--white)">' + base.toFixed(1) + '</b> through the telescopes, and the figures above are the loss <i>on top of</i> that — there is always some aerosol over Singapore, and the Bortle limit already allows for an ordinary local night. '
+    + '“Air path” is how much atmosphere you look through compared with straight up — which is why the same haze costs an object near the horizon three times what it costs one overhead.</td></tr>';
+}
+
+/* ── forecast ────────────────────────────────────────────────────────── */
+function renderForecast(nights) {
+  if (!nights || !nights.length) {
+    $('fcBox').innerHTML = '<div class="fine">The air-quality forecast could not be loaded — you may be offline. NEA publishes a 24-hour PSI forecast at <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a>.</div>';
+    return;
+  }
+  var WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var maxPm = Math.max(30, Math.max.apply(null, nights.map(function (n) { return n.pm25 || 0; })));
+  var rows = nights.map(function (n) {
+    var p = n.date.split('-').map(Number);
+    var dt = new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+    var wd = WD[dt.getUTCDay()], fri = (wd === 'Fri');
+    var b = H.pmBand(n.pm25);
+    var im = H.excess(n.pm25, 82, 45, BORTLE);
+    var pctW = Math.max(3, Math.round((n.pm25 || 0) / maxPm * 100));
+    return '<tr' + (fri ? ' style="background:rgba(245,197,66,.06)"' : '') + '>'
+      + '<td><b>' + wd + '</b> ' + p[2] + ' ' + MON[p[1] - 1] + (fri ? ' <span style="color:var(--gold);font-size:11px">session</span>' : '') + '</td>'
+      + '<td style="min-width:110px"><div style="background:var(--navy);border:1px solid var(--line);border-radius:4px;height:10px;overflow:hidden">'
+        + '<i style="display:block;height:100%;width:' + pctW + '%;background:' + (b && b.cls === 'ok' ? '#39c97e' : b && b.cls === 'warn' ? '#f5c542' : '#ff6b6b') + '"></i></div></td>'
+      + '<td class="v ' + (b ? b.cls : '') + '">' + n0(n.pm25) + '</td>'
+      + '<td class="v">' + n1(n.aod) + '</td>'
+      + '<td class="v ' + (im.total < 0.5 ? 'ok' : im.total < 1.2 ? 'warn' : 'bad') + '">−' + n1(im.total) + '</td></tr>';
+  }).join('');
+  $('fcBox').innerHTML = '<div class="scroll"><table>'
+    + '<tr><th>Night</th><th></th><th>PM2.5 <span style="text-transform:none">µg/m&sup3;</span></th><th>Aerosol depth</th><th>Mag lost at 45°</th></tr>' + rows + '</table></div>'
+    + '<div class="fine">Open-Meteo\'s global air-quality model, averaged over 7–11 pm each night. Its “aerosol optical depth” is measured by satellite and is the same quantity the model above derives from the ground reading — when the two agree, have more confidence in the forecast. At ~40 km resolution this is a <b>trend across nights</b>, not a Jurong nowcast; for tonight, trust the live NEA reading at the top of this page and NEA\'s own 24-hour PSI forecast.</div>';
+}
+
+/* ── bands table ─────────────────────────────────────────────────────── */
+(function renderBands() {
+  var lo = 0;
+  var rows = H.PSI_BANDS.map(function (b) {
+    var rng = (b.max > 1000) ? 'Above ' + lo : lo + '–' + b.max;
+    /* The Unhealthy band spans two different session calls, so show both
+       rather than picking one and quietly misleading the duty volunteer. */
+    var top = (b.max > 1000) ? lo + 100 : b.max;
+    var cA = H.sessionCall(Math.max(lo, 1)), cB = H.sessionCall(top);
+    var callTxt = (cA && cB && cA.verdict !== cB.verdict)
+      ? esc(cA.verdict) + ' <span style="color:var(--mute);font-weight:400">up to ' + Math.floor((lo + top) / 2 / 10) * 10 + ', then</span> ' + esc(cB.verdict)
+      : (cB ? esc(cB.verdict) : '—');
+    lo = b.max + 1;
+    return '<tr><td class="v ' + b.cls + '">' + rng + '</td>'
+      + '<td class="v ' + b.cls + '">' + b.name + '</td>'
+      + '<td>' + esc(b.health) + '</td>'
+      + '<td><b>' + callTxt + '</b></td>'
+      + '<td style="color:var(--mute)">' + esc(b.sky) + '</td></tr>';
+  }).join('');
+  $('bandTable').innerHTML = '<tr><th>24-h PSI</th><th>Band</th><th>NEA health advice</th><th>SCOB session</th><th>What the sky does</th></tr>' + rows;
+})();
+
+/* ── controls ────────────────────────────────────────────────────────── */
+function renderBortle() {
+  $('bortleBtns').innerHTML = [7, 8, 9].map(function (b) {
+    return '<button type="button" data-b="' + b + '"' + (b === BORTLE ? ' class="on"' : '') + '>Bortle ' + b
+      + (b === 8 ? ' — typical Jurong' : (b === 9 ? ' — inner city' : ' — outer edge')) + '</button>';
+  }).join('');
+  Array.prototype.forEach.call($('bortleBtns').querySelectorAll('button'), function (x) {
+    x.addEventListener('click', function () {
+      BORTLE = +x.getAttribute('data-b');
+      try { localStorage.setItem('scobBortle', BORTLE); } catch (e) {}
+      renderBortle(); renderCost();
+      if (window._fcNights) renderForecast(window._fcNights);
+    });
+  });
+}
+$('pmSlider').addEventListener('input', function () { USER_PM = +this.value; renderCost(); });
+$('pmLive').addEventListener('click', function () {
+  USER_PM = null;
+  if (PMLIVE != null) $('pmSlider').value = Math.min(260, Math.max(5, Math.round(PMLIVE)));
+  renderCost();
+});
+
+/* ── boot ────────────────────────────────────────────────────────────── */
+renderBortle();
+renderCost();
+
+function load() {
+  H.fetchNow().then(function (d) {
+    LIVE = d;
+    PMLIVE = (d.pm && d.pm[H.HOME_REGION] != null) ? d.pm[H.HOME_REGION]
+           : (d.psi && d.psi[H.HOME_REGION] != null ? H.pm25FromPSI(d.psi[H.HOME_REGION]) : null);
+    if (PMLIVE != null && USER_PM == null) $('pmSlider').value = Math.min(260, Math.max(5, Math.round(PMLIVE)));
+    renderLive(); renderCost();
+    if (!d.pm && d.psi) {
+      $('staleBox').innerHTML = '<div class="stale">Only the 24-hour PSI came back this time — the 1-hour PM2.5 figure used below is estimated from it by inverting the PSI sub-index, which is reliable during a smoke episode but not on a hot, ozone-driven afternoon.</div>';
+    }
+  }).catch(function () { LIVE = null; renderLive(); });
+
+  Promise.all([
+    H.fetchTrend('psi', H.HOME_REGION).catch(function () { return null; }),
+    H.fetchTrend('pm25', H.HOME_REGION).catch(function () { return null; })
+  ]).then(function (r) { renderTrend(r[0], r[1]); });
+
+  H.fetchForecast(5).then(function (h) {
+    window._fcNights = H.nightlyFromForecast(h, 19, 23);
+    renderForecast(window._fcNights);
+  }).catch(function () { renderForecast(null); });
+}
+load();
+setInterval(load, 15 * 60000);
+</script>
+<script src="version.js"></script>
+</body>
+</html>

@@ -11,3 +11,8 @@ desktop.ini
 # Temp
 *.tmp
 *.log
+
+# Files the Claude desktop app drops into a connected folder. Never part of the
+# site — without this, publish.bat's `git add -A` would publish them.
+Claude outputs/
+.assets.new

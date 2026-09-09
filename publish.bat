@@ -15,10 +15,26 @@ REM ============================================================================
 setlocal
 cd /d "%~dp0"
 
-REM --- clear a stale git lock left by a crashed/earlier git process ---
-if exist ".git\index.lock" (
-  echo Removing stale .git\index.lock ...
-  del /f /q ".git\index.lock"
+REM --- clear stale git locks left by a crashed/earlier git process ---
+REM  index.lock blocks "git add"/"git commit"; HEAD.lock and the per-branch
+REM  refs/heads/*.lock block the ref update at the END of a commit. Clearing
+REM  only index.lock (as this script did before v4.08) let a stale HEAD.lock
+REM  fail every commit silently -- git add succeeded, git commit did not, and
+REM  the script pushed on regardless, which looks like a publish but ships
+REM  nothing. All of them are cleared now.
+for %%L in (".git\index.lock" ".git\HEAD.lock" ".git\ORIG_HEAD.lock" ".git\config.lock") do (
+  if exist %%L (
+    echo Removing stale %%L ...
+    del /f /q %%L
+  )
+)
+if exist ".git\refs\heads\*.lock" (
+  echo Removing stale branch ref lock^(s^) ...
+  del /f /q ".git\refs\heads\*.lock"
+)
+if exist ".git\refs\remotes\origin\*.lock" (
+  echo Removing stale remote ref lock^(s^) ...
+  del /f /q ".git\refs\remotes\origin\*.lock"
 )
 
 REM --- commit message: from the argument, else ask, else a default ---
@@ -63,8 +79,20 @@ echo ============================================================
 echo  Committing and pushing
 echo ============================================================
 git add -A
-git commit -m "%MSG%"
-if errorlevel 1 echo   ^(Nothing new to commit - pushing any pending commits.^)
+
+REM  Tell "nothing to commit" (fine) apart from "the commit FAILED" (not fine).
+REM  Before v4.08 both were treated as fine, so a blocked commit was reported as
+REM  "nothing new to commit" and the script pushed the PREVIOUS commit instead.
+git diff --cached --quiet
+if errorlevel 1 (set "HAVESTAGED=1") else (set "HAVESTAGED=")
+
+if defined HAVESTAGED (
+  git commit -m "%MSG%"
+  if errorlevel 1 goto :commitfail
+  echo Committed.
+) else (
+  echo   ^(Nothing new to commit - pushing any pending commits.^)
+)
 
 REM --- integrate any changes pushed from elsewhere, so the push isn't rejected ---
 echo Syncing with GitHub before pushing...
@@ -121,6 +149,18 @@ goto :eof
 echo.
 echo *** Local checks FAILED - fix the problem above before publishing. ***
 echo *** Nothing was committed or pushed. ***
+echo.
+pause
+exit /b 1
+
+:commitfail
+echo.
+echo *** git commit FAILED - nothing was pushed. ***
+echo   There were staged changes, but git refused to commit them.
+echo   Read git's message just above. The usual cause is a stale lock file
+echo   left behind by a crashed git process:
+echo       del /f /q .git\index.lock .git\HEAD.lock
+echo   ^(this script now clears those automatically before it starts.^)
 echo.
 pause
 exit /b 1
