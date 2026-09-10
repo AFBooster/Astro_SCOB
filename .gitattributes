@@ -6,3 +6,10 @@
 # (The previous "-text" marked it binary, so Git compared raw bytes and CRLF≠LF
 #  churned forever; "text eol=lf" makes Git normalise and treat them as identical.)
 LICENSE text eol=lf
+
+# nea-haze.json is rewritten by a GitHub Action running on Linux (LF), then
+# checked out on Windows (CRLF) - so it showed as modified on every pull, and
+# the Action's own "commit only if changed" test would have seen a difference
+# on line endings alone and pushed a pointless commit every three hours.
+# Same treatment as LICENSE above: normalise to LF so both sides agree.
+*.json text eol=lf
