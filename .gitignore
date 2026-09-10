@@ -16,3 +16,10 @@ desktop.ini
 # site — without this, publish.bat's `git add -A` would publish them.
 Claude outputs/
 .assets.new
+
+# Stray downloads that land in the project folder (a browser saving here, a
+# capabilities dump, an API response kept for reference). sitemap.xml is the
+# only .xml the site actually ships, so it is re-included below.
+*.xml
+!sitemap.xml
+GetCapabilities.xml
