@@ -46,11 +46,21 @@ const darkMin   = (crossMs(sunF, -18,     base, base + 6 * 3600000) - base) / 60
 ok('Sunset (min after midnight SGT)', sunsetMin, 19 * 60 + 16, 3);   // 7:16pm
 ok('Astro-dark (min after midnight SGT)', darkMin, 20 * 60 + 30, 3); // 8:30pm
 
-console.log('Comet 10P/Tempel 2 (elements from MPEC 2024-D126; ref TheSkyLive 2026-06-15)');
+console.log('Comet 10P/Tempel 2 (JPL solution K265/56; ref JPL Horizons geocentric apparent place, equinox of date)');
 const c10p = A.COMETS.find(c => c.id === '10p');
 const ce = A.cometEq(c10p, new Date(Date.UTC(2026, 5, 15, 0, 0, 0)));
-ok('Comet 10P RA (deg)', ce.ra, 308.94, 0.6);
-ok('Comet 10P Dec (deg)', ce.dec, -9.2, 0.4);
+ok('Comet 10P RA 15 Jun (deg)', ce.ra, 309.341, 0.05);
+ok('Comet 10P Dec 15 Jun (deg)', ce.dec, -9.113, 0.05);
+/* Closest approach (0.42 au) is where a frame error shows most: before the v4.13
+   precession fix this point was 76 arc-minutes out. Keep it tight. */
+const ceAug = A.cometEq(c10p, new Date(Date.UTC(2026, 7, 10, 0, 0, 0)));
+ok('Comet 10P RA 10 Aug, closest approach (deg)', ceAug.ra, 330.463, 0.05);
+ok('Comet 10P Dec 10 Aug, closest approach (deg)', ceAug.dec, -27.901, 0.05);
+const ceOct = A.cometEq(c10p, new Date(Date.UTC(2026, 9, 19, 0, 0, 0)));
+ok('Comet 10P RA 19 Oct (deg)', ceOct.ra, 347.117, 0.05);
+ok('Comet 10P Dec 19 Oct (deg)', ceOct.dec, -29.762, 0.05);
+/* COBS weekly median for 28 Sep - 4 Oct 2026 was 10.1 (16 reports). */
+ok('Comet 10P mag 2 Oct (COBS median 10.1)', A.cometEq(c10p, new Date(Date.UTC(2026, 9, 2, 12, 0, 0))).mag, 10.1, 0.3);
 ok('Comet 10P mag (~binocular)', ce.mag, 9.7, 0.6);
 ok('activeComets in-window count', A.activeComets(new Date(Date.UTC(2026, 6, 15))).length, 1, 0.5);
 ok('activeComets out-of-window count', A.activeComets(new Date(Date.UTC(2027, 0, 1))).length, 0, 0.5);

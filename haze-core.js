@@ -214,6 +214,79 @@ function excess(pm25, rh, alt, bortle) {
   };
 }
 
+/* ── Ground reading vs. whole column ──────────────────────────────────────
+   v4.13. Everything above turns a GROUND PM2.5 reading into an optical depth
+   by assuming the smoke sits in a ~1.2 km boundary layer. That is the right
+   picture when the smoke has arrived — and the wrong one when it has not.
+
+   Smoke in transit rides ABOVE the surface layer. On those nights the ground
+   sensor reads clean while starlight still has to cross the whole plume: the
+   week this was written, the model showed surface PM2.5 falling to ~40 µg/m³
+   while the column optical depth stayed near 1.9 — which the surface-only
+   model scored as a 0.3-magnitude night when it was really a 2-magnitude one.
+
+   PM2.5 is the right number for lungs. Column optical depth is the right
+   number for telescopes. So the two effects are now fed from different data:
+
+     EXTINCTION  <- the whole column (model/satellite aerosol optical depth),
+                    because every particle between you and the star counts;
+     SKY GLOW    <- the ground reading, because the light being scattered back
+                    is Jurong's, and it only reaches the lowest kilometre or so.
+
+   Each estimate is judged against its OWN clean baseline and the larger
+   evidence of smoke wins — so adding the column can only reveal smoke the
+   ground sensor missed, never explain away smoke the ground sensor found. */
+
+/* An ordinary, non-haze Singapore night. AERONET puts the local background at
+   roughly 0.3 at 500-550 nm (marine aerosol, humidity, the city itself), and
+   the Bortle limits this app quotes already assume that much. */
+var CLEAN_AOD = 0.30;
+
+/* o = { pm25, aod, rh, alt, bortle } — pm25 from the ground, aod for the column;
+   either may be missing. Returns null only when both are. */
+function skyCost(o) {
+  o = o || {};
+  var rh = o.rh, alt = (o.alt == null ? 60 : o.alt), b = o.bortle || 8;
+  var hasS = (typeof o.pm25 === 'number' && !isNaN(o.pm25) && o.pm25 > 0);
+  var hasC = (typeof o.aod === 'number' && !isNaN(o.aod) && o.aod >= 0);
+  if (!hasS && !hasC) return null;
+
+  var tS = hasS ? aod(o.pm25, rh) : null;        /* boundary layer, from the sensor */
+  var tC = hasC ? o.aod : null;                  /* whole column, from the model    */
+  var exS = hasS ? Math.max(0, tS - aod(CLEAN_PM, rh)) : 0;
+  var exC = hasC ? Math.max(0, tC - CLEAN_AOD) : 0;
+  var exTau = Math.max(exS, exC);
+
+  var X = Math.min(airmass(alt), 6);
+  var ext = 1.086 * exTau * X;
+
+  /* Glow needs smoke where the streetlight is. With no ground reading, assume
+     half the excess column is low enough to matter. */
+  var gRef = skyGlow(aod(CLEAN_PM, rh), b);
+  var glow = hasS ? Math.max(0, skyGlow(tS, b) - gRef)
+                  : Math.max(0, skyGlow(aod(CLEAN_PM, rh) + 0.5 * exC, b) - gRef);
+
+  /* "Aloft": the column carries clearly more smoke than the ground can account
+     for. Worth saying out loud, because it is the case where looking at the PSI
+     and deciding the night is fine gets it wrong. */
+  var aloft = hasS && hasC && (exC - exS) > 0.35 && exC > 2 * exS;
+
+  return {
+    tauSurface: tS, tauColumn: tC, excessTau: exTau,
+    ext: ext, glow: glow, total: Math.min(6, ext + 0.7 * glow),
+    aloft: aloft, basis: (exC > exS ? 'column' : 'surface')
+  };
+}
+
+/* How one night's haze reads for a planner, in words. */
+function costLabel(mag) {
+  if (mag == null || isNaN(mag)) return null;
+  if (mag < 0.3) return { cls: 'ok',   word: 'clean',    note: 'no real haze penalty' };
+  if (mag < 0.8) return { cls: 'warn', word: 'hazy',     note: 'faint targets soften' };
+  if (mag < 1.6) return { cls: 'bad',  word: 'smoky',    note: 'deep sky struggling' };
+  return             { cls: 'bad',  word: 'thick',    note: 'Moon, planets and doubles only' };
+}
+
 /* ── NEA readings (data.gov.sg) ───────────────────────────────────────────
    Tries the current v2 real-time endpoint first and falls back to the legacy
    v1 one, and reads either response shape — v2 wraps the payload in `.data`
@@ -349,7 +422,12 @@ function fetchForecast(days) {
    observing window (default 7–11 pm) — which is the only part of the day a
    session cares about. */
 function nightlyFromForecast(hourly, fromHour, toHour) {
-  var f = fromHour == null ? 19 : fromHour, t = toHour == null ? 23 : toHour;
+  /* Default window is 5 pm - 11 pm, deliberately wider than the 7:30 - 10 session.
+     Checked against a week of NEA readings (v4.13): the model's DAILY level was
+     close (mean 48 vs 51 measured), but its HOUR-BY-HOUR timing was not
+     (correlation 0.38). A plume it brings in at 8 pm may really arrive at 5 or
+     at 11, so a narrow window would read precision the model does not have. */
+  var f = fromHour == null ? 17 : fromHour, t = toHour == null ? 23 : toHour;
   var byDay = {};
   hourly.time.forEach(function (ts, i) {
     var day = ts.slice(0, 10), hr = +ts.slice(11, 13);
@@ -623,6 +701,9 @@ global.Haze = {
   impact: impact,
   excess: excess,
   CLEAN_PM: CLEAN_PM,
+  CLEAN_AOD: CLEAN_AOD,
+  skyCost: skyCost,
+  costLabel: costLabel,
   fetchNow: fetchNow,
   fetchTrend: fetchTrend,
   trendOf: trendOf,

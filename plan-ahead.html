@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Plan Ahead — Best Session Fridays — SCOB</title>
-<meta name="description" content="Compares the next several Friday observatory nights by Moon phase and weather forecast, so you can pick the best night for a session.">
+<meta name="description" content="Compares the next several Friday observatory nights by Moon phase, weather and haze forecast, so you can pick the best night for a session.">
 <link rel="stylesheet" href="scob-theme.css">
 <style>
 *{box-sizing:border-box;margin:0;}
@@ -20,10 +20,13 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .date .d{font-size:16px;font-weight:800;}
 .date .sub{font-size:12px;color:var(--mute);}
 .moon,.wx{flex:1 1 150px;font-size:13px;}
+.hz{flex:1 1 100%;font-size:12.5px;color:var(--mute);border-top:1px dashed var(--line);padding-top:8px;}
+.hz b{color:var(--white);}
 .moon b,.wx b{color:var(--gold);}
 .badge{display:inline-block;font-size:11px;font-weight:800;border-radius:7px;padding:3px 8px;margin-top:4px;}
 .badge.dark{background:rgba(95,211,138,.16);color:#9be9b8;}
 .badge.moon{background:rgba(245,197,66,.16);color:#f7d984;}
+.badge.smoke{background:rgba(255,107,107,.16);color:#ffb4b4;}
 .v-ok{color:#9be9b8;} .v-warn{color:#f7d984;} .v-bad{color:#ffb4b4;} .v-none{color:var(--mute);}
 .note{font-size:12.5px;color:var(--mute);margin:8px 0 4px;}
 .foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
@@ -33,34 +36,37 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SCOB Night-Sky">
 <meta property="og:title" content="Plan Ahead — Best Session Fridays — SCOB">
-<meta property="og:description" content="Compares the next several Friday observatory nights by Moon phase and weather forecast, so you can pick the best night for a session.">
+<meta property="og:description" content="Compares the next several Friday observatory nights by Moon phase, weather and haze forecast, so you can pick the best night for a session.">
 <meta property="og:url" content="https://afbooster.online/plan-ahead.html">
 <meta property="og:image" content="https://afbooster.online/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Plan Ahead — Best Session Fridays — SCOB">
-<meta name="twitter:description" content="Compares the next several Friday observatory nights by Moon phase and weather forecast, so you can pick the best night for a session.">
+<meta name="twitter:description" content="Compares the next several Friday observatory nights by Moon phase, weather and haze forecast, so you can pick the best night for a session.">
 <meta name="twitter:image" content="https://afbooster.online/og-image.png">
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>🗓️ Plan Ahead — Best Session Fridays</h1>
-    <div class="loc">The next Friday nights compared by Moon &amp; weather, so you can pick the best one for a session. Science Centre Observatory, Jurong.</div>
+    <div class="loc">The next Friday nights compared by Moon, weather &amp; haze, so you can pick the best one for a session. Science Centre Observatory, Jurong.</div>
     <div class="backrow">
       <a href="scob-dashboard-v3.html">← Dashboard</a>
       <a href="tonights-tour.html">🎟️ Tonight's Tour</a>
+      <a href="haze.html">🌫️ Haze</a>
     </div>
   </header>
   <div class="note" id="status">Loading the forecast…</div>
   <div id="list"></div>
   <div class="foot">
-    Darker Moon = better for faint deep-sky; a bright Moon is great for the Moon itself, planets &amp; double stars. Weather is only available for the next ~16 days; beyond that, judge by the Moon and the monsoon season. Moon phases computed on-device · weather from Open-Meteo.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+    Darker Moon = better for faint deep-sky; a bright Moon is great for the Moon itself, planets &amp; double stars. Weather is only available for the next ~16 days; beyond that, judge by the Moon and the monsoon season. <b>Haze</b> reaches only about five nights ahead, so it normally covers just the coming Friday: it is the loss at 45° up, from the larger of the ground PM2.5 and the whole-column smoke, and it is a model trend, not a measurement — see the <a href="haze.html">haze page</a> for how far to trust it. A smoky Friday is never picked as the deep-sky night. Moon phases computed on-device · weather and air quality from Open-Meteo.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 <script src="astro-core.js"></script>
+<script src="haze-core.js"></script>
 <script>
 "use strict";
-var A=window.Astro, pad=A.pad;
+var A=window.Astro, pad=A.pad, H=window.Haze||null;
+var WXDONE=false, HZDONE=false;
 var WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
 function fridays(n){var d=sgtNow();var add=(5-d.getDay()+7)%7;if(add===0&&d.getHours()>22)add=7;d.setDate(d.getDate()+add);var out=[];for(var i=0;i<n;i++){out.push(new Date(d));d.setDate(d.getDate()+7);}return out;}
@@ -70,25 +76,45 @@ function ymd(x){return x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate
 var FRI=fridays(6);
 // moon per Friday (8:30pm SGT)
 var data=FRI.map(function(f){var date=new Date(Date.UTC(f.getFullYear(),f.getMonth(),f.getDate(),20-8,30,0));var s=A.sky(date);
-  return {f:f,illum:s.moon.illum,wax:s.moon.waxing,wx:null};});
+  return {f:f,illum:s.moon.illum,wax:s.moon.waxing,wx:null,hz:null};});
 
 function verdict(cc,pp){if(cc==null)return['v-none','—'];if(cc<=30&&(pp==null||pp<30))return['v-ok','GO — mostly clear'];if(cc<=65&&(pp==null||pp<55))return['v-warn','CAUTION — partial cloud'];return['v-bad','NO-GO — cloudy/showery'];}
 
+function hazeLine(d,i){
+  /* One line per Friday. Only nights the air-quality model reaches get a figure. */
+  if(d.hz){var L=d.hz.label, c=(L.cls==='ok'?'v-ok':L.cls==='warn'?'v-warn':'v-bad');
+    return '🌫️ Haze: <span class="'+c+'"><b style="color:inherit">'+L.word+'</b></span>'
+      +(d.hz.cost>=0.05?' — about <b>−'+d.hz.cost.toFixed(1)+' mag</b> at 45° up':' — no penalty')
+      +(d.hz.aloft?' · <b>smoke aloft</b> (the ground reading will look better than the sky)':'')
+      +' <span style="opacity:.8">· '+L.note+'</span>';}
+  if(!HZDONE)return '🌫️ Haze: loading…';
+  if(HZDONE==='fail')return '🌫️ Haze: forecast could not be loaded.';
+  return '🌫️ Haze: no forecast this far ahead'+(i===0?'':' — check again in the week of the session')+'.';
+}
 function draw(){
-  // pick best: darkest Moon among clear/caution within forecast; else darkest overall
-  var scored=data.map(function(d,i){var clear=d.wx&&d.wx.cls!=='v-bad'&&d.wx.cls!=='v-none';return {i:i,dark:100-d.illum,clear:clear,has:!!d.wx};});
-  var cand=scored.filter(function(x){return x.has&&x.clear;});
-  var bestDark=(cand.length?cand:scored).slice().sort(function(a,b){return b.dark-a.dark;})[0];
+  // Best deep-sky night: the darkest Moon among nights that are forecast clear
+  // AND not smoky. A night with no forecast yet (weather or haze) is not ruled
+  // out by what we do not know — only by what we do.
+  var scored=data.map(function(d,i){
+    var cloudy=!!(d.wx&&d.wx.cls==='v-bad');
+    var smoky=!!(d.hz&&d.hz.cost>=0.8);
+    return {i:i,dark:100-d.illum,ok:!cloudy&&!smoky,known:!!d.wx};});
+  var cand=scored.filter(function(x){return x.ok&&x.known;});
+  if(!cand.length)cand=scored.filter(function(x){return x.ok;});
+  var bestDark=cand.slice().sort(function(a,b){return b.dark-a.dark;})[0]||null;
   var fullest=data.map(function(d,i){return {i:i,ill:d.illum};}).sort(function(a,b){return b.ill-a.ill;})[0];
   document.getElementById('list').innerHTML=data.map(function(d,i){
-    var f=d.f;var wx=d.wx?d.wx:['v-none', (i<15?'loading…':'beyond ~16-day forecast')];
+    var f=d.f;var wx=d.wx?[d.wx.cls,d.wx.txt]:['v-none',(WXDONE?(WXDONE==='fail'?'no forecast':'beyond the ~16-day forecast'):'loading…')];
+    var isBest=!!(bestDark&&bestDark.i===i);
     var badges='';
-    if(bestDark&&bestDark.i===i)badges+='<span class="badge dark">★ darkest &amp; clear — best for deep-sky</span> ';
-    if(fullest&&fullest.i===i&&d.illum>55)badges+='<span class="badge moon">◐ brightest Moon — best for Moon &amp; planets</span>';
-    return '<div class="row'+((bestDark&&bestDark.i===i)?' best':'')+'">'
+    if(isBest)badges+='<span class="badge dark">★ '+(d.wx?'darkest &amp; clear':'darkest Moon')+' — best for deep-sky</span> ';
+    if(fullest&&fullest.i===i&&d.illum>55)badges+='<span class="badge moon">◐ brightest Moon — best for Moon &amp; planets</span> ';
+    if(d.hz&&d.hz.cost>=0.8)badges+='<span class="badge smoke">🌫️ '+(d.hz.cost>=1.6?'thick haze':'smoky')+' — a Moon, planets &amp; doubles night</span>';
+    return '<div class="row'+(isBest?' best':'')+'">'
       +'<div class="date"><div class="d">'+WD[f.getDay()]+' '+f.getDate()+' '+MON[f.getMonth()]+'</div><div class="sub">'+(i===0?'this Friday':'in '+(i*7)+'–'+(i*7+1)+' days')+'</div></div>'
       +'<div class="moon">🌙 Moon <b>'+d.illum+'%</b><br><span style="color:var(--mute)">'+phaseName(d.illum,d.wax)+'</span></div>'
       +'<div class="wx">🌦️ <span class="'+wx[0]+'">'+wx[1]+'</span>'+(badges?'<br>'+badges:'')+'</div>'
+      +((d.hz||i===0)?'<div class="hz">'+hazeLine(d,i)+'</div>':'')
       +'</div>';
   }).join('');
 }
@@ -101,12 +127,27 @@ function loadWx(){
   fetch(url,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
     var h=j.hourly;if(!h||!h.time)throw 0;
     data.forEach(function(d){var key=ymd(d.f)+'T20:00';var idx=h.time.indexOf(key);
-      if(idx>=0){var cc=h.cloud_cover[idx],pp=h.precipitation_probability?h.precipitation_probability[idx]:null;var v=verdict(cc,pp);d.wx={cls:v[0],txt:v[1]+' ('+cc+'% cloud)'};d.wx=[v[0],v[1]+' · '+cc+'% cloud'];}});
-    document.getElementById('status').textContent='Compare the Fridays below. Weather shown for 8:30 pm each night (next ~16 days).';
+      if(idx>=0){var cc=h.cloud_cover[idx],pp=h.precipitation_probability?h.precipitation_probability[idx]:null;var v=verdict(cc,pp);d.wx={cls:v[0],txt:v[1]+' · '+cc+'% cloud',cc:cc,pp:pp};}});
+    WXDONE=true;
+    document.getElementById('status').textContent='Compare the Fridays below. Weather is for 8 pm each night (next ~16 days); haze reaches about five nights ahead.';
     draw();
-  }).catch(function(){document.getElementById('status').textContent='⚠️ Couldn\'t load the forecast (offline?) — showing Moon phases only.';draw();});
+  }).catch(function(){WXDONE='fail';document.getElementById('status').textContent='⚠️ Couldn\'t load the forecast (offline?) — showing Moon phases only.';draw();});
 }
-draw();loadWx();
+function loadHaze(){
+  /* Same model, window and maths as the dashboard and the haze page: evening
+     mean (5-11 pm), cost at 45 degrees, Bortle 8, 82% humidity. Nights where the model has
+     no column figure AND no PM2.5 are simply left without a haze line. */
+  if(!H||!H.fetchForecast){HZDONE='fail';draw();return;}
+  H.fetchForecast(7).then(function(h){
+    var nights=H.nightlyFromForecast(h), by={};
+    nights.forEach(function(n){by[n.date]=n;});
+    data.forEach(function(d){var n=by[ymd(d.f)];if(!n||(n.pm25==null&&n.aod==null))return;
+      var c=H.skyCost({pm25:n.pm25,aod:n.aod,rh:82,alt:45,bortle:8});if(!c)return;
+      d.hz={cost:c.total,aloft:c.aloft,label:H.costLabel(c.total),pm25:n.pm25,aod:n.aod};});
+    HZDONE=true;draw();
+  }).catch(function(){HZDONE='fail';draw();});
+}
+draw();loadWx();loadHaze();
 </script>
 <script src="version.js"></script>
 </body>

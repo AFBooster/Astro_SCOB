@@ -84,6 +84,16 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 .windbox.low{border-color:rgba(95,211,138,.4);background:rgba(95,211,138,.08);}
 .windbox .wh{font-weight:800;font-size:14.5px;display:block;margin-bottom:3px;}
 .windrose{float:right;margin:0 0 6px 12px;}
+/* the week at a glance */
+.week{display:flex;gap:6px;align-items:flex-end;margin-top:10px;}
+.wk{flex:1;text-align:center;min-width:0;}
+.wk .col{height:96px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--line);}
+.wk .col i{display:block;width:62%;border-radius:4px 4px 0 0;min-height:3px;}
+.wk .pv{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:4px;}
+.wk .pr{font-size:10.5px;color:var(--mute);}
+.wk .pd{font-size:11px;color:var(--mute);margin-top:1px;}
+.wk.today .pd{color:var(--gold);font-weight:700;}
+.aloft{display:inline-block;font-size:10.5px;font-weight:800;color:#0b1733;background:var(--gold);border-radius:5px;padding:1px 6px;margin-left:5px;white-space:nowrap;}
 </style>
 <!-- Social sharing / SEO metadata -->
 <link rel="canonical" href="https://afbooster.online/haze.html">
@@ -122,9 +132,11 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 
   <!-- ── TREND ────────────────────────────────────────────────────────── -->
   <div class="card">
-    <h2>Today so far — is it clearing or closing in?</h2>
+    <h2>The last 24 hours, and the week — is it clearing or closing in?</h2>
     <div class="fact"><p>The 24-hour PSI is a <b>rolling 24-hour average</b>, so it turns slowly and lags the real air by many hours. The 1-hour PM2.5 is what the sky looks like <b>this hour</b>. When the two disagree, the PM2.5 is telling you where the PSI is heading.</p></div>
-    <div id="trendBox"><div class="fine">Loading today's readings…</div></div>
+    <div id="trendBox"><div class="fine">Loading the last 24 hours…</div></div>
+    <div style="font-size:13px;font-weight:700;margin-top:16px">The past week · highest 24-hour PSI each day · west</div>
+    <div id="weekBox"><div class="fine">Loading the week…</div></div>
   </div>
 
   <!-- ── REGIONAL: WHERE THE SMOKE IS ─────────────────────────────────── -->
@@ -147,16 +159,22 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
     <div class="ctl">
       <label for="pmSlider">Try a PM2.5 level:</label>
       <input type="range" id="pmSlider" min="5" max="260" step="5" value="20" aria-label="PM2.5 concentration">
-      <button type="button" id="pmLive">↺ Use the live reading</button>
+      <button type="button" id="pmLive">↺ Use the live readings</button>
     </div>
+    <div class="ctl">
+      <label for="colSlider">…and a column depth:</label>
+      <input type="range" id="colSlider" min="0.1" max="3" step="0.05" value="0.3" aria-label="Whole-column aerosol optical depth">
+      <span id="colVal" style="font-size:12.5px;color:var(--mute);min-width:74px"></span>
+    </div>
+    <div class="fact" style="margin-bottom:8px"><p><b>Two sliders, because they are two different things.</b> The first is what a sensor at street level breathes. The second is every particle between you and the star, all the way up — and when smoke is passing overhead rather than settling, it can be several times what the ground reading suggests. Slide the top one down and leave the bottom one up to see a night that looks fine on the PSI and is not.</p></div>
     <div id="costHead" class="fact"></div>
     <div class="scroll"><table id="altTable"></table></div>
-    <div class="fine">Estimated, not measured. The model converts the PM2.5 concentration into an aerosol optical depth (allowing for how smoke particles swell in Singapore's humidity), then applies the loss along the actual path length to each altitude, and separately adds the sky brightening as the haze scatters Jurong's streetlights back down. Good to a few tenths of a magnitude on a normal night; treat it as guidance, not photometry.</div>
+    <div class="fine">Estimated, not measured. Dimming is worked out from the larger of two smoke figures — the ground PM2.5 converted into an optical depth (allowing for how smoke particles swell in Singapore's humidity), and the whole-column optical depth from the air-quality model — then applied along the actual path length to each altitude. The sky brightening is taken from the ground figure, because it is the smoke near the streetlights that scatters them back down. The live column value is a model figure, not a measurement, and no on-site photometer has checked any of this: treat it as guidance on which targets to try, not as photometry.</div>
   </div>
 
   <!-- ── FORECAST ─────────────────────────────────────────────────────── -->
   <div class="card">
-    <h2>The next few nights <small style="color:var(--mute);font-weight:400;font-size:12px">— averaged across the 7–11 pm observing window</small></h2>
+    <h2>The next few nights <small style="color:var(--mute);font-weight:400;font-size:12px">— averaged across each evening, 5–11 pm</small></h2>
     <div id="fcBox"><div class="fine">Loading the air-quality forecast…</div></div>
   </div>
 
@@ -200,6 +218,8 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 var $ = function (id) { return document.getElementById(id); };
 var H = window.Haze;
 var LIVE = null, PMLIVE = null, USER_PM = null;
+var COLLIVE = null, USER_COL = null;      /* whole-column optical depth: tonight's model value / slider */
+var WEEKOLD = null;                       /* daily PSI summaries for the days that can no longer change */
 var BORTLE = (function () { try { var v = +localStorage.getItem('scobBortle'); return (v === 7 || v === 8 || v === 9) ? v : 8; } catch (e) { return 8; } })();
 
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
@@ -303,14 +323,52 @@ function renderTrend(psiSeries, pmSeries) {
       + '<span style="color:var(--mute);font-weight:400">(' + (tp.delta >= 0 ? '+' : '') + n0(tp.delta) + ' ' + tp.since + ')</span>';
   }
   if (pmSeries && pmSeries.length > 1) {
-    out += '<div style="font-size:13px;font-weight:700;margin-top:6px">1-hour PM2.5 · west (µg/m³)</div>'
-         + sparkline(pmSeries, "Today's 1-hour PM2.5 readings for the west of Singapore", [55, 150]);
+    out += '<div style="font-size:13px;font-weight:700;margin-top:6px">1-hour PM2.5 · west (µg/m³) · last 24 hours</div>'
+         + sparkline(pmSeries, "The last 24 hours of 1-hour PM2.5 readings for the west of Singapore", [55, 150]);
   }
   if (psiSeries && psiSeries.length > 1) {
-    out += '<div style="font-size:13px;font-weight:700;margin-top:12px">24-hour PSI · west</div>'
-         + sparkline(psiSeries, "Today's 24-hour PSI readings for the west of Singapore", [50, 100]);
+    out += '<div style="font-size:13px;font-weight:700;margin-top:12px">24-hour PSI · west · last 24 hours</div>'
+         + sparkline(psiSeries, "The last 24 hours of 24-hour PSI readings for the west of Singapore", [50, 100]);
   }
-  $('trendBox').innerHTML = out || '<div class="fine">Today\'s readings could not be loaded. The live figures above (if present) are still current.</div>';
+  $('trendBox').innerHTML = out || '<div class="fine">The recent readings could not be loaded. The live figures above (if present) are still current.</div>';
+}
+/* Keep only the last `hours` of a series that may span two calendar days. v4.12 drew
+   "today so far", which reset at midnight — so every morning, exactly when someone is
+   deciding about the evening, the chart was nearly empty. */
+function lastHours(series, hours) {
+  if (!series || !series.length) return series;
+  var cut = new Date(series[series.length - 1].t).getTime() - hours * 3600000;
+  return series.filter(function (p) { return new Date(p.t).getTime() > cut; });
+}
+function daySummary(date, series) {
+  if (!series || !series.length) return { date: date, max: null, min: null };
+  var v = series.map(function (p) { return p.v; });
+  return { date: date, max: Math.max.apply(null, v), min: Math.min.apply(null, v) };
+}
+/* Seven bars, one per day: an episode has a shape — a build, a peak, a tail — and you
+   cannot see it in a single number or a single day's line. */
+function renderWeek(days) {
+  var ok = (days || []).filter(function (d) { return d.max != null; });
+  if (!ok.length) { $('weekBox').innerHTML = '<div class="fine">The week\'s readings could not be loaded.</div>'; return; }
+  var top = Math.max(120, Math.max.apply(null, ok.map(function (d) { return d.max; })));
+  var WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], today = H.localDateISO();
+  var html = '<div class="week" role="img" aria-label="Highest 24-hour PSI on each of the last seven days">' + days.map(function (d) {
+    var p = d.date.split('-').map(Number), wd = WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()];
+    if (d.max == null) return '<div class="wk"><div class="col"></div><div class="pv">—</div><div class="pr">&nbsp;</div><div class="pd">' + wd + ' ' + p[2] + '</div></div>';
+    var b = H.psiBand(d.max), col = b.cls === 'ok' ? '#39c97e' : b.cls === 'warn' ? '#f5c542' : '#ff6b6b';
+    return '<div class="wk' + (d.date === today ? ' today' : '') + '" title="' + wd + ' ' + p[2] + ': 24-hour PSI ranged ' + n0(d.min) + ' to ' + n0(d.max) + ' — ' + b.name + ' at its worst">'
+      + '<div class="col"><i style="height:' + Math.max(4, Math.round(d.max / top * 100)) + '%;background:' + col + '"></i></div>'
+      + '<div class="pv ' + b.cls + '">' + n0(d.max) + '</div><div class="pr">low ' + n0(d.min) + '</div>'
+      + '<div class="pd">' + (d.date === today ? 'today' : wd + ' ' + p[2]) + '</div></div>';
+  }).join('') + '</div>';
+  /* say what the shape is, in words */
+  var first = ok[0].max, last = ok[ok.length - 1].max, peak = ok.reduce(function (a, d) { return d.max > a.max ? d : a; }, ok[0]);
+  var unhealthy = ok.filter(function (d) { return d.max > 100; }).length;
+  var story = unhealthy
+    ? '<b>' + unhealthy + ' of the last ' + ok.length + ' days</b> reached the Unhealthy band; the week\'s peak was <b>' + n0(peak.max) + '</b>. '
+    : 'No day this week reached the Unhealthy band; the peak was <b>' + n0(peak.max) + '</b>. ';
+  story += (last - first >= 15) ? 'The trend across the week is <b class="bad">upward</b>.' : (first - last >= 15) ? 'The trend across the week is <b class="ok">downward</b>.' : 'No clear trend across the week.';
+  $('weekBox').innerHTML = html + '<div class="fine">' + story + ' Bars show each day\'s highest 24-hour PSI in the west; today\'s is so far.</div>';
 }
 
 /* ── cost to the sky ─────────────────────────────────────────────────── */
@@ -325,20 +383,25 @@ var ALTS = [
 function lpLimitMag(b) { return b >= 9 ? 8.5 : (b >= 8 ? 9.5 : 10.5); }
 
 function renderCost() {
-  var pm = (USER_PM != null) ? USER_PM : (PMLIVE != null ? PMLIVE : 20);
+  var pm  = (USER_PM  != null) ? USER_PM  : (PMLIVE  != null ? PMLIVE  : 20);
+  var col = (USER_COL != null) ? USER_COL : (COLLIVE != null ? COLLIVE : null);
   var rh = 82;   /* a typical Singapore evening; the model is not very sensitive to it */
   var mb = H.pmBand(pm);
   var base = lpLimitMag(BORTLE);
-  var zen = H.excess(pm, rh, 80, BORTLE);
+  var q = function (alt) { return H.skyCost({ pm25: pm, aod: col, rh: rh, alt: alt, bortle: BORTLE }); };
+  var zen = q(80);
+  var live = (USER_PM == null && USER_COL == null && PMLIVE != null);
 
-  $('costHead').innerHTML = '<p>At <b class="' + (mb ? mb.cls : '') + '">' + n0(pm) + ' µg/m³</b> PM2.5'
-    + ((USER_PM == null && PMLIVE != null) ? ' <span style="color:var(--mute)">(the live west reading)</span>' : ' <span style="color:var(--mute)">(your slider setting)</span>')
-    + ' under a <b>Bortle ' + BORTLE + '</b> sky, the aerosol layer has an optical depth of about <b>' + n1(H.aod(pm, rh)) + '</b>. '
-    + 'Compared with a clean Singapore night, that dims starlight overhead by about <b>' + n1(zen.ext) + ' magnitudes</b> and brightens the background by a further <b>' + n1(zen.glow) + '</b> — '
-    + 'and both get worse the lower you look:</p>';
+  $('colVal').textContent = (col == null) ? 'no column data' : 'depth ' + col.toFixed(2);
+  $('costHead').innerHTML = '<p>' + (live ? 'Right now: ' : 'With your settings: ')
+    + 'ground PM2.5 <b class="' + (mb ? mb.cls : '') + '">' + n0(pm) + ' µg/m³</b>'
+    + (col != null ? ' and a whole-column optical depth of <b>' + col.toFixed(2) + '</b>' + (live ? ' <span style="color:var(--mute)">(the model, this evening)</span>' : '') : '')
+    + ', under a <b>Bortle ' + BORTLE + '</b> sky. Against a clean Singapore night that dims starlight overhead by about <b>' + n1(zen.ext)
+    + ' magnitudes</b> and brightens the background by a further <b>' + n1(zen.glow) + '</b> — and the dimming grows the lower you look:</p>'
+    + (zen.aloft ? '<div class="verdictbox warn"><span class="vh">Smoke aloft</span>The column carries far more smoke than the ground reading can account for, so it is passing overhead rather than sitting at street level. This is the night the PSI gets wrong for astronomy: the number says fine, the eyepiece disagrees.</div>' : '');
 
   var rows = ALTS.map(function (a) {
-    var im = H.excess(pm, rh, a[0], BORTLE);
+    var im = q(a[0]);
     var lim = Math.max(3.5, base - im.total);
     var cls = im.total < 0.4 ? 'ok' : (im.total < 1.2 ? 'warn' : 'bad');
     var verdict = im.total < 0.4 ? 'Barely touched'
@@ -361,31 +424,35 @@ function renderCost() {
 
 /* ── forecast ────────────────────────────────────────────────────────── */
 function renderForecast(nights) {
-  if (!nights || !nights.length) {
+  nights = (nights || []).filter(function (n) { return n.pm25 != null || n.aod != null; });
+  if (!nights.length) {
     $('fcBox').innerHTML = '<div class="fine">The air-quality forecast could not be loaded — you may be offline. NEA publishes a 24-hour PSI forecast at <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a>.</div>';
     return;
   }
   var WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var maxPm = Math.max(30, Math.max.apply(null, nights.map(function (n) { return n.pm25 || 0; })));
-  var rows = nights.map(function (n) {
+  var costs = nights.map(function (n) { return H.skyCost({ pm25: n.pm25, aod: n.aod, rh: 82, alt: 45, bortle: BORTLE }); });
+  var maxC = Math.max(1.5, Math.max.apply(null, costs.map(function (c) { return c ? c.total : 0; })));
+  var rows = nights.map(function (n, i) {
     var p = n.date.split('-').map(Number);
     var dt = new Date(Date.UTC(p[0], p[1] - 1, p[2]));
     var wd = WD[dt.getUTCDay()], fri = (wd === 'Fri');
-    var b = H.pmBand(n.pm25);
-    var im = H.excess(n.pm25, 82, 45, BORTLE);
-    var pctW = Math.max(3, Math.round((n.pm25 || 0) / maxPm * 100));
+    var b = H.pmBand(n.pm25), c = costs[i], lab = c ? H.costLabel(c.total) : null;
+    var col = !lab ? '#33406b' : lab.cls === 'ok' ? '#39c97e' : lab.cls === 'warn' ? '#f5c542' : '#ff6b6b';
+    var pctW = c ? Math.max(3, Math.round(c.total / maxC * 100)) : 0;
     return '<tr' + (fri ? ' style="background:rgba(245,197,66,.06)"' : '') + '>'
       + '<td><b>' + wd + '</b> ' + p[2] + ' ' + MON[p[1] - 1] + (fri ? ' <span style="color:var(--gold);font-size:11px">session</span>' : '') + '</td>'
-      + '<td style="min-width:110px"><div style="background:var(--navy);border:1px solid var(--line);border-radius:4px;height:10px;overflow:hidden">'
-        + '<i style="display:block;height:100%;width:' + pctW + '%;background:' + (b && b.cls === 'ok' ? '#39c97e' : b && b.cls === 'warn' ? '#f5c542' : '#ff6b6b') + '"></i></div></td>'
-      + '<td class="v ' + (b ? b.cls : '') + '">' + n0(n.pm25) + '</td>'
-      + '<td class="v">' + n1(n.aod) + '</td>'
-      + '<td class="v ' + (im.total < 0.5 ? 'ok' : im.total < 1.2 ? 'warn' : 'bad') + '">−' + n1(im.total) + '</td></tr>';
+      + '<td class="v ' + (b ? b.cls : '') + '">' + n0(n.pm25) + (b ? ' <span style="font-weight:400;font-size:11px">' + b.name + '</span>' : '') + '</td>'
+      + '<td class="v">' + (n.aod == null ? '—' : n.aod.toFixed(1)) + '</td>'
+      + '<td style="min-width:90px"><div style="background:var(--navy);border:1px solid var(--line);border-radius:4px;height:10px;overflow:hidden">'
+        + '<i style="display:block;height:100%;width:' + pctW + '%;background:' + col + '"></i></div></td>'
+      + '<td class="v ' + (lab ? lab.cls : '') + '">' + (c ? '−' + n1(c.total) : '—') + '</td>'
+      + '<td class="' + (lab ? lab.cls : '') + '" style="font-weight:700">' + (lab ? lab.word : '—') + (c && c.aloft ? '<span class="aloft">smoke aloft</span>' : '') + '</td></tr>';
   }).join('');
   $('fcBox').innerHTML = '<div class="scroll"><table>'
-    + '<tr><th>Night</th><th></th><th>PM2.5 <span style="text-transform:none">µg/m&sup3;</span></th><th>Aerosol depth</th><th>Mag lost at 45°</th></tr>' + rows + '</table></div>'
-    + '<div class="fine">Open-Meteo\'s global air-quality model, averaged over 7–11 pm each night. Its “aerosol optical depth” is measured by satellite and is the same quantity the model above derives from the ground reading — when the two agree, have more confidence in the forecast. At ~40 km resolution this is a <b>trend across nights</b>, not a Jurong nowcast; for tonight, trust the live NEA reading at the top of this page and NEA\'s own 24-hour PSI forecast.</div>';
+    + '<tr><th>Night</th><th>Ground PM2.5 <span style="text-transform:none">µg/m&sup3;</span></th><th>Column depth</th><th></th><th>Mag lost at 45°</th><th>The sky</th></tr>' + rows + '</table></div>'
+    + '<div class="fine"><b style="color:var(--white)">Read the two columns separately.</b> Ground PM2.5 is the health number — what a visitor on the deck breathes. Column depth is the astronomy number — everything between the telescope and the star — and the sky cost is taken from whichever shows more smoke. A night tagged <span class="aloft" style="margin-left:0">smoke aloft</span> is one where the ground looks tolerable and the sky will not be.<br>'
+    + 'From Open-Meteo\'s air-quality model (CAMS). Checked against a week of NEA readings in October 2026, its <b>day-to-day level</b> was close (mean 48 µg/m³ against 51 measured) but its <b>hour-by-hour timing</b> was not (correlation 0.38) — so this is a trend across nights, averaged over a wide evening window, never a nowcast. For tonight, trust the live NEA reading at the top of the page and NEA\'s own 24-hour PSI forecast.</div>';
 }
 
 /* ── regional satellite view ─────────────────────────────────────────── */
@@ -610,8 +677,10 @@ function renderBortle() {
   });
 }
 $('pmSlider').addEventListener('input', function () { USER_PM = +this.value; renderCost(); });
+$('colSlider').addEventListener('input', function () { USER_COL = +this.value; renderCost(); });
 $('pmLive').addEventListener('click', function () {
-  USER_PM = null;
+  USER_PM = null; USER_COL = null;
+  if (COLLIVE != null) $('colSlider').value = Math.min(3, Math.max(0.1, COLLIVE));
   if (PMLIVE != null) $('pmSlider').value = Math.min(260, Math.max(5, Math.round(PMLIVE)));
   renderCost();
 });
@@ -633,16 +702,35 @@ function load() {
     }
   }).catch(function () { LIVE = null; renderLive(); });
 
+  /* Rolling 24 hours: yesterday's readings plus today's, trimmed to the last day. */
+  var R = H.HOME_REGION, D0 = H.localDateISO(), D1 = H.localDateISO(new Date(Date.now() - 86400000));
+  var nul = function () { return null; };
   Promise.all([
-    H.fetchTrend('psi', H.HOME_REGION).catch(function () { return null; }),
-    H.fetchTrend('pm25', H.HOME_REGION).catch(function () { return null; })
-  ]).then(function (r) { renderTrend(r[0], r[1]); });
+    H.fetchTrend('psi', R, D1).catch(nul), H.fetchTrend('psi', R, D0).catch(nul),
+    H.fetchTrend('pm25', R, D1).catch(nul), H.fetchTrend('pm25', R, D0).catch(nul)
+  ]).then(function (r) {
+    var psi2 = (r[0] || []).concat(r[1] || []), pm2 = (r[2] || []).concat(r[3] || []);
+    renderTrend(lastHours(psi2, 24), lastHours(pm2, 24));
+    /* The week: the five older days cannot change any more, so fetch them once per visit. */
+    var recent = [daySummary(D1, r[0]), daySummary(D0, r[1])];
+    var older = [6, 5, 4, 3, 2].map(function (i) { return H.localDateISO(new Date(Date.now() - i * 86400000)); });
+    var done = function (old) { WEEKOLD = old; renderWeek(old.concat(recent)); };
+    if (WEEKOLD && WEEKOLD.length === 5 && WEEKOLD[4].date === older[4]) { done(WEEKOLD); return; }
+    Promise.all(older.map(function (d) {
+      return H.fetchTrend('psi', R, d).then(function (sr) { return daySummary(d, sr); }).catch(function () { return daySummary(d, null); });
+    })).then(done);
+  });
 
   H.fetchTransport(H.localDateISO(), 21)
     .then(renderWind).catch(function () { renderWind(null); });
 
-  H.fetchForecast(5).then(function (h) {
-    window._fcNights = H.nightlyFromForecast(h, 19, 23);
+  H.fetchForecast(7).then(function (h) {
+    window._fcNights = H.nightlyFromForecast(h);
+    /* tonight's whole-column depth feeds the "what it costs" table alongside the live PM2.5 */
+    var tonight = window._fcNights.filter(function (n) { return n.date === H.localDateISO(); })[0];
+    COLLIVE = (tonight && tonight.aod != null) ? tonight.aod : null;
+    if (COLLIVE != null && USER_COL == null) $('colSlider').value = Math.min(3, Math.max(0.1, COLLIVE));
+    renderCost();
     renderForecast(window._fcNights);
   }).catch(function () { renderForecast(null); });
 }

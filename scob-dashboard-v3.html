@@ -671,7 +671,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
   <div id="dataHealth" class="dhealth" style="display:none"></div>
   <div class="foot">
     Moon, planet positions & target altitudes computed in your browser for the date & time you pick. Weather notes are seasonal guidance — use the Nowcast for the live call.<br>
-    Sources: deep-sky catalogue — <a href="https://astropixels.com/messier/messiercat.html" target="_blank" rel="noopener" style="color:var(--cyan)">AstroPixels Messier</a> &amp; <a href="https://astropixels.com/caldwell/caldwellcat.html" target="_blank" rel="noopener" style="color:var(--cyan)">Caldwell</a> catalogs (F. Espenak) · planetary elements — P. Schlyter · weather — MSS Weather.gov.sg &amp; Open-Meteo · seeing/transparency — 7Timer! · light-pollution realism — Bortle scale · haze — <a href="haze.html" style="color:var(--cyan)">live PSI &amp; PM2.5</a> from <a href="https://data.gov.sg" target="_blank" rel="noopener" style="color:var(--cyan)">NEA via data.gov.sg</a> · sky events — <a href="https://www.seasky.org/astronomy/astronomy-calendar-2026.html" target="_blank" rel="noopener" style="color:var(--cyan)">Sea &amp; Sky astronomy calendar</a> · ISS/Tiangong/Hubble orbits — <a href="https://celestrak.org" target="_blank" rel="noopener" style="color:var(--cyan)">CelesTrak</a> TLEs via satellite.js · Jupiter/Saturn detail — J. Meeus series, GRS longitude per JUPOS trend · rain radar — MSS · SCOB.<br><span class="scob-version" style="opacity:.75"></span>
+    Sources: deep-sky catalogue — <a href="https://astropixels.com/messier/messiercat.html" target="_blank" rel="noopener" style="color:var(--cyan)">AstroPixels Messier</a> &amp; <a href="https://astropixels.com/caldwell/caldwellcat.html" target="_blank" rel="noopener" style="color:var(--cyan)">Caldwell</a> catalogs (F. Espenak) · planetary elements — P. Schlyter · weather — MSS Weather.gov.sg &amp; Open-Meteo · seeing — estimated from Open-Meteo upper-air winds · light-pollution realism — Bortle scale · haze — <a href="haze.html" style="color:var(--cyan)">live PSI &amp; PM2.5</a> from <a href="https://data.gov.sg" target="_blank" rel="noopener" style="color:var(--cyan)">NEA via data.gov.sg</a> · sky events — <a href="https://www.seasky.org/astronomy/astronomy-calendar-2026.html" target="_blank" rel="noopener" style="color:var(--cyan)">Sea &amp; Sky astronomy calendar</a> · ISS/Tiangong/Hubble orbits — <a href="https://celestrak.org" target="_blank" rel="noopener" style="color:var(--cyan)">CelesTrak</a> TLEs via satellite.js · Jupiter/Saturn detail — J. Meeus series, GRS longitude per JUPOS trend · rain radar — MSS · SCOB.<br><span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 
@@ -806,7 +806,7 @@ body.night .nowcard{background:#160a08;border-color:#3a1f1f}
   <div id="dataHealth" class="dhealth" style="display:none"></div>
   <div class="foot">
     Moon, planet positions & target altitudes computed on your phone for the date & time you pick. Weather notes are seasonal guidance — use the Nowcast for the live call.<br>
-    Sources: deep-sky catalogue — <a href="https://astropixels.com/messier/messiercat.html" target="_blank" rel="noopener" style="color:var(--cyan)">AstroPixels Messier</a> &amp; <a href="https://astropixels.com/caldwell/caldwellcat.html" target="_blank" rel="noopener" style="color:var(--cyan)">Caldwell</a> catalogs (F. Espenak) · planetary elements — P. Schlyter · weather — MSS Weather.gov.sg &amp; Open-Meteo · seeing/transparency — 7Timer! · light-pollution realism — Bortle scale · haze — <a href="haze.html" style="color:var(--cyan)">live PSI &amp; PM2.5</a> from <a href="https://data.gov.sg" target="_blank" rel="noopener" style="color:var(--cyan)">NEA via data.gov.sg</a> · sky events — <a href="https://www.seasky.org/astronomy/astronomy-calendar-2026.html" target="_blank" rel="noopener" style="color:var(--cyan)">Sea &amp; Sky astronomy calendar</a> · ISS/Tiangong/Hubble orbits — <a href="https://celestrak.org" target="_blank" rel="noopener" style="color:var(--cyan)">CelesTrak</a> TLEs via satellite.js · Jupiter/Saturn detail — J. Meeus series, GRS longitude per JUPOS trend · rain radar — MSS · SCOB.<br><span class="scob-version" style="opacity:.75"></span>
+    Sources: deep-sky catalogue — <a href="https://astropixels.com/messier/messiercat.html" target="_blank" rel="noopener" style="color:var(--cyan)">AstroPixels Messier</a> &amp; <a href="https://astropixels.com/caldwell/caldwellcat.html" target="_blank" rel="noopener" style="color:var(--cyan)">Caldwell</a> catalogs (F. Espenak) · planetary elements — P. Schlyter · weather — MSS Weather.gov.sg &amp; Open-Meteo · seeing — estimated from Open-Meteo upper-air winds · light-pollution realism — Bortle scale · haze — <a href="haze.html" style="color:var(--cyan)">live PSI &amp; PM2.5</a> from <a href="https://data.gov.sg" target="_blank" rel="noopener" style="color:var(--cyan)">NEA via data.gov.sg</a> · sky events — <a href="https://www.seasky.org/astronomy/astronomy-calendar-2026.html" target="_blank" rel="noopener" style="color:var(--cyan)">Sea &amp; Sky astronomy calendar</a> · ISS/Tiangong/Hubble orbits — <a href="https://celestrak.org" target="_blank" rel="noopener" style="color:var(--cyan)">CelesTrak</a> TLEs via satellite.js · Jupiter/Saturn detail — J. Meeus series, GRS longitude per JUPOS trend · rain radar — MSS · SCOB.<br><span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 
@@ -1055,7 +1055,7 @@ function renderGlance(){
   for(const nm of ['Saturn','Jupiter','Venus','Mars','Mercury']){const pe=planetEq(PLAN[nm],dS,sLon,sR);const aa=altaz(pe.ra,pe.dec);
     if(aa.alt>10){bp=nm+' '+Math.round(aa.alt)+'° '+compass(aa.az);break;}}
   let tt=null;
-  if(DARK){const rows=CAT.map(t2=>{const a2=altaz(t2[3],t2[4]);return{name:t2[0],alt:a2.alt,sep:moonSep(t2[3],t2[4]),cls:t2[5]};}).filter(r=>r.alt>20).sort((a2,b2)=>b2.alt-a2.alt);
+  if(DARK){const rows=CAT.map(t2=>{const a2=altaz(t2[3],t2[4]);return{name:t2[0],alt:a2.alt,sep:moonSep(t2[3],t2[4]),cls:t2[5],mag:t2[6]};}).filter(r=>r.alt>20).sort((a2,b2)=>b2.alt-a2.alt);
     const pick=rows.find(r=>visualVerdict(r)[0]==='exc')||rows.find(r=>visualVerdict(r)[0]==='good');
     if(pick)tt=pick.name+' '+Math.round(pick.alt)+'°';}
   let cmt=null;
@@ -1069,6 +1069,23 @@ function renderGlance(){
   else if(WXV&&WXV.cls==='warn')head='⚠️ Marginal — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance; watch for breaks.';
   else if(WXV)head='❌ Likely a wash-out — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance.';
   else head='🔭 Dark sky at the chosen time · live forecast loads in the weather card.';
+  // v4.13: the verdict used to know about cloud and rain only, so a clear evening at
+  // PSI 120 still read "Tonight looks a GO". Haze now gets a say — as a health matter
+  // when NEA's band calls for one, and as a sky matter when the smoke is thick.
+  const hv=hazeVerdict();
+  if(sunAlt<=-6&&hv){
+    const go=!!(WXV&&WXV.cls==='ok'),fc=(hv.mode==='forecast'),mg='−'+hv.cost.toFixed(1)+' mag';
+    if(hv.psi!=null&&hv.psi>200)
+      head='❌ Air quality '+hv.band.name.toLowerCase()+' (PSI '+Math.round(hv.psi)+') — '+hv.call.verdict.charAt(0).toLowerCase()+hv.call.verdict.slice(1)+'.';
+    else if(hv.psi!=null&&hv.psi>100)
+      head=go?('⚠️ Clear enough overhead ('+WXV.cc+'% cloud), but the air is Unhealthy — PSI '+Math.round(hv.psi)+'. '+hv.call.verdict+'.')
+             :(head+' Air quality Unhealthy too — PSI '+Math.round(hv.psi)+'.');
+    else if(hv.cost>=1.6)
+      head=go?('⚠️ Clear of cloud, but thick haze'+(fc?' is forecast':'')+' — about '+mg+(hv.aloft?', smoke aloft':'')+'. A Moon, planets and doubles night.')
+             :(head+' Thick haze'+(fc?' forecast':'')+' too ('+mg+').');
+    else if(hv.cost>=0.8)
+      head+=' Hazy'+(fc?' (forecast)':'')+' — faint targets dimmed about '+hv.cost.toFixed(1)+' mag.';
+  }
   g.style.display='block';
   const ml=(window.CSKY?moonLodgeNow():null);
   g.innerHTML='<div class="gv">'+head+'</div><div class="gchips">'
@@ -1081,10 +1098,12 @@ function renderGlance(){
     +(tt?'<span class="gc">🔭 Top target <b>'+tt+'</b></span>':'')
     +(cmt?'<span class="gc" title="A tracked comet is above the horizon now — full details on the Comets page">☄️ Comet <b>'+cmt.name+' · mag '+cmt.mag.toFixed(1)+'</b></span>':'')
     +(DARK?(function(){const L=dynLimitMag();const cut=(L.moon+L.haze);return '<span class="gc" title="Estimated faintest deep-sky visible now — Bortle '+BORTLE+' base '+L.base.toFixed(1)+', minus the Moon and live haze">🔭 Limiting mag <b>~'+L.mag.toFixed(1)+'</b>'+(cut>=0.3?' <span style="opacity:.7">(−'+cut.toFixed(1)+')</span>':'')+'</span>';})():'')
-    +((window.Haze&&typeof PM25VAL==='number'&&PM25VAL>0)?(function(){
-        const b=window.Haze.pmBand(PM25VAL),ex=window.Haze.excess(PM25VAL,hazeRH(),60,BORTLE).total;
-        if(ex<0.25&&!(PSIVAL>50))return '';   // clean air needs no chip
-        return '<span class="gc" title="Live NEA haze — 1-hour PM2.5 in the west, and what it costs a well-placed target tonight. Anything low loses about three times as much.">🌫️ Haze <b>'+Math.round(PM25VAL)+' µg/m³ · '+b.name+'</b>'+(ex>=0.25?' <span style="opacity:.7">(\u2212'+ex.toFixed(1)+' mag)</span>':'')+'</span>';})():'')
+    +(function(){const n=hazeNight(),c=n?hazeCostAt(60):null;if(!c)return '';
+        if(c.total<0.25&&!(n.mode==='live'&&PSIVAL>50))return '';   // clean air needs no chip
+        const lab=window.Haze.costLabel(c.total);
+        const what=(n.mode==='live')?(typeof PSIVAL==='number'?'PSI '+Math.round(PSIVAL):Math.round(n.pm25)+' µg/m³'):'forecast';
+        return '<span class="gc" title="Haze for the chosen night — '+(n.mode==='live'?'live NEA reading plus the model\'s column depth':'forecast only; the live NEA reading applies to tonight')+'. The figure is what it costs a well-placed target; anything low loses about three times as much.">🌫️ Haze <b>'+what+' · '+lab.word+'</b>'
+          +(c.total>=0.25?' <span style="opacity:.7">(−'+c.total.toFixed(1)+' mag'+(c.aloft?', aloft':'')+')</span>':'')+'</span>';})()
     +(EVT.length?'<span class="gc">'+EVT[0][1]+' <b>'+EVT[0][2]+'</b></span>':'')
     +(ISSCHIP?'<span class="gc">🛰️ Best pass <b>'+ISSCHIP+'</b></span>':'')
     +'<span class="gc">🌅 Sunrise <b>'+(st.rise||'—')+'</b></span>'
@@ -1094,10 +1113,20 @@ function renderGlance(){
 const CAP=30;
 function visualVerdict(r){const faint=(r.cls==='emission'||r.cls==='broadband');
   if(faint&&pct>=55)return['skip','Washed out (Moon)'];
-  if(faint&&r.mag!=null&&r.mag>dynLimitMag().mag)return['skip','Below tonight’s limit'];
+  // v4.13: the limit is now worked out at THIS target's altitude. Haze costs in
+  // proportion to the air you look through, so one flat figure flattered everything
+  // low — exactly the targets smoke removes first. A cluster that is fine at 60° can
+  // be gone at 20°, and it should say so.
+  if(r.mag!=null&&r.cls!=='star'){const L=dynLimitMag(r.alt);
+    if(r.mag>L.mag){
+      if(L.haze>=0.8&&L.haze>=L.moon)return['skip','Lost in the haze'];
+      if(faint)return['skip','Below tonight’s limit'];}}
   if(r.alt>=45)return['exc','Excellent'];
   if(r.alt>=22)return['good','Good'];return['low','Low — early'];}
 function seestarVerdict(r){
+  // v4.13: the dual-band filter beats the extra sky glow, but nothing recovers light
+  // the smoke scattered out of the beam — so heavy extinction still means long subs.
+  {const hc=hazeCostAt(r.alt);if(hc&&hc.ext>=2.0&&r.cls!=='star')return['low','Dimmed by haze'];}
   if(r.cls==='emission'){if(r.sep<12)return['low','Moon too close'];if(r.alt>=30)return['exc','Great — dual-band'];
     if(r.alt>=18)return['good','Later (dual-band)'];return['low','Too low now'];}
   if(r.cls==='broadband'){if(pct>=55)return['skip','Dark week'];if(r.sep<40)return['low','Near Moon'];
@@ -1116,7 +1145,11 @@ function renderTargets(){
   const RANK={exc:0,good:1,low:2,skip:3};
   rows.forEach(r=>{if(r.cls==='comet'){r._cls=r.alt>=30?'good':'low';r._v=(r.mag!=null&&r.mag>10.5)?'Faint — big scope':(r.alt>=30?'Binoc/scope':'Low — later');return;}const v=(mode==='seestar'?seestarVerdict(r):visualVerdict(r));r._cls=v[0];r._v=v[1];});
   rows.sort((a,b)=>(RANK[a._cls]-RANK[b._cls])||((a.mag==null?99:a.mag)-(b.mag==null?99:b.mag))||(b.alt-a.alt));
-  const total=rows.length;rows=rows.slice(0,CAP);
+  const total=rows.length;
+  // v4.13: haze-lost targets rank last, so on a smoky night most of them fall off the end
+  // of the list. Count them first, so the hint can say how much of the sky the smoke took.
+  const lostHaze=rows.filter(r=>r._v==='Lost in the haze'||r._v==='Dimmed by haze').length;
+  rows=rows.slice(0,CAP);
   const c=document.getElementById('targets');c.innerHTML='';
   const wS=GL?Math.max(darkStartMin(GL.y,GL.m,GL.d),19*60):20*60,wE=23*60;
   const COLLAPSE=5;const showN=(TARGEXP||rows.length<=COLLAPSE)?rows.length:COLLAPSE;
@@ -1144,8 +1177,8 @@ function renderTargets(){
     c.appendChild(mb);}
   const shownNote=`Showing ${showN} of ${total} above 12°, ranked easiest-to-hardest`+((!TARGEXP&&rows.length>COLLAPSE)?' — tap “Show all” for the rest.':'.');
   document.getElementById('hint').innerHTML=(mode==='seestar')
-    ?`📷 <b style="color:var(--cyan)">Seestar S30 Pro</b> · 2 h of 30 s subs. Emission & planetary nebulae score as imageable through the dual-band Hα/OIII filter even under this ${pct}% Moon; galaxies stay Moon-limited; single stars hidden. Moon = distance from the Moon. ${shownNote}`
-    :`👁 <b style="color:var(--gold)">Visual</b> · eyepiece views. Faint nebulae & galaxies flagged washed-out when the Moon is &gt;55% lit. Moon = distance from the Moon. ${shownNote}`;}
+    ?`📷 <b style="color:var(--cyan)">Seestar S30 Pro</b> · 2 h of 30 s subs. Emission & planetary nebulae score as imageable through the dual-band Hα/OIII filter even under this ${pct}% Moon; galaxies stay Moon-limited; single stars hidden. Moon = distance from the Moon. ${shownNote}${lostHaze?` 🌫️ <b style="color:var(--red)">${lostHaze}</b> are heavily dimmed by haze — the dual-band filter beats the glow, not the extinction.`:''}`
+    :`👁 <b style="color:var(--gold)">Visual</b> · eyepiece views. Faint nebulae & galaxies flagged washed-out when the Moon is &gt;55% lit. Moon = distance from the Moon. ${shownNote}${lostHaze?` 🌫️ <b style="color:var(--red)">${lostHaze} of the ${total}</b> are lost in the haze for this night — each is judged at its own altitude, and low ones go first.`:''}`;}
 
 // ==== v3.3: Jupiter/Saturn eyepiece detail · double & carbon stars · conjunctions · rain radar ====
 function angSep(ra1,dec1,ra2,dec2){const a=Math.sin(dec1*RAD)*Math.sin(dec2*RAD)+Math.cos(dec1*RAD)*Math.cos(dec2*RAD)*Math.cos((ra1-ra2)*RAD);return Math.acos(Math.max(-1,Math.min(1,a)))*DEG;}
@@ -1576,7 +1609,7 @@ async function loadWeather(force){
   if(!force&&WXCACHE&&WXCACHE.date===dv){renderWx();return;}
   box.style.display='block';box.innerHTML='<div class="wxsrc">Loading live forecast…</div>';btn.disabled=true;
   try{
-    const u='https://api.open-meteo.com/v1/forecast?latitude=1.3342&longitude=103.7357&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,cloud_cover,wind_speed_10m,weather_code&timezone=Asia%2FSingapore&start_date='+dv+'&end_date='+dv+'&_t='+Date.now();
+    const u='https://api.open-meteo.com/v1/forecast?latitude=1.3342&longitude=103.7357&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,cloud_cover,wind_speed_10m,weather_code,wind_speed_250hPa,wind_speed_850hPa,cape&timezone=Asia%2FSingapore&start_date='+dv+'&end_date='+dv+'&_t='+Date.now();
     const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
     const j=await r.json();const hh3=j.hourly;if(!hh3||!hh3.time||!hh3.time.length)throw new Error('no data');
     WXCACHE={date:dv,hourly:hh3};WXTS=Date.now();renderWx();
@@ -1655,6 +1688,8 @@ document.getElementById('wxBtn').addEventListener('click',function(){loadWeather
   const LBL={
     "Excellent":"High in the sky (45°+) — you're looking through the least air, so this is about as good as the view gets.",
     "Good":"Well placed (roughly 22–45° up) for a clear, steady view.",
+    "Lost in the haze":"Bright enough on a clean night, but tonight's smoke takes too much at this target's altitude — haze costs most where you look through the most air. Try again when it is higher, or on a cleaner night.",
+    "Dimmed by haze":"The dual-band filter rejects the extra sky glow, but it cannot bring back light the smoke scattered away — expect to need much longer integration, or pick a higher target.",
     "Low — early":"Still low (under ~22°); murky through thick air — wait for it to rise higher.",
     "Washed out":"A faint nebula or galaxy that this week's bright Moon (>55% lit) will drown out to the eye.",
     "Great — dual-band":"High up, and the Seestar's dual-band Hα/OIII filter cuts through moonlight — a prime imaging target.",
@@ -1724,7 +1759,10 @@ let EVT=[],ISSCHIP='',ISSFOR='',PSIAT=0,PSIVAL=null;
 // the optical model uses). HAZE holds the full five-region reading.
 let PM25VAL=null,HAZE=null,HAZETREND=null,HAZEERR=false,HAZETS=0;
 // v4.09: the transport wind aloft — which upwind region, if any, is feeding us.
-let HAZEWIND=null;
+let HAZEWIND=null,HAZEWINDKEY='';
+// v4.13: the multi-night outlook (so a FUTURE chosen date gets that night's haze, not
+// today's), and the verdict derived from it that the headline and share blurb reuse.
+let HAZEFC=null,HAZEFCAT=0,HAZEV=null;
 const EVENTS=[
  ['2026-07-28','☄️','Delta Aquariids meteor shower peaks','Up to 20/hr after midnight, but the full Moon washes most out this year.',1],
  ['2026-08-02','🪐','Mercury at greatest western elongation','Morning object — low in the east before sunrise, not an evening-session target.',1],
@@ -1933,6 +1971,35 @@ function hazeRH(){
 // it is costing the view at two altitudes, and — because a Friday night is a public
 // event on an open deck — the health call. Bands, physics and fetching all live in
 // the shared haze-core.js.
+// v4.13 — WHICH night's haze? Until now the live reading was applied to whatever date
+// was on screen, so planning Friday on a Wednesday borrowed Wednesday's air. The live
+// NEA reading describes tonight and only tonight; a future date gets that night's
+// forecast instead; a date beyond the forecast gets nothing rather than a wrong number.
+function hazeNight(){
+  if(!window.Haze)return null;
+  const dp=document.getElementById('datePick');const dv=dp?dp.value:'';if(!dv)return null;
+  const fc=(HAZEFC||[]).find(function(n){return n.date===dv;})||null;
+  if(dv===window.Haze.localDateISO()){
+    const pm=(typeof PM25VAL==='number')?PM25VAL:(fc&&fc.pm25!=null?fc.pm25:null);
+    const col=(fc&&fc.aod!=null)?fc.aod:null;
+    if(pm==null&&col==null)return null;
+    return {mode:'live',date:dv,pm25:pm,aod:col};
+  }
+  if(fc&&(fc.pm25!=null||fc.aod!=null))return {mode:'forecast',date:dv,pm25:fc.pm25,aod:fc.aod};
+  return null;
+}
+function hazeCostAt(alt){
+  const n=hazeNight();if(!n)return null;
+  return window.Haze.skyCost({pm25:n.pm25,aod:n.aod,rh:hazeRH(),alt:alt,bortle:BORTLE});
+}
+// One summary the headline verdict and the share blurb both read, so they cannot disagree.
+function hazeVerdict(){
+  HAZEV=null;const n=hazeNight(),c=n?hazeCostAt(60):null;if(!c)return null;
+  const psi=(n.mode==='live'&&typeof PSIVAL==='number')?PSIVAL:null;
+  HAZEV={mode:n.mode,psi:psi,band:psi!=null?window.Haze.psiBand(psi):null,call:psi!=null?window.Haze.sessionCall(psi):null,
+         cost:c.total,aloft:c.aloft,label:window.Haze.costLabel(c.total),pm25:n.pm25,aod:n.aod};
+  return HAZEV;
+}
 function renderHaze(){
   const el=document.getElementById('haze');if(!el||!window.Haze)return;
   const Hz=window.Haze;
@@ -1956,14 +2023,23 @@ function renderHaze(){
         +'<b class="'+(b?b.cls:'')+'">'+(p==null?'—':Math.round(p))+'</b>'+Hz.REGION_LABEL[r]+'</div>';
     }).join('')+'</div>';
   }
-  if(pm!=null){
-    const rh=hazeRH(),hi=Hz.excess(pm,rh,60,BORTLE).total,lo=Hz.excess(pm,rh,20,BORTLE).total;
-    s+=(hi<0.15)
-      ? '<div>No real transparency penalty tonight — the air is as clean as Jurong gets.</div>'
-      : '<div>Costs roughly <b class="'+(hi<0.6?'warn':'bad')+'">'+hi.toFixed(1)+' mag</b> on a well-placed target and <b class="'+(lo<1?'warn':'bad')+'">'+lo.toFixed(1)+' mag</b> on anything still down at 20° — low objects lose most, because you look through three times the air. The smoke also scatters Jurong\'s streetlights back down, so the sky itself glows brighter.</div>';
+  // What it costs the sky — for the night that is actually on screen.
+  const n=hazeNight(),hi=n?hazeCostAt(60):null,lo=n?hazeCostAt(20):null;
+  if(n&&hi&&lo){
+    const dv=n.date.split('-').map(Number);
+    const who=(n.mode==='live')?'Tonight':('Forecast for '+dateLabel(dv[0],dv[1]-1,dv[2]));
+    const src=(n.mode==='live')
+      ?('ground PM2.5 '+(n.pm25==null?'—':Math.round(n.pm25))+' µg/m³'+(n.aod!=null?' · model column depth '+n.aod.toFixed(1):''))
+      :('model PM2.5 ~'+(n.pm25==null?'—':Math.round(n.pm25))+' µg/m³'+(n.aod!=null?' · column depth '+n.aod.toFixed(1):''));
+    s+=(hi.total<0.15)
+      ? '<div><b>'+who+':</b> no real transparency penalty — the air is as clean as Jurong gets. <span style="opacity:.7">('+src+')</span></div>'
+      : '<div><b>'+who+':</b> costs roughly <b class="'+(hi.total<0.6?'warn':'bad')+'">'+hi.total.toFixed(1)+' mag</b> on a well-placed target and <b class="'+(lo.total<1?'warn':'bad')+'">'+lo.total.toFixed(1)+' mag</b> on anything still down at 20° — low objects lose most, because you look through three times the air. <span style="opacity:.7">('+src+')</span></div>';
+    if(hi.aloft)s+='<div class="hzcall warn"><b>Smoke aloft.</b> The column holds far more smoke than the ground reading accounts for — it is passing overhead rather than sitting at street level. The PSI will look better than the sky does: judge tonight by the stars, not by the number.</div>';
+  }else if(HAZEFC){
+    s+='<div style="opacity:.8">No haze forecast reaches the chosen date — the limiting magnitude for it is shown without a haze penalty.</div>';
   }
   // v4.09: a ground sensor only reports what has already arrived. One line on
-  // where tonight's air is coming FROM — the full picture is on the haze page.
+  // where the air is coming FROM — the full picture is on the haze page.
   if(HAZEWIND&&HAZEWIND.source){
     const w=HAZEWIND,sc=w.source;
     s+='<div>→ Transport wind from the <b>'+Hz.compass16(w.dir)+'</b>'
@@ -1976,12 +2052,28 @@ function renderHaze(){
   }
   const call=Hz.sessionCall(psi);
   if(call&&call.cls!=='ok')s+='<div class="hzcall '+call.cls+'"><b>'+call.verdict+'</b> — '+call.note+'</div>';
-  s+='<div style="margin-top:6px;opacity:.8">Live NEA reading — applies to tonight, not to future dates. <a class="hzmore" href="haze.html">Today\'s trend, the 5-night outlook &amp; what haze does to the view →</a></div>';
+  s+='<div style="margin-top:6px;opacity:.8">The PSI and PM2.5 are live NEA readings and describe right now; the sky cost is worked out for the chosen night. <a class="hzmore" href="haze.html">Last 24 hours, the week, the outlook &amp; what haze does to the view →</a></div>';
   el.style.display='block';el.innerHTML=s;
+}
+// The transport wind belongs to the chosen night, so it is re-fetched when the date changes.
+function loadHazeWind(){
+  if(!window.Haze||!window.Haze.fetchTransport)return;
+  const dp=document.getElementById('datePick');const dv=(dp&&dp.value)||window.Haze.localDateISO();
+  if(HAZEWINDKEY===dv)return;HAZEWINDKEY=dv;HAZEWIND=null;
+  window.Haze.fetchTransport(dv,21).then(function(w){if(HAZEWINDKEY===dv){HAZEWIND=w;renderHaze();}}).catch(function(){HAZEWINDKEY='';});
 }
 async function loadPSI(){
   const el=document.getElementById('haze');if(!el||!window.Haze)return;
   if(Date.now()-PSIAT<15*60000)return;
+  // The multi-night outlook, hourly at most. Deliberately NOT inside the try below:
+  // it must still arrive when the NEA feed is down, because a future date depends on it.
+  if(Date.now()-HAZEFCAT>60*60000){HAZEFCAT=Date.now();
+    window.Haze.fetchForecast(7).then(function(h){
+      HAZEFC=window.Haze.nightlyFromForecast(h);
+      renderHaze();renderTargets();renderGlance();loadSeeing(false);
+    }).catch(function(){HAZEFCAT=0;});
+  }
+  loadHazeWind();
   try{
     const d=await window.Haze.fetchNow();
     PSIAT=Date.now();HAZETS=Date.now();HAZEERR=false;
@@ -1995,11 +2087,6 @@ async function loadPSI(){
     // the day's readings are a second, cheap call — it only adds the trend arrow
     window.Haze.fetchTrend('pm25',R).then(function(sr){
       HAZETREND=window.Haze.trendOf(sr,3);renderHaze();}).catch(function(){});
-    // and the transport wind for the chosen night, at the middle of the session
-    if(window.Haze.fetchTransport){
-      const dv=document.getElementById('datePick').value||window.Haze.localDateISO();
-      window.Haze.fetchTransport(dv,21).then(function(w){HAZEWIND=w;renderHaze();}).catch(function(){});
-    }
   }catch(e){
     HAZEERR=true;PSIAT=Date.now()-13*60000;   // retry in ~2 min rather than 15
     renderHaze();renderDataHealth();
@@ -2049,7 +2136,7 @@ function buildBriefing(){
     +'<h2>Satellite passes — ISS · Tiangong · Hubble (7–11 pm)</h2>'+part('iss')
     +'<h2>Suggested session run-sheet</h2>'+part('plan')
     +'<h2>Object cards — tonight&rsquo;s showpieces</h2>'+objectCardsHTML()
-    +'<div class="src">Sources: deep-sky catalogue — AstroPixels Messier &amp; Caldwell catalogs (F. Espenak) · planetary orbital elements — P. Schlyter · Jupiter/Saturn physical ephemeris — J. Meeus, Astronomical Algorithms · GRS longitude — JUPOS trend · double/carbon star data — WDS &amp; SIMBAD (compiled) · weather &amp; rain radar — Open-Meteo &amp; MSS weather.gov.sg · seeing/transparency — 7Timer! astro · light-pollution realism — Bortle scale · haze — NEA via data.gov.sg · sky events — Sea &amp; Sky astronomy calendar (seasky.org) · ISS/Tiangong/Hubble orbits — CelesTrak TLEs, propagated on-device with satellite.js · Science Centre Observatory, Singapore. · SCOB Night-Sky '+window.SCOB_VERSION+' · '+window.SCOB_COPYRIGHT+'</div>';
+    +'<div class="src">Sources: deep-sky catalogue — AstroPixels Messier &amp; Caldwell catalogs (F. Espenak) · planetary orbital elements — P. Schlyter · Jupiter/Saturn physical ephemeris — J. Meeus, Astronomical Algorithms · GRS longitude — JUPOS trend · double/carbon star data — WDS &amp; SIMBAD (compiled) · weather &amp; rain radar — Open-Meteo &amp; MSS weather.gov.sg · seeing — estimated from Open-Meteo upper-air winds · light-pollution realism — Bortle scale · haze — NEA via data.gov.sg, column depth &amp; outlook from Open-Meteo air quality · sky events — Sea &amp; Sky astronomy calendar (seasky.org) · ISS/Tiangong/Hubble orbits — CelesTrak TLEs, propagated on-device with satellite.js · Science Centre Observatory, Singapore. · SCOB Night-Sky '+window.SCOB_VERSION+' · '+window.SCOB_COPYRIGHT+'</div>';
 }
 (function(){
   const bBtn=document.getElementById('briefBtn'),bW=document.getElementById('briefWrap');
@@ -2076,8 +2163,13 @@ function tonightBlurb(){
   var ma=altaz(MOONEQ.ra,MOONEQ.dec);
   if(ma.alt>10&&(typeof pct==='number'?pct:0)>=30)sights.push('the '+_moonWord()+' Moon');
   if(GL.sunAlt<-6&&sights.length<2){
-    var rows=CAT.map(function(t){var a=altaz(t[3],t[4]);return{name:t[0],alt:a.alt,sep:moonSep(t[3],t[4]),cls:t[5]};}).filter(function(r){return r.alt>25;}).sort(function(a,b){return b.alt-a.alt;});
-    var pick=rows.find(function(r){return visualVerdict(r)[0]==='exc';})||rows.find(function(r){return visualVerdict(r)[0]==='good';});
+    // v4.13: carry the magnitude so the haze / limiting-magnitude check can run, and
+    // prefer something a visitor can actually enjoy — the old pick was simply the
+    // highest object in the catalogue, which could be a magnitude-9 globular.
+    var rows=CAT.map(function(t){var a=altaz(t[3],t[4]);return{name:t[0],alt:a.alt,sep:moonSep(t[3],t[4]),cls:t[5],mag:t[6]};}).filter(function(r){return r.alt>25;}).sort(function(a,b){return b.alt-a.alt;});
+    var bright=rows.filter(function(r){return r.mag==null||r.mag<=7;});
+    var hz0=hazeVerdict(), smoky=!!(hz0&&(hz0.cost>=1.6||(hz0.psi!=null&&hz0.psi>100)));
+    var pick=smoky?null:(bright.find(function(r){return visualVerdict(r)[0]==='exc';})||bright.find(function(r){return visualVerdict(r)[0]==='good';}));
     if(pick)sights.push(pick.name.replace(/\s*\([^)]*\)/,''));
   }
   sights=sights.slice(0,3);
@@ -2086,6 +2178,27 @@ function tonightBlurb(){
   if(WXV&&WXV.cls==='ok')wx=' Clear skies are forecast, so conditions look great.';
   else if(WXV&&WXV.cls==='warn')wx=' The forecast is a little cloudy — we’ll play it by ear.';
   else if(WXV)wx=' Cloud is likely, so do check with us before heading down.';
+  // v4.13: this draft used to promise "conditions look great" on any cloud-free evening,
+  // haze or not. It now reads the same verdict as the headline. The health wording is
+  // NEA's, kept short, and only appears when NEA's band actually carries an advisory —
+  // and it is a draft: the volunteer posting it reads it first.
+  var hv=hazeVerdict();
+  if(hv){
+    var clear=!!(WXV&&WXV.cls==='ok');
+    var care=' If you are elderly, pregnant, bringing young children or have a heart or lung condition, please follow NEA’s haze advice.';
+    if(hv.psi!=null&&hv.psi>200)
+      wx=' The air quality is currently '+hv.band.name.toLowerCase()+' (PSI '+Math.round(hv.psi)+'), so please check with us before heading down — the session may move indoors.';
+    else if(hv.psi!=null&&hv.psi>100)
+      wx=clear?(' Skies are clear of cloud but hazy (PSI '+Math.round(hv.psi)+', NEA’s Unhealthy range), so we’ll concentrate on the brightest sights and keep time outdoors flexible.'+care)
+              :(wx+' The air is also hazy (PSI '+Math.round(hv.psi)+', NEA’s Unhealthy range).'+care);
+    else if(hv.cost>=1.6){
+      var how=(hv.mode==='forecast')?'forecast':'about';
+      wx=clear?(' Skies should be clear of cloud, but thick haze is '+how+', so the faint sights will be dimmed — the Moon, planets and bright stars will still show well.')
+              :(wx+' Thick haze is also '+how+', so expect the Moon, planets and bright stars rather than the faint sights.');
+    }
+    else if(hv.cost>=0.8&&clear)
+      wx=' Skies should be clear of cloud, though a little hazy.';
+  }
   return '🔭 Stargazing at the Science Centre Observatory '+whenWord+' ('+dateShort+'), 7:30–10:00 pm.'+wx+
     ' Come look through our telescopes at '+sightStr+'. All ages welcome — just turn up. 🌌';
 }
@@ -2115,7 +2228,7 @@ function tonightBlurb(){
 // ==== v3.36: dismissible "what's new" line for returning volunteers ====
 (function(){
   var VER=window.SCOB_VERSION||'';
-  var WHATSNEW='A proper 🌫️ haze picture — the weather card now shows the live 1-hour PM2.5 alongside the 24-hour PSI, which way it is moving, all five regions, what the smoke is costing tonight’s view and the call for a public session, with a full haze page behind it (today’s trend, a 5-night outlook, and what haze actually does to a telescope).';
+  var WHATSNEW='Haze now gets a say in the verdict. The go/no-go line, the share blurb and every deep-sky target account for smoke — using the whole-column depth as well as the ground PM2.5, so haze passing overhead is caught even when the PSI looks fine — and each target is judged at its own altitude. Pick a future date and you get that night’s haze forecast, not today’s. Seeing is now estimated from upper-air winds, and the Plan-ahead page ranks Fridays on haze too.';
   var seen='';try{seen=localStorage.getItem('scobSeenVer')||'';}catch(e){}
   if(seen===VER)return;
   var g=document.getElementById('glance');if(!g||!g.parentNode)return;
@@ -2133,18 +2246,17 @@ function lpLimitMag(){return BORTLE>=9?8.5:(BORTLE>=8?9.5:10.5);}
 // v3.86: dynamic limiting magnitude — the Bortle "clear, moonless" scope limit, reduced live for
 // the Moon (illuminated fraction × how high it is) and for haze (live west 24-h PSI). Feeds the
 // visual deep-sky verdicts and shows as a glance figure. Deliberately a rough estimate, not photometry.
-function dynLimitMag(){
+function dynLimitMag(alt){
   const base=lpLimitMag();
   let moon=0;
   if(typeof MOONALT==='number'&&MOONALT>0) moon=(illum||0)*Math.sin(MOONALT*RAD)*2.2; // up to ~2.2 mag, high full Moon
-  // v4.08: the haze term is now the shared physical model in haze-core.js, driven by
-  // the 1-hour PM2.5 rather than the laggy 24-hour PSI, and counting BOTH the light
-  // the smoke takes out of the beam and the extra sky glow it scatters back down.
-  // Quoted at a representative 60\u00b0 target altitude; low objects lose considerably more.
-  let haze=0;
-  if(window.Haze&&typeof PM25VAL==='number'&&PM25VAL>0)
-    haze=Math.min(2.5,window.Haze.excess(PM25VAL,hazeRH(),60,BORTLE).total);
-  return {base:base,moon:moon,haze:haze,mag:Math.max(3.5,base-moon-haze)};
+  // Haze: the shared model in haze-core.js. v4.08 drove it from the ground PM2.5 alone;
+  // v4.13 adds the whole-column optical depth (smoke in transit rides above the sensor)
+  // and takes an altitude, so a caller can ask about one target rather than "a typical
+  // one". With no altitude it answers for 60°, which is what the glance figure quotes.
+  let haze=0;const hc=hazeCostAt(alt==null?60:alt);
+  if(hc)haze=Math.min(4,hc.total);
+  return {base:base,moon:moon,haze:haze,hc:hc,mag:Math.max(3.5,base-moon-haze)};
 }
 
 // ---- observing windows within the session ----
@@ -2158,46 +2270,60 @@ function targetWindow(ra,dec,s,e){let from=null,to=null,best=s,bmax=-90;
   for(let t=s;t<=e;t+=10){const a=altAtMin(ra,dec,GL.y,GL.m,GL.d,t);if(a>bmax){bmax=a;best=t;}if(a>=25){if(from==null)from=t;to=t;}}
   if(from==null)return{none:true,best,bmax};return{from,to,best,bmax};}
 
-// ---- seeing & transparency (7Timer! astro, offline fallback) ----
-const SEE_ARC=['','<0.5"','0.5–0.75"','0.75–1"','1–1.25"','1.25–1.5"','1.5–2"','2–2.5"','>2.5"'];
-function seeQual(i){return i<=2?['ok','excellent']:i<=4?['ok','good']:i<=6?['warn','fair']:['bad','poor'];}
+// ---- seeing & transparency (v4.13: estimated from the forecast's upper-air fields) ----
+// Until v4.12 this asked 7Timer! for an astronomical-seeing forecast and fell back to a
+// "weather estimate" from surface wind when that failed. 7Timer sends no CORS header, so
+// from a browser it ALWAYS failed — the fallback was the only path that ever ran, and it
+// was grading the steadiness of the air from the breeze on the deck (2 km/h -> "good"),
+// which says almost nothing about seeing.
+// Seeing is made by turbulence, and turbulence is made by three things the forecast we
+// already download can speak to: wind at jet level, shear in the lowest kilometre or two,
+// and convection (CAPE) — the last one mattering most in the tropics, where the jet is
+// usually weak but the evening air is still turning over after a hot day.
+// This is a heuristic with hand-set weights, NOT a seeing monitor. It names its biggest
+// driver so a volunteer can judge it against what the eyepiece shows, and the session
+// logbook is the place to calibrate it.
+function seeingEstimate(v250,v850,v10,cape){
+  if(v250==null||isNaN(v250))return null;
+  const jet=v250/3.6, shear=Math.max(0,((v850==null?v10:v850)-(v10||0)))/3.6, cv=Math.min(cape||0,3500)/1000;
+  const tJ=0.035*jet, tS=0.05*shear, tC=0.25*cv, arc=0.9+tJ+tS+tC;
+  const q=arc<=1.1?['ok','excellent']:arc<=1.6?['ok','good']:arc<=2.3?['warn','fair']:['bad','poor'];
+  let driver;
+  if(arc<=1.3)driver='calm aloft and stable below';
+  else if(tC>=tJ&&tC>=tS)driver='convective instability (CAPE '+Math.round(cape)+' J/kg) — the evening air is still turning over';
+  else if(tJ>=tS)driver='jet-level wind, '+Math.round(v250)+' km/h at 250 hPa';
+  else driver='wind shear in the lowest 1.5 km ('+Math.round(v850)+' km/h aloft over '+Math.round(v10||0)+' at the deck)';
+  return {arc:arc,cls:q[0],label:q[1],driver:driver};
+}
 async function loadSeeing(force){
   const el=document.getElementById('seeing');if(!el)return;
   const dv=document.getElementById('datePick').value,tv=document.getElementById('timePick').value;if(!dv||!tv)return;
-  const dp=dv.split('-').map(Number),tp=tv.split(':').map(Number);
-  const targetMs=Date.UTC(dp[0],dp[1]-1,dp[2],tp[0]-8,tp[1],0);
-  if(force||!SEECACHE||Date.now()-SEEAT>30*60000){
-    try{
-      const r=await fetch('https://www.7timer.info/bin/api.pl?lon=103.7357&lat=1.3342&product=astro&output=json&unit=metric&ac=0&_t='+Date.now(),{cache:'no-store'});
-      if(r.ok){const j=await r.json();if(j&&j.init&&j.dataseries){SEECACHE=j;SEEAT=Date.now();}}
-    }catch(e){}
-  }
-  let used=null;
-  if(SEECACHE&&SEECACHE.init){
-    const s=String(SEECACHE.init);const initMs=Date.UTC(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8),+s.slice(8,10),0,0);
-    let bestd=1e15;SEECACHE.dataseries.forEach(p=>{const dd=Math.abs(initMs+p.timepoint*3600000-targetMs);if(dd<bestd){bestd=dd;used=p;}});
-    if(bestd>3*3600000)used=null;
-  }
+  const tp=tv.split(':').map(Number);
+  if(!(WXCACHE&&WXCACHE.date===dv)){el.style.display='none';SEEREAD=null;return;}
+  const h=WXCACHE.hourly;let i=h.time.indexOf(dv+'T'+pad(tp[0])+':00');if(i<0)i=Math.min(tp[0],h.time.length-1);
+  const cc=h.cloud_cover[i],rh=h.relative_humidity_2m[i],ws=h.wind_speed_10m[i];
+  if(cc==null){el.style.display='none';SEEREAD=null;return;}
+  const at=function(k){return (h[k]&&typeof h[k][i]==='number')?h[k][i]:null;};
+  const se=seeingEstimate(at('wind_speed_250hPa'),at('wind_speed_850hPa'),ws,at('cape'));
+  // Transparency now counts haze as well as cloud and humidity — smoke is the one
+  // thing that can ruin it on a cloudless, dry night.
+  const hc=hazeCostAt(60),hz=hc?hc.total:0;
+  const tr=(cc>=50||rh>=88||hz>=1.6)?['bad','poor']:(cc>=20||rh>=75||hz>=0.6)?['warn','fair']:['ok','good'];
+  const trSub='cloud '+cc+'% · RH '+rh+'%'+(hz>=0.25?' · haze −'+hz.toFixed(1)+' mag':'');
   let html;
-  if(used){
-    const sq=seeQual(used.seeing),tq=seeQual(used.transparency);
-    SEEREAD={label:sq[1],cls:sq[0],src:'7Timer! astro',arc:SEE_ARC[used.seeing]};
-    html='<div class="seehead">🔭 Seeing &amp; transparency <span style="opacity:.7;font-weight:400">· 7Timer! astro forecast</span></div>'
-      +'<div class="seegrid"><div class="seecell"><div class="k">Seeing</div><div class="v '+sq[0]+'">'+sq[1]+'</div><div class="s">'+SEE_ARC[used.seeing]+' at high power</div></div>'
-      +'<div class="seecell"><div class="k">Transparency</div><div class="v '+tq[0]+'">'+tq[1]+'</div><div class="s">band '+used.transparency+'/8</div></div></div>'
-      +'<div class="wxsrc">Steadiness of the air (seeing) governs how much planetary &amp; double-star detail holds at high power; transparency governs how faint the deep-sky reaches. Source: 7Timer! astro.</div>';
+  if(se){
+    SEEREAD={label:se.label,cls:se.cls,src:'upper-air wind estimate',arc:'~'+se.arc.toFixed(1)+'″',driver:se.driver};
+    html='<div class="seehead">🔭 Seeing &amp; transparency <span style="opacity:.7;font-weight:400">· estimated from upper-air winds</span></div>'
+      +'<div class="seegrid"><div class="seecell"><div class="k">Seeing</div><div class="v '+se.cls+'">'+se.label+'</div><div class="s">~'+se.arc.toFixed(1)+'″ at high power</div></div>'
+      +'<div class="seecell"><div class="k">Transparency</div><div class="v '+tr[0]+'">'+tr[1]+'</div><div class="s">'+trSub+'</div></div></div>'
+      +'<div class="wxsrc"><b style="color:var(--white)">Driven by:</b> '+se.driver+'. Seeing (steadiness) governs how much planetary &amp; double-star detail holds at high power; transparency governs how faint the deep sky reaches. An estimate from the Open-Meteo forecast — jet-level wind, low-level shear and convection — not a seeing monitor: trust the eyepiece over it.</div>';
   } else {
-    let cc=null,rh=null,ws=null;
-    if(WXCACHE&&WXCACHE.date===dv){const h=WXCACHE.hourly;let i=h.time.indexOf(dv+'T'+pad(tp[0])+':00');if(i<0)i=Math.min(tp[0],h.time.length-1);
-      cc=h.cloud_cover[i];rh=h.relative_humidity_2m[i];ws=h.wind_speed_10m[i];}
-    if(cc==null){el.style.display='none';SEEREAD=null;return;}
-    const tr=(cc<20&&rh<75)?['ok','good']:(cc<50&&rh<88)?['warn','fair']:['bad','poor'];
     const st=(ws<12)?['ok','good']:(ws<22)?['warn','fair']:['bad','poor'];
-    SEEREAD={label:st[1],cls:st[0],src:'weather estimate',arc:null};
-    html='<div class="seehead">🔭 Seeing &amp; transparency <span style="opacity:.7;font-weight:400">· estimated from local weather</span></div>'
+    SEEREAD={label:st[1],cls:st[0],src:'surface wind only',arc:null};
+    html='<div class="seehead">🔭 Seeing &amp; transparency <span style="opacity:.7;font-weight:400">· surface wind only</span></div>'
       +'<div class="seegrid"><div class="seecell"><div class="k">Steadiness</div><div class="v '+st[0]+'">'+st[1]+'</div><div class="s">wind '+Math.round(ws)+' km/h</div></div>'
-      +'<div class="seecell"><div class="k">Transparency</div><div class="v '+tr[0]+'">'+tr[1]+'</div><div class="s">cloud '+cc+'% · RH '+rh+'%</div></div></div>'
-      +'<div class="wxsrc">A rough estimate from the loaded forecast — the 7Timer! seeing model was unavailable or outside its ~week-ahead range. Surface wind &amp; humidity are only weak proxies for true seeing.</div>';
+      +'<div class="seecell"><div class="k">Transparency</div><div class="v '+tr[0]+'">'+tr[1]+'</div><div class="s">'+trSub+'</div></div></div>'
+      +'<div class="wxsrc">The forecast carried no upper-air winds for this hour, so steadiness is guessed from the surface breeze alone — a weak proxy. Treat it as a placeholder.</div>';
   }
   el.style.display='block';el.innerHTML=html;
   renderGlance();renderPlanetDetail();renderPlan();   // surface the seeing read in the glance, run-sheet & planet detail
@@ -2359,7 +2485,8 @@ function renderDarkBar(){
   else moonTxt='🌙 Moon '+mevs.map(e=>(e.rise?'rises ':'sets ')+tl(e.t)).join(', ');
   el.innerHTML=s+'<div class="dbcap">🌇 sunset '+tl(sset)+' · 🌌 astro-dark '+tl(darkS)+'–'+tl(darkE)+' · '+moonTxt+' · 🌅 sunrise '+tl(srise)+'<br><span style="opacity:.7">Gold ticks = sun up/down · cyan = full dark · amber band = Moon above horizon (washes faint objects).</span></div>';
 }
-function renderExtras(){renderEvents();renderConj();renderPlanetDetail();renderDoubles();renderPlan();loadISS();renderDataHealth();}
+function renderExtras(){renderEvents();renderConj();renderPlanetDetail();renderDoubles();renderPlan();loadISS();renderDataHealth();
+  renderHaze();loadHazeWind();}   // v4.13: the haze panel follows the chosen date
 loadPSI();loadRadar();loadNowcast();loadAllSky();if(ALLSKY_CAM)setInterval(loadAllSky,60000);
 
 const f0=nextFridayYMD();

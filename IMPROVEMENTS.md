@@ -1,183 +1,146 @@
 # SCOB Night-Sky — improvement backlog
 
-Audited at **v4.11** (cache `scob-sky-v114`), 10 Sep 2026, against the live site
-at afbooster.online. Every item below is backed by something measured, not by a
+Re-audited at **v4.13** (cache `scob-sky-v116`), 7 Oct 2026. First written at
+v4.11 on 10 Sep 2026. Every open item is backed by something measured, not by a
 guess — the evidence is quoted so you can re-check it yourself.
 
-Ranked by value ÷ effort. The first two are the ones I would do next.
+Open items are ranked by value ÷ effort.
 
 ---
 
-## 1. 7Timer! is unreachable — "seeing" has silently degraded to a guess
+## Done since the last audit
 
-**Evidence.** From a browser on `afbooster.online`:
-
-```
-fetch('https://www.7timer.info/bin/api.pl?...')   -> TypeError: Failed to fetch
-fetch(same, {mode:'no-cors'})                     -> type: "opaque", status: 0
-```
-
-An *opaque* response means the server is up and answering — it simply sends no
-`Access-Control-Allow-Origin` header, so the browser discards the reply. The
-live dashboard confirms the user-visible result:
-
-> 🔭 Seeing & transparency · **estimated from local weather** … *the 7Timer!
-> seeing model was unavailable or outside its ~week-ahead range.*
-
-So the fallback in `loadSeeing()` is not a fallback any more, it is the only
-path. Two consequences:
-
-* Seeing is being inferred from **surface wind speed** (2 km/h → "good"), which
-  is close to meaningless for astronomical seeing. The glance chip, the session
-  run-sheet and the Jupiter/Saturn high-power advice all lean on it.
-* `about.html` still credits 7Timer as a live source. That is now inaccurate.
-
-**The fix is an upgrade, not a patch.** Seeing is driven by turbulence *aloft*,
-and the single best cheap predictor is the **200–300 hPa wind speed** — a jet
-streak overhead wrecks high-power detail no matter how still the deck feels.
-Open-Meteo already serves those levels, is already a dependency, and is already
-proven to work from this origin (`wind_speed_250hPa`, `wind_speed_200hPa`, and
-`temperature`/`geopotential` levels for a crude stability term). `haze-core.js`
-already fetches 850 hPa winds for smoke transport, so the pattern exists.
-
-Suggested shape: a `seeing-core.js` (or a block in `astro-core.js`) that returns
-`{arcsec, label, driver}` where `driver` names *why* — "jet stream 95 kt at
-250 hPa" reads far better to a volunteer than "fair". Then correct `about.html`.
-
-**Effort:** half a day. **Value:** high — it restores a headline number that
-three parts of the dashboard depend on, and makes it more honest than 7Timer was.
+* **7Timer replaced (was item 1, v4.13).** Seeing is estimated on-device from
+  Open-Meteo's 250 hPa wind, the 850 hPa–surface shear and CAPE, and names its
+  driver. `about.html` corrected. See open item 1 for what this did *not* do.
+* **`plan-ahead.html` uses the haze forecast (was item 2, v4.13).** Fridays get
+  a haze line and a smoky Friday is never the deep-sky pick. Two latent bugs
+  fixed with it: the best-night pick ignored cloud, and Fridays beyond the
+  16-day forecast said "loading…" for ever.
+* **Comet elements refreshed (was item 3, v4.13)** from JPL Horizons, next
+  review 31 Dec 2026 — and the check uncovered a frame error in `cometEq()`
+  worth up to 76 arc-minutes, now 0.7′. See the v4.13 README row.
+* **Haze drives the verdict (new in v4.13).** Column depth as well as ground
+  PM2.5; go/no-go, share blurb, limiting magnitude and every target verdict
+  listen; future dates use that night's forecast.
 
 ---
 
-## 2. `plan-ahead.html` ignores the haze data we now have
+## 1. Calibrate the two estimates v4.13 introduced
 
-**Evidence.**
+v4.13 makes the dashboard *act* on two numbers nobody has measured at Jurong.
 
-```
-haze refs in plan-ahead.html : 0
-its Open-Meteo query          : hourly=cloud_cover,precipitation_probability
-```
+**The haze sky cost.** The model's nightly PM2.5 level checked out against NEA
+(mean 48.2 vs 51.1 µg/m³ over 177 paired hours, the week to 7 Oct 2026) but its
+hourly timing did not (r = 0.38), and the *column* depth it supplies has not
+been checked against anything at all — there is no sun-photometer near Jurong
+in the data we use. The 5–7 Oct episode showed model column depths of 1.1–1.5
+against about 0.47 implied by the ground reading; that is physically plausible
+for a deep smoke layer, but plausible is not verified. NASA's AERONET network
+has listed a sun-photometer site in Singapore; if it is still reporting, its
+measured aerosol optical depth would settle this in an afternoon.
 
-v4.09 added a **five-night haze outlook** (PM2.5, PM10, dust, satellite aerosol
-depth, averaged over the 7–11 pm window, Fridays already highlighted) — and the
-one page whose entire job is *"which upcoming Friday should we run?"* still
-compares nights on Moon phase and cloud alone.
+**The seeing estimate.** `arc = 0.9 + 0.035·jet + 0.05·shear + 0.25·CAPE/1000`
+is hand-weighted from general principles. It has the right inputs and no
+calibration.
 
-This is the cheapest big win on the list, because the data and the model already
-exist: `Haze.fetchForecast()` → `Haze.nightlyFromForecast()` → `Haze.excess()`
-gives magnitudes-lost per night in three calls. Add a haze column, and fold it
-into whatever ranking the page already does, so a clear-but-hazy Friday stops
-outranking a slightly-cloudier clean one.
+**The fix for both is the logbook** (old item 6). `session-log.html` already
+records what the app predicted and grades it against what was logged. Add two
+fields — faintest star seen near the zenith, and a 1–5 seeing score on Jupiter
+or a double — and a season of Fridays turns both formulas from documented
+guesses into fitted ones.
 
-**Effort:** 2–3 hours. **Value:** high — it closes the loop on v4.09/4.11.
-
----
-
-## 3. Refresh the comet elements — due 2026-10-01 (21 days)
-
-**Evidence.** `node test-astro.js` warns on every run:
-
-```
-! Comet elements — Comet 10P/Tempel 2: review due 2026-10-01 — 21 days left.
-```
-
-`astro-core.js` carries orbital elements with an explicit `review:` date and a
-validity window (`from:2461161.5, to:2461405.5`). This is the review guard doing
-exactly what it was built to do. Refresh from the Minor Planet Center or JPL
-Horizons and push the review date out.
-
-**Effort:** 30 minutes. **Value:** medium, but it is a hard deadline — after it
-passes, the comet page starts quietly showing positions outside their fit.
+**Effort:** half a day for the logbook fields; the fitting is later.
+**Value:** high — it is the difference between a number the dashboard shows and
+one it can be trusted to act on.
 
 ---
 
-## 4. The dashboard is 191 KB, and every visitor downloads both layouts
+## 2. Other J2000 / of-date mixing in the engine
 
-**Evidence.**
+**Evidence.** The comet bug was J2000 elements added to an of-date Sun. The
+same question applies elsewhere and has not been audited:
 
 ```
-scob-dashboard-v3.html   191.3 KB total
-  inline CSS              39.4 KB (20%)   desktopCSS 14.7 KB + mobileCSS 15.3 KB
-  inline JS              124.9 KB (65%)
-  markup + rest           27.0 KB
+SHOWPIECES ra/dec        : catalogue J2000, passed straight to alt/az
+planets                  : Schlyter elements, equinox of date
+precession 2000 -> 2026.8: 0.37 degrees
+```
+
+For a deep-sky object 0.37° is a small pointing offset on a chart and nothing
+at all to a GoTo mount that does its own precession, so this is far less severe
+than the comet case (where Earth's proximity multiplied it). But rise/set and
+transit times, and anything compared against a planet's position (conjunction
+separations, occultation predictions), deserve a look. `occultations.html` and
+`iss-transits.html` are the pages where a third of a degree could matter.
+
+**Effort:** 2–3 hours to audit, with Horizons as the reference.
+**Value:** medium — probably fine, but "probably" is what the comet was.
+
+---
+
+## 3. The dashboard is over 200 KB, and every visitor downloads both layouts
+
+**Evidence (v4.13).**
+
+```
+scob-dashboard-v3.html   208 KB   (191 KB at v4.11 — it is growing)
 desktop + mobile roots both shipped to every visitor: yes
 ```
 
 Both stylesheets and both DOM trees ship to every device, and JS deletes the
-unused half at runtime. On a phone on observatory wifi that is ~15 KB of dead CSS
-and a duplicate DOM before anything renders — and it is the **entry page**, also
-copied to `index.html`.
+unused half at runtime. It is the **entry page**, also copied to `index.html`.
+The haze logic that v4.13 added to the dashboard (`hazeNight`, `hazeCostAt`,
+`hazeVerdict`, `seeingEstimate`) would sit better in `haze-core.js` and a small
+`seeing-core.js`, where the service worker caches them once and `plan-ahead`
+could share them instead of repeating the call.
 
-The site already knows how to do this properly: `astro-core.js`, `sky-data.js`
-and `haze-core.js` are shared, cached once, and reused across pages. The
-dashboard's 125 KB of inline JS is the last big holdout. Lifting even the
-target-rendering and briefing code into a `dashboard-core.js` would cut the
-entry page substantially and let the service worker cache it once.
-
-**Effort:** a day, and it is refactoring with real regression risk — the three
-test suites plus `test-browser.js` make it feasible, but do it on its own release
-with nothing else in flight. **Value:** medium.
+**Effort:** a day, with real regression risk — do it on its own release.
+**Value:** medium.
 
 ---
 
-## 5. Give the data-health strip the two sources it does not yet cover
+## 4. Give the data-health strip the sources it does not yet cover
 
-The strip tracks weather, satellite TLEs, haze and the GRS model — genuinely
-good, and it is how the v4.10 blank-image bug would have been caught sooner. It
-does **not** track seeing or solar activity, which are exactly the two that fail
-quietly (see item 1). Add them, and the pattern is complete: *every* live source
-either shows fresh, shows stale, or shows absent.
+The strip tracks weather, satellite TLEs, haze readings and the GRS model. It
+does not track the **air-quality forecast** (which v4.13 now leans on for every
+future-dated verdict), **seeing inputs**, or **solar activity**. When the haze
+forecast is missing the dashboard says so in the haze panel, but the strip
+should show it too: every live source either fresh, stale, or absent.
 
-**Effort:** an hour, once item 1 lands. **Value:** medium, compounding.
-
----
-
-## 6. Let the logbook grade the haze call too
-
-`session-log.html` already captures the go/no-go the app would have given and
-grades it against what you logged (15 references to forecast/verdict/grade). Now
-that the haze panel makes a *falsifiable* claim each night — "costs ~0.3 mag on a
-well-placed target" — the logbook could capture it and, over a season, tell you
-whether the optical model is calibrated for Jurong. That would turn the estimate
-in `haze-core.js` from a documented guess into a measured one.
-
-**Effort:** half a day. **Value:** medium, and it is the kind of thing that makes
-the site distinctive rather than merely useful.
+**Effort:** an hour. **Value:** medium, compounding.
 
 ---
 
-## 7. Housekeeping already done in this pass
+## 5. Comet 10P leaves the list — decide what follows it
 
-* Removed `GetCapabilities.xml` (2.27 MB) — a browsing artifact of mine that got
-  committed and pushed. It never reached the live site (the deploy stages an
-  explicit file list that excludes `.xml`), but it was in the repo.
-* Removed `Claude outputs/` (644 KB of my screenshots).
-* `.gitignore` now excludes stray `*.xml` with `!sitemap.xml` re-included, so a
-  browser saving into the project folder cannot repeat this.
+The refitted brightness law has 10P at about magnitude 10.6 on 9 Oct and past
+the magnitude-11 cut-off by mid-October; its window closes 31 Dec 2026, and
+`test-astro.js` will start warning on 1 Dec. The comets page will then be
+empty. Either add the next bright comet (check COBS / aerith.net's weekly list
+nearer the time) or let the page say plainly that nothing is in reach.
 
-Still yours to decide:
+**Effort:** 30 minutes per comet. **Value:** low until December.
+
+---
+
+## Still yours to decide
 
 * `scob-v4.03.patch`, `scob-v4.04.patch`, `scob-v4.05.patch` — 148 KB of patch
-  files from released versions. The history has them; the working tree probably
-  does not need to.
+  files from released versions. The history has them.
 * `.git/.writetest` — a zero-byte file I created probing write access and could
   not delete through the file bridge. `del /f /q .git\.writetest`.
-* `README.md` is 130 KB, almost all version history. It is not served, so this
-  costs nothing at runtime, but it is getting unwieldy to edit. Splitting
-  pre-v4.0 rows into `CHANGELOG-v3.md` would keep the active table readable.
+* `README.md` is over 130 KB, almost all version history. It is not served, so
+  it costs nothing at runtime, but splitting pre-v4.0 rows into
+  `CHANGELOG-v3.md` would keep the active table readable.
 
 ---
 
-## Checked and found healthy — no action needed
+## Checked at v4.13
 
-* **All internal links resolve**, no orphan pages, 12/12 release gates, all three
-  test suites green.
-* **No `<img>` without `alt`** across 76 pages.
-* **Service worker precache**: 100 entries, ~2.0 MB, none missing on disk.
-* **Live endpoints**: NEA PSI v2, NEA PM2.5 v2, the v1 legacy fallback, the MSS
-  2-hour nowcast, Open-Meteo forecast, Open-Meteo air quality, CelesTrak and
-  NOAA SWPC all answered 200 with CORS from `afbooster.online`. Only 7Timer
-  fails (item 1).
-* **The v4.11 scheduled Action works** — `nea-haze.json` self-updated to
-  `suma_20260909_140505.jpg` at 23:20 UTC without intervention.
-* **Total site payload** ~2.1 MB across 76 pages, which is lean for what it does.
+* 7 Oct 2026, from a browser on `afbooster.online`: NEA PSI and PM2.5 (v2),
+  Open-Meteo forecast including pressure-level winds and CAPE, and Open-Meteo
+  air quality (7 days accepted; column depth is null beyond about day 5) all
+  answered with CORS. 7Timer still sends no CORS header.
+* JPL Horizons and COBS were read by hand for the comet refresh; the site does
+  not call either at runtime.

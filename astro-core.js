@@ -194,14 +194,21 @@
   ];
 
   // ---- v3.15: bright-comet tracker (positions computed live from orbital elements) ----
-  // Elements are heliocentric J2000 (from the MPC / aerith.net). Comets fade and new ones
-  // appear, so REFRESH this table each apparition — each entry carries a `review` date and a
-  // `from`/`to` visibility window (JD) so a stale comet simply drops out of the lists.
+  // Elements are heliocentric, ecliptic of J2000 (JPL Horizons osculating elements; brightness
+  // law fitted to COBS observer reports). Comets fade and new ones appear, so REFRESH this
+  // table each apparition — each entry carries a `review` date and a `from`/`to` visibility
+  // window (JD) so a stale comet simply drops out of the lists.
+  //
+  // 10P refreshed 7 Oct 2026 (v4.13): JPL solution K265/56 (6,955 observations to 1 Oct 2026),
+  // osculating at JD 2461320.5. Post-perihelion brightness law refitted to 81 COBS reports from
+  // 1 Sep - 4 Oct 2026 (weekly medians 8.4 -> 10.1): the comet is fading faster than the old
+  // law (7.2 / 18) assumed. The fit spans only r = 1.46-1.55 au, so beyond November treat the
+  // magnitude as a guide. The window closes 31 Dec 2026 — replace or remove this entry then.
   var COMETS = [
     { id:'10p', name:'Comet 10P/Tempel 2', kind:'comet',
-      q:1.4160714, e:0.5376254, i:12.03005, node:117.80992, peri:195.52491, n:0.18389389, Tp:2461254.64737,
-      g:4.6, K:35, gPost:7.2, KPost:18,           // brightness law m = g + 5·logΔ + K·logr (pre / post perihelion, aerith)
-      from:2461161.5, to:2461405.5, review:'2026-10-01',
+      q:1.4177416, e:0.5374302, i:12.02707, node:117.79683, peri:195.46992, n:0.18368527, Tp:2461254.61638,
+      g:4.6, K:35, gPost:4.3, KPost:35,           // brightness law m = g + 5·logΔ + K·logr (pre: aerith; post: COBS fit, Oct 2026)
+      from:2461161.5, to:2461405.5, review:'2026-12-31',
       scope:'40 cm dome / 6" apo · binoculars', mag:null,
       blurb:"A short-period comet (it loops back every 5.4 years) making a good 2026 showing — a soft, tailless glow of dust and gas boiling off a city-sized ball of ice as it nears the Sun.",
       look:"A dim fuzzy patch, not a point — best in the big scope or binoculars, and easier the darker the sky." }
@@ -213,7 +220,14 @@
     for (var k=0;k<12;k++) E = E - (E - DEG*c.e*Math.sin(E*RAD) - M)/(1 - c.e*Math.cos(E*RAD));
     var xv = a*(Math.cos(E*RAD)-c.e), yv = a*Math.sqrt(1-c.e*c.e)*Math.sin(E*RAD);
     var v = rev(Math.atan2(yv,xv)*DEG), r = Math.sqrt(xv*xv+yv*yv);
-    var N=c.node*RAD, w=(v+c.peri)*RAD, inc=c.i*RAD;
+    // The elements are referred to the ecliptic of J2000, but sun() below returns the Sun's
+    // longitude for the equinox OF DATE — and the result is turned into alt/az with of-date
+    // sidereal time. Adding the two vectors as they stand mixes frames 0.37 deg apart (2026),
+    // and because the comet is close to Earth that grew to over a degree on the sky. Precess
+    // the node to the equinox of date first (a rotation about the ecliptic pole), so every
+    // term is in one frame. Checked against JPL Horizons apparent places, Jun-Dec 2026:
+    // worst error 76' before this line, 0.7' after.
+    var N=(c.node + 3.82394e-5*d)*RAD, w=(v+c.peri)*RAD, inc=c.i*RAD;
     var xh = r*(Math.cos(N)*Math.cos(w)-Math.sin(N)*Math.sin(w)*Math.cos(inc));
     var yh = r*(Math.sin(N)*Math.cos(w)+Math.cos(N)*Math.sin(w)*Math.cos(inc));
     var zh = r*Math.sin(w)*Math.sin(inc);
