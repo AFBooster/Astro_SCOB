@@ -41,6 +41,13 @@ textarea{min-height:66px;resize:vertical;}
 .tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px;}
 .tool{border:1px solid var(--line);background:var(--navy3);color:var(--cyan);border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:700;cursor:pointer;}
 .empty{color:var(--mute);font-size:13.5px;padding:8px 2px;}
+.mc{border:1px dashed var(--line);border-radius:11px;padding:10px 12px;}
+.mc .hd{font-size:12.5px;font-weight:800;color:var(--cyan);margin-bottom:6px;}
+.mc .why{font-size:12px;color:var(--mute);margin-top:6px;line-height:1.5;}
+.mtab{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+.mtab th{text-align:left;font-size:11px;color:var(--mute);font-weight:700;border-bottom:1px solid var(--line);padding:5px 4px;}
+.mtab td{padding:5px 4px;border-bottom:1px solid var(--line);}
+.verdict{margin-top:10px;padding:9px 11px;border-radius:9px;background:var(--navy3);font-size:13px;line-height:1.55;}
 .foot code{background:#0c1530;padding:1px 5px;border-radius:5px;}
 </style>
 <!-- Social sharing / SEO metadata -->
@@ -92,6 +99,16 @@ textarea{min-height:66px;resize:vertical;}
         <div><label for="fHead">Rough attendance</label><input type="number" id="fHead" min="0" step="5" placeholder="e.g. 120"></div>
         <div><label for="fScopes">Instruments out</label><input type="text" id="fScopes" placeholder="e.g. 40cm dome, 11″, CPC, Seestar"></div>
       </div>
+      <div class="mc">
+        <div class="hd">🎯 Model check <span style="font-weight:400;color:var(--mute)">— optional, ten seconds, and the only way the haze and seeing estimates ever get calibrated</span></div>
+        <div class="row2">
+          <div><label for="fNelm">Faintest naked-eye star you could hold, high up (magnitude)</label>
+            <input type="number" id="fNelm" min="0" max="7" step="0.1" placeholder="e.g. 3.6"></div>
+          <div><label for="fSee">Seeing at high power on a planet or double (Antoniadi)</label>
+            <select id="fSee"><option value="">— not judged —</option></select></div>
+        </div>
+        <div class="why">Away from the deck lights, look straight up for a minute and find the faintest star you can keep in view; any star-chart app (Stellarium, for one) will tell you its magnitude. Use the same method each time — consistency matters more than precision. A clean Jurong night is roughly magnitude 4. Each saved night stores what the app <i>predicted</i> for that evening beside what you saw — see <b>Model check</b> under Past sessions.</div>
+      </div>
       <div><label for="fNotes">Notes <span style="font-weight:400">(what drew crowds, issues, weather changes…)</span></label>
         <textarea id="fNotes" placeholder="Saturn was the hit again; Seestar on the Lagoon pulled a queue; clouds rolled in ~9:30."></textarea></div>
       <div class="btns"><button type="button" class="primary" id="saveBtn">＋ Save this session</button></div>
@@ -104,9 +121,11 @@ textarea{min-height:66px;resize:vertical;}
       <button type="button" class="tool" id="csvBtn">⬇ Export all as CSV</button>
       <button type="button" class="tool" id="topBtn">★ Most-shown objects</button>
       <button type="button" class="tool" id="fcBtn">🔮 Forecast accuracy</button>
+      <button type="button" class="tool" id="mcBtn">🎯 Model check</button>
     </div>
     <div id="topBox" style="display:none"></div>
     <div id="fcBox" style="display:none"></div>
+    <div id="mcBox" style="display:none"></div>
     <div id="list"></div>
   </div>
 
@@ -118,6 +137,8 @@ textarea{min-height:66px;resize:vertical;}
 </div>
 
 <script src="sky-culture-core.js"></script>
+<script src="haze-core.js"></script>
+<script src="seeing-core.js"></script>
 <script src="version.js"></script>
 <script>
 (function(){
@@ -155,6 +176,53 @@ textarea{min-height:66px;resize:vertical;}
     }).catch(function(){});
   }
 
+  // ---- v4.15: model check — what the app PREDICTED for the night, beside what was SEEN ----
+  // The haze cost (haze-core.js) and the seeing estimate (seeing-core.js) drive the
+  // dashboard's verdicts but have never been checked at SCOB. For each logged night we
+  // store the inputs as the dashboard would have had them, once the evening is over:
+  //   • ground PM2.5 — NEA's own west readings, 8-10 pm (falls back to the model);
+  //   • whole-column smoke — the air-quality model's 5-11 pm mean;
+  //   • seeing — the upper-air winds and CAPE at 9 pm.
+  // Observed: the faintest naked-eye star near the zenith and an Antoniadi grade.
+  var H=window.Haze||null, S=window.Seeing||null;
+  var PREDV=1;
+  function bortle(){try{var v=+localStorage.getItem('scobBortle');return (v===7||v===8||v===9)?v:8;}catch(e){return 8;}}
+  function sgNow(){return new Date(Date.now()+8*3600000);}
+  function eveningOver(iso){ // true once 10:30 pm SGT on that date has passed
+    if(!iso)return false;var p=iso.split('-').map(Number);
+    return Date.UTC(p[0],p[1]-1,p[2],22,30)<=sgNow().getTime(); }
+  function daysAgo(iso){var p=iso.split('-').map(Number);return (sgNow().getTime()-Date.UTC(p[0],p[1]-1,p[2],12))/86400000;}
+  function mean(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+  var predBusy={};
+  function attachPrediction(e){
+    if(!H||!S||!e.date||(e.pr&&e.pr.v===PREDV)||predBusy[e.date])return;
+    if(!eveningOver(e.date)||daysAgo(e.date)>85)return;   // the free archives keep ~3 months
+    predBusy[e.date]=1;
+    var d=e.date;
+    var aqU='https://air-quality-api.open-meteo.com/v1/air-quality?latitude=1.3342&longitude=103.7357&hourly=pm2_5,pm10,dust,aerosol_optical_depth&timezone=Asia%2FSingapore&start_date='+d+'&end_date='+d;
+    Promise.all([
+      H.fetchTrend('pm25',H.HOME_REGION||'west',d).catch(function(){return null;}),
+      fetch(aqU,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){return (j&&j.hourly&&j.hourly.time)?H.nightlyFromForecast(j.hourly):[];}).catch(function(){return [];}),
+      S.fetchEvening(d,21).catch(function(){return null;})
+    ]).then(function(r){
+      var sr=r[0]||[], night=(r[1]||[]).filter(function(n){return n.date===d;})[0]||null, ev=r[2];
+      var nea=sr.filter(function(x){var hh=+new Date(new Date(x.t).getTime()+8*3600000).toISOString().slice(11,13);return hh>=20&&hh<=22;}).map(function(x){return x.v;});
+      var pm=mean(nea), pmSrc='NEA';
+      if(pm==null&&night&&night.pm25!=null){pm=night.pm25;pmSrc='model';}
+      var aod=night?night.aod:null, rh=ev?ev.rh:null;
+      var c=(pm!=null||aod!=null)?H.skyCost({pm25:pm,aod:aod,rh:rh==null?82:rh,alt:80,bortle:bortle()}):null;
+      var se=ev?S.estimate(ev.v250,ev.v850,ev.v10,ev.cape):null;
+      if(!c&&!se){delete predBusy[d];return;}
+      e.pr={v:PREDV,at:Date.now(),pm25:pm==null?null:Math.round(pm),pmSrc:pm==null?null:pmSrc,
+            aod:aod==null?null:Math.round(aod*100)/100,
+            cost:c?Math.round(c.total*100)/100:null,ext:c?Math.round(c.ext*100)/100:null,glow:c?Math.round(c.glow*100)/100:null,aloft:c?!!c.aloft:false,
+            seeArc:se?Math.round(se.arc*100)/100:null,seeLabel:se?se.label:null};
+      save();renderAll();
+    }).catch(function(){delete predBusy[d];});
+  }
+  (function(){var sel=document.getElementById('fSee');if(!sel||!S)return;
+    S.ANTONIADI.forEach(function(a){var o=document.createElement('option');o.value=String(a.n);o.textContent=a.roman+' — '+a.text;sel.appendChild(o);});})();
+
   // default date = next Friday if available, else today
   (function(){var f=SkyCore.nextFridayYMD?SkyCore.nextFridayYMD():null;var d=f?new Date(Date.UTC(f.y,f.m,f.d,12)):new Date();
     var y=f?f.y:d.getFullYear(),m=(f?f.m:d.getMonth())+1,dd=f?f.d:d.getDate();
@@ -183,10 +251,21 @@ textarea{min-height:66px;resize:vertical;}
         +(e.scopes?'<span class="tag">🔭 '+esc(e.scopes)+'</span>':'')
         +'<span class="tag">'+objs.length+' objects</span>'
         +(function(){var g=gradeFc(e);if(!g)return"";var sym=g.ok===null?"":(g.ok?" ✓":" ✗");var col=g.ok===null?"var(--mute)":(g.ok?"#9be9b8":"#ffb4b4");return '<span class="tag" style="color:'+col+';border-color:'+col+'" title="Forecast said '+g.v+(g.outcome?'; actually '+g.outcome:'')+'">🔮 '+g.v+sym+'</span>';})()
+        +modelTags(e)
         +'<button type="button" class="del" data-i="'+i+'">Delete</button></div></div>';
     }).join('');
     host.querySelectorAll(".del").forEach(function(b){b.addEventListener("click",function(){
       if(confirm("Delete this session entry?")){log.splice(+b.dataset.i,1);save();renderAll();}});});
+  }
+  function modelTags(e){
+    var t='',pr=e.pr;
+    if(pr&&pr.cost!=null)t+='<span class="tag" title="The app\'s haze cost overhead for that evening (ground PM2.5 '+(pr.pm25==null?'—':pr.pm25+' µg/m³, '+pr.pmSrc)+'; column depth '+(pr.aod==null?'—':pr.aod)+')'+(e.nelm!==''&&e.nelm!=null?'. You recorded a naked-eye limit of '+e.nelm:'')+'">🌫️ model −'+pr.cost.toFixed(1)+' mag'+(e.nelm!==''&&e.nelm!=null?' · saw '+esc(e.nelm):'')+'</span>';
+    else if(e.nelm!==''&&e.nelm!=null)t+='<span class="tag">✨ naked-eye '+esc(e.nelm)+'</span>';
+    var a=(S&&e.see)?S.ANTONIADI[+e.see-1]:null;
+    if(pr&&pr.seeArc!=null)t+='<span class="tag" title="The app\'s seeing estimate for 9 pm'+(a?'; you graded it Antoniadi '+a.roman:'')+'">🌬️ model '+pr.seeLabel+' ~'+pr.seeArc.toFixed(1)+'″'+(a?' · saw '+a.roman:'')+'</span>';
+    else if(a)t+='<span class="tag">🌬️ seeing '+a.roman+'</span>';
+    if(!pr&&eveningOver(e.date)&&daysAgo(e.date)<=85)t+='<span class="tag" title="The prediction for this night is fetched once the evening is over and you are online">🎯 prediction pending</span>';
+    return t;
   }
   function renderAll(){renderStats();renderList();}
 
@@ -194,11 +273,13 @@ textarea{min-height:66px;resize:vertical;}
     var e={date:document.getElementById("fDate").value||"",cond:document.getElementById("fCond").value,
       objects:parseObjects(document.getElementById("fObjects").value),
       head:document.getElementById("fHead").value||"",scopes:document.getElementById("fScopes").value.trim(),
-      notes:document.getElementById("fNotes").value.trim(),ts:Date.now()};
+      notes:document.getElementById("fNotes").value.trim(),
+      nelm:document.getElementById("fNelm").value||"",see:document.getElementById("fSee").value||"",ts:Date.now()};
     if(!e.date){alert("Please set a date.");return;}
     log.unshift(e); log.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
     save(); renderAll();
-    attachForecast(e);
+    attachForecast(e);attachPrediction(e);
+    document.getElementById("fNelm").value="";document.getElementById("fSee").value="";
     document.getElementById("fObjects").value="";document.getElementById("fHead").value="";document.getElementById("fNotes").value="";document.getElementById("fScopes").value="";
     var s=document.getElementById("saveBtn");var t=s.textContent;s.textContent="✓ Saved";setTimeout(function(){s.textContent=t;},1400);
   });
@@ -218,8 +299,8 @@ textarea{min-height:66px;resize:vertical;}
   document.getElementById("csvBtn").addEventListener("click",function(){
     if(!log.length){alert("Nothing to export yet.");return;}
     function q(s){s=String(s==null?"":s);return '"'+s.replace(/"/g,'""')+'"';}
-    var rows=[["Date","Conditions","Attendance","Instruments","Objects shown","Notes"]];
-    log.forEach(function(e){rows.push([e.date,e.cond,e.head,e.scopes,(e.objects||[]).join("; "),e.notes]);});
+    var rows=[["Date","Conditions","Attendance","Instruments","Objects shown","Notes","Naked-eye limit (mag)","Seeing (Antoniadi 1-5)","Model: ground PM2.5","PM2.5 source","Model: column depth","Model: haze cost overhead (mag)","Model: seeing (arcsec)","Model: seeing label"]];
+    log.forEach(function(e){var pr=e.pr||{};rows.push([e.date,e.cond,e.head,e.scopes,(e.objects||[]).join("; "),e.notes,e.nelm,e.see,pr.pm25,pr.pmSrc,pr.aod,pr.cost,pr.seeArc,pr.seeLabel]);});
     var csv=rows.map(function(r){return r.map(q).join(",");}).join("\r\n");
     try{var b=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="scob-session-log.csv";document.body.appendChild(a);a.click();a.remove();}catch(e){}
   });
@@ -248,10 +329,52 @@ textarea{min-height:66px;resize:vertical;}
       +'<div style="margin-top:8px;font-size:11.5px;color:var(--mute)">A run of misses in one direction (e.g. GO nights that clouded over) is the signal to nudge the forecast thresholds for our site.</div>';
   });
 
+  document.getElementById("mcBtn").addEventListener("click",function(){
+    var box=document.getElementById("mcBox");
+    if(box.style.display==="block"){box.style.display="none";return;}
+    box.style.display="block";
+    var hz=log.filter(function(e){return e.pr&&e.pr.cost!=null&&e.nelm!==""&&e.nelm!=null&&!isNaN(+e.nelm);});
+    var sg=log.filter(function(e){return e.pr&&e.pr.seeArc!=null&&e.see;});
+    var html='';
+    // haze
+    html+='<div style="margin:12px 0 2px;font-size:14px;font-weight:800;color:var(--gold)">🌫️ Haze cost vs. what you could see</div>';
+    if(!hz.length)html+='<div class="empty">No nights yet with both a naked-eye limit and a stored prediction.</div>';
+    else{
+      html+='<table class="mtab"><tr><th>Night</th><th>PM2.5</th><th>Column</th><th>Model cost</th><th>You saw</th></tr>'
+        +hz.map(function(e){return '<tr><td>'+fmtDate(e.date)+'</td><td>'+(e.pr.pm25==null?'—':e.pr.pm25+(e.pr.pmSrc==='model'?'*':''))+'</td><td>'+(e.pr.aod==null?'—':e.pr.aod)+'</td><td>−'+e.pr.cost.toFixed(1)+'</td><td><b>'+esc(e.nelm)+'</b></td></tr>';}).join('')+'</table>';
+      var f=(S&&hz.length>=5)?S.fitLine(hz.map(function(e){return e.pr.cost;}),hz.map(function(e){return +e.nelm;})):null;
+      if(!f)html+='<div class="verdict">'+hz.length+' of the 5 nights needed for a fit. A spread matters more than a count — a couple of clean nights and a couple of smoky ones will say more than ten similar ones.</div>';
+      else{
+        var b=f.b, msg;
+        if(Math.abs(f.r)<0.3)msg='The naked-eye limit barely tracks the model (r = '+f.r.toFixed(2)+'). Either the nights were too alike to tell, or the model is not catching what limits the sky here.';
+        else if(b>-0.75)msg='Each magnitude the model predicts costs only about <b>'+(-b).toFixed(1)+'</b> magnitudes at the eye — the model is <b>over-stating</b> the haze. Its sky costs should be scaled down by roughly '+Math.round(100*(1+b))+'%.';
+        else if(b<-1.3)msg='Each magnitude the model predicts costs about <b>'+(-b).toFixed(1)+'</b> at the eye — the model is <b>under-stating</b> the haze.';
+        else msg='Each magnitude the model predicts costs about <b>'+(-b).toFixed(1)+'</b> at the eye — <b>close to the 1 : 1 a calibrated model would show</b>.';
+        html+='<div class="verdict">Across <b>'+f.n+'</b> nights: naked-eye limit ≈ <b>'+f.a.toFixed(1)+'</b> − <b>'+(-b).toFixed(2)+'</b> × model cost (r = '+f.r.toFixed(2)+'). '+msg+' The intercept, '+f.a.toFixed(1)+', is your clean-night limit from the deck.</div>';
+      }
+      if(hz.some(function(e){return e.pr.pmSrc==='model';}))html+='<div style="margin-top:6px;font-size:11.5px;color:var(--mute)">* PM2.5 from the model because NEA\'s readings for that evening were unavailable.</div>';
+    }
+    // seeing
+    html+='<div style="margin:16px 0 2px;font-size:14px;font-weight:800;color:var(--gold)">🌬️ Seeing estimate vs. the eyepiece</div>';
+    if(!sg.length)html+='<div class="empty">No nights yet with both an Antoniadi grade and a stored prediction.</div>';
+    else{
+      html+='<table class="mtab"><tr><th>Night</th><th>Model</th><th>You graded</th></tr>'
+        +sg.map(function(e){var a=S.ANTONIADI[+e.see-1];return '<tr><td>'+fmtDate(e.date)+'</td><td>'+e.pr.seeLabel+' ~'+e.pr.seeArc.toFixed(1)+'″</td><td><b>'+a.roman+'</b> <span style="color:var(--mute)">('+a.text.split(' — ')[0]+')</span></td></tr>';}).join('')+'</table>';
+      var rho=(S&&sg.length>=5)?S.spearman(sg.map(function(e){return e.pr.seeArc;}),sg.map(function(e){return +e.see;})):null;
+      if(rho==null)html+='<div class="verdict">'+sg.length+' of the 5 nights needed to say anything.</div>';
+      else html+='<div class="verdict">Rank agreement across <b>'+sg.length+'</b> nights: <b>'+rho.toFixed(2)+'</b> (1 = the worse the prediction, the worse you graded it, every time; 0 = no relation). '
+        +(rho>=0.5?'The estimate is ordering nights the right way.':rho>=0.2?'A weak hint of the right ordering — keep logging.':'The estimate is not ordering nights the way the eyepiece does — its weights need refitting.')+'</div>';
+    }
+    html+='<div style="margin-top:10px;font-size:11.5px;color:var(--mute)">The prediction for each night is fetched once that evening is over (NEA readings, the air-quality model and the upper-air forecast all keep about three months). Use <b>Export CSV</b> to take the numbers into a spreadsheet. Nothing is uploaded.</div>';
+    box.innerHTML=html;
+  });
+
   function applyNight(on){document.body.classList.toggle("night",on);try{localStorage.setItem("scobNight",on?"1":"0");}catch(e){}}
   document.getElementById("nightBtn").addEventListener("click",function(){applyNight(!document.body.classList.contains("night"));});
   try{applyNight(localStorage.getItem("scobNight")==="1");}catch(e){}
   renderAll();
+  // fill in predictions for any recent nights that do not have one yet
+  log.forEach(function(e){attachPrediction(e);});
   if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 })();
 </script>

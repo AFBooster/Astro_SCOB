@@ -160,6 +160,8 @@ function fLabel(){var b=document.getElementById('filt');if(b)b.textContent=hideI
 function evHTML(r){var e=r.e,sgt=new Date(e.t+8*3600000);
   var when=(sgt.getUTCHours()%12||12)+':'+String(sgt.getUTCMinutes()).padStart(2,'0')+(sgt.getUTCHours()<12?'am':'pm');
   var what=e.occult?('<b>Occultation</b> of '+e.name+'<span class="tag occ">covered</span>'):('Close pass — '+e.sep.toFixed(1)+'° from '+e.name+'<span class="tag near">near miss</span>');
+  // v4.15: within ~2′ of the Moon's edge the on-device Moon cannot call it either way.
+  if(e.graze)what+='<span class="tag near" title="The Moon\'s edge passes within about 2 arc-minutes of the '+(e.type==='star'?'star':'planet')+' — closer than this app\'s Moon is accurate to. It may be a graze, a brief occultation or a near miss: check a dedicated prediction (IOTA) before planning around it.">graze — too close to call</span>';
   var visline;
   if(!r.moonUp)visline='Moon is below the horizon here — not visible from Singapore.';
   else if(r.observable)visline='<span class="vt">✔ '+(r.vis?'Visible from Singapore':'Above the horizon')+'</span> — Moon '+Math.round(e.alt)+'° up in the '+A.compass(e.az)+', '+(r.night?'dark sky':'twilight')+'.';

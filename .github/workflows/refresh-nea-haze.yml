@@ -24,6 +24,7 @@ on:
 
 permissions:
   contents: write
+  actions: write      # to start the Pages deploy after committing (see the last step)
 
 concurrency:
   group: nea-haze-refresh
@@ -83,3 +84,18 @@ jobs:
           git add nea-haze.json
           git commit -m "chore: refresh the NEA/MSS haze-image pointer"
           git push
+          echo "changed=yes" >> "$GITHUB_OUTPUT"
+        id: commit
+
+      # A push made with the workflow's own GITHUB_TOKEN deliberately does NOT
+      # trigger other workflows (GitHub's guard against loops), so the commit
+      # above never reached the live site on its own: from v4.11 to v4.13 the
+      # pointer only went live when someone else pushed. During the October
+      # 2026 episode that left afbooster.online showing a scene 8 days old while
+      # the repo held the current one. workflow_dispatch is the documented
+      # exception, so start the deploy explicitly — only when something changed.
+      - name: Publish the new pointer to the live site
+        if: steps.commit.outputs.changed == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"

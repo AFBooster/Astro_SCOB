@@ -95,3 +95,29 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # v4.15 — check the RESULT, not just that the job ran. From 7 to 15 Oct 2026
+      # every run was green while the live haze pointer sat 8 days behind the repo
+      # (see refresh-nea-haze.yml). This step reads the live site back and fails the
+      # run — which emails the repo owner — if it is not serving what was just built.
+      # GitHub Pages sits behind a CDN with a ~10 minute cache, so it polls with a
+      # cache-busting query for up to 8 minutes before giving up.
+      - name: Verify the live site is serving this build
+        run: |
+          set -u
+          SITE='https://afbooster.online'
+          want_ver=$(grep -oE "SCOB_VERSION *= *'[^']+'" version.js | grep -oE "v[0-9.]+")
+          want_cap=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('nea-haze.json','utf8')).captured||'')}catch(e){console.log('')}")
+          echo "expecting version $want_ver, haze pointer captured $want_cap"
+          for i in $(seq 1 16); do
+            t=$(date +%s)
+            got_ver=$(curl -fsS --max-time 20 "$SITE/version.js?ci=$t" | grep -oE "SCOB_VERSION *= *'[^']+'" | grep -oE "v[0-9.]+" || true)
+            got_cap=$(curl -fsS --max-time 20 "$SITE/nea-haze.json?ci=$t" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(JSON.parse(d).captured||'')}catch(e){console.log('')}})" || true)
+            echo "try $i: live version '$got_ver', live pointer '$got_cap'"
+            if [ "$got_ver" = "$want_ver" ] && { [ -z "$want_cap" ] || [ "$got_cap" = "$want_cap" ]; }; then
+              echo "live site matches this build"; exit 0
+            fi
+            sleep 30
+          done
+          echo "::error::the live site is not serving this build after 8 minutes (version '$got_ver' vs '$want_ver', haze pointer '$got_cap' vs '$want_cap')"
+          exit 1

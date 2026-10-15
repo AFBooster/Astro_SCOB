@@ -75,6 +75,8 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 .satmark span{display:block;font-size:10px;font-weight:800;color:var(--gold);white-space:nowrap;margin-top:2px;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000;}
 .satmark.src i{width:7px;height:7px;background:#ff8a5c;box-shadow:0 0 0 2px rgba(0,0,0,.6);}
 .satmark.src span{color:#ffb49a;font-weight:700;}
+.satstale{margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid rgba(245,197,66,.5);background:rgba(245,197,66,.10);color:#f7d984;font-size:12.5px;line-height:1.5;}
+.satstale a{color:#f7d984;}
 .satfail{padding:22px 16px;text-align:center;color:var(--mute);font-size:13px;line-height:1.6;}
 .satcap{font-size:12px;color:var(--mute);line-height:1.6;margin-top:9px;}
 .satcap b{color:var(--white);}
@@ -575,6 +577,18 @@ function renderSat() {
 /* MSS/NEA's own haze scene. The filename changes every issue and cannot be
    discovered from the browser (no CORS on their page), so a scheduled GitHub
    Action writes the current one into nea-haze.json beside this page. */
+/* MSS issues roughly daily. If the newest scene this site knows of is more than
+   a day and a half old, say so plainly rather than letting an old picture pass
+   for today's — the date alone is easy to miss. (In October 2026 the live page
+   sat on an 8-day-old scene for a week before anyone noticed; see v4.14.) */
+function staleNote(when) {
+  if (!when) return '';
+  var hrs = (Date.now() - new Date(when).getTime()) / 3600000;
+  if (!(hrs > 36)) return '';
+  var age = hrs < 72 ? Math.round(hrs) + ' hours' : Math.round(hrs / 24) + ' days';
+  return '<div class="satstale">⚠️ This scene is <b>' + age + ' old</b> — the newest one this site has picked up. '
+    + 'MSS may have issued a newer one: check <a href="https://www.weather.gov.sg/warning-haze-satellite-image/" target="_blank" rel="noopener">their haze satellite page</a>.</div>';
+}
 function renderNea(L, wrap, img) {
   img.removeAttribute('crossorigin');   /* weather.gov.sg sends no CORS headers */
   function fail(msg) {
@@ -598,7 +612,8 @@ function renderNea(L, wrap, img) {
     $('satCap').innerHTML = '<b>' + esc(L.label) + '</b> — ' + esc(L.blurb)
       + '<br><b>Issued:</b> ' + esc(shown)
       + ' · Source: <a href="https://www.weather.gov.sg/warning-haze-satellite-image/" target="_blank" rel="noopener">Meteorological Service Singapore</a>, the national meteorological authority under NEA.'
-      + ' <span style="opacity:.85">' + esc(L.caveat) + '</span>';
+      + ' <span style="opacity:.85">' + esc(L.caveat) + '</span>'
+      + staleNote(when);
   };
   H.fetchNeaSat().then(function (ptr) {
     NEAPTR = ptr;

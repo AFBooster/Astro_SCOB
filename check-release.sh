@@ -172,7 +172,9 @@ fi
 # ── Links ──────────────────────────────────────────────────────────────────
 section "Internal links resolve"
 badlinks=0
-for f in *.html; do
+# v4.16: dashboard-core.js holds the dashboard's code (and any links it builds)
+for f in *.html dashboard-core.js; do
+  [ -f "$f" ] || continue
   for t in $(grep -aoE '(href|src)="[^"#:]+\.(html|js|css)"' "$f" | sed -E 's/.*="([^"]+)"/\1/' | sort -u); do
     [ -f "$t" ] || { bad "$f -> $t (missing)"; badlinks=$((badlinks+1)); }
   done
@@ -185,7 +187,7 @@ orphans=0
 for p in "${PAGES[@]}"; do
   case "$p" in scob-dashboard-v3.html) continue;; esac
   excluded "$p" "${STUBS[@]}" && continue
-  if ! grep -alqE "href=\"$p" -- *.html 2>/dev/null; then
+  if ! grep -alqE "href=\"$p" -- *.html dashboard-core.js 2>/dev/null; then
     note "$p is not linked from any other page (nav link missing?)"
     orphans=$((orphans+1))
   fi

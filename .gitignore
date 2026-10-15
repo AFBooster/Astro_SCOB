@@ -23,3 +23,6 @@ Claude outputs/
 *.xml
 !sitemap.xml
 GetCapabilities.xml
+
+# one-off patch files belong in git history, not the working tree (removed v4.15)
+*.patch

@@ -62,6 +62,33 @@ ok('Comet 10P Dec 19 Oct (deg)', ceOct.dec, -29.762, 0.05);
 /* COBS weekly median for 28 Sep - 4 Oct 2026 was 10.1 (16 reports). */
 ok('Comet 10P mag 2 Oct (COBS median 10.1)', A.cometEq(c10p, new Date(Date.UTC(2026, 9, 2, 12, 0, 0))).mag, 10.1, 0.3);
 ok('Comet 10P mag (~binocular)', ce.mag, 9.7, 0.6);
+/* v4.15 — engine audit against JPL Horizons (fetched 15 Oct 2026). */
+console.log('Planet perturbations & star precession (v4.15, ref JPL Horizons apparent places)');
+function sepArcmin(r1, d1, r2, d2) { const R = Math.PI / 180; return Math.acos(Math.min(1, Math.sin(d1 * R) * Math.sin(d2 * R) + Math.cos(d1 * R) * Math.cos(d2 * R) * Math.cos((r1 - r2) * R))) / R * 60; }
+function planetAt(nm, iso) { const sp = A.SHOWPIECES.find(s => s.planet === nm); return A.positionOf(sp, new Date(iso)); }
+let pz = planetAt('Saturn', '2026-10-16T12:30:00Z');
+ok('Saturn 16 Oct 2026 vs JPL (arcmin; was 8 before perturbations)', sepArcmin(pz.ra, pz.dec, 10.59405, 1.61241), 0, 2);
+pz = planetAt('Jupiter', '2027-03-19T12:00:00Z');
+ok('Jupiter 19 Mar 2027 vs JPL (arcmin)', sepArcmin(pz.ra, pz.dec, 140.71933, 16.46798), 0, 1.5);
+const pr = A.precessJ2000(41.054063, 49.227750, new Date(Date.UTC(2028, 10, 13, 4, 33, 36)));
+ok('Precession, Meeus example 21.b RA', pr.ra, 41.5472, 0.002);
+ok('Precession, Meeus example 21.b Dec', pr.dec, 49.3485, 0.002);
+/* Lunar occultations of Antares seen from SCOB. Before v4.15 the star was compared at
+   its J2000 place: 7 Sep 2027 was called an occultation (JPL: a 17' miss) and the
+   28 Feb 2027 event was missed. JPL minimum separations from Horizons' topocentric Moon. */
+const occA = A.occultations(new Date(Date.UTC(2027, 1, 20)), 220).filter(e => e.name === 'Antares');
+const near = (iso) => occA.reduce((b, e) => (!b || Math.abs(e.t - Date.parse(iso)) < Math.abs(b.t - Date.parse(iso))) ? e : b, null);
+let ocA = near('2027-06-17T13:11:00Z');
+ok('Antares 17 Jun 2027 — time vs JPL (min)', (ocA.t - Date.parse('2027-06-17T13:11:00Z')) / 60000, 0, 4);
+ok('Antares 17 Jun 2027 — is an occultation', ocA.occult ? 1 : 0, 1, 0);
+ocA = near('2027-09-07T08:00:00Z');
+ok('Antares 7 Sep 2027 — closest approach vs JPL (arcmin)', ocA.sep * 60, 17.1, 2);
+ok('Antares 7 Sep 2027 — not called an occultation', ocA.occult ? 1 : 0, 0, 0);
+/* JPL: 17.1' against a 15.3' radius — inside the engine's ~2' uncertainty, so it must
+   be flagged as a graze rather than stated with confidence either way. */
+ok('Antares 7 Sep 2027 — flagged too close to call', ocA.graze ? 1 : 0, 1, 0);
+ocA = near('2027-02-28T08:10:00Z');
+ok('Antares 28 Feb 2027 — time vs JPL (min)', (ocA.t - Date.parse('2027-02-28T08:10:00Z')) / 60000, 0, 4);
 ok('activeComets in-window count', A.activeComets(new Date(Date.UTC(2026, 6, 15))).length, 1, 0.5);
 ok('activeComets out-of-window count', A.activeComets(new Date(Date.UTC(2027, 0, 1))).length, 0, 0.5);
 
@@ -157,10 +184,11 @@ A.COMETS.forEach(function (c) {
 });
 // The GRS marker lives in the dashboard; read it rather than duplicating the date here.
 try {
-  const dash = fs.readFileSync(path.join(__dirname, 'scob-dashboard-v3.html'), 'utf8');
+  // v4.16: the dashboard's code moved to dashboard-core.js; read both so the marker is found either way
+  const dash = ['dashboard-core.js', 'scob-dashboard-v3.html'].map(f => { try { return fs.readFileSync(path.join(__dirname, f), 'utf8'); } catch (e) { return ''; } }).join('\n');
   const m = dash.match(/REVIEW BY (\d{4}-\d{2}-\d{2})/);
-  if (m) reviewGuard('Great Red Spot longitude (scob-dashboard-v3.html)', m[1], 60);
-  else { console.log('  ✗ Great Red Spot review marker missing from scob-dashboard-v3.html'); fails++; }
+  if (m) reviewGuard('Great Red Spot longitude (dashboard-core.js)', m[1], 60);
+  else { console.log('  ✗ Great Red Spot review marker missing from dashboard-core.js'); fails++; }
 } catch (e) { console.log('  · dashboard not readable here — skipping the GRS marker check'); }
 
 console.log('');

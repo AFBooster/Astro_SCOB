@@ -181,7 +181,15 @@ h1{font-size:22px;margin:0;color:var(--gold);}
       el.innerHTML='<div class="tsub">No tracked comet is above the magnitude/visibility threshold for this date. Comets come and go — check the tracking list below for what is coming up, and refresh the element table each apparition. On a dark night the deck Seestar can still image a fainter comet than the eye will show.</div>';
       return;
     }
-    el.innerHTML=active.map(function(c){
+    // v4.15: a comet stays in its window long after it fades. Say plainly when none
+    // of them is bright enough for the eyepiece, instead of listing a mag-13 smudge as
+    // if it were tonight's comet.
+    var VIS=11, mags=active.map(function(c){return A.cometEq(c,date).mag;});
+    var anyVis=mags.some(function(mg){return mg<=VIS;});
+    var lead=anyVis?'':'<div class="tsub" style="margin-bottom:10px;color:var(--white)"><b>No comet is within visual reach of the telescopes from Jurong on this date.</b> '
+      +'The brightest tracked is '+active[mags.indexOf(Math.min.apply(null,mags))].name.replace(/^Comet\s+/,'')+' at magnitude '+Math.min.apply(null,mags).toFixed(1)
+      +' — past the magnitude-'+VIS+' limit the dashboard uses for the eyepiece under a Bortle 8 sky, though the Seestar can still image it. When this list was last refreshed (15 Oct 2026), observers were reporting nothing brighter.</div>';
+    el.innerHTML=lead+active.map(function(c){
       var ce=A.cometEq(c,date), p=A.positionOf(c,date), sn=scanNight(c,y,m,d);
       var mag=(ce.mag).toFixed(1);
       var up=p.alt>0;
@@ -189,7 +197,7 @@ h1{font-size:22px;margin:0;color:var(--gold);}
       var upv = up? (p.alt>=30?{cls:'ok',t:'Well up — '+Math.round(p.alt)+'° in the '+A.compass(p.az)}
                     :{cls:'warn',t:'Low — '+Math.round(p.alt)+'° in the '+A.compass(p.az)})
                   : {cls:'bad',t:'Below the horizon at 8:30 pm'};
-      var scopeMag = ce.mag<6?'naked-eye / binoculars':ce.mag<9?'binoculars / 6" apo':ce.mag<11?'6" apo / 40 cm dome · Seestar':'40 cm dome · Seestar (imaging)';
+      var scopeMag = ce.mag<6?'naked-eye / binoculars':ce.mag<9?'binoculars / 6" apo':ce.mag<=VIS?'6" apo / 40 cm dome · Seestar':'Seestar imaging only — too faint for the eyepiece from Jurong';
       var h='<div class="cmt">';
       h+='<div class="cmthead"><span class="nm">'+c.name+'</span><span class="mg">mag '+mag+'</span><span class="pill '+upv.cls+'">'+(up?'up':'not up')+'</span></div>';
       h+='<div class="cmtstat meta" style="margin-top:5px">'+upv.t+'</div>';

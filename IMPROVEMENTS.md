@@ -1,14 +1,66 @@
 # SCOB Night-Sky — improvement backlog
 
-Re-audited at **v4.13** (cache `scob-sky-v116`), 7 Oct 2026. First written at
-v4.11 on 10 Sep 2026. Every open item is backed by something measured, not by a
+Re-audited at **v4.16** (cache `scob-sky-v119`), 15 Oct 2026. Earlier audits:
+v4.14 and v4.13 (Oct), v4.11 (10 Sep 2026). Every open item is backed by something measured, not by a
 guess — the evidence is quoted so you can re-check it yourself.
 
 Open items are ranked by value ÷ effort.
 
+
+## Done in v4.15 (15 Oct 2026)
+
+* **Watch the watchers.** The freshness strip shows the haze forecast and the
+  seeing source; the deploy workflow reads the live site back and fails if it
+  is not serving the build.
+* **Calibration hook.** The session logbook records the naked-eye limit and an
+  Antoniadi grade beside what the app predicted, and fits one against the other
+  once there are five nights. *The calibration itself is now up to the
+  logbook* — nothing is fitted until Fridays are logged.
+* **No comet in reach** is said plainly on the dashboard and the comets page.
+* **Engine audit against JPL Horizons** — see below for what was fixed and
+  what was deliberately left.
+* README history before v4.0 moved to `CHANGELOG-v3.md`; old `.patch` files
+  removed and ignored (never committed; the same changes are the v4.03-v4.05
+  commits `52a63af`, `e9d35d3`, `63945f2`).
+
+### Engine audit — results (15 Oct 2026, JPL Horizons topocentric apparent places)
+
+| Body / feature | Before | After | Action |
+|---|---|---|---|
+| Mercury, Venus, Mars | 0.1–0.6′ | same | none needed |
+| Jupiter | 1.3–1.5′ | 0.1–0.7′ | Schlyter perturbations |
+| Saturn | 6.4–8.1′ | 0.2–1.0′ | Schlyter perturbations |
+| Occultation scan: stars | J2000 vs of-date, ~22′ | to the minute (17 Jun 2027 Antares) | precess to date |
+| Near-limb occultations | stated hit/miss | flagged *too close to call* within 2′ | engine Moon is good to 1–2′ |
+| Conjunction finder: Moon | geocentric, up to 1° | topocentric | uses `moonTopo` |
+| Comet 10P | (fixed v4.13) | 0.7′ | — |
+
+**Checked and left alone, on purpose:**
+
+* **Deep-sky catalogue positions** are J2000 fed to an of-date sidereal time,
+  so altitudes and azimuths are ~20′ out. They are shown in whole degrees, the
+  GoTo mounts precess for themselves, and the targets are tens of arc-minutes
+  across. Not worth the risk of touching every catalogue consumer.
+* **The Moon's altitude readout** is geocentric, so up to ~1° high near the
+  horizon. Rise and set times already allow for parallax (the standard
+  +0.125° altitude), the occultation and transit code uses the topocentric
+  Moon, and the readout is in whole degrees. Worth fixing only if someone
+  notices it.
+
 ---
 
-## Done since the last audit
+## Done in v4.14 (15 Oct 2026)
+
+* **Live MSS haze image was 8 days stale.** Bot commits from the refresh Action
+  never triggered a deploy (GitHub suppresses workflow runs from `GITHUB_TOKEN`
+  pushes). The Action now dispatches `deploy-pages.yml` when the pointer
+  changes, and `haze.html` flags any scene older than 36 hours.
+* **Tomorrow's verdict ignored today's air** (PSI 211 on a Thursday, nothing in
+  the Friday headline or blurb). Fixed for nights one or two days ahead.
+* `haze.html` added to `sitemap.xml`; redirect stubs marked `noindex` with a
+  canonical link.
+
+## Done in v4.13
 
 * **7Timer replaced (was item 1, v4.13).** Seeing is estimated on-device from
   Open-Meteo's 250 hPa wind, the 850 hPa–surface shear and CAPE, and names its
@@ -26,117 +78,46 @@ Open items are ranked by value ÷ effort.
 
 ---
 
-## 1. Calibrate the two estimates v4.13 introduced
+## Done in v4.16 — the dashboard's code is a file
 
-v4.13 makes the dashboard *act* on two numbers nobody has measured at Jurong.
-
-**The haze sky cost.** The model's nightly PM2.5 level checked out against NEA
-(mean 48.2 vs 51.1 µg/m³ over 177 paired hours, the week to 7 Oct 2026) but its
-hourly timing did not (r = 0.38), and the *column* depth it supplies has not
-been checked against anything at all — there is no sun-photometer near Jurong
-in the data we use. The 5–7 Oct episode showed model column depths of 1.1–1.5
-against about 0.47 implied by the ground reading; that is physically plausible
-for a deep smoke layer, but plausible is not verified. NASA's AERONET network
-has listed a sun-photometer site in Singapore; if it is still reporting, its
-measured aerosol optical depth would settle this in an afternoon.
-
-**The seeing estimate.** `arc = 0.9 + 0.035·jet + 0.05·shear + 0.25·CAPE/1000`
-is hand-weighted from general principles. It has the right inputs and no
-calibration.
-
-**The fix for both is the logbook** (old item 6). `session-log.html` already
-records what the app predicted and grades it against what was logged. Add two
-fields — faintest star seen near the zenith, and a 1–5 seeing score on Jupiter
-or a double — and a season of Fridays turns both formulas from documented
-guesses into fitted ones.
-
-**Effort:** half a day for the logbook fields; the fitting is later.
-**Value:** high — it is the difference between a number the dashboard shows and
-one it can be trusted to act on.
+`dashboard-core.js` replaces the inline text/plain block: page 214 KB → 70 KB,
+code cached and compiled once. Six scenarios × two layouts rendered identically
+before and after. Splitting the two layouts' CSS and markup was measured and
+**not** done: the unused half is ~10 KB of 65 KB gzipped, against a real risk
+of an unstyled flash on slow phones. If the page grows much further, the next
+cut is moving the haze verdict helpers (`hazeNight`, `hazeCostAt`,
+`hazeVerdict`, `hazeNow`) into `haze-core.js` so `plan-ahead.html` can share
+them.
 
 ---
 
-## 2. Other J2000 / of-date mixing in the engine
+## 1. Feed the calibration back
 
-**Evidence.** The comet bug was J2000 elements added to an of-date Sun. The
-same question applies elsewhere and has not been audited:
+Once the logbook has five or more nights with both a naked-eye limit and a
+prediction, read the **🎯 Model check** report and:
 
-```
-SHOWPIECES ra/dec        : catalogue J2000, passed straight to alt/az
-planets                  : Schlyter elements, equinox of date
-precession 2000 -> 2026.8: 0.37 degrees
-```
+* scale `Haze.skyCost()` by the fitted slope if it is clearly not −1 (the report
+  says by how much), and set the clean-night baseline from the intercept;
+* refit the three seeing weights in `seeing-core.js` if the rank agreement stays
+  below about 0.3.
 
-For a deep-sky object 0.37° is a small pointing offset on a chart and nothing
-at all to a GoTo mount that does its own precession, so this is far less severe
-than the comet case (where Earth's proximity multiplied it). But rise/set and
-transit times, and anything compared against a planet's position (conjunction
-separations, occultation predictions), deserve a look. `occultations.html` and
-`iss-transits.html` are the pages where a third of a degree could matter.
+Nights with a spread of haze teach the most: a couple of clean Fridays and a
+couple of smoky ones beat ten alike.
 
-**Effort:** 2–3 hours to audit, with Horizons as the reference.
-**Value:** medium — probably fine, but "probably" is what the comet was.
+**Effort:** an hour, once the data exists. **Value:** high — it turns two
+documented guesses into fitted numbers.
 
 ---
 
-## 3. The dashboard is over 200 KB, and every visitor downloads both layouts
+## 2. Comets — re-check in November
 
-**Evidence (v4.13).**
-
-```
-scob-dashboard-v3.html   208 KB   (191 KB at v4.11 — it is growing)
-desktop + mobile roots both shipped to every visitor: yes
-```
-
-Both stylesheets and both DOM trees ship to every device, and JS deletes the
-unused half at runtime. It is the **entry page**, also copied to `index.html`.
-The haze logic that v4.13 added to the dashboard (`hazeNight`, `hazeCostAt`,
-`hazeVerdict`, `seeingEstimate`) would sit better in `haze-core.js` and a small
-`seeing-core.js`, where the service worker caches them once and `plan-ahead`
-could share them instead of repeating the call.
-
-**Effort:** a day, with real regression risk — do it on its own release.
-**Value:** medium.
+COBS on 15 Oct 2026 showed nothing brighter than magnitude 11 (10P ~10.5 and
+fading, 161P ~11.2, P/2026 R2 ~12.1). Look again in November; the 10P window
+closes 31 Dec 2026 and `test-astro.js` warns from 1 Dec.
 
 ---
 
-## 4. Give the data-health strip the sources it does not yet cover
-
-The strip tracks weather, satellite TLEs, haze readings and the GRS model. It
-does not track the **air-quality forecast** (which v4.13 now leans on for every
-future-dated verdict), **seeing inputs**, or **solar activity**. When the haze
-forecast is missing the dashboard says so in the haze panel, but the strip
-should show it too: every live source either fresh, stale, or absent.
-
-**Effort:** an hour. **Value:** medium, compounding.
-
----
-
-## 5. Comet 10P leaves the list — decide what follows it
-
-The refitted brightness law has 10P at about magnitude 10.6 on 9 Oct and past
-the magnitude-11 cut-off by mid-October; its window closes 31 Dec 2026, and
-`test-astro.js` will start warning on 1 Dec. The comets page will then be
-empty. Either add the next bright comet (check COBS / aerith.net's weekly list
-nearer the time) or let the page say plainly that nothing is in reach.
-
-**Effort:** 30 minutes per comet. **Value:** low until December.
-
----
-
-## Still yours to decide
-
-* `scob-v4.03.patch`, `scob-v4.04.patch`, `scob-v4.05.patch` — 148 KB of patch
-  files from released versions. The history has them.
-* `.git/.writetest` — a zero-byte file I created probing write access and could
-  not delete through the file bridge. `del /f /q .git\.writetest`.
-* `README.md` is over 130 KB, almost all version history. It is not served, so
-  it costs nothing at runtime, but splitting pre-v4.0 rows into
-  `CHANGELOG-v3.md` would keep the active table readable.
-
----
-
-## Checked at v4.13
+## Checked at v4.13 (still current)
 
 * 7 Oct 2026, from a browser on `afbooster.online`: NEA PSI and PM2.5 (v2),
   Open-Meteo forecast including pressure-level winds and CAPE, and Open-Meteo

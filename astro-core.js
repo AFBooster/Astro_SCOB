@@ -80,6 +80,27 @@
     var xh = r * (Math.cos(N * RAD) * Math.cos((v + w) * RAD) - Math.sin(N * RAD) * Math.sin((v + w) * RAD) * Math.cos(i * RAD));
     var yh = r * (Math.sin(N * RAD) * Math.cos((v + w) * RAD) + Math.cos(N * RAD) * Math.sin((v + w) * RAD) * Math.cos(i * RAD));
     var zh = r * Math.sin((v + w) * RAD) * Math.sin(i * RAD);
+    // v4.15: Jupiter and Saturn tug on each other enough that plain Kepler orbits drift
+    // — checked against JPL Horizons (Oct 2026 - Mar 2027) Saturn was 6-8 arc-minutes
+    // out, Jupiter 1.5'. That matters for lunar occultations of Saturn, which happen in
+    // this decade. These are Schlyter's largest periodic terms ("Computing planetary
+    // positions"), applied to the heliocentric ecliptic longitude / latitude.
+    if (p === PLAN.Jupiter || p === PLAN.Saturn) {
+      var Mj = rev(PLAN.Jupiter.M[0] + PLAN.Jupiter.M[1] * d) * RAD, Ms = rev(PLAN.Saturn.M[0] + PLAN.Saturn.M[1] * d) * RAD;
+      var lonH = Math.atan2(yh, xh) * DEG, latH = Math.atan2(zh, Math.sqrt(xh * xh + yh * yh)) * DEG, dl = 0, db = 0;
+      var S_ = function (x) { return Math.sin(x * RAD); }, C_ = function (x) { return Math.cos(x * RAD); };
+      var mj = Mj * DEG, ms = Ms * DEG;
+      if (p === PLAN.Jupiter) {
+        dl = -0.332 * S_(2 * mj - 5 * ms - 67.6) - 0.056 * S_(2 * mj - 2 * ms + 21) + 0.042 * S_(3 * mj - 5 * ms + 21)
+           - 0.036 * S_(mj - 2 * ms) + 0.022 * C_(mj - ms) + 0.023 * S_(2 * mj - 3 * ms + 52) - 0.016 * S_(mj - 5 * ms - 69);
+      } else {
+        dl = 0.812 * S_(2 * mj - 5 * ms - 67.6) - 0.229 * C_(2 * mj - 4 * ms - 2) + 0.119 * S_(mj - 2 * ms - 3)
+           + 0.046 * S_(2 * mj - 6 * ms - 69) + 0.014 * S_(mj - 3 * ms + 32);
+        db = -0.020 * C_(2 * mj - 4 * ms - 2) + 0.018 * S_(2 * mj - 6 * ms - 49);
+      }
+      lonH += dl; latH += db;
+      xh = r * Math.cos(lonH * RAD) * Math.cos(latH * RAD); yh = r * Math.sin(lonH * RAD) * Math.cos(latH * RAD); zh = r * Math.sin(latH * RAD);
+    }
     var xs = sR * Math.cos(sLon * RAD), ys = sR * Math.sin(sLon * RAD);
     var xg = xh + xs, yg = yh + ys, zg = zh; var ecl = (23.4393 - 3.563e-7 * d) * RAD;
     var xe = xg, ye = yg * Math.cos(ecl) - zg * Math.sin(ecl), ze = yg * Math.sin(ecl) + zg * Math.cos(ecl);
@@ -418,13 +439,32 @@
     var radius = Math.asin(1737.4 / (r * 6371.0)) / RAD;                         // Moon angular radius (°)
     return { ra: rev(topRA), dec: topDec, radius: radius, par: mpar };
   }
+  // v4.15: J2000 catalogue place -> mean place of date (Meeus, Astronomical Algorithms
+  // ch. 21, rigorous method). Everything the Moon and planets give us is of date, so a
+  // star taken straight from a J2000 catalogue sits ~0.37 deg (2026) away from where the
+  // Moon will actually meet it — more than the Moon's own radius.
+  function precessJ2000(ra, dec, date){
+    var T = (jd(date) - 2451545.0) / 36525, as = 1 / 3600;
+    var z = (2306.2181 * T + 1.09468 * T * T + 0.018203 * T * T * T) * as;
+    var zt = (2306.2181 * T + 0.30188 * T * T + 0.017998 * T * T * T) * as;
+    var th = (2004.3109 * T - 0.42665 * T * T - 0.041833 * T * T * T) * as;
+    var a = (ra + zt) * RAD, d0 = dec * RAD, t = th * RAD;
+    var A = Math.cos(d0) * Math.sin(a);
+    var B = Math.cos(t) * Math.cos(d0) * Math.cos(a) - Math.sin(t) * Math.sin(d0);
+    var C = Math.sin(t) * Math.cos(d0) * Math.cos(a) + Math.cos(t) * Math.sin(d0);
+    return { ra: rev(Math.atan2(A, B) / RAD + z), dec: Math.asin(Math.max(-1, Math.min(1, C))) / RAD };
+  }
   function _ang(r1, d1, r2, d2){ var a = Math.sin(d1 * RAD) * Math.sin(d2 * RAD) + Math.cos(d1 * RAD) * Math.cos(d2 * RAD) * Math.cos((r1 - r2) * RAD); return Math.acos(Math.max(-1, Math.min(1, a))) / RAD; }
   // scan the next `days` for the Moon passing close to (or occulting) bright zodiac stars & planets, as seen from SCOB
+  // v4.15: the low-precision Moon is good to ~1-2 arc-minutes (checked against JPL), so
+  // an approach within 2' of the limb cannot honestly be called hit or miss.
+  var GRAZE_DEG = 2 / 60;
   function occultations(fromDate, days){
     var t0 = fromDate.getTime(), t1 = t0 + (days || 60) * 86400000, step = 10 * 60000, out = [];
     var targets = [['Aldebaran','star',68.98,16.51,0.85],['Regulus','star',152.09,11.97,1.35],['Spica','star',201.30,-11.16,1.04],['Antares','star',247.35,-26.43,1.0],
       ['Venus','planet'],['Mars','planet'],['Jupiter','planet'],['Saturn','planet'],['Mercury','planet']];
-    function pos(tg, dt){ if (tg[1] === 'star') return { ra: tg[2], dec: tg[3] }; var dd = dS(dt), s = sun(dd), pe = planetEq(PLAN[tg[0]], dd, s.lon, s.r); return { ra: pe.ra, dec: pe.dec, mag: pe.mag }; }
+    // v4.15: stars are precessed to the date (they used to be compared at their raw J2000 place)
+    function pos(tg, dt){ if (tg[1] === 'star') return precessJ2000(tg[2], tg[3], dt); var dd = dS(dt), s = sun(dd), pe = planetEq(PLAN[tg[0]], dd, s.lon, s.r); return { ra: pe.ra, dec: pe.dec, mag: pe.mag }; }
     targets.forEach(function(tg){
       var s2 = null, s1 = null, t1p = 0;
       for (var t = t0; t <= t1; t += step){
@@ -433,7 +473,7 @@
           var best = { t: t1p, sep: s1 };
           for (var u = t1p - step; u <= t1p + step; u += 60000){ var du = new Date(u), mm = moonTopo(du), qq = pos(tg, du), sq = _ang(mm.ra, mm.dec, qq.ra, qq.dec); if (sq < best.sep) best = { t: u, sep: sq }; }
           var bd = new Date(best.t), mb = moonTopo(bd), aa = altazAt(mb.ra, mb.dec, bd), tpm = pos(tg, bd);
-          out.push({ name: tg[0], type: tg[1], mag: (tg[4] != null ? tg[4] : (tpm.mag != null ? Math.round(tpm.mag * 10) / 10 : null)), t: best.t, sep: best.sep, radius: mb.radius, occult: best.sep < mb.radius, alt: aa.alt, az: aa.az });
+          out.push({ name: tg[0], type: tg[1], mag: (tg[4] != null ? tg[4] : (tpm.mag != null ? Math.round(tpm.mag * 10) / 10 : null)), t: best.t, sep: best.sep, radius: mb.radius, occult: best.sep < mb.radius, graze: Math.abs(best.sep - mb.radius) < GRAZE_DEG, alt: aa.alt, az: aa.az });
         }
         s2 = s1; s1 = sep; t1p = t;
       }
@@ -530,7 +570,7 @@
     jd: jd, lstDeg: lstDeg, altazAt: altazAt, altazLST: altazLST, compass: compass,
     sun: sun, moon: moon, eclToEq: eclToEq, planetEq: planetEq, PLAN: PLAN,
     sunAltAt: sunAltAt, sky: sky, SHOWPIECES: SHOWPIECES, illus: illus,
-    COMETS: COMETS, cometEq: cometEq, activeComets: activeComets,
+    COMETS: COMETS, cometEq: cometEq, activeComets: activeComets, precessJ2000: precessJ2000,
     libration: libration, moonTopo: moonTopo, occultations: occultations,
     sunTopo: sunTopo, moonDisc: moonDisc, discBody: discBody, angSep: angSep, transitScan: transitScan,
     // resolve a showpiece's current ra/dec + alt/az at a date (Moon/planets/comets live)

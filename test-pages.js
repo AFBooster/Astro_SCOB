@@ -137,7 +137,12 @@ function makeElement(tag, ctx) {
   return el;
 }
 function makeContext(html, file) {
-  const ctxIds = new Set(idsIn(html));       // static markup AND ids inside script strings
+  // static markup AND ids inside script strings — including the page's own local
+  // script files (v4.16: the dashboard's code moved from an inline block into
+  // dashboard-core.js, and the ids its templates create must still count as real)
+  const localJs = externalScripts(html).filter(src => !/^https?:/i.test(src)).map(src => {
+    try { return fs.readFileSync(path.join(DIR, src), 'utf8'); } catch (e) { return ''; } }).join('\n');
+  const ctxIds = new Set(idsIn(html + '\n' + localJs));
   const sandbox = {};
   const ctx = sandbox;
   ctx.__ids = ctxIds;
