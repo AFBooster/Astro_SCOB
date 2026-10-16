@@ -13,7 +13,7 @@
  *   ./check-release.sh
  * to confirm everything is in sync before uploading.
  */
-window.SCOB_VERSION   = 'v4.16';   /* keep in lockstep with sw.js cache scob-sky-v119 */
+window.SCOB_VERSION   = 'v4.17';   /* keep in lockstep with sw.js cache scob-sky-v120 */
 window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do not roll forward
 
 (function () {
@@ -60,4 +60,40 @@ window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do
       });
     }).catch(function () {});
   } catch (e) {}
+})();
+
+/* v4.17: on phones, a page header slides away while you scroll down and comes back as soon as
+ * you scroll up. The shared theme pins every <header> (scob-theme.css, since v3.83); on a phone
+ * many of them are a quarter to half the screen — measured at iPhone size on 16 Oct 2026, 44
+ * pages had a pinned header over 25% of the screen, moon-tonight and solar-system over 50%.
+ * The slide is a CSS transform, so the page layout never changes and it cannot flicker. It lives
+ * here because every page already loads this file. The dashboard has its own version of this
+ * (dashboard-core.js) and is skipped. */
+(function () {
+  if (document.getElementById('mobileRoot') || document.getElementById('desktopRoot')) return;
+  var mq = window.matchMedia ? window.matchMedia('(max-width: 820px)') : null;
+  function init() {
+    var hdr = document.querySelector('header');
+    if (!hdr) return;
+    var DIST = 18, hidden = false, run = 0, lastY = Math.max(0, window.pageYOffset || 0);
+    function set(h) { if (h === hidden) return; hidden = h; hdr.classList.toggle('hdr-away', h); }
+    function onScroll() {
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      y = Math.min(max, Math.max(0, y));
+      var dy = y - lastY; lastY = y; if (!dy) return;
+      var pos = window.getComputedStyle(hdr).position;
+      if ((mq && !mq.matches) || (pos !== 'sticky' && pos !== 'fixed')) { run = 0; set(false); return; }
+      if (y <= hdr.offsetHeight + 16) { run = 0; set(false); return; }
+      var ae = document.activeElement;
+      if (ae && ae !== document.body && hdr.contains(ae)) { run = 0; set(false); return; }
+      if ((dy > 0) !== (run > 0)) run = 0;
+      run += dy;
+      if (run > DIST) set(true); else if (run < -DIST) set(false);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    hdr.addEventListener('focusin', function () { set(false); });
+    if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (!mq.matches) set(false); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

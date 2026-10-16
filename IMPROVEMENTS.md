@@ -1,6 +1,6 @@
 # SCOB Night-Sky — improvement backlog
 
-Re-audited at **v4.16** (cache `scob-sky-v119`), 15 Oct 2026. Earlier audits:
+Re-audited at **v4.17** (cache `scob-sky-v120`), 15 Oct 2026. Earlier audits:
 v4.14 and v4.13 (Oct), v4.11 (10 Sep 2026). Every open item is backed by something measured, not by a
 guess — the evidence is quoted so you can re-check it yourself.
 
@@ -75,6 +75,16 @@ Open items are ranked by value ÷ effort.
 * **Haze drives the verdict (new in v4.13).** Column depth as well as ground
   PM2.5; go/no-go, share blurb, limiting magnitude and every target verdict
   listen; future dates use that night's forecast.
+
+---
+
+## Done in v4.17 — scrolling the top of the page
+
+Desktop header flicker (collapse + scroll anchoring feedback), the phone header pinned over the
+whole screen (shared theme made it sticky), and the phone bar now slides away and back. The same
+slide-away behaviour on phones for every page via `version.js`. Lesson kept as a rule in
+`dashboard-core.js`: nothing that reacts to scrolling may change the page height near its own
+trigger point.
 
 ---
 

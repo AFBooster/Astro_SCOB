@@ -23,42 +23,51 @@ const LAT=1.3342, LON=103.7357, RAD=Math.PI/180, DEG=180/Math.PI; // SCOB, Juron
    minute. Leave '' and the tile stays hidden — nothing changes. */
 const ALLSKY_CAM='';
 const IS_MOBILE=!!document.getElementById('mobileRoot');
-// Desktop: minimise the tall sticky header once the user scrolls, so the sky map and cards get the
-// screen back. Keeps the date, time and the time-scrubber; hides title, day-note, glance & dark-bar.
-// Hysteresis (collapse >64px, expand <16px) stops any flicker at the boundary.
+// v4.17 — scroll behaviour of the top of the page, rebuilt.
+// The v4.04-v4.16 versions collapsed part of a sticky header when the page scrolled past a small
+// threshold. Collapsing changes the page height, Chrome's scroll anchoring then moves the scroll
+// position to compensate, which crossed the threshold back — so the header opened and closed
+// repeatedly (the flicker) and could drag the page back to the top. Rule now: nothing that reacts
+// to scrolling may change the page height near its own trigger point.
+//
+// Desktop: the title and the glance are ordinary content (they scroll away on their own); only the
+// control bar is sticky. Once it has been pinned for a while it switches to a compact form. The
+// switch happens COMPACT_AT px past the bar's own place and reverses only within EXPAND_AT px of
+// it; the gap between the two is far larger than the height the bar loses, so neither scroll
+// anchoring (Chrome, Edge) nor its absence (Safari) can bounce it across.
 if(!IS_MOBILE){(function(){
-  const hdr=document.querySelector('#desktopRoot header'); if(!hdr) return;
-  const groups=[].slice.call(hdr.querySelectorAll('.hdr-top,.hdr-bot'));
+  const hdr=document.querySelector('#desktopRoot header'), sen=document.getElementById('hdrSentinel'); if(!hdr||!sen) return;
+  const COMPACT_AT=180, EXPAND_AT=24;
   let min=false;
-  // The collapsed vs open state is driven ENTIRELY by the .hdr-min class in CSS, so the class and
-  // the rendered height can never desync (the old approach juggled inline max-height + transitionend
-  // and could settle with the class minimised but the groups still expanded — a tall dead band).
-  // We only measure each group's real content height into --openH so the open cap is exact: the
-  // slide animates cleanly with no dead time, and async header content (glance/weather) never clips.
-  function cap(){ groups.forEach(function(g){ var h=g.scrollHeight; if(h) g.style.setProperty('--openH',(h+6)+'px'); }); }
-  function set(m){ if(m===min)return; if(!m)cap(); min=m; hdr.classList.toggle('hdr-min',m); }
-  function onScroll(){ var y=window.pageYOffset||document.documentElement.scrollTop||0;
-    if(!min&&y>72)set(true); else if(min&&y<20)set(false); }
-  cap();
+  function barTop(){ return sen.getBoundingClientRect().top+(window.pageYOffset||0); }
+  function onScroll(){ const past=(window.pageYOffset||document.documentElement.scrollTop||0)-barTop();
+    if(!min&&past>COMPACT_AT){ min=true; hdr.classList.add('hdr-min'); }
+    else if(min&&past<EXPAND_AT){ min=false; hdr.classList.remove('hdr-min'); } }
   window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',function(){ if(!min)cap(); },{passive:true});
-  // Header content (day-note, glance, dark-bar) fills in after fetches — keep the open cap fresh.
-  try{ new MutationObserver(function(){ if(!min)cap(); }).observe(hdr,{childList:true,subtree:true,characterData:true}); }catch(e){}
+  window.addEventListener('resize',onScroll,{passive:true});
   onScroll();
 })();}
 
-// Mobile: same idea for the slim sticky bar. The extra header block (menu, day-note, glance, dark-bar)
-// already scrolls away because it isn't sticky; here we also collapse the title/countdown row of the
-// pinned slim bar on scroll, so only date, time and the scrubber stay at the top. Class-driven, with
-// hysteresis (collapse >56px, expand <14px) to avoid flicker at the fold.
+// Mobile: hide the whole pinned bar while scrolling down, bring it back on any deliberate scroll
+// up. It slides with a CSS transform (layout never changes), and only once the page is past the
+// bar's own height, so there is never a gap above the content. It stays put while one of its
+// date/time inputs has focus, and ignores iOS rubber-banding at either end of the page.
 if(IS_MOBILE){(function(){
-  const root=document.getElementById('mobileRoot'); if(!root) return;
-  let min=false;
-  function set(m){ if(m===min)return; min=m; root.classList.toggle('mob-min',m); }
-  function onScroll(){ var y=window.pageYOffset||document.documentElement.scrollTop||0;
-    if(!min&&y>56)set(true); else if(min&&y<14)set(false); }
+  const bar=document.getElementById('slimbar'); if(!bar) return;
+  const DIST=18;                       // px of travel in one direction before it reacts
+  let hidden=false, lastY=Math.max(0,window.pageYOffset||0), run=0;
+  function set(h){ if(h===hidden)return; hidden=h; bar.classList.toggle('sb-hide',h); }
+  function onScroll(){
+    const max=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+    const y=Math.min(max,Math.max(0,window.pageYOffset||document.documentElement.scrollTop||0));
+    const dy=y-lastY; lastY=y; if(!dy)return;
+    if(y<=bar.offsetHeight+16){ run=0; set(false); return; }            // near the top: always shown
+    const ae=document.activeElement; if(ae&&ae!==document.body&&bar.contains(ae)){ run=0; set(false); return; }
+    if((dy>0)!==(run>0))run=0; run+=dy;
+    if(run>DIST)set(true); else if(run<-DIST)set(false);
+  }
   window.addEventListener('scroll',onScroll,{passive:true});
-  onScroll();
+  bar.addEventListener('focusin',function(){ set(false); });
 })();}
 
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1332,7 +1341,7 @@ function tonightBlurb(){
 // ==== v3.36: dismissible "what's new" line for returning volunteers ====
 (function(){
   var VER=window.SCOB_VERSION||'';
-  var WHATSNEW='The session logbook can now check the app’s haze and seeing estimates against what you actually saw — note the faintest star overhead and the seeing, and it does the rest. Saturn and Jupiter are more accurate, lunar occultation predictions are fixed (some were off by up to an hour), the freshness strip now covers the haze forecast and seeing, and the comet chip says so when nothing is in reach.';
+  var WHATSNEW='Scrolling fixed. On a phone, the bar at the top now slides away as you scroll down and comes back the moment you scroll up — and the big block under it no longer stays pinned over the page. On a computer, the header no longer flickers: only the date-and-time bar stays at the top. Every other page does the same on a phone.';
   var seen='';try{seen=localStorage.getItem('scobSeenVer')||'';}catch(e){}
   if(seen===VER)return;
   var g=document.getElementById('glance');if(!g||!g.parentNode)return;
