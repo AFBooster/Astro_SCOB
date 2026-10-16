@@ -1343,7 +1343,7 @@ function tonightBlurb(){
 // ==== v3.36: dismissible "what's new" line for returning volunteers ====
 (function(){
   var VER=window.SCOB_VERSION||'';
-  var WHATSNEW='A full accuracy check of the site’s data against JPL, NASA and the major star catalogues. Corrected: 14 deep-sky positions and magnitudes, 28 stars in the sky-culture figures that were drawn in the wrong place (and six labelled as the wrong star), ten event dates (now all Singapore dates), and the eclipse list — including a partial lunar eclipse on 7 July 2028 that we can actually see.';
+  var WHATSNEW='On the Haze page, the place markers on the satellite picture can now be switched off, so Singapore itself is no longer hidden under the SCOB label — and when on, they are hollow rings with the names set to one side. Also new since v4.17: a full accuracy check of the site’s star, deep-sky, event and eclipse data against JPL, NASA and the major catalogues.';
   var seen='';try{seen=localStorage.getItem('scobSeenVer')||'';}catch(e){}
   if(seen===VER)return;
   var g=document.getElementById('glance');if(!g||!g.parentNode)return;

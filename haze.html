@@ -70,11 +70,21 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 .satwrap{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#05080f;margin-top:4px;}
 .satwrap img{width:100%;height:auto;display:block;}
 .satwrap.loading::after{content:"Loading the satellite view\2026";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px;background:#05080f;}
-.satmark{position:absolute;transform:translate(-50%,-50%);pointer-events:none;}
-.satmark i{display:block;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.65),0 0 9px 2px rgba(245,197,66,.85);margin:0 auto;}
-.satmark span{display:block;font-size:10px;font-weight:800;color:var(--gold);white-space:nowrap;margin-top:2px;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000;}
-.satmark.src i{width:7px;height:7px;background:#ff8a5c;box-shadow:0 0 0 2px rgba(0,0,0,.6);}
+/* v4.19: markers redrawn to cover as little of the picture as possible. Singapore is a
+   few pixels across at this scale, so the old filled, glowing dot with its label stacked
+   underneath hid the whole island. Now: a hollow ring centred exactly on the place (the
+   island shows through it) and the label set off to one side; and a switch hides them. */
+.satmark{position:absolute;width:0;height:0;pointer-events:none;}
+.satmark i{position:absolute;left:-6px;top:-6px;width:12px;height:12px;box-sizing:border-box;border-radius:50%;border:2px solid var(--gold);background:transparent;box-shadow:0 0 0 1px rgba(0,0,0,.75),inset 0 0 0 1px rgba(0,0,0,.6);}
+.satmark span{position:absolute;top:-7px;left:10px;font-size:10px;font-weight:800;color:var(--gold);white-space:nowrap;line-height:14px;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000;}
+.satmark.l span{left:auto;right:10px;}
+.satmark.src i{left:-5px;top:-5px;width:10px;height:10px;border-color:#ff8a5c;}
 .satmark.src span{color:#ffb49a;font-weight:700;}
+.satwrap.nomarks .satmark{display:none;}
+.satopts{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.satopts button{font-size:12px;font-weight:700;padding:5px 11px;border-radius:16px;border:1px solid var(--line);background:var(--navy3);color:var(--white);cursor:pointer;font-family:inherit;}
+.satopts button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);}
+.satopts .fine{font-size:11.5px;color:var(--mute);}
 .satstale{margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid rgba(245,197,66,.5);background:rgba(245,197,66,.10);color:#f7d984;font-size:12.5px;line-height:1.5;}
 .satstale a{color:#f7d984;}
 .satfail{padding:22px 16px;text-align:center;color:var(--mute);font-size:13px;line-height:1.6;}
@@ -148,6 +158,10 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
     <div class="ctl" id="satBtns"></div>
     <div class="satwrap loading" id="satWrap">
       <img id="satImg" alt="Satellite view of Southeast Asia showing smoke and active fires" decoding="async">
+    </div>
+    <div class="satopts" id="satOpts">
+      <button type="button" id="satMarkBtn" aria-pressed="true">📍 Place markers: on</button>
+      <span class="fine">SCOB, Riau and West Kalimantan. Switch them off to see Singapore itself.</span>
     </div>
     <div class="satcap" id="satCap"></div>
     <div id="windBox"></div>
@@ -491,6 +505,23 @@ function satEmptyMsg(L) {
        + 'the satellite may not have passed over, or cloud may have defeated the retrieval. '
        + 'Try another layer, or <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener">open NASA Worldview ↗</a>.';
 }
+/* v4.19: show / hide the place markers on the satellite picture. Remembered per browser. */
+var SATMARKS = true;
+try { SATMARKS = localStorage.getItem('scobSatMarks') !== '0'; } catch (e) {}
+function applySatMarks() {
+  var w = $('satWrap'), b = $('satMarkBtn');
+  if (w) w.classList.toggle('nomarks', !SATMARKS);
+  if (b) { b.setAttribute('aria-pressed', SATMARKS ? 'true' : 'false'); b.textContent = '📍 Place markers: ' + (SATMARKS ? 'on' : 'off'); }
+}
+(function () {
+  var b = $('satMarkBtn'); if (!b) return;
+  b.addEventListener('click', function () {
+    SATMARKS = !SATMARKS;
+    try { localStorage.setItem('scobSatMarks', SATMARKS ? '1' : '0'); } catch (e) {}
+    applySatMarks();
+  });
+  applySatMarks();
+})();
 function renderSat() {
   var L = H.satLayer(SATKEY), wrap = $('satWrap'), img = $('satImg');
   $('satBtns').innerHTML = H.SAT_LAYERS.map(function (l) {
@@ -500,6 +531,8 @@ function renderSat() {
     b.addEventListener('click', function () { SATKEY = b.getAttribute('data-k'); SATTRY = 0; renderSat(); });
   });
 
+  /* the place markers only exist on the NASA layers (MSS's image has its own projection) */
+  $('satOpts').style.display = (L.source === 'nea') ? 'none' : '';
   /* clear any previous markers, keep the <img> */
   Array.prototype.forEach.call(wrap.querySelectorAll('.satmark,.satfail'), function (n) { n.remove(); });
   wrap.classList.add('loading');
@@ -530,7 +563,7 @@ function renderSat() {
     /* pin SCOB and the two burning regions onto the picture */
     var pins = [
       { lon: 103.7357, lat: 1.3342, label: 'SCOB', cls: '' },
-      { lon: 101.45,   lat: 0.53,   label: 'Riau', cls: 'src' },
+      { lon: 101.45,   lat: 0.53,   label: 'Riau', cls: 'src l' },        /* label to the west, away from Singapore */
       { lon: 109.33,   lat: -0.02,  label: 'W Kalimantan', cls: 'src' }
     ];
     pins.forEach(function (p) {
