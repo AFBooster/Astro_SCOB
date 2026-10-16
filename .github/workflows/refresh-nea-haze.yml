@@ -19,7 +19,10 @@ name: Refresh the NEA/MSS haze-image link
 
 on:
   schedule:
-    - cron: '25 */3 * * *'     # every three hours; MSS issue roughly daily
+    - cron: '25 * * * *'       # hourly. MSS issue about once a day, mid-afternoon SGT; GitHub runs
+                               # scheduled jobs late and irregularly (3-hourly ran every 4-9 h in
+                               # Oct 2026), so asking hourly is what gets a new scene up within hours.
+                               # A run that finds the same image commits nothing, so it costs ~10 s.
   workflow_dispatch:
 
 permissions:
@@ -32,9 +35,9 @@ concurrency:
 
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04      # pinned: ubuntu-latest moves to Ubuntu 26 from 19 Oct 2026
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5          # v4 ran on the deprecated Node 20
 
       - name: Look up MSS's current haze satellite image
         id: look
@@ -73,10 +76,21 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync('nea-haze.json','utf8'));console.log('valid JSON')"
           cat nea-haze.json
 
+      # v4.18: compare the IMAGE, not the file. The file also carries a "refreshed"
+      # timestamp that changes on every run, so "git diff" always saw a change: 22 of the
+      # 30 pointer commits up to 15 Oct 2026 pointed at an image the site already had,
+      # each one a commit plus a full deploy. Only a new scene is worth either.
       - name: Commit only when the image has actually changed
         run: |
           if git diff --quiet -- nea-haze.json; then
             echo "pointer unchanged - nothing to commit"
+            exit 0
+          fi
+          old=$(git show HEAD:nea-haze.json 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(JSON.parse(d).image||'')}catch(e){console.log('')}})")
+          new=$(node -e "console.log(JSON.parse(require('fs').readFileSync('nea-haze.json','utf8')).image||'')")
+          if [ -n "$old" ] && [ "$old" = "$new" ]; then
+            echo "same MSS image as already published ($new) - only the check time changed; not committing"
+            git checkout -- nea-haze.json
             exit 0
           fi
           git config user.name  "github-actions[bot]"

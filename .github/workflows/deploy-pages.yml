@@ -22,13 +22,15 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # pinned: ubuntu-latest moves to Ubuntu 26 from 19 Oct 2026, and the Playwright build
+    # below installs its browser's system packages for a known Ubuntu. Move both together.
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5            # v4 = deprecated Node 20
 
       - name: Astronomy regression test
         run: |
@@ -88,13 +90,13 @@ jobs:
           ls -la _site
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5   # v3 wrapped upload-artifact on Node 20
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5            # Node 24
 
       # v4.15 — check the RESULT, not just that the job ran. From 7 to 15 Oct 2026
       # every run was green while the live haze pointer sat 8 days behind the repo

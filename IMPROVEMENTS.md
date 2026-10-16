@@ -78,6 +78,42 @@ Open items are ranked by value ÷ effort.
 
 ---
 
+## Housekeeping, 16 Oct 2026 (no change to the site itself — still v4.17)
+
+Checked live: afbooster.online serves v4.17; every live feed answers (NEA v2 and v1,
+Open-Meteo forecast and air quality, CelesTrak, NOAA SWPC, NASA GIBS); the v4.14
+fix works (each new MSS image now triggers a deploy) and every deploy's *Verify the
+live site* step has passed.
+
+* **The haze-image job committed and deployed for nothing ~3 times out of 4.** Its
+  "changed?" test diffed the whole file, which includes a check-time stamp, so 22 of
+  the last 30 pointer commits re-published an image the site already had — each a
+  commit, a merge on your next publish, and a full deploy with the browser test. It
+  now compares the image itself. With no-op runs free, it checks hourly instead of
+  every 3 h (GitHub ran the 3-hourly schedule every 4–9 h), so a new scene goes live
+  sooner.
+* **Node 20 deprecation warnings on every run.** `actions/checkout@v4`,
+  `upload-pages-artifact@v3` (which wraps `upload-artifact` v4) and `deploy-pages@v4`
+  run on Node 20, which GitHub has deprecated. Now `checkout@v5`,
+  `upload-pages-artifact@v5`, `deploy-pages@v5` — all Node 24.
+* **`ubuntu-latest` becomes Ubuntu 26 on 19 Oct 2026.** The deploy installs
+  Playwright 1.55's browser with system packages for a known Ubuntu; both workflows
+  are pinned to `ubuntu-24.04`. When you next upgrade Playwright, move both together.
+* **`deploy.sh` still had the pre-v4.08 publish bug** (a failed commit treated as
+  "nothing to commit") and never pulled first. Rewritten to mirror `publish.bat`.
+* **Docs out of date:** `publish.bat` and `PUBLISHING.md` pointed at the old
+  `afbooster.github.io/Astro_SCOB/` address (it forwards, but afbooster.online is the
+  site); `PUBLISHING.md` described a 3-step publish and an incomplete published-file
+  list and didn't mention the two Actions or the live-site check; `INSTALL-as-app.md`
+  still explained hosting the files yourself on Netlify. All three corrected.
+* Removed a stale 10 Sep copy of this file from the ignored `Claude outputs/` folder.
+
+**Still open, your call:** `SCOB-Dashboard-User-Guide.pptx` was last updated on 28 Jul
+2026 (around v3.4x) and predates the haze panel, plan-ahead, the logbook model check
+and the v4.17 scrolling. It is not published, but anyone handed it gets an old picture.
+
+---
+
 ## Done in v4.17 — scrolling the top of the page
 
 Desktop header flicker (collapse + scroll anchoring feedback), the phone header pinned over the

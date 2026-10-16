@@ -107,7 +107,7 @@ echo ============================================================
 echo  Pushed. The deploy is now running.
 echo ------------------------------------------------------------
 echo  Watch it:   https://github.com/AFBooster/Astro_SCOB/actions
-echo  Live site:  https://afbooster.github.io/Astro_SCOB/
+echo  Live site:  https://afbooster.online/
 echo             ^(updates ~1 minute after the green tick^)
 echo ============================================================
 echo.
