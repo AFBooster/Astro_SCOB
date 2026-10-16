@@ -171,7 +171,7 @@
     { id:'m31', name:'Andromeda Galaxy (M31)', kind:'dso', ra:10.68, dec:41.27, mag:3.4, scope:'6" apo / binoculars',
       blurb:"The most distant thing your eye can see unaided — an entire galaxy of a trillion stars, 2.5 million light-years away, on a collision course with our Milky Way.",
       look:"A faint elongated smudge; the light left it before humans existed." },
-    { id:'jewelbox', name:'The Jewel Box (NGC 4755)', kind:'dso', ra:191.93, dec:-60.35, mag:4.2, scope:'6" apo',
+    { id:'jewelbox', name:'The Jewel Box (NGC 4755)', kind:'dso', ra:193.42, dec:-60.36, mag:4.2, scope:'6" apo',
       blurb:"A compact cluster beside the Southern Cross with a striking mix of blue-white and one ruby-red star — like a scattering of coloured gems.",
       look:"Just off Beta Crucis in the Southern Cross." },
     { id:'acrux', name:'Acrux (Southern Cross)', kind:'double', ra:186.65, dec:-63.10, mag:0.8, scope:'6" apo',
@@ -210,7 +210,7 @@
     { id:'m6', name:'Butterfly Cluster (M6)', kind:'dso', ra:265.08, dec:-32.22, mag:4.2, scope:'6\" apo / binoculars', blurb:"An open cluster whose brightest stars trace a butterfly's wings, near the Scorpion's stinger.", look:"Just above M7, low in the south." },
     { id:'m11', name:'Wild Duck Cluster (M11)', kind:'dso', ra:282.77, dec:-6.27, mag:5.8, scope:'6\" apo', blurb:"A rich, dense open cluster resembling a flight of wild ducks.", look:"In Scutum, on the Milky Way." },
     { id:'m57', name:'Ring Nebula (M57)', kind:'dso', ra:283.40, dec:33.03, mag:8.8, scope:'40 cm main dome', blurb:"A dying star's smoke ring — a tiny grey doughnut of glowing gas, a telescope classic.", look:"Between the two lower stars of Lyra." },
-    { id:'m27', name:'Dumbbell Nebula (M27)', kind:'dso', ra:300.00, dec:22.72, mag:7.4, scope:'40 cm + 6\" apo', blurb:"A big, bright puff of gas cast off by a dying star — shaped like an apple core.", look:"In Vulpecula, near Albireo." },
+    { id:'m27', name:'Dumbbell Nebula (M27)', kind:'dso', ra:299.90, dec:22.72, mag:7.4, scope:'40 cm + 6\" apo', blurb:"A big, bright puff of gas cast off by a dying star — shaped like an apple core.", look:"In Vulpecula, near Albireo." },
     { id:'tuc47', name:'47 Tucanae', kind:'dso', ra:6.02, dec:-72.08, mag:4.0, scope:'40 cm main dome', blurb:"The second-brightest globular cluster in the whole sky — a dazzling southern ball of stars.", look:"Low in the south, best on spring evenings." }
   ];
 

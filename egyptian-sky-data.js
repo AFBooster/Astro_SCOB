@@ -27,7 +27,7 @@ window.ESKY=[
  det:3,stars:[[269.152,51.489,2.2,87833,"γ Dra (Eltanin)",""],[262.608,52.301,2.8,85670,"β Dra (Rastaban)",""],[268.382,56.873,3.7,87585,"ξ Dra (Grumium)",""],[257.197,65.715,3.2,83895,"ζ Dra",""],[245.998,61.514,2.7,80331,"η Dra",""],[231.232,58.966,3.3,75458,"ι Dra (Edasich)",""],[211.097,64.376,3.7,68756,"α Dra (Thuban)",""]],lines:[[0,1],[1,2],[2,0],[0,3],[3,4],[4,5],[5,6]],
  dEN:"Reret, 'the Sow' — the hippopotamus goddess Taweret, guardian of the northern sky, drawn standing upright with a crocodile on her back. Our Draco winding round the pole; her stars include Thuban, the pole star of the pyramid age."},
 {n:5,name:"Mesekhtiu-mooring",eg:"mnjt",en:"An — the Mooring Post",realm:"imperishable",west:"Ursa Minor / near the pole",
- det:0,stars:[[222.676,74.156,2.1,72607,"β UMi (Kochab)",""],[230.182,71.834,3.0,75097,"γ UMi (Pherkad)",""],[263.054,86.586,2.0,11767,"α UMi (Polaris)",""]],lines:[[2,1],[1,0]],
+ det:0,stars:[[222.676,74.156,2.1,72607,"β UMi (Kochab)",""],[230.182,71.834,3.0,75097,"γ UMi (Pherkad)",""],[37.946,89.264,2.0,11767,"α UMi (Polaris)",""]],lines:[[2,1],[1,0]],
  dEN:"The mooring-post (An) to which the Bull's Foreleg was tethered by a chain, so it could never escape below the horizon. Around our little Ursa Minor and today's Pole Star — the still point of the turning northern sky."}
 ];
 

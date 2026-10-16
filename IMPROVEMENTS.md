@@ -1,6 +1,6 @@
 # SCOB Night-Sky — improvement backlog
 
-Re-audited at **v4.17** (cache `scob-sky-v120`), 15 Oct 2026. Earlier audits:
+Re-audited at **v4.18** (cache `scob-sky-v121`), 15 Oct 2026. Earlier audits:
 v4.14 and v4.13 (Oct), v4.11 (10 Sep 2026). Every open item is backed by something measured, not by a
 guess — the evidence is quoted so you can re-check it yourself.
 
@@ -75,6 +75,32 @@ Open items are ranked by value ÷ effort.
 * **Haze drives the verdict (new in v4.13).** Column depth as well as ground
   PM2.5; go/no-go, share blurb, limiting magnitude and every target verdict
   listen; future dates use that night's forecast.
+
+---
+
+## Data accuracy audit, 16 Oct 2026 (v4.18)
+
+Method: every table against an independent reference — JPL Horizons (sky computations,
+event dates, Moon altitude at each eclipse), SIMBAD and OpenNGC (deep-sky), the HYG star
+catalogue (726 sky-culture stars by HIP number and Bayer name), NASA GSFC (eclipses), the
+American Meteor Society (shower peaks). A value was changed only when the references agreed
+with each other and the site disagreed with both. Details are in the README v4.18 row.
+
+**Left alone on purpose** (references disagree by more than the site does): Skull Nebula and
+Sculptor Galaxy magnitudes, NGC 752, the Pleiades, Hyades, Flaming Star, Rosette, Southern
+Beehive and Cave Nebula centres, the North America Nebula, Cocoon, Horsehead and Hubble's
+Variable Nebula magnitudes, the Needle Galaxy and NGC 4945, and the globulars M10, M14, M19,
+NGC 4372 and Omega Centauri (the site follows the Harris catalogue's integrated V, which
+OpenNGC does not).
+
+**Not audited:** the prose facts on the explainer pages (space telescopes, cosmic extremes,
+telescope types, sky-culture stories). They are text, not data, and need a reader rather
+than a script.
+
+**Still open:** the Great Red Spot model (91° on 1 Jun 2026, 1.75°/month) agrees with the
+one public calculator found but could not be checked against a current JUPOS measurement;
+it is due for review on 1 Jan 2027 anyway. Geminid ZHR is given as 120; the IMO now
+quotes 150 — a judgement call, left as is.
 
 ---
 

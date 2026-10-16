@@ -850,13 +850,13 @@ let HAZEWIND=null,HAZEWINDKEY='';
 // today's), and the verdict derived from it that the headline and share blurb reuse.
 let HAZEFC=null,HAZEFCAT=0,HAZEFCTS=0,HAZEV=null;
 const EVENTS=[
- ['2026-07-28','☄️','Delta Aquariids meteor shower peaks','Up to 20/hr after midnight, but the full Moon washes most out this year.',1],
+ ['2026-07-30','☄️','Delta Aquariids meteor shower peaks','Up to 20/hr after midnight, but the full Moon washes most out this year.',1],
  ['2026-08-02','🪐','Mercury at greatest western elongation','Morning object — low in the east before sunrise, not an evening-session target.',1],
  ['2026-08-12','🌑','Total solar eclipse — not visible from Singapore','Path crosses the Arctic, Greenland, Iceland & Spain.',0],
  ['2026-08-12','☄️','Perseids meteor shower peaks','Excellent year — New Moon, dark skies. Up to 60/hr after midnight; the radiant sits low in the north from Singapore, so rates are reduced but bright ones still get through.',1],
  ['2026-08-15','🪐','Venus at greatest eastern elongation','Brilliant "evening star" in the west after sunset — a session showpiece.',1],
  ['2026-08-28','🌕','Partial lunar eclipse — not visible from Singapore','Visible from the Americas, Europe & Africa.',0],
- ['2026-09-25','🪐','Neptune at opposition','Closest & brightest of the year — a tiny blue dot for the 40 cm.',1],
+ ['2026-09-26','🪐','Neptune at opposition','Closest & brightest of the year — a tiny blue dot for the 40 cm.',1],
  ['2026-10-04','🪐','Saturn at opposition','Closest & brightest of the year, up all night — prime target for every scope on deck.',1],
  ['2026-10-07','☄️','Draconids meteor shower peaks','Minor (~10/hr) early-evening shower, but the radiant is very low from Singapore.',1],
  ['2026-10-12','🪐','Mercury at greatest eastern elongation','Best evening view — very low in the west just after sunset.',1],
@@ -864,27 +864,27 @@ const EVENTS=[
  ['2026-11-04','☄️','Taurids meteor shower peaks','Slow, bright fireballs, ~5–10/hr, best after midnight.',1],
  ['2026-11-17','☄️','Leonids meteor shower peaks','Up to 15/hr after the Moon sets around midnight.',1],
  ['2026-11-24','🌕','Full Moon — supermoon','Slightly bigger & brighter than usual — great on the deck scopes, bad for faint targets.',1],
- ['2026-11-25','🪐','Uranus at opposition','Closest & brightest of the year — blue-green dot in the bigger scopes.',1],
+ ['2026-11-26','🪐','Uranus at opposition','Closest & brightest of the year — blue-green dot in the bigger scopes.',1],
  ['2026-12-13','☄️','Geminids meteor shower peaks','King of the showers — up to 120/hr and the crescent Moon sets early. Radiant climbs from ~9 pm in Singapore; an excellent year.',1],
  ['2026-12-21','☄️','Ursids meteor shower peaks','Far-northern radiant sits on/below Singapore\'s horizon — effectively not observable here.',0],
- ['2026-12-23','🌕','Full Moon — supermoon','Slightly bigger & brighter than usual.',1],
+ ['2026-12-24','🌕','Full Moon — supermoon','Slightly bigger & brighter than usual (full at about 10 am; the night before and after both look full).',1],
  ['2027-01-03','☄️','Quadrantids meteor shower peaks','Up to 40/hr after midnight; little moonlight, but the radiant stays very low from Singapore.',1],
- ['2027-01-03','🪐','Venus at greatest western elongation','Brilliant "morning star" before sunrise.',1],
+ ['2027-01-04','🪐','Venus at greatest western elongation','Brilliant "morning star" before sunrise.',1],
  ['2027-01-22','🌕','Full Moon — supermoon','Slightly bigger & brighter than usual.',1],
  ['2027-02-03','🪐','Mercury at greatest eastern elongation','Low in the west just after sunset.',1],
- ['2027-02-06','🌑','Annular solar eclipse — not visible from Singapore','Path crosses the south Pacific, Chile & Argentina.',0],
- ['2027-02-10','🪐','Jupiter at opposition','Closest & brightest of the year, up all night — cloud belts & the four Galilean moons in any scope.',1],
+ ['2027-02-06','🌑','Annular solar eclipse — not visible from Singapore','Path crosses Chile, Argentina & the south Atlantic.',0],
+ ['2027-02-11','🪐','Jupiter at opposition','Closest & brightest of the year, up all night — cloud belts & the four Galilean moons in any scope.',1],
  ['2027-02-19','🪐','Mars at opposition','Closest & brightest of the year — surface markings in the 40 cm.',1],
  ['2027-02-20','🌕','Penumbral lunar eclipse — not visible from Singapore','Subtle shading, visible from the Americas, Europe, Africa & western Asia. Also a supermoon.',0],
  ['2027-04-22','☄️','Lyrids meteor shower peaks','~20/hr, but a nearly-full Moon washes most out this year.',1],
  ['2027-05-06','☄️','Eta Aquariids meteor shower peaks','Excellent year — no Moon. Up to 60/hr before dawn from Halley\'s dust; one of the best showers for Singapore\'s latitude.',1],
  ['2027-05-28','🪐','Mercury at greatest eastern elongation','Low in the west just after sunset.',1],
- ['2027-07-15','🪐','Mercury at greatest western elongation','Morning object before sunrise.',1],
- ['2027-07-18','🌕','Penumbral lunar eclipse — visible from Singapore','Subtle darkening of the full Moon; visible across Southeast Asia & Australia.',1],
- ['2027-07-28','☄️','Delta Aquariids meteor shower peaks','~20/hr after midnight; waning crescent Moon — a decent year.',1],
+ ['2027-07-16','🪐','Mercury at greatest western elongation','Morning object before sunrise.',1],
+ ['2027-07-18','🌕','Penumbral lunar eclipse — nothing to see','Around midnight the full Moon only grazes the very edge of Earth\'s outer shadow (penumbral magnitude 0.003, for about 12 minutes). Technically an eclipse; no visible darkening at all.',0],
+ ['2027-07-30','☄️','Delta Aquariids meteor shower peaks','~20/hr after midnight; waning crescent Moon — a decent year.',1],
  ['2027-08-02','🌑','Total solar eclipse — not visible from Singapore','Path crosses North Africa & the Middle East; partial from Europe to India.',0],
  ['2027-08-12','☄️','Perseids meteor shower peaks','Waxing gibbous Moon interferes; radiant low from Singapore.',1],
- ['2027-09-24','🪐','Mercury at greatest eastern elongation','Best evening apparition of the year (26° from the Sun), low in the west after sunset.',1],
+ ['2027-09-25','🪐','Mercury at greatest eastern elongation','Best evening apparition of the year (26° from the Sun), low in the west after sunset.',1],
  ['2027-09-28','🪐','Neptune at opposition','Tiny blue dot at its brightest for the year.',1],
  ['2027-10-07','☄️','Draconids meteor shower peaks','Minor early-evening shower; radiant very low from Singapore.',1],
  ['2027-10-18','🪐','Saturn at opposition','Closest & brightest of the year — rings on show all night.',1],
@@ -896,12 +896,14 @@ const EVENTS=[
  ['2028-01-04','☄️','Quadrantids meteor shower peaks','Up to 40/hr after midnight; a half Moon sets around midnight, and the radiant stays low from Singapore.',1],
  ['2028-01-26','🌑','Annular solar eclipse — not visible from Singapore','A "ring of fire" over the eastern Pacific, the Americas and the Atlantic into Spain.',0],
  ['2028-03-12','🪐','Jupiter at opposition','Closest & brightest of the year, up all night — cloud belts & the four Galilean moons in any scope.',1],
+ ['2028-03-22','🪐','Venus at greatest eastern elongation','Brilliant "evening star" in the west after sunset — a session showpiece for weeks either side.',1],
  ['2028-04-22','☄️','Lyrids meteor shower peaks','Excellent year — a new Moon and dark skies. ~20/hr before dawn.',1],
  ['2028-05-06','☄️','Eta Aquariids meteor shower peaks','Normally one of Singapore\'s best, but a nearly-full Moon washes most out this year; a few bright Halley\'s-dust meteors still show before dawn.',1],
- ['2028-07-22','🌑','Total solar eclipse — partial from Singapore','Totality crosses Christmas & Cocos Islands, Australia (Sydney) and New Zealand; from Singapore a modest partial, low in the sky — a daytime event needing a certified solar filter.',1],
+ ['2028-07-06','🌕','Partial lunar eclipse — visible from Singapore','After midnight: Earth\'s shadow takes a bite out of the full Moon, greatest at about 2:20 am on 7 Jul with the Moon about 60° up in the south-west. About 40% of the Moon\'s diameter is shadowed.',1],
+ ['2028-07-22','🌑','Total solar eclipse — partial from Singapore','Totality crosses Christmas & Cocos Islands, Australia (Sydney) and New Zealand; from Singapore a modest partial in the late morning — a daytime event needing a certified solar filter.',1],
  ['2028-08-12','☄️','Perseids meteor shower peaks','A gibbous Moon interferes until it sets after midnight; the radiant sits low from Singapore, so a quieter year.',1],
  ['2028-10-21','☄️','Orionids meteor shower peaks','A good year — only a thin crescent Moon. Up to 20/hr after midnight from Halley\'s dust, well placed from Singapore.',1],
- ['2028-10-30','🪐','Saturn at opposition','Closest & brightest of the year, up all night — rings on show for every scope on deck.',1],
+ ['2028-10-31','🪐','Saturn at opposition','Closest & brightest of the year, up all night — rings on show for every scope on deck.',1],
  ['2028-11-17','☄️','Leonids meteor shower peaks','New Moon, dark skies — up to ~15/hr after midnight.',1],
  ['2028-12-13','☄️','Geminids meteor shower peaks','King of the showers — up to 120/hr and a new Moon this year. The radiant climbs from ~9 pm in Singapore; an excellent year.',1],
  ['2028-12-31','🌕','Total lunar eclipse — visible from Singapore','A New Year\'s Eve total eclipse: the full Moon turns coppery-red, visible across Asia, Australia & the Pacific. A naked-eye, whole-sky event.',1]
@@ -1341,7 +1343,7 @@ function tonightBlurb(){
 // ==== v3.36: dismissible "what's new" line for returning volunteers ====
 (function(){
   var VER=window.SCOB_VERSION||'';
-  var WHATSNEW='Scrolling fixed. On a phone, the bar at the top now slides away as you scroll down and comes back the moment you scroll up — and the big block under it no longer stays pinned over the page. On a computer, the header no longer flickers: only the date-and-time bar stays at the top. Every other page does the same on a phone.';
+  var WHATSNEW='A full accuracy check of the site’s data against JPL, NASA and the major star catalogues. Corrected: 14 deep-sky positions and magnitudes, 28 stars in the sky-culture figures that were drawn in the wrong place (and six labelled as the wrong star), ten event dates (now all Singapore dates), and the eclipse list — including a partial lunar eclipse on 7 July 2028 that we can actually see.';
   var seen='';try{seen=localStorage.getItem('scobSeenVer')||'';}catch(e){}
   if(seen===VER)return;
   var g=document.getElementById('glance');if(!g||!g.parentNode)return;

@@ -89,6 +89,27 @@ ok('Antares 7 Sep 2027 — not called an occultation', ocA.occult ? 1 : 0, 0, 0)
 ok('Antares 7 Sep 2027 — flagged too close to call', ocA.graze ? 1 : 0, 1, 0);
 ocA = near('2027-02-28T08:10:00Z');
 ok('Antares 28 Feb 2027 — time vs JPL (min)', (ocA.t - Date.parse('2027-02-28T08:10:00Z')) / 60000, 0, 4);
+/* v4.18 — data accuracy pins. Each value below was wrong before the 16 Oct 2026 audit and
+   was checked against SIMBAD, OpenNGC, the HYG star catalogue or JPL Horizons. */
+console.log('Catalogue & sky-culture positions (v4.18 audit: SIMBAD / OpenNGC / HYG)');
+const jb = A.SHOWPIECES.find(o => o.id === 'jewelbox');
+ok('Jewel Box position vs SIMBAD (arcmin; was 44)', sepArcmin(jb.ra, jb.dec, 193.42, -60.36), 0, 3);
+const skySrc = fs.readFileSync(path.join(__dirname, 'sky-data.js'), 'utf8');
+function catRow(name) { const m = skySrc.match(new RegExp('\\["' + name.replace(/[()]/g, '\\$&') + '","[^"]*","[^"]*",([0-9.\\-]+),([0-9.\\-]+),"[^"]*",([0-9.\\-]+)')); return m ? m.slice(1).map(Number) : [NaN, NaN, NaN]; }
+let cr = catRow('Beehive Cluster (M44)');
+ok('M44 position vs SIMBAD (arcmin; was 19)', sepArcmin(cr[0], cr[1], 130.05, 19.62), 0, 5);
+cr = catRow('M25');
+ok('M25 magnitude (Wikipedia/WEBDA 4.6; was 6.5)', cr[2], 4.6, 0.3);
+cr = catRow('Tarantula Nebula (C103)');
+ok('Tarantula magnitude (~8; was 1)', cr[2], 8, 0.8);
+/* ε Scorpii was drawn on μ¹ Sco's position — 3.8° away — in five sky-culture files. */
+['babylonian', 'greek', 'malay', 'maya', 'polynesian'].forEach(function (c) {
+  const t = fs.readFileSync(path.join(__dirname, c + '-sky-data.js'), 'utf8');
+  const m = t.match(/\[\s*([0-9.\-]+)\s*,\s*([0-9.\-]+)\s*,\s*[0-9.\-]+\s*,\s*\d+\s*,\s*"ε Sco"/);
+  ok('ε Sco position in ' + c + '-sky-data.js (arcmin; was 226)', m ? sepArcmin(+m[1], +m[2], 252.541, -34.293) : 999, 0, 2);
+});
+const eg = fs.readFileSync(path.join(__dirname, 'egyptian-sky-data.js'), 'utf8').match(/\[\s*([0-9.\-]+)\s*,\s*([0-9.\-]+)\s*,\s*[0-9.\-]+\s*,\s*\d+\s*,\s*"α UMi \(Polaris\)"/);
+ok('Polaris in egyptian-sky-data.js (arcmin; was on δ UMi, 238 away)', eg ? sepArcmin(+eg[1], +eg[2], 37.946, 89.264) : 999, 0, 2);
 ok('activeComets in-window count', A.activeComets(new Date(Date.UTC(2026, 6, 15))).length, 1, 0.5);
 ok('activeComets out-of-window count', A.activeComets(new Date(Date.UTC(2027, 0, 1))).length, 0, 0.5);
 

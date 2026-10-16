@@ -43,7 +43,7 @@ window.POLY=[
  dEN:"Hānaiakamalama — the Southern Cross, the foot of the Backbone. When it stands upright over the horizon, a line down its long axis points true south; its height gives southern latitude."},
 /* ---- Manaiakalani (the Fishline) ---- */
 {n:9,name:"Ka Makau Nui o Māui",en:"Māui's Great Fishhook",line:"fishline",west:"Scorpius",
- det:0,stars:[[247.352,-26.432,1.0,80763,"α Sco (Antares)",""],[241.359,-19.805,2.6,78820,"β Sco",""],[240.083,-22.622,2.3,78401,"δ Sco",""],[248.971,-28.216,2.8,81266,"τ Sco",""],[252.968,-38.047,2.3,82514,"ε Sco",""],[258.038,-43.239,3.3,84143,"η Sco",""],[264.330,-42.998,1.9,86228,"θ Sco (Sargas)",""],[263.402,-37.104,1.6,85927,"λ Sco (Shaula)",""]],lines:[[1,2],[2,0],[0,3],[3,4],[4,5],[5,6],[6,7]],
+ det:0,stars:[[247.352,-26.432,1.0,80763,"α Sco (Antares)",""],[241.359,-19.805,2.6,78820,"β Sco",""],[240.083,-22.622,2.3,78401,"δ Sco",""],[248.971,-28.216,2.8,81266,"τ Sco",""],[252.541,-34.293,2.3,82396,"ε Sco",""],[258.038,-43.239,3.3,84143,"η Sco",""],[264.330,-42.998,1.9,86228,"θ Sco (Sargas)",""],[263.402,-37.104,1.6,85927,"λ Sco (Shaula)",""]],lines:[[1,2],[2,0],[0,3],[3,4],[4,5],[5,6],[6,7]],
  dEN:"The great fishhook of Māui — Scorpius. With it the demigod hauled the islands up from the ocean floor. Its curved barb (Shaula) and red heart (Antares) ride high on summer nights."},
 {n:10,name:"Huinakolu",en:"The Navigator's Triangle",line:"fishline",west:"Vega · Deneb · Altair",
  det:0,stars:[[279.235,38.784,0.0,91262,"α Lyr (Vega / Keoe)",""],[310.358,45.280,1.3,102098,"α Cyg (Deneb)",""],[297.696,8.868,0.8,97649,"α Aql (Altair / Humu)",""]],lines:[[0,1],[1,2],[2,0]],
