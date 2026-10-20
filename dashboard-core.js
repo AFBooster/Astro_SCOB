@@ -1343,7 +1343,7 @@ function tonightBlurb(){
 // ==== v3.36: dismissible "what's new" line for returning volunteers ====
 (function(){
   var VER=window.SCOB_VERSION||'';
-  var WHATSNEW='On the Haze page, the place markers on the satellite picture can now be switched off, so Singapore itself is no longer hidden under the SCOB label — and when on, they are hollow rings with the names set to one side. Also new since v4.17: a full accuracy check of the site’s star, deep-sky, event and eclipse data against JPL, NASA and the major catalogues.';
+  var WHATSNEW='On the Haze page you can now follow any part of Singapore — tap the west, central, south, east or north tile (or 📍 Nearest to me) and the readings, trend lines and past week switch to that region. The SCOB session call still follows the west, where the observatory is. Also new since v4.18: the place markers on the satellite picture can be switched off.';
   var seen='';try{seen=localStorage.getItem('scobSeenVer')||'';}catch(e){}
   if(seen===VER)return;
   var g=document.getElementById('glance');if(!g||!g.parentNode)return;

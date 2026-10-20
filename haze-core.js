@@ -329,17 +329,26 @@ function itemsOf(j) {
 }
 
 /* One reading set (the latest, or every reading of a given day). */
+/* v4.20: each response carries all five regions, so remember it briefly. Switching the
+   region on the haze page then re-reads what is already here instead of fetching it again.
+   A past day can never change and is kept for the visit; today and "latest" for 5 minutes. */
+var NEA_MEMO = {};
 function fetchNEA(kind, date) {
+  var key = kind + '|' + (date || 'latest'), now = Date.now(), m = NEA_MEMO[key];
+  if (m && ((date && date < localDateISO()) || now - m.t < 5 * 60000)) return m.p;
   var urls = neaURLs(kind, date), i = 0;
   function attempt() {
     if (i >= urls.length) return Promise.reject(new Error('all endpoints failed'));
     return fetchJSON(urls[i++]).catch(attempt);
   }
-  return attempt().then(function (j) {
+  var p = attempt().then(function (j) {
     var items = itemsOf(j);
     if (!items.length) throw new Error('no items');
     return items;
   });
+  NEA_MEMO[key] = { t: now, p: p };
+  p.catch(function () { if (NEA_MEMO[key] && NEA_MEMO[key].p === p) delete NEA_MEMO[key]; });
+  return p;
 }
 
 var PSI_KEYS = ['psi_twenty_four_hourly', 'psiTwentyFourHourly'];

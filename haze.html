@@ -38,8 +38,15 @@ h1{font-size:22px;margin:0;color:var(--orange);}
 .verdictbox .vh{font-weight:800;font-size:15px;display:block;margin-bottom:3px;}
 /* region strip */
 .regions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
-.reg{flex:1 1 90px;border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:var(--navy3);}
-.reg.home{border-color:var(--gold);}
+.reg{flex:1 1 90px;border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:var(--navy3);
+  color:inherit;font:inherit;cursor:pointer;transition:border-color .15s,background .15s;}
+.reg:hover{border-color:#5b6b98;}
+.reg:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+.reg.sel{border-color:var(--gold);background:#1c2a55;box-shadow:0 0 0 1px var(--gold) inset;}
+.reg .rn .home{color:var(--gold);}
+.regbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 4px;font-size:12.5px;color:var(--mute);}
+.regbar b{color:var(--white);}
+.regbar button{font:inherit;font-size:12px;font-weight:700;padding:4px 10px;border-radius:14px;border:1px solid var(--line);background:var(--navy3);color:var(--cyan);cursor:pointer;}
 .reg .rn{font-size:11px;color:var(--mute);}
 .reg .rv{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15;}
 .reg .rp{font-size:11px;color:var(--mute);margin-top:2px;}
@@ -135,7 +142,7 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 
   <!-- ── LIVE ─────────────────────────────────────────────────────────── -->
   <div class="card">
-    <h2>Right now, over Jurong</h2>
+    <h2 id="liveTitle">Right now, over Jurong</h2>
     <div id="liveBox"><div class="fact">Loading live NEA readings…</div></div>
     <div id="regionBox"></div>
     <div id="callBox"></div>
@@ -147,7 +154,7 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
     <h2>The last 24 hours, and the week — is it clearing or closing in?</h2>
     <div class="fact"><p>The 24-hour PSI is a <b>rolling 24-hour average</b>, so it turns slowly and lags the real air by many hours. The 1-hour PM2.5 is what the sky looks like <b>this hour</b>. When the two disagree, the PM2.5 is telling you where the PSI is heading.</p></div>
     <div id="trendBox"><div class="fine">Loading the last 24 hours…</div></div>
-    <div style="font-size:13px;font-weight:700;margin-top:16px">The past week · highest 24-hour PSI each day · west</div>
+    <div style="font-size:13px;font-weight:700;margin-top:16px" id="weekTitle">The past week · highest 24-hour PSI each day · west</div>
     <div id="weekBox"><div class="fine">Loading the week…</div></div>
   </div>
 
@@ -234,6 +241,22 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
 var $ = function (id) { return document.getElementById(id); };
 var H = window.Haze;
 var LIVE = null, PMLIVE = null, USER_PM = null;
+/* v4.20 — which part of Singapore the page follows. Default is the west, where the
+   observatory is; a reader in Tampines or Woodlands can follow their own region. The
+   choice comes from ?region= in the link (so it can be shared), else from this device,
+   else the west. The SCOB session call always stays on the west. */
+var SEL = H.HOME_REGION;
+(function () {
+  var q = null;
+  try { q = new URLSearchParams(location.search).get('region'); } catch (e) {}
+  if (q) q = q.toLowerCase();
+  if (H.REGIONS.indexOf(q) < 0) { try { q = localStorage.getItem('scobHazeRegion'); } catch (e) {} }
+  if (q && H.REGIONS.indexOf(q) >= 0) SEL = q;
+})();
+/* NEA's own label points for the five regions (data.gov.sg region metadata). */
+var REGION_PT = { west: [1.35735, 103.70], central: [1.35735, 103.82], south: [1.29587, 103.82], east: [1.35735, 103.94], north: [1.41803, 103.82] };
+function regPlace(r) { return r === 'central' ? 'central Singapore' : 'the ' + r; }
+function regShort(r) { return r; }
 var COLLIVE = null, USER_COL = null;      /* whole-column optical depth: tonight's model value / slider */
 var WEEKOLD = null;                       /* daily PSI summaries for the days that can no longer change */
 var BORTLE = (function () { try { var v = +localStorage.getItem('scobBortle'); return (v === 7 || v === 8 || v === 9) ? v : 8; } catch (e) { return 8; } })();
@@ -249,19 +272,20 @@ function renderLive() {
     box.innerHTML = '<div class="fact"><p>⚠️ Could not reach the NEA feed — you may be offline, or data.gov.sg may be having a moment. Everything below still works: use the PM2.5 slider to see what a given level would cost the sky, and check <a href="https://www.haze.gov.sg/" target="_blank" rel="noopener">haze.gov.sg</a> for the live number.</p></div>';
     return;
   }
-  var psi = LIVE.psi ? LIVE.psi[H.HOME_REGION] : null;
-  var pm  = LIVE.pm  ? LIVE.pm[H.HOME_REGION]  : null;
+  var psi = LIVE.psi ? LIVE.psi[SEL] : null;
+  var pm  = LIVE.pm  ? LIVE.pm[SEL]  : null;
+  var psiHome = LIVE.psi ? LIVE.psi[H.HOME_REGION] : null;
   var pb  = H.psiBand(psi), mb = H.pmBand(pm);
   box.innerHTML =
     '<div class="nowgrid">'
-    + '<div class="big"><div class="k">24-hour PSI · west</div>'
+    + '<div class="big"><div class="k">24-hour PSI · ' + regShort(SEL) + '</div>'
       + '<div class="n ' + (pb ? pb.cls : '') + '">' + n0(psi) + '</div>'
       + '<div class="b ' + (pb ? pb.cls : '') + '">' + (pb ? pb.name : 'no reading') + '</div>'
       + '<div class="s">' + (pb ? esc(pb.sky) : '') + '</div>'
       + '<div class="s" style="opacity:.75">The index NEA\'s health advisories use. Rolling 24-hour average'
         + (LIVE.psiTime ? ' · updated ' + H.fmtTime(LIVE.psiTime) : '') + '.</div>'
       + '<div class="tr" id="psiTrend"></div></div>'
-    + '<div class="big"><div class="k">1-hour PM2.5 · west</div>'
+    + '<div class="big"><div class="k">1-hour PM2.5 · ' + regShort(SEL) + '</div>'
       + '<div class="n ' + (mb ? mb.cls : '') + '">' + n0(pm) + '<span style="font-size:16px;font-weight:600;color:var(--mute)"> µg/m³</span></div>'
       + '<div class="b ' + (mb ? mb.cls : '') + '">' + (mb ? mb.name : 'no reading') + '</div>'
       + '<div class="s">What the sky looks like <b>this hour</b> — the number the view actually follows.</div>'
@@ -273,23 +297,36 @@ function renderLive() {
   /* five-region strip — where the smoke actually is */
   var rb = $('regionBox');
   if (LIVE.pm || LIVE.psi) {
-    rb.innerHTML = '<div class="regions">' + H.REGIONS.map(function (r) {
+    rb.innerHTML = '<div class="regbar">Following <b>' + H.REGION_LABEL[SEL] + '</b>'
+      + (SEL === H.HOME_REGION ? ' (the observatory\'s region)' : '') + ' — tap a region to follow it.'
+      + (SEL !== H.HOME_REGION ? ' <button type="button" id="regHome">↺ Back to SCOB (west)</button>' : '')
+      + ((navigator.geolocation && window.isSecureContext !== false) ? ' <button type="button" id="regNear">📍 Nearest to me</button>' : '')
+      + ' <span id="regMsg"></span></div>'
+      + '<div class="regions" role="group" aria-label="Choose which part of Singapore to follow">' + H.REGIONS.map(function (r) {
       var p = LIVE.psi ? LIVE.psi[r] : null, m = LIVE.pm ? LIVE.pm[r] : null;
       var b = H.psiBand(p) || H.pmBand(m);
-      return '<div class="reg' + (r === H.HOME_REGION ? ' home' : '') + '">'
-        + '<div class="rn">' + H.REGION_LABEL[r] + (r === H.HOME_REGION ? ' · SCOB' : '') + '</div>'
+      return '<button type="button" class="reg' + (r === SEL ? ' sel' : '') + '" data-r="' + r + '" aria-pressed="' + (r === SEL) + '">'
+        + '<div class="rn">' + H.REGION_LABEL[r] + (r === H.HOME_REGION ? ' <span class="home">· SCOB</span>' : '') + '</div>'
         + '<div class="rv ' + (b ? b.cls : '') + '">' + n0(p) + '</div>'
-        + '<div class="rp">PM2.5 ' + n0(m) + '</div></div>';
+        + '<div class="rp">PM2.5 ' + n0(m) + '</div></button>';
     }).join('') + '</div>'
     + '<div class="fine">PSI large, 1-hour PM2.5 below. A big spread across the island means the smoke is arriving on a wind and the west may be next — or may be clearing first. <b>Central</b> and <b>south</b> matter to us beyond their own air: that is where the city light dome sits, and haze over it scatters Singapore\'s own lights back onto our sky.</div>';
+    Array.prototype.forEach.call(rb.querySelectorAll('.reg'), function (b) {
+      b.addEventListener('click', function () { selectRegion(b.getAttribute('data-r')); });
+    });
+    var hb = $('regHome'); if (hb) hb.addEventListener('click', function () { selectRegion(H.HOME_REGION); });
+    var nb = $('regNear'); if (nb) nb.addEventListener('click', nearestRegion);
   } else rb.innerHTML = '';
 
-  /* the public-session call */
-  var call = H.sessionCall(psi);
+  /* the public-session call — always the observatory's own (west) reading */
+  var call = H.sessionCall(psiHome);
   $('callBox').innerHTML = call
-    ? '<div class="verdictbox ' + call.cls + '"><span class="vh">' + esc(call.verdict) + '</span>' + esc(call.note)
-      + '<div style="font-size:12.5px;color:var(--mute);margin-top:7px">NEA advice at this level: ' + esc(H.psiBand(psi).health) + '</div></div>'
+    ? '<div class="verdictbox ' + call.cls + '">'
+      + (SEL !== H.HOME_REGION ? '<div style="font-size:12px;color:var(--mute);margin-bottom:4px">For the SCOB session, which follows the <b>west</b> reading (PSI ' + n0(psiHome) + ') wherever you are following:</div>' : '')
+      + '<span class="vh">' + esc(call.verdict) + '</span>' + esc(call.note)
+      + '<div style="font-size:12.5px;color:var(--mute);margin-top:7px">NEA advice at this level: ' + esc(H.psiBand(psiHome).health) + '</div></div>'
     : '';
+  $('liveTitle').textContent = SEL === H.HOME_REGION ? 'Right now, over Jurong' : 'Right now, over ' + regPlace(SEL);
 }
 
 /* ── trend ───────────────────────────────────────────────────────────── */
@@ -339,12 +376,12 @@ function renderTrend(psiSeries, pmSeries) {
       + '<span style="color:var(--mute);font-weight:400">(' + (tp.delta >= 0 ? '+' : '') + n0(tp.delta) + ' ' + tp.since + ')</span>';
   }
   if (pmSeries && pmSeries.length > 1) {
-    out += '<div style="font-size:13px;font-weight:700;margin-top:6px">1-hour PM2.5 · west (µg/m³) · last 24 hours</div>'
-         + sparkline(pmSeries, "The last 24 hours of 1-hour PM2.5 readings for the west of Singapore", [55, 150]);
+    out += '<div style="font-size:13px;font-weight:700;margin-top:6px">1-hour PM2.5 · ' + regShort(SEL) + ' (µg/m³) · last 24 hours</div>'
+         + sparkline(pmSeries, "The last 24 hours of 1-hour PM2.5 readings for " + regPlace(SEL) + " of Singapore", [55, 150]);
   }
   if (psiSeries && psiSeries.length > 1) {
-    out += '<div style="font-size:13px;font-weight:700;margin-top:12px">24-hour PSI · west · last 24 hours</div>'
-         + sparkline(psiSeries, "The last 24 hours of 24-hour PSI readings for the west of Singapore", [50, 100]);
+    out += '<div style="font-size:13px;font-weight:700;margin-top:12px">24-hour PSI · ' + regShort(SEL) + ' · last 24 hours</div>'
+         + sparkline(psiSeries, "The last 24 hours of 24-hour PSI readings for " + regPlace(SEL) + " of Singapore", [50, 100]);
   }
   $('trendBox').innerHTML = out || '<div class="fine">The recent readings could not be loaded. The live figures above (if present) are still current.</div>';
 }
@@ -384,7 +421,8 @@ function renderWeek(days) {
     ? '<b>' + unhealthy + ' of the last ' + ok.length + ' days</b> reached the Unhealthy band; the week\'s peak was <b>' + n0(peak.max) + '</b>. '
     : 'No day this week reached the Unhealthy band; the peak was <b>' + n0(peak.max) + '</b>. ';
   story += (last - first >= 15) ? 'The trend across the week is <b class="bad">upward</b>.' : (first - last >= 15) ? 'The trend across the week is <b class="ok">downward</b>.' : 'No clear trend across the week.';
-  $('weekBox').innerHTML = html + '<div class="fine">' + story + ' Bars show each day\'s highest 24-hour PSI in the west; today\'s is so far.</div>';
+  $('weekBox').innerHTML = html + '<div class="fine">' + story + ' Bars show each day\'s highest 24-hour PSI in ' + regPlace(SEL) + '; today\'s is so far.</div>';
+  $('weekTitle').textContent = 'The past week · highest 24-hour PSI each day · ' + regShort(SEL);
 }
 
 /* ── cost to the sky ─────────────────────────────────────────────────── */
@@ -409,7 +447,7 @@ function renderCost() {
   var live = (USER_PM == null && USER_COL == null && PMLIVE != null);
 
   $('colVal').textContent = (col == null) ? 'no column data' : 'depth ' + col.toFixed(2);
-  $('costHead').innerHTML = '<p>' + (live ? 'Right now: ' : 'With your settings: ')
+  $('costHead').innerHTML = '<p>' + (live ? 'Right now' + (SEL === H.HOME_REGION ? '' : ' in ' + regPlace(SEL)) + ': ' : 'With your settings: ')
     + 'ground PM2.5 <b class="' + (mb ? mb.cls : '') + '">' + n0(pm) + ' µg/m³</b>'
     + (col != null ? ' and a whole-column optical depth of <b>' + col.toFixed(2) + '</b>' + (live ? ' <span style="color:var(--mute)">(the model, this evening)</span>' : '') : '')
     + ', under a <b>Bortle ' + BORTLE + '</b> sky. Against a clean Singapore night that dims starlight overhead by about <b>' + n1(zen.ext)
@@ -741,8 +779,7 @@ renderSat();
 function load() {
   H.fetchNow().then(function (d) {
     LIVE = d;
-    PMLIVE = (d.pm && d.pm[H.HOME_REGION] != null) ? d.pm[H.HOME_REGION]
-           : (d.psi && d.psi[H.HOME_REGION] != null ? H.pm25FromPSI(d.psi[H.HOME_REGION]) : null);
+    setPmLive();
     if (PMLIVE != null && USER_PM == null) $('pmSlider').value = Math.min(260, Math.max(5, Math.round(PMLIVE)));
     renderLive(); renderCost();
     if (!d.pm && d.psi) {
@@ -750,24 +787,7 @@ function load() {
     }
   }).catch(function () { LIVE = null; renderLive(); });
 
-  /* Rolling 24 hours: yesterday's readings plus today's, trimmed to the last day. */
-  var R = H.HOME_REGION, D0 = H.localDateISO(), D1 = H.localDateISO(new Date(Date.now() - 86400000));
-  var nul = function () { return null; };
-  Promise.all([
-    H.fetchTrend('psi', R, D1).catch(nul), H.fetchTrend('psi', R, D0).catch(nul),
-    H.fetchTrend('pm25', R, D1).catch(nul), H.fetchTrend('pm25', R, D0).catch(nul)
-  ]).then(function (r) {
-    var psi2 = (r[0] || []).concat(r[1] || []), pm2 = (r[2] || []).concat(r[3] || []);
-    renderTrend(lastHours(psi2, 24), lastHours(pm2, 24));
-    /* The week: the five older days cannot change any more, so fetch them once per visit. */
-    var recent = [daySummary(D1, r[0]), daySummary(D0, r[1])];
-    var older = [6, 5, 4, 3, 2].map(function (i) { return H.localDateISO(new Date(Date.now() - i * 86400000)); });
-    var done = function (old) { WEEKOLD = old; renderWeek(old.concat(recent)); };
-    if (WEEKOLD && WEEKOLD.length === 5 && WEEKOLD[4].date === older[4]) { done(WEEKOLD); return; }
-    Promise.all(older.map(function (d) {
-      return H.fetchTrend('psi', R, d).then(function (sr) { return daySummary(d, sr); }).catch(function () { return daySummary(d, null); });
-    })).then(done);
-  });
+  loadRegion();
 
   H.fetchTransport(H.localDateISO(), 21)
     .then(renderWind).catch(function () { renderWind(null); });
@@ -781,6 +801,68 @@ function load() {
     renderCost();
     renderForecast(window._fcNights);
   }).catch(function () { renderForecast(null); });
+}
+function setPmLive() {
+  var d = LIVE; if (!d) { PMLIVE = null; return; }
+  PMLIVE = (d.pm && d.pm[SEL] != null) ? d.pm[SEL]
+         : (d.psi && d.psi[SEL] != null ? H.pm25FromPSI(d.psi[SEL]) : null);
+}
+/* Everything that follows the chosen region: the trend lines, the arrows and the week.
+   haze-core keeps each day's NEA response for a while, so switching region re-reads it
+   rather than downloading it again. */
+function loadRegion() {
+  var R = SEL, D0 = H.localDateISO(), D1 = H.localDateISO(new Date(Date.now() - 86400000));
+  var nul = function () { return null; };
+  Promise.all([
+    H.fetchTrend('psi', R, D1).catch(nul), H.fetchTrend('psi', R, D0).catch(nul),
+    H.fetchTrend('pm25', R, D1).catch(nul), H.fetchTrend('pm25', R, D0).catch(nul)
+  ]).then(function (r) {
+    if (R !== SEL) return;                       /* the reader switched region meanwhile */
+    var psi2 = (r[0] || []).concat(r[1] || []), pm2 = (r[2] || []).concat(r[3] || []);
+    renderTrend(lastHours(psi2, 24), lastHours(pm2, 24));
+    /* The week: the five older days cannot change any more, so fetch them once per visit. */
+    var recent = [daySummary(D1, r[0]), daySummary(D0, r[1])];
+    var older = [6, 5, 4, 3, 2].map(function (i) { return H.localDateISO(new Date(Date.now() - i * 86400000)); });
+    var done = function (old) { if (R !== SEL) return; WEEKOLD = old; WEEKOLD.region = R; renderWeek(old.concat(recent)); };
+    if (WEEKOLD && WEEKOLD.length === 5 && WEEKOLD[4].date === older[4] && WEEKOLD.region === R) { done(WEEKOLD); return; }
+    Promise.all(older.map(function (d) {
+      return H.fetchTrend('psi', R, d).then(function (sr) { return daySummary(d, sr); }).catch(function () { return daySummary(d, null); });
+    })).then(done);
+  });
+}
+function selectRegion(r) {
+  if (H.REGIONS.indexOf(r) < 0 || r === SEL) return;
+  SEL = r;
+  try { localStorage.setItem('scobHazeRegion', r); } catch (e) {}
+  try {
+    var u = new URL(location.href);
+    if (r === H.HOME_REGION) u.searchParams.delete('region'); else u.searchParams.set('region', r);
+    history.replaceState(null, '', u);
+  } catch (e) {}
+  setPmLive();
+  if (PMLIVE != null && USER_PM == null) $('pmSlider').value = Math.min(260, Math.max(5, Math.round(PMLIVE)));
+  renderLive(); renderCost(); loadRegion();
+  var t = document.querySelector('.reg[data-r="' + r + '"]'); if (t) t.focus();
+}
+/* "Nearest to me": asks for the reader's position once, on the tap, and keeps nothing
+   but the region name it picks. */
+function nearestRegion() {
+  var msg = function (t) { var m = $('regMsg'); if (m) m.textContent = t; };
+  if (!navigator.geolocation) { msg('Location is not available in this browser.'); return; }
+  msg('Finding you…');
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    var la = pos.coords.latitude, lo = pos.coords.longitude, best = null, bd = 1e9;
+    if (la < 1.15 || la > 1.50 || lo < 103.55 || lo > 104.10) { msg('You seem to be outside Singapore — pick a region instead.'); return; }
+    H.REGIONS.forEach(function (r) {
+      var p = REGION_PT[r], dy = la - p[0], dx = (lo - p[1]) * Math.cos(la * Math.PI / 180), d = dx * dx + dy * dy;
+      if (d < bd) { bd = d; best = r; }
+    });
+    if (best === SEL) { msg('You are already in the ' + regShort(best) + ' region.'); return; }
+    selectRegion(best);
+    msg('Nearest region: ' + regShort(best) + '.');
+  }, function (e) {
+    msg(e && e.code === 1 ? 'Location permission was declined — pick a region instead.' : 'Could not get your location — pick a region instead.');
+  }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 });
 }
 load();
 setInterval(load, 15 * 60000);
