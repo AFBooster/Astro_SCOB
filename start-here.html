@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Start Here — SCOB Night-Sky</title>
+<meta name="description" content="New to SCOB Night-Sky? Three short paths — a first visit, owning a telescope, or teaching and volunteering — plus tonight's go / no-go and a search over every page. Science Centre Observatory, Singapore.">
+<link rel="stylesheet" href="scob-theme.css">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 40px;}
+header{padding:18px 0 6px;position:relative;}
+h1{font-size:24px;margin:0;color:var(--gold);padding-right:150px;}
+.loc{color:var(--mute);font-size:13.5px;margin-top:4px;max-width:640px;}
+.langs{position:absolute;top:18px;right:0;display:flex;gap:5px;}
+.langs button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--white);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;font-family:inherit;}
+.langs button.on{border-color:var(--gold);color:var(--gold);}
+.backrow{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.backrow a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;}
+.search{margin-top:6px;}
+#q{width:100%;padding:12px 14px;font-size:16px;border-radius:12px;border:1px solid var(--line);background:var(--navy2);color:var(--white);font-family:inherit;}
+#q:focus{outline:none;border-color:var(--gold);}
+#hits a{display:block;background:var(--navy2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:6px 0;text-decoration:none;color:var(--white);}
+#hits a:hover{border-color:var(--cyan);}
+#hits .t{font-weight:800;font-size:14px;}#hits .d{font-size:12px;color:var(--mute);}
+#hits .more{color:var(--cyan);font-weight:700;font-size:13px;border-style:dashed;}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:18px;}
+.path{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:14px 14px 10px;}
+.path h2{font-size:17px;margin:0 0 2px;color:var(--gold);}
+.path .who{font-size:12.5px;color:var(--mute);margin-bottom:8px;}
+.path a{display:flex;gap:10px;align-items:flex-start;text-decoration:none;color:var(--white);padding:8px 6px;border-radius:9px;border:1px solid transparent;}
+.path a:hover,.path a:focus-visible{border-color:var(--cyan);background:rgba(91,214,224,.06);}
+.path .em{font-size:20px;line-height:1.2;flex:0 0 26px;text-align:center;}
+.path .tl{font-weight:700;font-size:14px;display:block;}
+.path .ds{font-size:12px;color:var(--mute);display:block;}
+.path .n{font-size:11px;font-weight:800;color:var(--navy);background:var(--gold);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;margin-right:4px;vertical-align:1px;}
+.foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
+.foot a{color:var(--cyan);}
+@media (max-width:520px){h1{padding-right:0;font-size:21px;}.langs{position:static;margin-top:10px;}}
+</style>
+<link rel="canonical" href="https://afbooster.online/start-here.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SCOB Night-Sky">
+<meta property="og:title" content="Start Here — SCOB Night-Sky">
+<meta property="og:description" content="New to SCOB Night-Sky? Three short paths — a first visit, owning a telescope, or teaching and volunteering — plus tonight's go / no-go and a search over every page.">
+<meta property="og:url" content="https://afbooster.online/start-here.html">
+<meta property="og:image" content="https://afbooster.online/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Start Here — SCOB Night-Sky">
+<meta name="twitter:description" content="New to SCOB Night-Sky? Three short paths — a first visit, owning a telescope, or teaching and volunteering — plus tonight's go / no-go and a search over every page.">
+<meta name="twitter:image" content="https://afbooster.online/og-image.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="h1">🧭 Start here</h1>
+    <div class="langs" id="langs" role="group" aria-label="Language"></div>
+    <div class="loc" id="lead"></div>
+    <div class="backrow">
+      <a href="scob-dashboard-v3.html" id="bDash">← Dashboard</a>
+      <a href="sky-guide.html" id="bGuide">🌟 Sky Guide</a>
+      <a href="site-map.html" id="bAll">🗺️ All pages</a>
+    </div>
+  </header>
+
+  <div id="comeTonight"></div>
+
+  <div class="search">
+    <input id="q" type="search" autocomplete="off">
+    <div id="hits"></div>
+  </div>
+
+  <div class="paths" id="paths"></div>
+
+  <div class="foot" id="foot"></div>
+</div>
+<script src="search-index.js"></script>
+<script src="scob-ics.js"></script>
+<script src="come-tonight.js"></script>
+<script>
+"use strict";
+/* Three ways in, for the three kinds of people who arrive here. The links are the
+   site's existing pages; this page only orders them. Interface in Singapore's four
+   official languages; it follows the same saved choice (scobLang) as the Sky Guide. */
+var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
+var lang=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+if(['en','zh','ms','ta'].indexOf(lang)<0)lang='en';
+var S={
+ en:{h1:'🧭 Start here',lead:'SCOB Night-Sky is a free guide to the night sky from the Science Centre Observatory in Jurong, where public stargazing runs on Friday evenings, 7:30–10 pm, weather permitting. Pick the path that fits you — each one lists the pages worth opening first.',
+   dash:'← Dashboard',guide:'🌟 Sky Guide',all:'🗺️ All pages',ph:'Search every page — e.g. Saturn, haze, eyepiece, Chinese…',more:'All results for “{q}” →',none:'Nothing matches “{q}” — try a shorter word.',
+   p1:'My first visit',p1w:'Coming to look through the telescopes — on your own, with family or with friends.',
+   p2:'I have — or want — a telescope',p2w:'Getting more from your own scope, or choosing one.',
+   p3:'Teachers & volunteers',p3w:'Running a session, a class visit or a talk.',
+   foot:'Everything works on your phone and offline once loaded.'},
+ zh:{h1:'🧭 从这里开始',lead:'SCOB 夜空指南是裕廊科学馆天文台的免费星空指南。天文台每逢星期五晚上 7:30–10:00 举办公众观星（视天气而定）。请选择适合你的路线——每条路线都列出最值得先看的页面。',
+   dash:'← 仪表板',guide:'🌟 星空指南',all:'🗺️ 所有页面',ph:'搜索所有页面——例如：土星、烟霾、目镜、中国星空…',more:'查看“{q}”的全部结果 →',none:'没有与“{q}”相符的页面——请试试更短的词。',
+   p1:'我第一次来',p1w:'来用望远镜看星星——自己来，或与家人朋友同行。',
+   p2:'我有（或想买）望远镜',p2w:'让自己的望远镜发挥更大作用，或挑选一台。',
+   p3:'教师与志愿者',p3w:'主持观星活动、带学生参观或做讲座。',
+   foot:'所有内容都在你的手机上运行，载入后可离线使用。'},
+ ms:{h1:'🧭 Mula di sini',lead:'SCOB Night-Sky ialah panduan percuma langit malam dari Balai Cerap Pusat Sains di Jurong, yang mengadakan cerapan bintang awam setiap Jumaat, 7:30–10 malam, jika cuaca mengizinkan. Pilih laluan yang sesuai — setiap satu menyenaraikan halaman yang patut dibuka dahulu.',
+   dash:'← Papan pemuka',guide:'🌟 Panduan Langit',all:'🗺️ Semua halaman',ph:'Cari semua halaman — cth. Zuhal, jerebu, kanta mata, langit Melayu…',more:'Semua hasil untuk “{q}” →',none:'Tiada padanan untuk “{q}” — cuba perkataan yang lebih pendek.',
+   p1:'Lawatan pertama saya',p1w:'Datang untuk melihat melalui teleskop — sendirian, bersama keluarga atau rakan.',
+   p2:'Saya ada — atau mahu — teleskop',p2w:'Menggunakan teleskop sendiri dengan lebih baik, atau memilih satu.',
+   p3:'Guru & sukarelawan',p3w:'Mengendalikan sesi, lawatan kelas atau ceramah.',
+   foot:'Semuanya berfungsi di telefon anda dan di luar talian selepas dimuatkan.'},
+ ta:{h1:'🧭 இங்கே தொடங்குங்கள்',lead:'SCOB Night-Sky என்பது ஜூரோங்கில் உள்ள அறிவியல் மைய வானாய்வகத்தின் இலவச இரவு வான வழிகாட்டி. அங்கு ஒவ்வொரு வெள்ளிக்கிழமை இரவு 7:30–10 மணி வரை (வானிலை அனுமதித்தால்) பொது நட்சத்திரப் பார்வை நடைபெறுகிறது. உங்களுக்குப் பொருத்தமான வழியைத் தேர்ந்தெடுங்கள் — ஒவ்வொன்றும் முதலில் திறக்க வேண்டிய பக்கங்களைப் பட்டியலிடுகிறது.',
+   dash:'← முகப்புப் பலகை',guide:'🌟 வான வழிகாட்டி',all:'🗺️ அனைத்துப் பக்கங்களும்',ph:'எல்லாப் பக்கங்களிலும் தேடுங்கள் — எ.கா. சனி, புகைமூட்டம், கண்ணருகு வில்லை…',more:'“{q}” க்கான அனைத்து முடிவுகளும் →',none:'“{q}” உடன் பொருந்தும் பக்கம் இல்லை — சிறிய சொல்லை முயலுங்கள்.',
+   p1:'என் முதல் வருகை',p1w:'தொலைநோக்கி வழியாகப் பார்க்க வருகிறீர்கள் — தனியாக, குடும்பத்துடன் அல்லது நண்பர்களுடன்.',
+   p2:'என்னிடம் தொலைநோக்கி உள்ளது — அல்லது வாங்க விரும்புகிறேன்',p2w:'உங்கள் தொலைநோக்கியை நன்கு பயன்படுத்த, அல்லது ஒன்றைத் தேர்வுசெய்ய.',
+   p3:'ஆசிரியர்கள் & தன்னார்வலர்கள்',p3w:'அமர்வு, வகுப்புப் பயணம் அல்லது உரை நடத்துபவர்களுக்கு.',
+   foot:'அனைத்தும் உங்கள் தொலைபேசியில் இயங்கும்; ஏற்றிய பின் இணைப்பு இல்லாமலும் செயல்படும்.'}
+};
+/* [file, emoji, {title}, {description}] per path, in the order to open them */
+var PATHS=[
+ ['p1','🎟️',[
+  ['sky-guide.html','🌟',{en:'Tonight’s sky, in your language',zh:'今晚的星空（多语言）',ms:'Langit malam ini, dalam bahasa anda',ta:'இன்றிரவு வானம், உங்கள் மொழியில்'},{en:'What is up right now and the best thing to see',zh:'现在天上有什么，最值得看的是什么',ms:'Apa yang ada di langit sekarang dan yang terbaik untuk dilihat',ta:'இப்போது வானில் என்ன உள்ளது, எதைப் பார்க்கலாம்'}],
+  ['sky-finder.html','📱',{en:'Point your phone at the sky',zh:'用手机对准天空',ms:'Halakan telefon ke langit',ta:'தொலைபேசியை வானை நோக்கிக் காட்டுங்கள்'},{en:'An arrow guides you to planets and bright stars',zh:'箭头带你找到行星和亮星',ms:'Anak panah membawa anda ke planet dan bintang terang',ta:'அம்புக்குறி கோள்களுக்கும் பிரகாசமான நட்சத்திரங்களுக்கும் வழிகாட்டும்'}],
+  ['moon-tonight.html','🌕',{en:'Tonight on the Moon',zh:'今晚的月球',ms:'Bulan malam ini',ta:'இன்றிரவு நிலவில்'},{en:'The craters and mountains to look for',zh:'可以找找看的环形山与山脉',ms:'Kawah dan gunung yang boleh dicari',ta:'தேட வேண்டிய பள்ளங்களும் மலைகளும்'}],
+  ['passport.html','🪪',{en:'Stargazer’s passport',zh:'观星护照',ms:'Pasport pemerhati bintang',ta:'நட்சத்திரப் பார்வையாளர் கடவுச்சீட்டு'},{en:'For children — tick off what you see',zh:'给孩子们——记下你看到的天体',ms:'Untuk kanak-kanak — tanda apa yang anda lihat',ta:'குழந்தைகளுக்கு — பார்த்தவற்றைக் குறியுங்கள்'}],
+  ['phone-astrophotography.html','📸',{en:'Photograph the Moon with your phone',zh:'用手机拍月亮',ms:'Fotograf Bulan dengan telefon anda',ta:'உங்கள் தொலைபேசியில் நிலவைப் படம் பிடியுங்கள்'},{en:'Through the eyepiece, on the night',zh:'当晚透过目镜拍摄',ms:'Melalui kanta mata, pada malam itu',ta:'அன்றிரவே கண்ணருகு வில்லை வழியாக'}],
+  ['light-pollution.html','🌃',{en:'Why so few stars in Singapore?',zh:'为什么新加坡看不到多少星星？',ms:'Kenapa sedikit bintang di Singapura?',ta:'சிங்கப்பூரில் ஏன் நட்சத்திரங்கள் குறைவு?'},{en:'City lights, and what still shines through',zh:'城市灯光，以及仍能看到的天体',ms:'Cahaya bandar, dan apa yang masih kelihatan',ta:'நகர விளக்குகளும், இன்னும் தெரிபவையும்'}],
+  ['singapore-sky.html','🌏',{en:'Why Singapore sees almost the whole sky',zh:'为何新加坡几乎能看遍全天',ms:'Kenapa Singapura nampak hampir seluruh langit',ta:'சிங்கப்பூர் ஏன் கிட்டத்தட்ட முழு வானையும் காண்கிறது'},{en:'The equator’s gift',zh:'赤道带来的优势',ms:'Kelebihan khatulistiwa',ta:'நிலநடுக்கோட்டின் வரம்'}]
+ ]],
+ ['p2','🔭',[
+  ['scob-dashboard-v3.html','🗓️',{en:'Tonight’s planner',zh:'今晚观测规划',ms:'Perancang malam ini',ta:'இன்றிரவுத் திட்டமிடல்'},{en:'Weather, targets, sky map and satellite passes',zh:'天气、目标、星图与卫星过境',ms:'Cuaca, sasaran, peta langit dan laluan satelit',ta:'வானிலை, இலக்குகள், வான வரைபடம், செயற்கைக்கோள் கடப்புகள்'}],
+  ['telescope-types.html','🔭',{en:'Telescope types & mounts',zh:'望远镜类型与支架',ms:'Jenis teleskop & pelekap',ta:'தொலைநோக்கி வகைகள் & தாங்கிகள்'},{en:'How each design works, and magnification',zh:'各类设计的原理与放大倍率',ms:'Cara setiap reka bentuk berfungsi, dan pembesaran',ta:'ஒவ்வொரு வடிவமைப்பும் எப்படி இயங்குகிறது, உருப்பெருக்கம்'}],
+  ['eyepiece-fov.html','🔎',{en:'Eyepiece & field-of-view calculator',zh:'目镜与视场计算器',ms:'Kalkulator kanta mata & medan pandangan',ta:'கண்ணருகு வில்லை & பார்வைப் புலக் கணிப்பான்'},{en:'See a target framed at your magnification',zh:'看目标在你的倍率下的样子',ms:'Lihat sasaran pada pembesaran anda',ta:'உங்கள் உருப்பெருக்கத்தில் இலக்கு எப்படித் தெரியும்'}],
+  ['eyepiece-types.html','👓',{en:'Eyepiece types',zh:'目镜类型',ms:'Jenis kanta mata',ta:'கண்ணருகு வில்லை வகைகள்'},{en:'Plössl to ultra-wide, Barlows and zooms',zh:'从普罗素到超广角，巴罗镜与变焦目镜',ms:'Plössl hingga ultra-lebar, Barlow dan zum',ta:'பிளாஸல் முதல் அகலக் கோணம் வரை, பார்லோ, சூம்'}],
+  ['filters.html','🎚️',{en:'Filters',zh:'滤镜',ms:'Penapis',ta:'வடிகட்டிகள்'},{en:'Which ones help under a city sky',zh:'在城市天空下哪些有用',ms:'Yang membantu di bawah langit bandar',ta:'நகர வானின் கீழ் எவை உதவும்'}],
+  ['tracking-methods.html','🧭',{en:'Tracking & GoTo alignment',zh:'跟踪与自动寻星校准',ms:'Penjejakan & penjajaran GoTo',ta:'கண்காணிப்பு & GoTo சீரமைப்பு'},{en:'SkyAlign, star alignment and polar alignment',zh:'SkyAlign、星点校准与极轴校准',ms:'SkyAlign, penjajaran bintang dan kutub',ta:'SkyAlign, நட்சத்திர மற்றும் துருவ சீரமைப்பு'}],
+  ['plan-ahead.html','📆',{en:'The best Fridays ahead',zh:'未来最佳的星期五',ms:'Jumaat terbaik akan datang',ta:'வரவிருக்கும் சிறந்த வெள்ளிகள்'},{en:'Moon, weather and haze compared',zh:'比较月相、天气与烟霾',ms:'Bulan, cuaca dan jerebu dibandingkan',ta:'நிலா, வானிலை, புகைமூட்டம் ஒப்பீடு'}],
+  ['almanac.html','📅',{en:'This month’s sky',zh:'本月天象',ms:'Langit bulan ini',ta:'இந்த மாத வானம்'},{en:'Planets, meteor showers and the Milky Way',zh:'行星、流星雨与银河',ms:'Planet, hujan meteor dan Bima Sakti',ta:'கோள்கள், எரிகல் மழை, பால்வழி'}]
+ ]],
+ ['p3','🧑‍🏫',[
+  ['first-night.html','🌟',{en:'Your first night',zh:'你的第一晚',ms:'Malam pertama anda',ta:'உங்கள் முதல் இரவு'},{en:'Volunteer quickstart, in three steps',zh:'志愿者快速入门，三步完成',ms:'Panduan ringkas sukarelawan, tiga langkah',ta:'தன்னார்வலர் விரைவுத் தொடக்கம், மூன்று படிகள்'}],
+  ['tonights-tour.html','🎟️',{en:'Tonight’s tour script',zh:'今晚的导览讲稿',ms:'Skrip lawatan malam ini',ta:'இன்றிரவுச் சுற்றுலா உரை'},{en:'What to show and what to say, in four languages',zh:'看什么、说什么，四种语言',ms:'Apa yang ditunjuk dan dikatakan, empat bahasa',ta:'எதைக் காட்டுவது, என்ன சொல்வது — நான்கு மொழிகளில்'}],
+  ['checklist.html','✅',{en:'Setup & pack-down checklist',zh:'布置与收拾清单',ms:'Senarai semak pemasangan & kemas',ta:'அமைப்பு & மூடுதல் சரிபார்ப்புப் பட்டியல்'},{en:'For the domes and deck scopes',zh:'适用于圆顶与平台望远镜',ms:'Untuk kubah dan teleskop dek',ta:'குவிமாடங்கள் மற்றும் தள தொலைநோக்கிகளுக்கு'}],
+  ['object-cards.html','🃏',{en:'Printable object cards',zh:'可打印的天体卡片',ms:'Kad objek boleh cetak',ta:'அச்சிடக்கூடிய வான்பொருள் அட்டைகள்'},{en:'One beside each telescope',zh:'每台望远镜旁放一张',ms:'Satu di sebelah setiap teleskop',ta:'ஒவ்வொரு தொலைநோக்கியின் அருகிலும் ஒன்று'}],
+  ['scale-model.html','🪐',{en:'Solar system to scale',zh:'按比例的太阳系',ms:'Sistem suria mengikut skala',ta:'அளவுப்படி சூரியக் குடும்பம்'},{en:'A ready-made class activity',zh:'现成的课堂活动',ms:'Aktiviti kelas yang sedia ada',ta:'தயாரான வகுப்புச் செயல்பாடு'}],
+  ['quiz.html','❓',{en:'Constellation quiz',zh:'星座问答',ms:'Kuiz buruj',ta:'விண்மீன் குழு வினாடி வினா'},{en:'Name the star pattern from its shape',zh:'从形状认出星座',ms:'Namakan corak bintang dari bentuknya',ta:'வடிவத்தைக் கொண்டு விண்மீன் குழுவைக் கண்டறியுங்கள்'}],
+  ['sky-through-ages.html','🕰️',{en:'One sky, eleven cultures',zh:'同一片天空，十一种文化',ms:'Satu langit, sebelas budaya',ta:'ஒரே வானம், பதினொரு பண்பாடுகள்'},{en:'Chinese, Malay, Indian and more, on one timeline',zh:'中华、马来、印度等，一条时间线',ms:'Cina, Melayu, India dan lain-lain, satu garis masa',ta:'சீன, மலாய், இந்திய மற்றும் பிற — ஒரே காலவரிசையில்'}],
+  ['qr-poster.html','🖨️',{en:'Printable QR poster',zh:'可打印的二维码海报',ms:'Poster QR boleh cetak',ta:'அச்சிடக்கூடிய QR சுவரொட்டி'},{en:'Visitors scan it to open the Sky Guide',zh:'访客扫码打开星空指南',ms:'Pengunjung imbas untuk buka Panduan Langit',ta:'பார்வையாளர்கள் ஸ்கேன் செய்து வான வழிகாட்டியைத் திறக்கலாம்'}]
+ ]]
+];
+function T(k,o){var s=(S[lang]&&S[lang][k]!=null)?S[lang][k]:S.en[k];if(o)for(var p in o)s=s.split('{'+p+'}').join(o[p]);return s;}
+function L(o){return o[lang]||o.en;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+var $=function(id){return document.getElementById(id);};
+function hits(){
+  var q=$('q').value.trim(),box=$('hits');
+  if(!q){box.innerHTML='';return;}
+  var r=window.SCOBSearch?window.SCOBSearch.find(q):[];
+  var I=(lang!=='en'&&window.SCOBI18N)?window.SCOBI18N:null;
+  box.innerHTML=r.length?r.slice(0,6).map(function(h){var tp=I&&I.page(h.p.f,lang);
+      return '<a href="'+h.p.f+'"><div class="t">'+esc(tp?tp.t:h.p.t)+'</div><div class="d">'+esc(tp&&tp.s?tp.s:h.p.d)+'</div></a>';}).join('')
+      +(r.length>6?'<a class="more" href="site-map.html?q='+encodeURIComponent(q)+'">'+esc(T('more',{q:q}))+'</a>':'')
+    :'<div class="d" style="color:var(--mute);font-size:13px;padding:8px 2px">'+esc(T('none',{q:q}))+'</div>';
+}
+function render(){
+  document.documentElement.lang=lang;
+  $('h1').textContent=T('h1');$('lead').textContent=T('lead');
+  $('bDash').textContent=T('dash');$('bGuide').textContent=T('guide');$('bAll').textContent=T('all');
+  $('q').placeholder=T('ph');$('q').setAttribute('aria-label',T('ph'));
+  $('langs').innerHTML=LANGS.map(function(l){return '<button type="button" data-l="'+l[0]+'"'+(l[0]===lang?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>'+l[1]+'</button>';}).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobLang',lang);}catch(e){}render();};});
+  $('paths').innerHTML=PATHS.map(function(p){
+    return '<section class="path" aria-labelledby="'+p[0]+'"><h2 id="'+p[0]+'">'+p[1]+' '+esc(T(p[0]))+'</h2><div class="who">'+esc(T(p[0]+'w'))+'</div>'
+      +p[2].map(function(t,i){return '<a href="'+t[0]+'"><span class="em" aria-hidden="true">'+t[1]+'</span><span><span class="tl"><span class="n">'+(i+1)+'</span>'+esc(L(t[2]))+'</span><span class="ds">'+esc(L(t[3]))+'</span></span></a>';}).join('')
+      +'</section>';
+  }).join('');
+  $('foot').innerHTML=esc(T('foot'))+'<br><a href="about.html">About &amp; credits</a> · <a href="site-map.html">'+esc(T('all').replace(/^\S+\s/,''))+'</a> · <span class="scob-version" style="opacity:.75"></span>';
+  if(window.SCOB_VERSION){var sv=document.querySelector('.scob-version');if(sv)sv.innerHTML='SCOB Night-Sky <b>'+window.SCOB_VERSION+'</b> · '+(window.SCOB_COPYRIGHT||'');}
+  if(window.ComeTonight)window.ComeTonight.render($('comeTonight'),lang);
+  hits();
+}
+$('q').addEventListener('input',hits);
+render();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

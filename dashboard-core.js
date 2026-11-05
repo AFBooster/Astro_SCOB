@@ -138,16 +138,19 @@ function renderGlance(){
       const faint=window.Astro.COMETS.filter(c=>J>=c.from&&J<=c.to).map(c=>({name:c.name.replace(/^Comet\s+/,'').replace(/\/.*$/,''),mag:window.Astro.cometEq(c,cs).mag})).sort((a,b)=>a.mag-b.mag);
       if(faint[0])cmt={none:true,name:faint[0].name,mag:faint[0].mag};}}
   let head;
+  // v4.21: every word of the summary comes through G(), so the line reads in the chosen
+  // language when scob-i18n.js is loaded (English otherwise, from GLANCE_EN below).
   // v4.14: "Tonight" was said of whatever date was on screen — Friday planned on a
   // Thursday read "Tonight looks a GO". Name the night when it is not tonight.
   function goWhen(){const dp=document.getElementById('datePick'),n=hazeDaysAhead(dp?dp.value:'');
-    if(n==null||n===0)return 'Tonight';if(n===1)return 'Tomorrow night';
-    return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(Date.UTC(y,m,d)).getUTCDay()]+' '+d+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m];}
-  if(sunAlt>-6)head='☀️ Sky not dark at the chosen time — fully dark from '+(st.dark||'about 8:15pm')+'.';
-  else if(WXV&&WXV.cls==='ok')head='✅ '+goWhen()+' looks a GO — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance.';
-  else if(WXV&&WXV.cls==='warn')head='⚠️ Marginal — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance; watch for breaks.';
-  else if(WXV)head='❌ Likely a wash-out — '+WXV.cc+'% cloud, '+WXV.pp+' rain chance.';
-  else head='🔭 Dark sky at the chosen time · live forecast loads in the weather card.';
+    if(n==null||n===0)return G('tonight');if(n===1)return G('tomorrow');
+    const dd=new Date(Date.UTC(y,m,d));return G('dateFmt',{w:G('D')[dd.getUTCDay()],d:d,m:G('M')[m]});}
+  const band=b=>G('band_'+b.name),verdict=v=>G('verdict_'+v);
+  if(sunAlt>-6)head=G('notDark',{t:(st.dark||'about 8:15pm')});
+  else if(WXV&&WXV.cls==='ok')head=G('go',{when:goWhen(),cc:WXV.cc,pp:WXV.pp});
+  else if(WXV&&WXV.cls==='warn')head=G('warn',{cc:WXV.cc,pp:WXV.pp});
+  else if(WXV)head=G('bad',{cc:WXV.cc,pp:WXV.pp});
+  else head=G('nowx');
   // v4.13: the verdict used to know about cloud and rain only, so a clear evening at
   // PSI 120 still read "Tonight looks a GO". Haze now gets a say — as a health matter
   // when NEA's band calls for one, and as a sky matter when the smoke is thick.
@@ -155,43 +158,68 @@ function renderGlance(){
   if(sunAlt<=-6&&hv){
     const go=!!(WXV&&WXV.cls==='ok'),fc=(hv.mode==='forecast'),mg=(hv.cost!=null?'−'+hv.cost.toFixed(1)+' mag':'');
     if(hv.psi!=null&&hv.psi>200)
-      head='❌ Air quality '+hv.band.name.toLowerCase()+' (PSI '+Math.round(hv.psi)+') — '+hv.call.verdict.charAt(0).toLowerCase()+hv.call.verdict.slice(1)+'.';
+      head=G('hazeVeryBad',{band:band(hv.band),psi:Math.round(hv.psi),verdict:(function(v){return (window.SCOBI18N&&window.SCOBI18N.lang()!=='en')?v:v.charAt(0).toLowerCase()+v.slice(1);})(verdict(hv.call.verdict))});
     else if(hv.psi!=null&&hv.psi>100)
-      head=go?('⚠️ Clear enough overhead ('+WXV.cc+'% cloud), but the air is Unhealthy — PSI '+Math.round(hv.psi)+'. '+hv.call.verdict+'.')
-             :(head+' Air quality Unhealthy too — PSI '+Math.round(hv.psi)+'.');
+      head=go?G('hazeUnhGo',{cc:WXV.cc,psi:Math.round(hv.psi),verdict:verdict(hv.call.verdict)})
+             :(head+G('hazeUnhAdd',{psi:Math.round(hv.psi)}));
     else if(hv.cost>=1.6)
-      head=go?('⚠️ Clear of cloud, but thick haze'+(fc?' is forecast':'')+' — about '+mg+(hv.aloft?', smoke aloft':'')+'. A Moon, planets and doubles night.')
-             :(head+' Thick haze'+(fc?' forecast':'')+' too ('+mg+').');
+      head=go?(G(fc?'thickGoFc':'thickGo',{mg:mg})+(hv.aloft?G('smokeAloft'):''))
+             :(head+G(fc?'thickAddFc':'thickAdd',{mg:mg}));
     else if(hv.cost>=0.8)
-      head+=' Hazy'+(fc?' (forecast)':'')+' — faint targets dimmed about '+hv.cost.toFixed(1)+' mag.';
+      head+=G(fc?'hazyAddFc':'hazyAdd',{m:hv.cost.toFixed(1)});
     if(hv.now){
       head=head.replace(/^✅/,'⚠️');
-      head+=' Right now the air is '+hv.now.band.name.toLowerCase()+' (PSI '+Math.round(hv.now.psi)+(hv.now.rising?', rising':'')+') — check NEA’s forecast on the day.';
+      head+=G(hv.now.rising?'nowAirRising':'nowAir',{band:band(hv.now.band),psi:Math.round(hv.now.psi)});
     }
   }
   g.style.display='block';
   const ml=(window.CSKY?moonLodgeNow():null);
+  const pl=bp?bp.replace(/^\w+/,w=>G('planet_'+w)):null;
   g.innerHTML='<div class="gv">'+head+'</div><div class="gchips">'
-    +'<span class="gc">🌇 Sunset <b>'+(st.set||'—')+'</b></span>'
-    +'<span class="gc">🌌 Fully dark <b>'+(st.dark||'—')+'</b></span>'
-    +'<span class="gc">🌙 Moon <b>'+pct+'% · '+(ma.alt>0?'up '+Math.round(ma.alt)+'°':'down')+'</b></span>'
-    +(SEEREAD?'<span class="gc" title="Steadiness of the air at high power (planets, tight doubles) — '+SEEREAD.src+'">🌬️ Seeing <b>'+SEEREAD.label+'</b></span>':'')
-    +(ml?'<span class="gc" title="The Chinese lunar mansion the Moon is in tonight">🐉 Moon lodges in <b>'+ml.zh+'宿 '+ml.en+'</b></span>':'')
-    +(bp?'<span class="gc">🪐 Best planet <b>'+bp+'</b></span>':'')
-    +(tt?'<span class="gc">🔭 Top target <b>'+tt+'</b></span>':'')
-    +(cmt?(cmt.none?'<span class="gc" style="opacity:.75" title="No tracked comet is brighter than magnitude 11 and above the horizon — the practical visual limit for the telescopes under Jurong\'s sky. The Seestar can still image a fainter one. Details on the Comets page.">☄️ No comet in reach <span style="opacity:.8">· brightest '+cmt.name+' mag '+cmt.mag.toFixed(1)+'</span></span>'
-          :'<span class="gc" title="A tracked comet is above the horizon now — full details on the Comets page">☄️ Comet <b>'+cmt.name+' · mag '+cmt.mag.toFixed(1)+'</b></span>'):'')
-    +(DARK?(function(){const L=dynLimitMag();const cut=(L.moon+L.haze);return '<span class="gc" title="Estimated faintest deep-sky visible now — Bortle '+BORTLE+' base '+L.base.toFixed(1)+', minus the Moon and live haze">🔭 Limiting mag <b>~'+L.mag.toFixed(1)+'</b>'+(cut>=0.3?' <span style="opacity:.7">(−'+cut.toFixed(1)+')</span>':'')+'</span>';})():'')
+    +'<span class="gc">'+G('chipSunset')+' <b>'+(st.set||'—')+'</b></span>'
+    +'<span class="gc">'+G('chipDark')+' <b>'+(st.dark||'—')+'</b></span>'
+    +'<span class="gc">'+G('chipMoon')+' <b>'+pct+'% · '+(ma.alt>0?G('moonUp',{a:Math.round(ma.alt)}):G('moonDown'))+'</b></span>'
+    +(SEEREAD?'<span class="gc" title="Steadiness of the air at high power (planets, tight doubles) — '+SEEREAD.src+'">'+G('chipSeeing')+' <b>'+G('see_'+SEEREAD.label)+'</b></span>':'')
+    +(ml?'<span class="gc" title="The Chinese lunar mansion the Moon is in tonight">'+G('chipLodge')+' <b>'+ml.zh+'宿 '+ml.en+'</b></span>':'')
+    +(pl?'<span class="gc">'+G('chipPlanet')+' <b>'+pl+'</b></span>':'')
+    +(tt?'<span class="gc">'+G('chipTarget')+' <b>'+tt+'</b></span>':'')
+    +(cmt?(cmt.none?'<span class="gc" style="opacity:.75" title="No tracked comet is brighter than magnitude 11 and above the horizon — the practical visual limit for the telescopes under Jurong\'s sky. The Seestar can still image a fainter one. Details on the Comets page.">'+G('chipNoComet')+' <span style="opacity:.8">· '+G('brightest')+' '+cmt.name+' mag '+cmt.mag.toFixed(1)+'</span></span>'
+          :'<span class="gc" title="A tracked comet is above the horizon now — full details on the Comets page">'+G('chipComet')+' <b>'+cmt.name+' · mag '+cmt.mag.toFixed(1)+'</b></span>'):'')
+    +(DARK?(function(){const L=dynLimitMag();const cut=(L.moon+L.haze);return '<span class="gc" title="Estimated faintest deep-sky visible now — Bortle '+BORTLE+' base '+L.base.toFixed(1)+', minus the Moon and live haze">'+G('chipLimit')+' <b>~'+L.mag.toFixed(1)+'</b>'+(cut>=0.3?' <span style="opacity:.7">(−'+cut.toFixed(1)+')</span>':'')+'</span>';})():'')
     +(function(){const n=hazeNight(),c=n?hazeCostAt(60):null;if(!c)return '';
         if(c.total<0.25&&!(n.mode==='live'&&PSIVAL>50))return '';   // clean air needs no chip
         const lab=window.Haze.costLabel(c.total);
-        const what=(n.mode==='live')?(typeof PSIVAL==='number'?'PSI '+Math.round(PSIVAL):Math.round(n.pm25)+' µg/m³'):'forecast';
-        return '<span class="gc" title="Haze for the chosen night — '+(n.mode==='live'?'live NEA reading plus the model\'s column depth':'forecast only; the live NEA reading applies to tonight')+'. The figure is what it costs a well-placed target; anything low loses about three times as much.">🌫️ Haze <b>'+what+' · '+lab.word+'</b>'
+        const what=(n.mode==='live')?(typeof PSIVAL==='number'?'PSI '+Math.round(PSIVAL):Math.round(n.pm25)+' µg/m³'):G('forecast');
+        return '<span class="gc" title="Haze for the chosen night — '+(n.mode==='live'?'live NEA reading plus the model\'s column depth':'forecast only; the live NEA reading applies to tonight')+'. The figure is what it costs a well-placed target; anything low loses about three times as much.">'+G('chipHaze')+' <b>'+what+' · '+G('cost_'+lab.word)+'</b>'
           +(c.total>=0.25?' <span style="opacity:.7">(−'+c.total.toFixed(1)+' mag'+(c.aloft?', aloft':'')+')</span>':'')+'</span>';})()
     +(EVT.length?'<span class="gc">'+EVT[0][1]+' <b>'+EVT[0][2]+'</b></span>':'')
-    +(ISSCHIP?'<span class="gc">🛰️ Best pass <b>'+ISSCHIP+'</b></span>':'')
-    +'<span class="gc">🌅 Sunrise <b>'+(st.rise||'—')+'</b></span>'
+    +(ISSCHIP?'<span class="gc">'+G('chipPass')+' <b>'+ISSCHIP+'</b></span>':'')
+    +'<span class="gc">'+G('chipSunrise')+' <b>'+(st.rise||'—')+'</b></span>'
     +'</div>';
+}
+// v4.21: the English words of the summary line. In another language they come from
+// scob-i18n.js (SCOBI18N.t('dash', …)), which falls back to these keys' English there too.
+const GLANCE_EN={notDark:'☀️ Sky not dark at the chosen time — fully dark from {t}.',
+  go:'✅ {when} looks a GO — {cc}% cloud, {pp} rain chance.',warn:'⚠️ Marginal — {cc}% cloud, {pp} rain chance; watch for breaks.',
+  bad:'❌ Likely a wash-out — {cc}% cloud, {pp} rain chance.',nowx:'🔭 Dark sky at the chosen time · live forecast loads in the weather card.',
+  hazeVeryBad:'❌ Air quality {band} (PSI {psi}) — {verdict}.',hazeUnhGo:'⚠️ Clear enough overhead ({cc}% cloud), but the air is Unhealthy — PSI {psi}. {verdict}.',
+  hazeUnhAdd:' Air quality Unhealthy too — PSI {psi}.',thickGo:'⚠️ Clear of cloud, but thick haze — about {mg}. A Moon, planets and doubles night.',
+  thickGoFc:'⚠️ Clear of cloud, but thick haze is forecast — about {mg}. A Moon, planets and doubles night.',
+  thickAdd:' Thick haze too ({mg}).',thickAddFc:' Thick haze forecast too ({mg}).',smokeAloft:' Smoke aloft.',
+  hazyAdd:' Hazy — faint targets dimmed about {m} mag.',hazyAddFc:' Hazy (forecast) — faint targets dimmed about {m} mag.',
+  nowAir:' Right now the air is {band} (PSI {psi}) — check NEA’s forecast on the day.',nowAirRising:' Right now the air is {band} (PSI {psi}, rising) — check NEA’s forecast on the day.',
+  tonight:'Tonight',tomorrow:'Tomorrow night',D:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],M:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dateFmt:'{w} {d} {m}',
+  chipSunset:'🌇 Sunset',chipDark:'🌌 Fully dark',chipMoon:'🌙 Moon',moonUp:'up {a}°',moonDown:'down',chipSeeing:'🌬️ Seeing',chipLodge:'🐉 Moon lodges in',
+  chipPlanet:'🪐 Best planet',chipTarget:'🔭 Top target',chipComet:'☄️ Comet',chipNoComet:'☄️ No comet in reach',brightest:'brightest',chipLimit:'🔭 Limiting mag',
+  chipHaze:'🌫️ Haze',targHead:'🔭 Best deep-sky targets at {t}',forecast:'forecast',chipPass:'🛰️ Best pass',chipSunrise:'🌅 Sunrise'};
+function G(k,o){
+  const I=window.SCOBI18N;
+  if(I&&I.lang()!=='en')return I.t('dash',k,o);
+  let v=GLANCE_EN[k];
+  if(v==null){const m=k.match(/^(band|cost|verdict|planet|see)_(.*)$/);v=m?(m[1]==='band'?m[2].toLowerCase():m[2]):k;}
+  if(typeof v!=='string')return v;
+  if(o)for(const p in o)v=v.split('{'+p+'}').join(o[p]);
+  return v;
 }
 
 const CAP=30;
@@ -596,7 +624,7 @@ function recompute(y,m,d,hh,mm){
   WXNOTE=`For ${dateLabel(y,m,d)} — `+sea+" Make the final call on the night with the live Nowcast and SCOB's Facebook post.";
   document.getElementById('weatherNote').textContent=WXNOTE;
 
-  document.getElementById('targHead').textContent=`🔭 Best deep-sky targets at ${timeLabel(hh,mm)}`;
+  document.getElementById('targHead').textContent=G('targHead',{t:timeLabel(hh,mm)});
   document.getElementById('datePick').value=`${y}-${pad(m+1)}-${pad(d)}`;
   document.getElementById('timePick').value=`${pad(hh)}:${pad(mm)}`;
   const wd=new Date(Date.UTC(y,m,d,12,0)).getUTCDay();
@@ -915,7 +943,8 @@ function renderEvents(){
     const dd=Math.round((t-cur)/86400000);if(dd<0||dd>21)return;
     if(dd===0&&ev[4])EVT.push(ev);
     const when=dd===0?'chosen night':(dd===1?'next night':dateLabel(p[0],p[1]-1,p[2])+' · in '+dd+' days');
-    html+='<div class="evrow'+(ev[4]?'':' dim')+'"><span class="evic">'+ev[1]+'</span><div><b>'+ev[2]+'</b> <span class="evwhen">'+when+'</span><div class="evnote">'+ev[3]+'</div></div></div>';});
+    const cal=(ev[4]&&dd>=0&&window.SCOBICS)?' '+SCOBICS.btn({title:ev[2],start:ev[0],allDay:true,loc:'',desc:ev[3],url:'https://afbooster.online/scob-dashboard-v3.html'},'📅'):'';
+    html+='<div class="evrow'+(ev[4]?'':' dim')+'"><span class="evic">'+ev[1]+'</span><div><b>'+ev[2]+'</b> <span class="evwhen">'+when+'</span>'+cal+'<div class="evnote">'+ev[3]+'</div></div></div>';});
   // v3.86: expiry guard — the events list is hand-maintained, so warn when the chosen date reaches
   // the end of it (within the 21-day look-ahead) rather than silently showing nothing.
   const le=EVENTS[EVENTS.length-1][0].split('-').map(Number),lastT=Date.UTC(le[0],le[1]-1,le[2]);
@@ -1343,7 +1372,7 @@ function tonightBlurb(){
 // ==== v3.36: dismissible "what's new" line for returning volunteers ====
 (function(){
   var VER=window.SCOB_VERSION||'';
-  var WHATSNEW='On the Haze page you can now follow any part of Singapore — tap the west, central, south, east or north tile (or 📍 Nearest to me) and the readings, trend lines and past week switch to that region. The SCOB session call still follows the west, where the observatory is. Also new since v4.18: the place markers on the satellite picture can be switched off.';
+  var WHATSNEW='The site now speaks 中文, Bahasa Melayu and தமிழ் — choose in the menu. Also new: a “Should I come tonight?” card for visitors, 📅 add-to-calendar buttons for sessions, eclipses and meteor showers, a Start here page with search across every page, and all five regions on one haze chart.';
   var seen='';try{seen=localStorage.getItem('scobSeenVer')||'';}catch(e){}
   if(seen===VER)return;
   var g=document.getElementById('glance');if(!g||!g.parentNode)return;
@@ -1546,14 +1575,25 @@ function closeNow(){const w=document.getElementById('nowWrap');if(!w)return;w.st
     apply();
     // filter box: live-hide non-matching links; show only sections with a hit
     var fin=document.getElementById('navFilter'),empty=document.getElementById('navEmpty');
+    // v4.21: the filter also searches the site-wide index (keywords, descriptions and the
+    // Chinese/Malay/Tamil titles), loaded the first time the box is used, and always offers
+    // a jump to the full search of every page.
+    var allLink=document.createElement('a');allLink.id='navAll';allLink.className='ndpin';allLink.hidden=true;
+    if(empty&&empty.parentNode)empty.parentNode.insertBefore(allLink,empty.nextSibling);
+    var idxAsked=false;
+    function needIndex(){if(window.SCOBSearch||idxAsked)return;idxAsked=true;
+      var sc=document.createElement('script');sc.src='search-index.js';sc.onload=function(){applyNavFilterInner();};document.head.appendChild(sc);}
     function applyNavFilterInner(){
       var q=(fin&&fin.value||'').trim().toLowerCase();
       drawer.classList.toggle('filtering',q.length>0);
-      var anyGlobal=false;
+      var anyGlobal=false,hitSet=null;
+      if(q&&window.SCOBSearch){hitSet={};window.SCOBSearch.find(q).forEach(function(h){hitSet[h.p.f]=1;});}
+      allLink.hidden=!q;
+      if(q){allLink.href='site-map.html?q='+encodeURIComponent(q);allLink.textContent='🔍 Search every page for “'+q+'” →';}
       secs.forEach(function(sec){
         var links=[].slice.call(sec.querySelectorAll('a')),anyHit=false;
         links.forEach(function(a){
-          var hit=!q||a.textContent.toLowerCase().indexOf(q)>=0;
+          var hit=!q||a.textContent.toLowerCase().indexOf(q)>=0||!!(hitSet&&hitSet[a.getAttribute('href')]);
           a.classList.toggle('ndhide',!hit);if(hit)anyHit=true;
         });
         sec.classList.toggle('ndhide',q.length>0&&!anyHit);
@@ -1562,13 +1602,37 @@ function closeNow(){const w=document.getElementById('nowWrap');if(!w)return;w.st
       if(empty)empty.hidden=!(q.length>0&&!anyGlobal);
     }
     window.applyNavFilter=applyNavFilterInner;   // reachable from the Esc handler
-    if(fin)fin.addEventListener('input',applyNavFilterInner);
+    if(fin){fin.addEventListener('input',applyNavFilterInner);fin.addEventListener('focus',needIndex);fin.addEventListener('input',needIndex);}
   })();
   const a11yBtn=document.getElementById('a11yBtn');
-  function applyA11y(on){document.body.classList.toggle('a11y',on);if(a11yBtn)a11yBtn.textContent='Larger text & colour-blind symbols: '+(on?'On':'Off');try{localStorage.setItem('scobA11y',on?'1':'0');}catch(e){}}
+  function applyA11y(on){document.body.classList.toggle('a11y',on);if(a11yBtn)a11yBtn.textContent=(window.SCOBI18N&&window.SCOBI18N.lang()!=='en')?window.SCOBI18N.t('nav',on?'a11yOn':'a11yOff'):'Larger text & colour-blind symbols: '+(on?'On':'Off');try{localStorage.setItem('scobA11y',on?'1':'0');}catch(e){}}
   if(a11yBtn)a11yBtn.addEventListener('click',function(){applyA11y(!document.body.classList.contains('a11y'));});
   try{applyA11y(localStorage.getItem('scobA11y')==='1');}catch(e){}
+  // ---- v4.21: language — EN · 中文 · BM · தமிழ் in the menu. The words live in scob-i18n.js,
+  // which is fetched only once a language other than English is chosen. ----
+  (function(){
+    const box=document.getElementById('ndLangs'),L=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
+    function cur(){try{const l=localStorage.getItem('scobLang');return L.some(x=>x[0]===l)?l:'en';}catch(e){return 'en';}}
+    function draw(){if(!box)return;const l=cur();
+      box.innerHTML=L.map(x=>'<button type="button" data-l="'+x[0]+'" lang="'+x[0]+'" aria-pressed="'+(x[0]===l)+'"'+(x[0]===l?' class="on"':'')+'>'+x[1]+'</button>').join('');
+      box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.l)));}
+    function after(){try{if(window.SCOBI18N)window.SCOBI18N.apply();}catch(e){}
+      document.documentElement.lang=cur();draw();try{fromInputs();}catch(e){try{renderGlance();}catch(e2){}}
+      try{applyA11y(document.body.classList.contains('a11y'));}catch(e){}
+      const f=document.getElementById('navFilter');if(f)f.placeholder=(window.SCOBI18N&&cur()!=='en')?window.SCOBI18N.t('nav','filter'):'🔍 Filter menu…';}
+    function choose(l){try{localStorage.setItem('scobLang',l);}catch(e){}
+      if(l==='en'||window.SCOBI18N){after();return;}loadI18n(after);}
+    draw();
+    if(cur()!=='en')loadI18n(after);
+  })();
 })();
+// Loads scob-i18n.js once (version.js may already have started it) and calls back when ready.
+function loadI18n(cb){
+  if(window.SCOBI18N){cb();return;}
+  let s=document.querySelector('script[src="scob-i18n.js"]');
+  if(!s){s=document.createElement('script');s.src='scob-i18n.js';document.head.appendChild(s);}
+  s.addEventListener('load',function(){cb();});
+}
 
 // ---- v3.11: tonight's darkness-window bar ----
 function crossMs(fn,thr,a,b){if((fn(a)>thr)===(fn(b)>thr))return null;for(var k=0;k<26;k++){var m=(a+b)/2;if((fn(m)>thr)===(fn(a)>thr))a=m;else b=m;}return (a+b)/2;}
@@ -1609,6 +1673,11 @@ loadPSI();loadRadar();loadNowcast();loadAllSky();if(ALLSKY_CAM)setInterval(loadA
 
 const f0=nextFridayYMD();
 recompute(f0.y,f0.m,f0.d,20,30);
+// v4.21 (speed): the Chinese-mansion data (31 KB) only feeds the "Moon lodges in" chip and the
+// culture cross-links, so it is fetched after the first paint instead of before it.
+(function(){const go=()=>{if(window.CSKY||document.querySelector('script[src="chinese-sky-data.js"]'))return;
+  const s=document.createElement('script');s.src='chinese-sky-data.js';s.onload=()=>{try{renderGlance();}catch(e){}};document.head.appendChild(s);};
+  if('requestIdleCallback' in window)requestIdleCallback(go,{timeout:2500});else setTimeout(go,800);})();
 tick();setInterval(tick,1000);
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}

@@ -180,6 +180,7 @@
 </div>
 
 <script src="version.js"></script>
+<script src="scob-ics.js"></script>
 <script>
 (function(){
   var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -266,7 +267,10 @@
         +'<span class="kind">'+e.kind+(e.dur&&e.dur!=="—"?' · '+e.dur:'')+'</span></div>'
         +'<div class="region">'+e.region+'</div>'
         +'<div class="sg '+sgClass[e.sg]+'">'+sgLabel[e.sg]+(e.sgnote?' — '+e.sgnote:'')+'</div>'
-        +'<a class="lk" href="'+e.tl+'" target="_blank" rel="noopener">Path map &amp; local times →</a></div>';
+        +'<a class="lk" href="'+e.tl+'" target="_blank" rel="noopener">Path map &amp; local times →</a>'
+        +(window.SCOBICS&&e.d>=new Date(Date.now()+288e5).toISOString().slice(0,10)?' '+SCOBICS.btn({title:e.kind+' eclipse'+(e.sg==='no'?' (not visible from Singapore)':''),start:e.d,allDay:true,loc:'',
+            desc:e.region+' Singapore: '+sgLabel[e.sg].replace(/<[^>]+>/g,'')+(e.sgnote?' — '+e.sgnote:'')+' Local times: '+e.tl,url:'https://afbooster.online/eclipses.html'}):'')
+        +'</div>';
     }).join('');
     // click an event -> if solar with a path, show it on the map
     host.querySelectorAll('.ev').forEach(function(el){el.addEventListener('click',function(ev){

@@ -110,6 +110,7 @@ td .pc{display:block;margin-top:2px;color:var(--mute);font-size:11.5px;}
   </div>
 </div>
 <script src="astro-core.js"></script>
+<script src="scob-ics.js"></script>
 <script>
 "use strict";
 var A=window.Astro, LAT=A.SCOB.LAT;
@@ -141,6 +142,12 @@ function nextPeak(x,ty,today){
   var pk2=Date.UTC(ty+1,x[1]-1,x[2]);return {pk:pk2,days:Math.round((pk2-today)/86400000),y:ty+1};
 }
 
+/* v4.21: a calendar entry for a shower's peak night — 10 pm on the peak date to 5 am,
+   when the radiant is highest from Singapore. pd is the peak date (UTC midnight). */
+function meteorEvent(x,pd){var s=Date.UTC(pd.getUTCFullYear(),pd.getUTCMonth(),pd.getUTCDate(),14,0);
+  return {title:x[0]+' meteor shower — peak night',start:s,end:s+7*3600000,alarm:120,loc:'',
+    desc:'Up to '+x[3]+' meteors an hour under a perfect dark sky (far fewer from a city). Best after midnight: find somewhere dark, lie back and look about halfway up. No telescope needed.',
+    url:'https://afbooster.online/meteors.html'};}
 /* ---- the year's showers, ordered by how soon they peak, with the pre-dawn look ---- */
 (function(){
   var now=sgtNow(), ty=now.getUTCFullYear(), today=Date.UTC(ty,now.getUTCMonth(),now.getUTCDate());
@@ -154,7 +161,8 @@ function nextPeak(x,ty,today){
     return '<tr><td><span class="nm">'+x[0]+'</span><span class="pc">'+MON[pd.getUTCMonth()]+' '+pd.getUTCDate()+' · '+x[4]+'</span></td>'+
       '<td class="r">'+when+'</td>'+
       '<td class="r">~'+x[3]+'/hr</td>'+
-      '<td class="r"><span class="rate r-'+rt[0]+'">'+look+'</span><span class="pc">'+rt[1]+' from here</span></td></tr>';
+      '<td class="r"><span class="rate r-'+rt[0]+'">'+look+'</span><span class="pc">'+rt[1]+' from here</span>'+
+      (window.SCOBICS?SCOBICS.btn(meteorEvent(x,pd),'📅'):'')+'</td></tr>';
   }).join('');
   document.getElementById('tblnote').innerHTML='Ordered by how soon each shower peaks — the next one is at the top. “Where to look” is the compass direction and height of the radiant at its best in the small hours (roughly 3–5 am); look about 40–60° to the side of it. Notice the equator’s hand: the <b>Orionids</b> and <b>Delta Aquariids</b> ride high, while the northern-hemisphere darlings — Perseids, Quadrantids, Ursids — sit low. “Rate” is the ideal dark-sky maximum; a bright Moon or city sky always cuts it.';
 })();
@@ -176,7 +184,8 @@ function nextPeak(x,ty,today){
   box.innerHTML='<h2>The next shower</h2>'+
     '<div class="big">☄️ The '+x[0]+' — '+when+'</div>'+
     '<div class="d">Up to <b>'+x[3]+'/hr</b> under a perfect dark sky, from the dust of '+x[4]+'. '+lookTxt+'. '+
-    'This year it peaks under <b>'+moonWord+'</b>. Best after midnight — lie back, no telescope needed.</div>';
+    'This year it peaks under <b>'+moonWord+'</b>. Best after midnight — lie back, no telescope needed.</div>'+
+    (window.SCOBICS?SCOBICS.btn(meteorEvent(x,pd),'📅 Add the peak night to my calendar','big'):'');
 })();
 </script>
 <script src="version.js"></script>

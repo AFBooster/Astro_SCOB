@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -36,6 +36,10 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 .rules li{margin:6px 0;}
 .rules b{color:var(--gold);}
 .morelinks{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.fnlangs{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;}
+.fnlangs button{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--white);border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer;font-family:inherit;}
+.fnlangs button.on{border-color:var(--gold);color:var(--gold);}
+.vnote{font-size:13px;line-height:1.5;margin:2px 0 6px;}
 .morelinks a{color:var(--cyan);font-weight:700;font-size:12.5px;border:1px solid var(--cyan);border-radius:9px;padding:7px 13px;text-decoration:none;}
 .foot{margin-top:26px;font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px;line-height:1.6;}
 .foot a{color:var(--cyan);}
@@ -56,51 +60,105 @@ h1{font-size:22px;margin:0;color:var(--gold);}
 <body>
 <div class="wrap">
   <header>
-    <h1>🌟 Your First Night</h1>
-    <div class="loc">New to volunteering at the observatory? This is everything you need for tonight, in three steps. Science Centre Observatory, Jurong (1.33&deg;N).</div>
+    <h1 data-fn="h1">🌟 Your First Night</h1>
+    <div class="loc" data-fn="loc">New to volunteering at the observatory? This is everything you need for tonight, in three steps. Science Centre Observatory, Jurong (1.33&deg;N).</div>
     <div class="backrow">
-      <a href="scob-dashboard-v3.html">← Full dashboard</a>
-      <a href="tonights-tour.html">🎟️ Full tour</a>
-      <a href="checklist.html">✅ Setup checklist</a>
+      <a href="scob-dashboard-v3.html" data-fn="bDash">← Full dashboard</a>
+      <a href="tonights-tour.html" data-fn="bTour">🎟️ Full tour</a>
+      <a href="checklist.html" data-fn="bCheck">✅ Setup checklist</a>
     </div>
+    <div class="fnlangs" id="fnLangs" role="group" aria-label="Language"></div>
   </header>
 
   <div class="step">
-    <h2><span class="num">1</span> Is tonight a go?</h2>
+    <h2><span class="num">1</span> <span data-fn="s1">Is tonight a go?</span></h2>
     <div class="verdict v-none" id="verdict">Checking the sky&hellip;</div>
+    <div class="vnote" id="vnote"></div>
     <div class="times" id="times"></div>
   </div>
 
   <div class="step">
-    <h2><span class="num">2</span> Show these three first</h2>
+    <h2><span class="num">2</span> <span data-fn="s2">Show these three first</span></h2>
     <div id="targets"><div class="times">Working out what&rsquo;s up&hellip;</div></div>
-    <div class="times" style="margin-top:10px">These are the crowd-pleasers highest in the sky right now. Point, let people look, say the one line &mdash; then move to the next. The <a href="tonights-tour.html" style="color:var(--cyan)">full tour</a> has the rest, in order.</div>
+    <div class="times" style="margin-top:10px" id="s2note">These are the crowd-pleasers highest in the sky right now. Point, let people look, say the one line &mdash; then move to the next. The <a href="tonights-tour.html" style="color:var(--cyan)">full tour</a> has the rest, in order.</div>
   </div>
 
   <div class="step">
-    <h2><span class="num">3</span> The three deck rules</h2>
-    <ul class="rules" style="padding-left:18px">
+    <h2><span class="num">3</span> <span data-fn="s3">The three deck rules</span></h2>
+    <ul class="rules" style="padding-left:18px" id="rules">
       <li><b>No white light.</b> Phones on dim, red mode if you have it &mdash; one white torch ruins everyone&rsquo;s night vision for 20 minutes.</li>
       <li><b>Don&rsquo;t touch the tube.</b> Guests look with their eyes, not their hands; a nudged scope loses the target and you re-align.</li>
       <li><b>Set expectations, then delight.</b> &ldquo;It&rsquo;ll be a small fuzzy glow &mdash; but that glow is 10 million stars / a planet 600 million km away.&rdquo; Managed expectations make it magic.</li>
     </ul>
     <div class="morelinks">
-      <a href="sky-finder.html">📱 Point-your-phone finder</a>
-      <a href="now-showing.html">📺 Now showing</a>
-      <a href="tracking-methods.html">🔭 GoTo alignment</a>
+      <a href="sky-finder.html" data-fn="mFinder">📱 Point-your-phone finder</a>
+      <a href="now-showing.html" data-fn="mNow">📺 Now showing</a>
+      <a href="tracking-methods.html" data-fn="mGoto">🔭 GoTo alignment</a>
     </div>
   </div>
 
-  <div class="foot">
+  <div class="foot" id="foot">
     Everything here is computed on your device for the session time, so it works in the dome with no signal (only the go/no-go forecast needs a connection). When you&rsquo;re ready for the whole picture, the <a href="scob-dashboard-v3.html">dashboard</a> has weather, the sky map, every target and the run-sheet.<br>
     <a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 
 <script src="astro-core.js"></script>
+<script src="come-tonight.js"></script>
 <script>
 "use strict";
 var A=window.Astro;
+/* v4.21: four languages. The words are in scob-i18n.js (SCOBI18N.t('fn', …)) and the
+   talking points in tour-i18n-data.js; both are fetched only when 中文 / BM / தமிழ் is chosen.
+   English stays inline (FN_EN) so an English reader downloads nothing extra. */
+var FN_EN={session:'Session',now:'now',tonight:'tonight',at830:'8:30pm',moon:'🌙 Moon {p}%',moonUp:'up ({a}° {c})',moonDown:'below the horizon',
+  darkNow:'The sky is dark now.',waitDark:'Wait for full dark before faint targets show well.',
+  nothingUp:'Nothing is high enough yet — the sky may still be bright, or targets are still rising. Check back closer to full dark ({t}), or open the {tour}.',
+  afterTw:'after twilight',high:'high overhead',wellUp:'well up',low:'low',where:'{w} in the {c} · {a}° up',anyScope:'any scope',
+  go:'GO — mostly clear',caution:'CAUTION — partial cloud',nogo:'NO-GO — cloudy / showery',cloudPct:'{cc}% cloud',rainPct:'{pp}% rain',
+  offline:'Forecast unavailable (offline?) — make the call from the sky and the {mss}.',mss:'MSS nowcast',tourLink:'full tour',checking:'Checking the sky…'};
+var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
+function LNG(){var l='en';try{l=localStorage.getItem('scobLang')||'en';}catch(e){}return /^(en|zh|ms|ta)$/.test(l)?l:'en';}
+function F(k,o){
+  if(LNG()!=='en'&&window.SCOBI18N)return window.SCOBI18N.t('fn',k,o);
+  var v=FN_EN[k]!=null?FN_EN[k]:k;if(o)for(var p in o)v=v.split('{'+p+'}').join(o[p]);return v;
+}
+function escH(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function loc(sp){
+  var l=LNG(),D=(l!=='en'&&window.TOUR_I18N&&window.TOUR_I18N[l])||null,o=D&&D.objects[sp.id];
+  if(!D)return sp;var c={};for(var k in sp)c[k]=sp[k];
+  if(o){c.name=o.n||sp.name;c.blurb=o.b||sp.blurb;c.look=o.l||sp.look;}
+  if(sp.scope&&D.scopes&&D.scopes[sp.scope])c.scope=D.scopes[sp.scope];
+  return c;
+}
+function need(src,cb){var s=document.querySelector('script[src="'+src+'"]');
+  if(!s){s=document.createElement('script');s.src=src;document.head.appendChild(s);}s.addEventListener('load',cb);}
+/* static text: English is in the markup; another language replaces it (and English puts it back) */
+var ORIG={};
+function applyStatic(){
+  var l=LNG(),I=(l!=='en'&&window.SCOBI18N)?window.SCOBI18N:null;
+  document.documentElement.lang=l;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fn]'),function(el){
+    var k=el.getAttribute('data-fn');if(!(k in ORIG))ORIG[k]=el.innerHTML;
+    el.innerHTML=I?escH(I.t('fn',k)):ORIG[k];
+  });
+  var blk={s2note:function(){return escH(F('s2note',{tour:'\u0000'})).replace('\u0000','<a href="tonights-tour.html" style="color:var(--cyan)">'+escH(F('tourLink'))+'</a>');},
+    rules:function(){return ['r1','r2','r3'].map(function(r){return '<li><b>'+escH(F(r+'b'))+'</b> '+escH(F(r))+'</li>';}).join('');},
+    foot:function(){return escH(F('foot',{dash:'\u0000'})).replace('\u0000','<a href="scob-dashboard-v3.html">'+escH(F('dashLink'))+'</a>')+'<br><a href="about.html">'+escH(F('about'))+'</a> · <span class="scob-version" style="opacity:.75"></span>';}};
+  Object.keys(blk).forEach(function(id){var el=document.getElementById(id);if(!el)return;if(!(id in ORIG))ORIG[id]=el.innerHTML;el.innerHTML=I?blk[id]():ORIG[id];});
+  if(window.SCOB_VERSION){var sv=document.querySelector('.scob-version');if(sv&&!sv.innerHTML)sv.innerHTML='SCOB Night-Sky <b>'+window.SCOB_VERSION+'</b> · '+(window.SCOB_COPYRIGHT||'');}
+  var lb=document.getElementById('fnLangs');
+  if(lb){lb.innerHTML=LANGS.map(function(x){return '<button type="button" lang="'+x[0]+'" data-l="'+x[0]+'" aria-pressed="'+(x[0]===l)+'"'+(x[0]===l?' class="on"':'')+'>'+x[1]+'</button>';}).join('');
+    Array.prototype.forEach.call(lb.querySelectorAll('button'),function(b){b.onclick=function(){setLang(b.getAttribute('data-l'));};});}
+}
+function redraw(){applyStatic();drawTimes();draw3();drawVerdict();}
+function setLang(l){
+  try{localStorage.setItem('scobLang',l);}catch(e){}
+  if(l==='en'){redraw();return;}
+  var left=2,done=function(){if(--left===0)redraw();};
+  if(window.SCOBI18N)done();else need('scob-i18n.js',done);
+  if(window.TOUR_I18N)done();else need('tour-i18n-data.js',done);
+}
 var WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function sgtNow(){var n=new Date();return new Date(n.getTime()+(n.getTimezoneOffset()+480)*60000);}
 function pad(n){return (n<10?'0':'')+n;}
@@ -112,7 +170,7 @@ function sessionDate(){
   if(s.sunAlt<-3 && now.getHours()>=18) return {date:new Date(),label:'now',ymd:ymd(now)};
   var d=new Date(now); var add=(5-d.getDay()+7)%7; if(add===0&&d.getHours()>22)add=7; d.setDate(d.getDate()+add);
   var utc=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),20-8,30,0));
-  return {date:utc,label:(add===0?'tonight':WD[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()])+' 8:30pm',ymd:ymd(d)};
+  return {date:utc,label:(add===0?'tonight':WD[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()])+' 8:30pm',ymd:ymd(d),add:add,dow:d.getDay(),dd:d.getDate(),mo:d.getMonth()};
 }
 var SES=sessionDate();
 function hm(d){var l=new Date(d.getTime()+8*3600000);return pad(l.getUTCHours())+':'+pad(l.getUTCMinutes());}
@@ -131,21 +189,21 @@ function topThree(){
   items.sort(function(a,b){return a.pr-b.pr;});
   return items.slice(0,3);
 }
-function altWord(a){return a>60?'high overhead':a>35?'well up':'low';}
+function altWord(a){return a>60?F('high'):a>35?F('wellUp'):F('low');}
 function draw3(){
   var three=topThree();
   var host=document.getElementById('targets');
-  if(!three.length){host.innerHTML='<div class="times">Nothing is high enough yet &mdash; the sky may still be bright, or targets are still rising. Check back closer to full dark ('+ (window._dark||'after twilight') +'), or open the <a href="tonights-tour.html" style="color:var(--cyan)">full tour</a>.</div>';return;}
+  if(!three.length){host.innerHTML='<div class="times">'+escH(F('nothingUp',{t:(window._dark||F('afterTw')),tour:'\u0000'})).replace('\u0000','<a href="tonights-tour.html" style="color:var(--cyan)">'+escH(F('tourLink'))+'</a>')+'</div>';return;}
   host.innerHTML=three.map(function(it){
-    var sp=it.sp,p=it.p;
-    var ill=''; try{ ill=A.illus?A.illus(sp):''; }catch(e){}
-    var say=sp.blurb?sp.blurb.split('. ')[0]+'.':(sp.look||'');
+    var sp=loc(it.sp),p=it.p;
+    var ill=''; try{ ill=A.illus?A.illus(it.sp):''; }catch(e){}
+    var fs=sp.blurb?sp.blurb.match(/^[^.!?。！？]*[.!?。！？]/):null, say=fs?fs[0]:(sp.blurb||sp.look||'');
     return '<div class="tgt">'
       +(ill?'<div class="ill">'+ill+'</div>':'')
       +'<div class="body"><div class="nm">'+sp.name+'</div>'
       +'<div class="say">'+say+'</div>'
-      +'<div class="meta"><span class="chip where">'+altWord(p.alt)+' in the '+A.compass(p.az)+' &middot; '+Math.round(p.alt)+'&deg; up</span>'
-      +'<span class="chip scope">🔭 '+(sp.scope||'any scope')+'</span></div></div></div>';
+      +'<div class="meta"><span class="chip where">'+escH(F('where',{w:altWord(p.alt),c:A.compass(p.az),a:Math.round(p.alt)}))+'</span>'
+      +'<span class="chip scope">🔭 '+escH(sp.scope||F('anyScope'))+'</span></div></div></div>';
   }).join('');
 }
 
@@ -153,9 +211,10 @@ function draw3(){
 function drawTimes(){
   var date=SES.date, s=A.sky(date);
   var el=document.getElementById('times');
-  var moonTxt='🌙 Moon '+s.moon.illum+'% '+(s.moon.alt>0?('up ('+Math.round(s.moon.alt)+'&deg; '+A.compass(s.moon.az)+')'):'below the horizon');
-  el.innerHTML='Session: <b>'+SES.label+'</b> &middot; '+moonTxt+'. '
-    +(s.dark?'The sky is dark now.':'Wait for full dark before faint targets show well.');
+  var moonTxt=F('moon',{p:s.moon.illum})+' '+(s.moon.alt>0?F('moonUp',{a:Math.round(s.moon.alt),c:A.compass(s.moon.az)}):F('moonDown'));
+  var lbl=SES.label==='now'?F('now'):(SES.add===0?F('tonight'):(window.SCOBI18N&&LNG()!=='en'?window.SCOBI18N.t('dash','dateFmt',{w:window.SCOBI18N.t('dash','D')[SES.dow],d:SES.dd,m:window.SCOBI18N.t('dash','M')[SES.mo]}):WD[SES.dow]+' '+SES.dd+' '+MON[SES.mo]))+(SES.label==='now'?'':' '+F('at830'));
+  el.innerHTML=escH(F('session'))+': <b>'+escH(lbl)+'</b> &middot; '+escH(moonTxt)+'. '
+    +escH(s.dark?F('darkNow'):F('waitDark'));
 }
 function drawVerdict(){
   var v=document.getElementById('verdict');
@@ -166,17 +225,36 @@ function drawVerdict(){
     var i=h.time.indexOf(key); if(i<0)i=h.time.indexOf(SES.ymd+'T20:00'); if(i<0)i=0;
     var cc=h.cloud_cover[i], pp=h.precipitation_probability?h.precipitation_probability[i]:null;
     var cls,txt;
-    if(cc<=30&&(pp==null||pp<30)){cls='v-ok';txt='GO &mdash; mostly clear';}
-    else if(cc<=65&&(pp==null||pp<55)){cls='v-warn';txt='CAUTION &mdash; partial cloud';}
-    else {cls='v-bad';txt='NO-GO &mdash; cloudy / showery';}
+    if(cc<=30&&(pp==null||pp<30)){cls='v-ok';txt=F('go');}
+    else if(cc<=65&&(pp==null||pp<55)){cls='v-warn';txt=F('caution');}
+    else {cls='v-bad';txt=F('nogo');}
     v.className='verdict '+cls;
-    v.innerHTML=txt+' <span style="font-weight:600;font-size:13px;color:var(--mute)">('+cc+'% cloud'+(pp!=null?', '+pp+'% rain':'')+')</span>';
+    v.innerHTML=escH(txt)+' <span style="font-weight:600;font-size:13px;color:var(--mute)">('+escH(F('cloudPct',{cc:cc}))+(pp!=null?', '+escH(F('rainPct',{pp:pp})):'')+')</span>';
+    hazeAndStorms(cls);
   }).catch(function(){
     v.className='verdict v-none';
-    v.innerHTML='Forecast unavailable (offline?) &mdash; make the call from the sky and the <a href="https://www.weather.gov.sg/weather-rain-area-nowcast/" target="_blank" rel="noopener" style="color:var(--cyan)">MSS nowcast</a>.';
+    v.innerHTML=escH(F('offline',{mss:'\u0000'})).replace('\u0000','<a href="https://www.weather.gov.sg/weather-rain-area-nowcast/" target="_blank" rel="noopener" style="color:var(--cyan)">'+escH(F('mss'))+'</a>');
   });
 }
-drawTimes();draw3();drawVerdict();
+/* v4.21: on a Friday session the cloud call above is joined by what the visitor card
+   ("Should I come tonight?", come-tonight.js) knows: storms in the window, NEA's own 2-hour
+   forecast, and haze. A storm or bad haze downgrades the call. */
+function hazeAndStorms(cls){
+  var n=document.getElementById('vnote');if(!n)return;n.innerHTML='';
+  var CT=window.ComeTonight;if(!CT||SES.label==='now'&&new Date(Date.now()+288e5).getUTCDay()!==5)return;
+  if(CT.session().ymd!==SES.ymd)return;
+  CT.check().then(function(r){
+    var W=CT.WORDS[LNG()]||CT.WORDS.en,lines=[];
+    r.why.forEach(function(k){if(/^(thunder|neaRain|neaStorm|hazy|hazeUnhealthy|hazeBad)$/.test(k))lines.push(W[k]||CT.WORDS.en[k]);});
+    if(r.haze&&r.haze.live)lines.push((W.psi||CT.WORDS.en.psi).replace('{v}',Math.round(r.haze.psi)));
+    n.innerHTML=lines.map(escH).join('<br>');
+    var rank={'v-ok':0,'v-warn':1,'v-bad':2},want=r.level==='no'?'v-bad':(r.level==='maybe'?'v-warn':'v-ok');
+    var v=document.getElementById('verdict');
+    if(r.cause&&r.cause!=='cloud'&&rank[want]>rank[cls]&&v){v.className='verdict '+want;}
+  }).catch(function(){});
+}
+applyStatic();drawTimes();draw3();drawVerdict();
+if(LNG()!=='en')setLang(LNG());
 </script>
 <script src="version.js"></script>
 </body>

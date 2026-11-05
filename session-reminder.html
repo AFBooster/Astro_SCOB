@@ -72,6 +72,12 @@
     <p class="note">This is an <b>in-app</b> reminder: the alert fires while this page (or the installed SCOB app) is <b>open in the background</b> — there's no server involved, so it works offline and needs no account. For a rock-solid nudge on session evenings, <b>install SCOB as an app</b> and leave it running, or also add the session to your phone's calendar. You can re-open this page any time to re-arm it.</p>
   </div>
 
+  <div class="card">
+    <h2>📅 Or put every Friday in your calendar</h2>
+    <p class="note" style="margin-top:0">The most reliable reminder is your own calendar: this adds the Friday 7:30–10 pm session as one repeating entry, with an alert three hours before. It works on iPhone, Android and computer calendars, needs no app open, and you can delete it like any other entry.</p>
+    <div class="act" id="calRow"></div>
+  </div>
+
   <div class="btnrow">
     <a href="scob-dashboard-v3.html#weather">🌧️ Tonight's go / no-go</a>
     <a href="now-showing.html">📺 Now Showing board</a>
@@ -85,6 +91,8 @@
 </div>
 
 <script src="sky-culture-core.js"></script>
+<script src="scob-ics.js"></script>
+<script>(function(){var r=document.getElementById('calRow');if(r&&window.SCOBICS)r.innerHTML=SCOBICS.btn(SCOBICS.sessionsEvent(),'📅 Add every Friday session','big');})();</script>
 <script src="version.js"></script>
 <script>
 (function(){

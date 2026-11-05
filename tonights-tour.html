@@ -96,7 +96,7 @@ body.night .where{color:#ff9a9a;}body.night .btn{color:#ff9a9a;}
 
   <div class="foot">
     Companion pages: <a href="scob-dashboard-v3.html">dashboard</a> · <a href="sky-finder.html">point-your-phone finder</a> · <a href="moon-tonight.html">Moon tonight</a> · <a href="eyepiece-fov.html">eyepiece &amp; field of view</a>.<br>
-    Positions computed on your device (P. Schlyter method) · the interface is available in Singapore's four languages; the talking points stay in English as docent guidance. · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+    Positions computed on your device (P. Schlyter method) · the tour is available in Singapore's four languages, talking points included (machine-assisted translation — corrections welcome). · Science Centre Observatory, Singapore.<br><a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
   </div>
 </div>
 <script src="astro-core.js"></script>
@@ -216,7 +216,7 @@ function build(){
   if(!items.length){host.innerHTML='<div class="empty">'+t.empty+'</div>';return;}
   TOURITEMS=items;
   host.innerHTML=items.map(function(it,i){
-    var p=it.p,sp=it.sp;
+    var p=it.p,sp=loc(it.sp);
     var cx=(window.chineseStarAt?window.chineseStarAt(sp.ra,sp.dec):null);
     var cnChip=cx?'<span class="chip" title="Traditional Chinese name — see the Chinese Sky page">🐉 <b>'+cx.cn+'</b> · '+cx.men+' mansion</span>':'';
     var where=t.look+' '+altWord(p.alt)+' '+t.inthe+' <b>'+A.compass(p.az)+'</b> · '+Math.round(p.alt)+'° '+t.up;
@@ -235,10 +235,31 @@ function build(){
 
 var TOURITEMS=[];
 var TTS_OK=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+/* v4.21: the talking points in the chosen language (tour-i18n-data.js), and read aloud in it */
+var SPEECH_LANG={en:'en-SG',zh:'zh-CN',ms:'ms-MY',ta:'ta-IN'};
+function loc(sp){
+  var D=(LANG!=='en'&&window.TOUR_I18N&&window.TOUR_I18N[LANG])||null,o=D&&D.objects[sp.id];
+  if(!D)return sp;
+  var c={};for(var k in sp)c[k]=sp[k];
+  if(o){c.name=o.n||sp.name;c.blurb=o.b||sp.blurb;c.look=o.l||sp.look;}
+  if(sp.scope&&D.scopes&&D.scopes[sp.scope])c.scope=D.scopes[sp.scope];
+  return c;
+}
+function speechText(sp,p){
+  sp=loc(sp);
+  if(LANG==='en')return sp.name+'. Look '+Math.round(p.alt)+' degrees up in the '+A.compass(p.az)+'. '+sayFor(sp)+' '+(sp.look||'');
+  return sp.name+(LANG==='zh'?'。':'. ')+sayFor(sp)+(LANG==='zh'?'':' ')+(sp.look||'');
+}
+function utter(txt){var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.lang=SPEECH_LANG[LANG]||'en-SG';u.rate=0.98;u.pitch=1;return u;}
+function loadTourData(cb){
+  if(LANG==='en'||window.TOUR_I18N)return;   // the build that just ran already had what it needs
+  var s=document.querySelector('script[src="tour-i18n-data.js"]');
+  if(!s){s=document.createElement('script');s.src='tour-i18n-data.js';document.head.appendChild(s);}
+  s.addEventListener('load',function(){cb();});
+}
 function speakStop(i){
   if(!TTS_OK||!TOURITEMS[i])return;var sp=TOURITEMS[i].sp,p=TOURITEMS[i].p;
-  var txt=sp.name+'. '+'Look '+Math.round(p.alt)+' degrees up in the '+A.compass(p.az)+'. '+sayFor(sp)+' '+(sp.look||'');
-  try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.rate=0.98;u.pitch=1;window.speechSynthesis.speak(u);}catch(e){}
+  try{window.speechSynthesis.cancel();window.speechSynthesis.speak(utter(speechText(sp,p)));}catch(e){}
 }
 document.getElementById('tour').addEventListener('click',function(e){var b=e.target.closest('.spk');if(!b)return;stopPlayAll();speakStop(+b.getAttribute('data-i'));});
 var playing=false, playIdx=0;
@@ -249,8 +270,7 @@ function playChain(){
   highlightStop(playIdx);
   var stops=document.querySelectorAll('#tour .stop');if(stops[playIdx])stops[playIdx].scrollIntoView({behavior:'smooth',block:'center'});
   var sp=TOURITEMS[playIdx].sp,p=TOURITEMS[playIdx].p;
-  var txt=sp.name+'. Look '+Math.round(p.alt)+' degrees up in the '+A.compass(p.az)+'. '+sayFor(sp)+' '+(sp.look||'');
-  try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,''));u.rate=0.98;
+  try{window.speechSynthesis.cancel();var u=utter(speechText(sp,p));
     u.onend=function(){if(!playing)return;if(playIdx<TOURITEMS.length-1){playIdx++;playChain();}else{playing=false;updatePlayBtn();highlightStop(-1);}};
     window.speechSynthesis.speak(u);}catch(e){}
 }
@@ -259,7 +279,7 @@ var pab=document.getElementById('playall');
 if(pab){pab.style.display=TTS_OK?'':'none';pab.onclick=function(){if(playing){stopPlayAll();}else if(TOURITEMS.length){playing=true;playIdx=0;updatePlayBtn();playChain();}};}
 document.addEventListener('visibilitychange',function(){if(document.hidden){stopPlayAll();if(TTS_OK)try{window.speechSynthesis.cancel();}catch(e){}}});
 var depthMode=(function(){try{return localStorage.getItem('scobDepth')||'simple';}catch(e){return'simple';}})();
-function sayFor(sp){var b=sp.blurb||'';if(depthMode!=='simple')return b;var m=b.match(/^[^.!?]*[.!?]/);return m?m[0]:b;}
+function sayFor(sp){var b=sp.blurb||'';if(depthMode!=='simple')return b;var m=b.match(/^[^.!?。！？]*[.!?。！？]/);return m?m[0]:b;}
 function depthLabel(){var el=document.getElementById('depth');if(el)el.textContent=depthMode==='simple'?T().bFirst:T().bEnth;}
 document.getElementById('depth').onclick=function(){depthMode=depthMode==='simple'?'full':'simple';try{localStorage.setItem('scobDepth',depthMode);}catch(e){}depthLabel();build();};
 
@@ -278,10 +298,10 @@ document.getElementById('night').onclick=function(){document.body.classList.togg
 ['d','t'].forEach(function(id){document.getElementById(id).addEventListener('change',build);});
 (function(){var lb=document.getElementById('langbar');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
   b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
-    lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();build();});});})();
+    lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();build();loadTourData(build);});});})();
 try{if(localStorage.getItem('scobNight')==='1'||(localStorage.getItem('scobNight')===null&&A.sunAltAt(new Date())<-1))document.body.classList.add('night');}catch(e){}
 applyChrome();
-(function(){var f=nextFri();f.setHours(20,30,0,0);setInputs(f);build();})();
+(function(){var f=nextFri();f.setHours(20,30,0,0);setInputs(f);build();loadTourData(build);})();
 </script>
 <script src="version.js"></script>
 </body>

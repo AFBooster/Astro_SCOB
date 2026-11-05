@@ -149,6 +149,7 @@ h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)
   </div>
 </div>
 <script src="astro-core.js"></script>
+<script src="scob-ics.js"></script>
 <script>
 "use strict";
 /* ===== Occultations pane ===== */
@@ -169,7 +170,11 @@ function evHTML(r){var e=r.e,sgt=new Date(e.t+8*3600000);
   return '<div class="ev'+(r.observable?' vis':'')+'"><div class="dt"><div class="d">'+sgt.getUTCDate()+'</div><div class="mo">'+MO[sgt.getUTCMonth()]+'</div></div>'+
     '<div><div class="nm">'+e.name+(e.mag!=null?' <span class="sub" style="display:inline">· mag '+(e.mag>=0?'+':'')+e.mag+'</span>':'')+'</div>'+
     '<div class="what">'+what+'</div>'+
-    '<div class="sub">'+when+' SGT · '+visline+'</div></div></div>';
+    '<div class="sub">'+when+' SGT · '+visline+'</div>'+
+    (r.observable&&window.SCOBICS?SCOBICS.btn({title:(e.occult?'Moon covers ':'Moon passes ')+e.name.replace(/<[^>]+>/g,''),start:e.t-15*60000,end:e.t+15*60000,alarm:60,
+      desc:(e.occult?'Lunar occultation of ':'Close pass of the Moon by ')+e.name.replace(/<[^>]+>/g,'')+' at '+when+' SGT, seen from the Science Centre Observatory. Moon '+Math.round(e.alt)+'° up in the '+A.compass(e.az)+'.',
+      url:'https://afbooster.online/sky-events.html'}):'')+
+    '</div></div>';
 }
 function run(){
   var host=document.getElementById('list');
@@ -383,7 +388,11 @@ function evCard(e){
     '<div class="kv"><span>Altitude <b>'+Math.round(e.alt)+'°</b></span><span>Azimuth <b>'+Math.round(e.az)+'° ('+A.compass(e.az)+')</b></span>'+
     '<span>Range to station <b>'+Math.round(e.range)+' km</b></span></div>'+
     extra+
-    '<div class="nb">'+note+'</div></div>';
+    '<div class="nb">'+note+'</div>'+
+    (e.kind!=='miss'&&window.SCOBICS?SCOBICS.btn({title:e.sat.n+' crosses '+bodyName,start:e.t-10*60000,end:e.t+5*60000,alarm:45,
+      desc:e.sat.n+' transits '+bodyName+' at '+fmtTime(e.t)+' SGT, lasting '+e.dur.toFixed(2)+' s, seen from the Science Centre Observatory. Orbits shift — re-run the prediction on the morning: https://afbooster.online/sky-events.html?tab=transits'+(isSun?' Full-aperture solar filter only.':''),
+      url:'https://afbooster.online/sky-events.html?tab=transits'}):'')+
+    '</div>';
 }
 $('run').onclick=function(){run(false);};
 $('refresh').onclick=function(){run(true);};

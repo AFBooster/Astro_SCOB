@@ -53,6 +53,26 @@ h1{font-size:22px;margin:0;color:var(--orange);}
 /* charts */
 .chart{border:1px solid var(--line);border-radius:12px;background:#05080f;padding:10px;margin-top:10px;}
 .chart svg{width:100%;height:auto;display:block;}
+/* v4.21 all-regions comparison: one line per NEA region, colour fixed to the region */
+.arhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:18px;}
+.arttl{font-size:13px;font-weight:700;}
+.arseg{display:flex;gap:4px;}
+.arseg button{background:var(--navy3);border:1px solid var(--line);color:var(--mute);border-radius:16px;padding:4px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.arseg button.on{border-color:var(--gold);color:#fff;}
+.arleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12.5px;}
+.arleg button{background:none;border:0;color:var(--white);font:inherit;cursor:pointer;padding:3px 2px;display:inline-flex;align-items:center;gap:6px;border-bottom:2px solid transparent;}
+.arleg button.sel{border-bottom-color:var(--gold);font-weight:800;}
+.arleg i{display:inline-block;width:16px;height:3px;border-radius:2px;}
+.arleg b{color:var(--mute);font-weight:600;}
+.archart{position:relative;}
+.artip{position:absolute;pointer-events:none;background:#0b1733;border:1px solid var(--line);border-radius:9px;padding:7px 9px;font-size:12px;line-height:1.45;box-shadow:0 6px 18px rgba(0,0,0,.5);white-space:nowrap;display:none;z-index:3;}
+.artip i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle;}
+.arread{font-size:13px;margin-top:8px;line-height:1.55;}
+.artable{margin-top:8px;font-size:12px;}
+.artable table{border-collapse:collapse;width:100%;}
+.artable th,.artable td{border-bottom:1px solid var(--line);padding:3px 6px;text-align:right;}
+.artable th:first-child,.artable td:first-child{text-align:left;}
+.artable summary{cursor:pointer;color:var(--mute);}
 /* tables */
 table{width:100%;border-collapse:collapse;}
 th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line);}
@@ -156,6 +176,11 @@ input[type=range]{accent-color:var(--gold);flex:1;min-width:150px;}
     <div id="trendBox"><div class="fine">Loading the last 24 hours…</div></div>
     <div style="font-size:13px;font-weight:700;margin-top:16px" id="weekTitle">The past week · highest 24-hour PSI each day · west</div>
     <div id="weekBox"><div class="fine">Loading the week…</div></div>
+    <div class="arhead" id="arHead">
+      <div class="arttl">All five regions together · last 24 hours</div>
+      <div class="arseg" role="group" aria-label="Which reading to compare"><button type="button" data-k="pm25" class="on" aria-pressed="true">1-hour PM2.5</button><button type="button" data-k="psi" aria-pressed="false">24-hour PSI</button></div>
+    </div>
+    <div id="allRegBox"><div class="fine">Loading all five regions…</div></div>
   </div>
 
   <!-- ── REGIONAL: WHERE THE SMOKE IS ─────────────────────────────────── -->
@@ -393,6 +418,156 @@ function lastHours(series, hours) {
   var cut = new Date(series[series.length - 1].t).getTime() - hours * 3600000;
   return series.filter(function (p) { return new Date(p.t).getTime() > cut; });
 }
+
+/* ── v4.21: all five regions on one chart ─────────────────────────────────
+   Which side of the island the smoke reaches first is the best short-range clue to
+   where it is coming from. Each NEA response already holds all five regions and
+   haze-core keeps it for a while, so this costs no extra download.
+   Colours are fixed to the region (never to its rank), checked for colour-blind
+   separation against this chart's background; the legend names every line and the
+   table underneath gives the same numbers without colour. */
+var AR_COL = { west: '#3987e5', central: '#d95926', south: '#199e70', east: '#c98500', north: '#d55181' };
+var AR = { kind: 'pm25', data: null };
+(function () { try { var k = localStorage.getItem('scobHazeArKind'); if (k === 'psi' || k === 'pm25') AR.kind = k; } catch (e) {} })();
+function loadAllRegions() {
+  var D0 = H.localDateISO(), D1 = H.localDateISO(new Date(Date.now() - 86400000));
+  var nul = function () { return null; }, jobs = [];
+  ['psi', 'pm25'].forEach(function (k) {
+    H.REGIONS.forEach(function (r) { jobs.push(H.fetchTrend(k, r, D1).catch(nul), H.fetchTrend(k, r, D0).catch(nul)); });
+  });
+  Promise.all(jobs).then(function (res) {
+    var data = { psi: {}, pm25: {} }, j = 0;
+    ['psi', 'pm25'].forEach(function (k) {
+      H.REGIONS.forEach(function (r) { data[k][r] = lastHours((res[j] || []).concat(res[j + 1] || []), 24); j += 2; });
+    });
+    AR.data = data; renderAllRegions();
+  });
+}
+function renderAllRegions() {
+  var box = $('allRegBox'); if (!box) return;
+  Array.prototype.forEach.call(document.querySelectorAll('#arHead .arseg button'), function (b) {
+    var on = b.getAttribute('data-k') === AR.kind; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+  });
+  var D = AR.data && AR.data[AR.kind];
+  var regs = D ? H.REGIONS.filter(function (r) { return D[r] && D[r].length > 1; }) : [];
+  if (!regs.length) { box.innerHTML = '<div class="fine">' + (AR.data ? 'The regional readings could not be loaded just now.' : 'Loading all five regions…') + '</div>'; return; }
+  var unit = AR.kind === 'pm25' ? ' µg/m³' : '', bk = AR.kind === 'pm25' ? [55, 150] : [50, 100];
+  var narrow = window.innerWidth < 600;   /* a phone gets a taller, narrower drawing so the lines separate */
+  var W = narrow ? 400 : 640, Ht = narrow ? 260 : 190, PADL = 30, PADR = 10, PADB = 20, PADT = 10, FS = narrow ? 11 : 9;
+  var t0 = Infinity, t1 = -Infinity, lo = Infinity, hi = -Infinity;
+  regs.forEach(function (r) { D[r].forEach(function (p) {
+    var t = new Date(p.t).getTime(); if (t < t0) t0 = t; if (t > t1) t1 = t; if (p.v < lo) lo = p.v; if (p.v > hi) hi = p.v; }); });
+  lo = Math.max(0, Math.floor((lo - 5) / 10) * 10); hi = Math.ceil((hi + 5) / 10) * 10; if (hi - lo < 20) hi = lo + 20;
+  if (t1 - t0 < 3600000) t0 = t1 - 3600000;
+  var X = function (t) { return PADL + (t - t0) / (t1 - t0) * (W - PADL - PADR); };
+  var Y = function (v) { return PADT + (1 - (v - lo) / (hi - lo)) * (Ht - PADT - PADB); };
+  var s = '';
+  [[0, bk[0], '#39c97e'], [bk[0], bk[1], '#f5c542'], [bk[1], 1e9, '#ff6b6b']].forEach(function (b) {
+    var a = Math.max(b[0], lo), c = Math.min(b[1], hi);
+    if (c > a) s += '<rect x="' + PADL + '" y="' + Y(c).toFixed(1) + '" width="' + (W - PADL - PADR) + '" height="' + (Y(a) - Y(c)).toFixed(1) + '" fill="' + b[2] + '" opacity="0.06"/>';
+  });
+  [lo, Math.round((lo + hi) / 2), hi].forEach(function (v) {
+    s += '<line x1="' + PADL + '" x2="' + (W - PADR) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '" stroke="#33406b" stroke-width="1" stroke-dasharray="2 4"/>'
+       + '<text x="' + PADL + '" y="' + (Y(v) + 3) + '" fill="#8ea3d8" font-size="' + FS + '" text-anchor="end" dx="-4">' + v + '</text>';
+  });
+  for (var h = Math.ceil(t0 / 10800000) * 10800000; h <= t1; h += 10800000) {
+    s += '<text x="' + X(h).toFixed(1) + '" y="' + (Ht - 5) + '" fill="#8ea3d8" font-size="' + FS + '" text-anchor="middle">' + H.fmtTime(new Date(h).toISOString()).replace(':00', '') + '</text>';
+  }
+  /* the followed region last, so it is drawn on top */
+  var order = regs.filter(function (r) { return r !== SEL; }).concat(regs.indexOf(SEL) >= 0 ? [SEL] : []);
+  order.forEach(function (r) {
+    var pts = D[r].map(function (p) { return X(new Date(p.t).getTime()).toFixed(1) + ',' + Y(p.v).toFixed(1); }).join(' ');
+    var last = D[r][D[r].length - 1], sel = r === SEL;
+    s += '<polyline fill="none" stroke="#05080f" stroke-width="' + (sel ? 6 : 4) + '" stroke-linejoin="round" stroke-linecap="round" points="' + pts + '"/>'
+       + '<polyline fill="none" stroke="' + AR_COL[r] + '" stroke-width="' + (sel ? 3 : 2) + '" stroke-linejoin="round" stroke-linecap="round" points="' + pts + '"/>'
+       + '<circle cx="' + X(new Date(last.t).getTime()).toFixed(1) + '" cy="' + Y(last.v).toFixed(1) + '" r="4" fill="' + AR_COL[r] + '" stroke="#05080f" stroke-width="2"/>';
+  });
+  s += '<line id="arCross" x1="0" x2="0" y1="' + PADT + '" y2="' + (Ht - PADB) + '" stroke="#9fb0d6" stroke-width="1" opacity="0" />';
+  var latest = {}; regs.forEach(function (r) { latest[r] = D[r][D[r].length - 1].v; });
+  var leg = '<div class="arleg" role="group" aria-label="Regions — tap one to follow it">' + regs.map(function (r) {
+    return '<button type="button" data-r="' + r + '"' + (r === SEL ? ' class="sel" aria-pressed="true"' : ' aria-pressed="false"') + '><i style="background:' + AR_COL[r] + '"></i>'
+      + H.REGION_LABEL[r] + ' <b>' + n0(latest[r]) + '</b></button>';
+  }).join('') + '</div>';
+  /* the plain-language reading: highest now, and who rose most over the last ~3 hours */
+  var rise = regs.map(function (r) {
+    var a = D[r], end = a[a.length - 1], tEnd = new Date(end.t).getTime(), back = null;
+    for (var i = a.length - 1; i >= 0; i--) { if (tEnd - new Date(a[i].t).getTime() >= 3 * 3600000 - 60000) { back = a[i]; break; } }
+    return { r: r, d: back ? end.v - back.v : null };
+  }).filter(function (x) { return x.d != null; }).sort(function (a, b) { return b.d - a.d; });
+  var top = regs.slice().sort(function (a, b) { return latest[b] - latest[a]; });
+  var spread = latest[top[0]] - latest[top[top.length - 1]];
+  var read = 'Highest now: <b>' + H.REGION_LABEL[top[0]] + '</b> (' + n0(latest[top[0]]) + unit + ')';
+  if (spread >= (AR.kind === 'pm25' ? 15 : 10)) read += ', ' + n0(spread) + ' above the cleanest, ' + H.REGION_LABEL[top[top.length - 1]] + '.';
+  else read += ' — the island is fairly even, so the air is much the same everywhere.';
+  var thr = AR.kind === 'pm25' ? 10 : 6;
+  if (rise[0] && rise[0].d >= thr) {
+    read += ' Rising fastest over the last 3 hours: <b>' + H.REGION_LABEL[rise[0].r] + '</b> (+' + n0(rise[0].d) + unit + ').'
+      + ' When one side climbs first, the smoke is usually arriving from that side.';
+  } else if (rise.length && rise[rise.length - 1].d <= -thr && rise.every(function (x) { return x.d <= 0; })) {
+    read += ' Every region has fallen over the last 3 hours — it is clearing.';
+  }
+  /* the same numbers as a table, hourly */
+  var ref = D[top[0]], rows = '';
+  var at = function (r, t) { var best = null, bd = 40 * 60000; D[r].forEach(function (p) { var dd = Math.abs(new Date(p.t).getTime() - t); if (dd <= bd) { bd = dd; best = p.v; } }); return best; };
+  for (var k = ref.length - 1; k >= 0; k--) {
+    var tt = new Date(ref[k].t).getTime();
+    rows += '<tr><td>' + H.fmtTime(ref[k].t) + '</td>' + regs.map(function (r) { var v = at(r, tt); return '<td>' + (v == null ? '—' : n0(v)) + '</td>'; }).join('') + '</tr>';
+  }
+  box.innerHTML = leg
+    + '<div class="chart archart"><svg id="arSvg" viewBox="0 0 ' + W + ' ' + Ht + '" role="img" aria-label="' + esc((AR.kind === 'pm25' ? '1-hour PM2.5' : '24-hour PSI') + ' for all five regions of Singapore over the last 24 hours. ' + read.replace(/<[^>]+>/g, '')) + '">' + s + '</svg><div class="artip" id="arTip"></div></div>'
+    + '<div class="arread">' + read + '</div>'
+    + '<details class="artable"><summary>Show these readings as a table</summary><table><thead><tr><th>Time</th>' + regs.map(function (r) { return '<th>' + H.REGION_LABEL[r] + '</th>'; }).join('') + '</tr></thead><tbody>' + rows + '</tbody></table></details>';
+  Array.prototype.forEach.call(box.querySelectorAll('.arleg button'), function (b) {
+    b.addEventListener('click', function () {
+      /* the cards above re-render (and change height) as the region changes; hold this
+         chart where the reader's finger is rather than letting the page jump */
+      var top0 = box.getBoundingClientRect().top, until = Date.now() + 900;
+      selectRegion(b.getAttribute('data-r'), true);
+      (function hold() {
+        var d = box.getBoundingClientRect().top - top0;
+        if (Math.abs(d) > 1) window.scrollBy(0, d);
+        if (Date.now() < until) requestAnimationFrame(hold);
+      })();
+    });
+  });
+  /* hover / touch: a crosshair and every region's value at that hour, highest first */
+  var svg = $('arSvg'), tip = $('arTip'), cross = $('arCross');
+  var move = function (ev) {
+    var rc = svg.getBoundingClientRect(), x = (ev.clientX - rc.left) / rc.width * W;
+    if (x < PADL || x > W - PADR) { leave(); return; }
+    var t = t0 + (x - PADL) / (W - PADL - PADR) * (t1 - t0), ref2 = D[top[0]], best = ref2[0], bd = Infinity;
+    ref2.forEach(function (p) { var dd = Math.abs(new Date(p.t).getTime() - t); if (dd < bd) { bd = dd; best = p; } });
+    var tb = new Date(best.t).getTime(), cx = X(tb);
+    cross.setAttribute('x1', cx); cross.setAttribute('x2', cx); cross.setAttribute('opacity', '0.6');
+    var vals = regs.map(function (r) { return { r: r, v: at(r, tb) }; }).filter(function (o) { return o.v != null; }).sort(function (a, b) { return b.v - a.v; });
+    tip.innerHTML = '<b>' + H.fmtTime(best.t) + '</b><br>' + vals.map(function (o) { return '<i style="background:' + AR_COL[o.r] + '"></i>' + H.REGION_LABEL[o.r] + ' <b>' + n0(o.v) + '</b>'; }).join('<br>');
+    tip.style.display = 'block';
+    var px = cx / W * rc.width, half = tip.offsetWidth / 2;
+    tip.style.left = Math.max(4, Math.min(rc.width - tip.offsetWidth - 4, px - half)) + 'px';
+    tip.style.top = '6px';
+  };
+  var leave = function () { tip.style.display = 'none'; cross.setAttribute('opacity', '0'); };
+  svg.addEventListener('pointermove', move);
+  svg.addEventListener('pointerdown', move);
+  svg.addEventListener('pointerleave', function (ev) { if (ev.pointerType !== 'touch') leave(); });
+  if (!AR.outside) {               /* on a phone the tip stays until you tap elsewhere */
+    AR.outside = true;
+    document.addEventListener('pointerdown', function (ev) {
+      var sv = $('arSvg'); if (sv && !sv.contains(ev.target)) { var tp = $('arTip'), cr = $('arCross'); if (tp) tp.style.display = 'none'; if (cr) cr.setAttribute('opacity', '0'); }
+    });
+  }
+}
+(function () {   /* redraw when a phone turns sideways (the drawing has a phone shape and a desktop shape) */
+  var was = window.innerWidth < 600, tm = null;
+  window.addEventListener('resize', function () { clearTimeout(tm); tm = setTimeout(function () { var n = window.innerWidth < 600; if (n !== was) { was = n; if (AR.data) renderAllRegions(); } }, 200); });
+})();
+Array.prototype.forEach.call(document.querySelectorAll('#arHead .arseg button'), function (b) {
+  b.addEventListener('click', function () {
+    AR.kind = b.getAttribute('data-k');
+    try { localStorage.setItem('scobHazeArKind', AR.kind); } catch (e) {}
+    renderAllRegions();
+  });
+});
 function daySummary(date, series) {
   if (!series || !series.length) return { date: date, max: null, min: null };
   var v = series.map(function (p) { return p.v; });
@@ -788,6 +963,7 @@ function load() {
   }).catch(function () { LIVE = null; renderLive(); });
 
   loadRegion();
+  loadAllRegions();
 
   H.fetchTransport(H.localDateISO(), 21)
     .then(renderWind).catch(function () { renderWind(null); });
@@ -830,7 +1006,7 @@ function loadRegion() {
     })).then(done);
   });
 }
-function selectRegion(r) {
+function selectRegion(r, stay) {
   if (H.REGIONS.indexOf(r) < 0 || r === SEL) return;
   SEL = r;
   try { localStorage.setItem('scobHazeRegion', r); } catch (e) {}
@@ -841,8 +1017,8 @@ function selectRegion(r) {
   } catch (e) {}
   setPmLive();
   if (PMLIVE != null && USER_PM == null) $('pmSlider').value = Math.min(260, Math.max(5, Math.round(PMLIVE)));
-  renderLive(); renderCost(); loadRegion();
-  var t = document.querySelector('.reg[data-r="' + r + '"]'); if (t) t.focus();
+  renderLive(); renderCost(); loadRegion(); renderAllRegions();
+  if (!stay) { var t = document.querySelector('.reg[data-r="' + r + '"]'); if (t) t.focus({ preventScroll: true }); }
 }
 /* "Nearest to me": asks for the reader's position once, on the tap, and keeps nothing
    but the region name it picks. */
