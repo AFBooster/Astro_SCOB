@@ -105,7 +105,7 @@ var I18N={
     filt:["அனைத்தும்","கோள்கள் & நிலா","ஆழ்வான் (கொத்துகள் & நெபுலா)","நட்சத்திரங்கள் & இரட்டை நட்சத்திரங்கள்"],
     kind:{planet:"கோள்",moon:"நிலா",double:"இரட்டை நட்சத்திரம்",star:"நட்சத்திரம்",dso:"ஆழ்வான் பொருள்"}}
 };
-var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+var LANG=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();
 if(!I18N[LANG])LANG='en';
 function L(){return I18N[LANG];}
 function ic(sp){return sp.kind==='moon'?'🌙':sp.kind==='planet'?'🪐':sp.kind==='double'?'✨':sp.kind==='star'?'⭐':'🌌';}
@@ -158,7 +158,7 @@ var LASTLIST=[];
 document.getElementById('filter').addEventListener('change',render);
 document.getElementById('print').addEventListener('click',function(){window.print();});
 (function(){var lb=document.getElementById('langbar');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
-  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobSiteLang',LANG);}catch(e){}
     lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();render();});});})();
 applyChrome();render();
 </script>

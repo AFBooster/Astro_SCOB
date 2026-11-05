@@ -138,7 +138,7 @@ var I18N={
     DY:['ஞா','தி','செ','பு','வி','வெ','ச'],MO:['ஜன','பிப்','மார்','ஏப்','மே','ஜூன்','ஜூலை','ஆக','செப்','அக்','நவ','டிச'],
     ph:{nm:'அமாவாசை',wc:'வளர் பிறை',fq:'வளர்பாதி',wg:'வளர் முக்கால்',fm:'பௌர்ணமி',ng:'தேய் முக்கால்',lq:'தேய்பாதி',oc:'தேய் பிறை'}}
 };
-var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+var LANG=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();
 if(!I18N[LANG])LANG='en';
 function T(){return I18N[LANG];}
 function phaseName(ill,wax){var p=T().ph;if(ill<3)return p.nm;if(ill>97)return p.fm;if(ill<47)return wax?p.wc:p.oc;if(ill<53)return wax?p.fq:p.lq;return wax?p.wg:p.ng;}
@@ -297,7 +297,7 @@ document.getElementById('print').onclick=function(){window.print();};
 document.getElementById('night').onclick=function(){document.body.classList.toggle('night');try{localStorage.setItem('scobNight',document.body.classList.contains('night')?'1':'0');}catch(e){}};
 ['d','t'].forEach(function(id){document.getElementById(id).addEventListener('change',build);});
 (function(){var lb=document.getElementById('langbar');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
-  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobSiteLang',LANG);}catch(e){}
     lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();build();loadTourData(build);});});})();
 try{if(localStorage.getItem('scobNight')==='1'||(localStorage.getItem('scobNight')===null&&A.sunAltAt(new Date())<-1))document.body.classList.add('night');}catch(e){}
 applyChrome();

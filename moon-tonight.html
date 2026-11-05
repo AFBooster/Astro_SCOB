@@ -154,7 +154,7 @@ var MT_I18N={
     phase:{nw:"அமாவாசை",fl:"பௌர்ணமி",wc:"வளர் பிறை",oc:"தேய் பிறை",fq:"வளர்பாதி",lq:"தேய்பாதி",wg:"வளர் முக்கால்",og:"தேய் முக்கால்"},
     chip:{all:"முழு அமர்வும் மேலே",sets:"அமர்வின் நடுவே மறையும் — சீக்கிரம் பாருங்கள்",rises:"அமர்வின்போது உதிக்கும்",no:"7:30–10 மணிக்கு இல்லை"},dfri:"வெள்ளி — அமர்வு இரவு ✓",dother:"அமர்வுகள் வெள்ளிக்கிழமை"}
 };
-var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+var LANG=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();
 if(!MT_I18N[LANG])LANG='en';
 function L(){return MT_I18N[LANG];}
 function dateLabel(y,m,d){const wd=new Date(Date.UTC(y,m,d,12)).getUTCDay();return `${WD[wd]}, ${d} ${MON[m]} ${y}`;}
@@ -392,7 +392,7 @@ function applyChrome(){var t=L();var h=document.querySelector('h1');if(h)h.textC
   document.getElementById('nightBtn').textContent=document.body.classList.contains('night')?t.day:t.night;}
 applyChrome();
 (function(){var lb=document.getElementById('mtLang');lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
-  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+  b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobSiteLang',LANG);}catch(e){}
     lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});applyChrome();fromInput();});});})();
 const f0=nextFridayYMD();recompute(f0.y,f0.m,f0.d);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}

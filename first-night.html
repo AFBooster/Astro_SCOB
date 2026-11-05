@@ -118,7 +118,7 @@ var FN_EN={session:'Session',now:'now',tonight:'tonight',at830:'8:30pm',moon:'�
   go:'GO — mostly clear',caution:'CAUTION — partial cloud',nogo:'NO-GO — cloudy / showery',cloudPct:'{cc}% cloud',rainPct:'{pp}% rain',
   offline:'Forecast unavailable (offline?) — make the call from the sky and the {mss}.',mss:'MSS nowcast',tourLink:'full tour',checking:'Checking the sky…'};
 var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
-function LNG(){var l='en';try{l=localStorage.getItem('scobLang')||'en';}catch(e){}return /^(en|zh|ms|ta)$/.test(l)?l:'en';}
+function LNG(){var l='en';try{l=localStorage.getItem('scobSiteLang')||'en';}catch(e){}return /^(en|zh|ms|ta)$/.test(l)?l:'en';}
 function F(k,o){
   if(LNG()!=='en'&&window.SCOBI18N)return window.SCOBI18N.t('fn',k,o);
   var v=FN_EN[k]!=null?FN_EN[k]:k;if(o)for(var p in o)v=v.split('{'+p+'}').join(o[p]);return v;
@@ -153,7 +153,7 @@ function applyStatic(){
 }
 function redraw(){applyStatic();drawTimes();draw3();drawVerdict();}
 function setLang(l){
-  try{localStorage.setItem('scobLang',l);}catch(e){}
+  try{localStorage.setItem('scobSiteLang',l);}catch(e){}
   if(l==='en'){redraw();return;}
   var left=2,done=function(){if(--left===0)redraw();};
   if(window.SCOBI18N)done();else need('scob-i18n.js',done);

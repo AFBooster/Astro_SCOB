@@ -13,7 +13,7 @@
  *   ./check-release.sh
  * to confirm everything is in sync before uploading.
  */
-window.SCOB_VERSION   = 'v4.21';   /* keep in lockstep with sw.js cache scob-sky-v124 */
+window.SCOB_VERSION   = 'v4.23';   /* keep in lockstep with sw.js cache scob-sky-v126 */
 window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do not roll forward
 
 /* v4.21: the shared language layer. When a reader has chosen 中文, Bahasa Melayu or தமிழ்
@@ -21,7 +21,7 @@ window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do
  * to translate its heading, header links and the menu. English readers load nothing. */
 (function () {
   var l = 'en';
-  try { l = localStorage.getItem('scobLang') || 'en'; } catch (e) {}
+  try { l = localStorage.getItem('scobSiteLang') || 'en'; } catch (e) {}
   if (l === 'en' || window.SCOBI18N || document.querySelector('script[src="scob-i18n.js"]')) return;
   var s = document.createElement('script'); s.src = 'scob-i18n.js';
   (document.head || document.documentElement).appendChild(s);

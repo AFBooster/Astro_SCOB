@@ -140,7 +140,7 @@ var STR={
  ta:{title:"இன்றிரவு வான்காணகத்தில்",upnow:"இப்போது தெரிகிறது — வழிகாட்டியிடம் கேளுங்கள்",qrH:"📱 வானத்தை நீங்களே ஆராயுங்கள்",qrP:"உங்கள் தொலைபேசியை நட்சத்திரக் கண்டுபிடிப்பானாக மாற்ற ஸ்கேன் செய்யுங்கள் — மேலே காட்டினால் இன்றிரவின் பொருள்களுக்கு வழிகாட்டும்.",updated:"புதுப்பிக்கப்பட்டது",day:"☀️ பகல் — சூரியன் இன்னும் மேலே (வடிகட்டியுடன் மட்டுமே சூரியப் பார்வை)",twi:"🌆 அந்தி — நிலவும் பிரகாசக் கோள்களும் தோன்றுகின்றன",gd:"🌌 இருள் கவிகிறது — தொலைவான விண்பொருள்கள் தோன்றுகின்றன",dark:"🌌 இருண்ட வானம் — மங்கலான பொருள்களுக்கு ஏற்ற நேரம்",moon:"நிலா",lit:"% ஒளிர்வு",upIn:"திசையில்",below:"அடிவானத்திற்குக் கீழே",high:"வானின் உச்சியில்",mid:"பாதி உயரம்",low:"அடிவானத்திற்கு அருகில்",inthe:"திசை",comeback:"இருட்டிய பின் வாருங்கள்",cbnote:"சூரிய அஸ்தமனத்திற்குப் பின் வானம் இருண்டதும் பொருள்கள் தோன்றும்."}
 };
 var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
-var lang=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();if(!STR[lang])lang='en';
+var lang=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();if(!STR[lang])lang='en';
 function T(k){return (STR[lang]&&STR[lang][k])||STR.en[k];}
 // Object names per language (zh uses standard Chinese astronomical names; ms/ta are
 // best-effort — planet names are traditional, deep-sky are transliterated — review advised).
@@ -176,7 +176,7 @@ var NAMES={
 function nameFor(sp){var en=sp.name.replace(/\s*\(.*\)/,'');if(lang==='en')return en;var n=NAMES[sp.id];return (n&&n[lang])||en;}
 function buildLangBar(){var lb=document.getElementById('langbar');if(!lb)return;
   lb.innerHTML=LANGS.map(function(l){return '<button type="button" data-l="'+l[0]+'"'+(l[0]===lang?' class="on"':'')+'>'+l[1]+'</button>';}).join('');
-  Array.prototype.forEach.call(lb.querySelectorAll('button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobLang',lang);}catch(e){}applyLang();};});}
+  Array.prototype.forEach.call(lb.querySelectorAll('button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobSiteLang',lang);}catch(e){}applyLang();};});}
 function applyLang(){document.documentElement.lang=lang;document.documentElement.setAttribute('translate','no');
   document.getElementById('kTitle').textContent=T('title');
   document.getElementById('kUpnow').textContent=T('upnow');

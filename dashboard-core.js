@@ -1612,7 +1612,7 @@ function closeNow(){const w=document.getElementById('nowWrap');if(!w)return;w.st
   // which is fetched only once a language other than English is chosen. ----
   (function(){
     const box=document.getElementById('ndLangs'),L=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
-    function cur(){try{const l=localStorage.getItem('scobLang');return L.some(x=>x[0]===l)?l:'en';}catch(e){return 'en';}}
+    function cur(){try{const l=localStorage.getItem('scobSiteLang');return L.some(x=>x[0]===l)?l:'en';}catch(e){return 'en';}}
     function draw(){if(!box)return;const l=cur();
       box.innerHTML=L.map(x=>'<button type="button" data-l="'+x[0]+'" lang="'+x[0]+'" aria-pressed="'+(x[0]===l)+'"'+(x[0]===l?' class="on"':'')+'>'+x[1]+'</button>').join('');
       box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.l)));}
@@ -1620,7 +1620,7 @@ function closeNow(){const w=document.getElementById('nowWrap');if(!w)return;w.st
       document.documentElement.lang=cur();draw();try{fromInputs();}catch(e){try{renderGlance();}catch(e2){}}
       try{applyA11y(document.body.classList.contains('a11y'));}catch(e){}
       const f=document.getElementById('navFilter');if(f)f.placeholder=(window.SCOBI18N&&cur()!=='en')?window.SCOBI18N.t('nav','filter'):'🔍 Filter menu…';}
-    function choose(l){try{localStorage.setItem('scobLang',l);}catch(e){}
+    function choose(l){try{localStorage.setItem('scobSiteLang',l);}catch(e){}
       if(l==='en'||window.SCOBI18N){after();return;}loadI18n(after);}
     draw();
     if(cur()!=='en')loadI18n(after);

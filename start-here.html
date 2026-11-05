@@ -83,9 +83,9 @@ h1{font-size:24px;margin:0;color:var(--gold);padding-right:150px;}
 "use strict";
 /* Three ways in, for the three kinds of people who arrive here. The links are the
    site's existing pages; this page only orders them. Interface in Singapore's four
-   official languages; it follows the same saved choice (scobLang) as the Sky Guide. */
+   official languages; it follows the same saved choice (scobSiteLang) as the Sky Guide. */
 var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
-var lang=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+var lang=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();
 if(['en','zh','ms','ta'].indexOf(lang)<0)lang='en';
 var S={
  en:{h1:'🧭 Start here',lead:'SCOB Night-Sky is a free guide to the night sky from the Science Centre Observatory in Jurong, where public stargazing runs on Friday evenings, 7:30–10 pm, weather permitting. Pick the path that fits you — each one lists the pages worth opening first.',
@@ -165,7 +165,7 @@ function render(){
   $('bDash').textContent=T('dash');$('bGuide').textContent=T('guide');$('bAll').textContent=T('all');
   $('q').placeholder=T('ph');$('q').setAttribute('aria-label',T('ph'));
   $('langs').innerHTML=LANGS.map(function(l){return '<button type="button" data-l="'+l[0]+'"'+(l[0]===lang?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>'+l[1]+'</button>';}).join('');
-  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobLang',lang);}catch(e){}render();};});
+  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobSiteLang',lang);}catch(e){}render();};});
   $('paths').innerHTML=PATHS.map(function(p){
     return '<section class="path" aria-labelledby="'+p[0]+'"><h2 id="'+p[0]+'">'+p[1]+' '+esc(T(p[0]))+'</h2><div class="who">'+esc(T(p[0]+'w'))+'</div>'
       +p[2].map(function(t,i){return '<a href="'+t[0]+'"><span class="em" aria-hidden="true">'+t[1]+'</span><span><span class="tl"><span class="n">'+(i+1)+'</span>'+esc(L(t[2]))+'</span><span class="ds">'+esc(L(t[3]))+'</span></span></a>';}).join('')

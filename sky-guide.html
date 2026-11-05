@@ -91,7 +91,7 @@ body{background:var(--navy);color:var(--white);font-family:-apple-system,BlinkMa
 "use strict";
 var A=window.Astro;
 var LANGS=[['en','EN'],['zh','中文'],['ms','BM'],['ta','தமிழ்']];
-var lang=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+var lang=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();
 if(['en','zh','ms','ta'].indexOf(lang)<0)lang='en';
 // UI strings
 var S={
@@ -174,7 +174,7 @@ function render(){
   document.getElementById('title').textContent='SCOB Sky Guide';
   document.getElementById('scname').textContent=T('sc');
   document.getElementById('langs').innerHTML=LANGS.map(function(l){return '<button type="button" data-l="'+l[0]+'"'+(l[0]===lang?' class="on"':'')+'>'+l[1]+'</button>';}).join('');
-  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobLang',lang);}catch(e){}render();};});
+  Array.prototype.forEach.call(document.querySelectorAll('#langs button'),function(b){b.onclick=function(){lang=b.getAttribute('data-l');try{localStorage.setItem('scobSiteLang',lang);}catch(e){}render();};});
   var r=bestTonight(), s=r.s;
   var state=s.sunAlt>-0.5?T('day'):s.sunAlt>-6?T('twi'):T('dark');
   document.getElementById('state').textContent=state;

@@ -90,6 +90,11 @@ header{
   background:linear-gradient(180deg,#0b1733 88%,rgba(11,23,51,0));
   padding:14px 0 12px;
 }
+/* v4.23: on pages that draw behind an iPhone's status bar (viewport-fit=cover), keep the pinned
+   header's links out from under the notch / Dynamic Island. A transparent top border is used
+   rather than padding so a page's own header padding still applies; the header's background
+   shows through it. env() is 0 everywhere else, so nothing changes there. */
+header{border-top:env(safe-area-inset-top) solid transparent;}
 /* v4.17: on phones the pinned header slides out of the way while scrolling down and back on
    scroll up (driven by version.js). A transform, so nothing below it moves. */
 @media (max-width:820px){

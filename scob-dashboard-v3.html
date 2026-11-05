@@ -541,6 +541,24 @@ body.night #nowWrap{background:#0a0402}
 body.night .nowclock,body.night .nwpos{color:#ff9a9a}
 body.night .nwinst{color:#ff8a8a}
 body.night .nowcard{background:#160a08;border-color:#3a1f1f}
+/* v4.23: iPhone notch / Dynamic Island. This page asks for the full screen (viewport-fit=cover)
+   so it can paint behind the status bar, which means anything placed at the very top of a
+   full-screen panel sat under the island — on an iPhone the ✕ Close of "Live Now" (and of
+   the session pack and the menu) could not be tapped. Each panel now keeps its content inside
+   the safe area, and its title bar stays pinned at the top while the panel scrolls.
+   env(safe-area-inset-*) is 0 on phones without a notch, so nothing moves there. */
+#nowWrap,#briefWrap{padding-top:calc(14px + env(safe-area-inset-top));padding-right:calc(14px + env(safe-area-inset-right));
+  padding-bottom:calc(14px + env(safe-area-inset-bottom));padding-left:calc(14px + env(safe-area-inset-left))}
+#nowBar{position:sticky;top:0;z-index:3;background:#05070f;margin:0 -14px 12px;
+  padding:calc(14px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid #1b2a52}
+body.night #nowBar{background:#0a0402}
+#nowWrap{padding-top:0}
+#briefBar{position:sticky;top:0;z-index:3;background:#0b1428;max-width:none;margin:0 -14px 10px;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px;justify-content:flex-end}
+#briefWrap{padding-top:0}
+#navDrawer{padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:calc(16px + env(safe-area-inset-bottom));padding-left:calc(14px + env(safe-area-inset-left))}
+#shareWrap{padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+#viewSwitch{bottom:calc(12px + env(safe-area-inset-bottom));right:calc(12px + env(safe-area-inset-right))}
 </style>
 <!-- Social sharing / SEO metadata -->
 <link rel="canonical" href="https://afbooster.online/">

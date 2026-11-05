@@ -89,7 +89,7 @@ var I18N={
     DY:['ஞாயிறு','திங்கள்','செவ்வாய்','புதன்','வியாழன்','வெள்ளி','சனி'],MO:['ஜன','பிப்','மார்','ஏப்','மே','ஜூன்','ஜூலை','ஆக','செப்','அக்','நவ','டிச'],
     ph:{nm:'அமாவாசை',wc:'வளர் பிறை',fq:'வளர்பாதி',wg:'வளர் முக்கால்',fm:'பௌர்ணமி',ng:'தேய் முக்கால்',lq:'தேய்பாதி',oc:'தேய் பிறை'}}
 };
-var LANG=(function(){try{return localStorage.getItem('scobLang')||'en';}catch(e){return 'en';}})();
+var LANG=(function(){try{return localStorage.getItem('scobSiteLang')||'en';}catch(e){return 'en';}})();
 if(!I18N[LANG])LANG='en';
 function L(){return I18N[LANG];}
 var when=null, curLabel='';
@@ -170,7 +170,7 @@ document.getElementById('dl').onclick=function(){var cv=document.getElementById(
   cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='scob-tonight-'+curLabel+'.png';document.body.appendChild(a);a.click();a.remove();});};
 (function(){var lb=document.getElementById('langbar');
   lb.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.l===LANG);
-    b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobLang',LANG);}catch(e){}
+    b.addEventListener('click',function(){LANG=b.dataset.l;try{localStorage.setItem('scobSiteLang',LANG);}catch(e){}
       lb.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});build();});});})();
 setInputs(presetDate('now'),'20:30');build();
 </script>
