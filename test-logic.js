@@ -248,6 +248,42 @@ section('Languages (scob-i18n.js)');
   ok('every English summary word has zh / ms / ta', missing.length === 0, missing.slice(0, 6).join(', '));
 })();
 
+section('Made of Stars (made-of-stars.html)');
+(function () {
+  const ctx = loadPage('made-of-stars.html'), M = ctx.MOS, $ = id => ctx.document.getElementById(id);
+  ok('the page exposes its test hook', !!M && Array.isArray(M.ELS));
+  const E = M.ELS, sym = s => E.find(e => e.s === s);
+  ok('118 elements in atomic-number order', E.length === 118 && E.every((e, i) => e.z === i + 1) && E[25].s === 'Fe' && E[78].s === 'Au' && E[91].s === 'U' && E[117].s === 'Og');
+  const badShare = E.filter(e => Math.abs(e.o.reduce((a, x) => a + x[1], 0) - 1) > 1e-9 || e.o.some(x => !M.K[x[0]]));
+  ok('every element’s kitchen shares add up to 1 and name a real kitchen', badShare.length === 0, badShare.map(e => e.s).join(' '));
+  const cells = E.map(e => M.pos(e.z).join(','));
+  ok('no two elements share a periodic-table cell', new Set(cells).size === 118);
+  ok('hydrogen comes only from the Big Bang', sym('H').o.length === 1 && sym('H').o[0][0] === 'bb');
+  ok('oxygen from exploding giant stars, beryllium from cosmic rays', sym('O').o[0][0] === 'mx' && sym('Be').o[0][0] === 'cr');
+  ok('gold and uranium from colliding neutron stars; lead mostly the slow lane', sym('Au').o[0][0] === 'ns' && sym('U').o[0][0] === 'ns' && sym('Pb').o[0][0] === 'lm');
+  ok('iron: more than half from exploding white dwarfs', sym('Fe').o[0][0] === 'wd' && /More than half from exploding white dwarfs/.test(M.originWords(sym('Fe'))), M.originWords(sym('Fe')));
+  ok('technetium & promethium: made, but none left; neptunium onward: people', sym('Tc').o[0][0] === 'rad' && sym('Pm').o[0][0] === 'rad' && E.slice(92).every(e => e.o[0][0] === 'hm'));
+  ok('three kinds of atoms 3 minutes in; all 92 by the Sun’s birth', M.kindsAt(M.EV[1].a) === 3 && M.kindsAt(M.T0 - 4.567) === 92, M.kindsAt(M.EV[1].a) + ' / ' + M.kindsAt(M.T0 - 4.567));
+  ok('timeline stops run forwards in time, Big Bang to today', M.EV.every((e, i) => i === 0 || e.a > M.EV[i - 1].a) && M.EV[0].a === 0 && M.EV[M.EV.length - 1].a === M.T0);
+  let up = true; for (let a = 0; a < M.T0; a += 0.05) if (M.zAt(a + 0.05) < M.zAt(a)) up = false;
+  ok('heavy elements only ever build up, ≈ 1.4% when the Sun forms', up && Math.abs(M.zAt(M.T0 - 4.567) - 1.4) < 0.02);
+  const cal = M.cosmicCalendar;
+  ok('cosmic calendar: Big Bang 1 Jan 00:00, Sun early September, humans ~23:48 on 31 Dec', cal(0) === '1 Jan, 00:00' && /^2 Sep/.test(cal(M.T0 - 4.567)) && /^31 Dec, 23:48/.test(cal(M.T0 - 300000e-9)) && /now/.test(cal(M.T0)), [cal(M.T0 - 4.567), cal(M.T0 - 300000e-9)].join(' | '));
+  ok('“how long ago” reads naturally', M.fmtAgo(M.T0) === '13.8 billion years ago' && M.fmtAgo(66e-3) === '66 million years ago' && /^9 years ago \(\d{4}\)$/.test(M.fmtAgo(9e-9)), M.fmtAgo(66e-3));
+  ok('squeezed star: hydrogen = 1 year, carbon ≈ 41 minutes, silicon in thousandths of a second', M.squeeze(M.STG[0].y) === '1 year' && M.squeeze(M.STG[2].y) === '41 minutes' && /thousandths/.test(M.squeeze(M.STG[5].y)));
+  const w = M.waffle('weight'), at = M.waffle('atoms');
+  ok('body by weight: 100 squares, 10 of them Big Bang hydrogen', w.sq.length === 100 && w.byK.bb === 10 && w.cnt[0] === 65, JSON.stringify(w.byK));
+  ok('body by atoms: 62 squares of hydrogen', at.sq.length === 100 && at.byK.bb === 62, JSON.stringify(at.byK));
+  M.setMode('scale'); M.TL.age = M.T0; M.tlSet();
+  ok('true-to-scale mode at the end shows “You”', strip($('evT').textContent) === 'You' && strip($('rAgo').textContent) === 'Now');
+  M.setMode('story'); M.TL.i = 11; M.tlSet();
+  ok('story stop 12 is the Sun’s birth, with the meter at 1.4%', /Sun and planets/.test($('evT').textContent) && $('rZ').textContent === '1.4%', $('evT').textContent + ' · ' + $('rZ').textContent);
+  M.ptShow(79);
+  ok('tapping gold shows its story', /Gold/.test($('ptd').innerHTML) && /colliding neutron stars/.test($('ptd').innerHTML));
+  const tn = strip($('tn').innerHTML);
+  ok('“see it tonight” lists the life stages with heights', /Orion Nebula/.test(tn) && /Ring Nebula/.test(tn) && /(up in the|below the horizon|low —)/.test(tn));
+})();
+
 console.log('');
 if (fails) { console.error('\x1b[31m' + fails + ' logic check(s) FAILED — an interactive feature has regressed.\x1b[0m'); process.exit(1); }
 console.log('\x1b[32mAll interactive-logic checks passed.\x1b[0m');

@@ -379,6 +379,13 @@ var PAGES = [
 "k": "black hole neutron star pulsar nebula supernova galaxy"
 },
 {
+"f": "made-of-stars.html",
+"t": "Made of Stars — Where Gold, Iron & You Came From",
+"d": "How the universe made the elements — hydrogen in the Big Bang, oxygen and calcium in exploding giant stars, much of the iron in exploding white dwarfs, gold in colliding neutron stars — and how they ended up in the Earth, in every living thing and in you. A playable 13.8-billion-year timeline, a periodic table of origins and the life of a star you can see tonight from the Science Centre Observatory.",
+"g": "Learn & reference",
+"k": "nucleosynthesis elements periodic table origin gold iron supernova kilonova neutron star merger big bang stardust star stuff body atoms fusion cosmic calendar"
+},
+{
 "f": "hemispheres.html",
 "t": "Northern vs Southern Hemisphere Skies",
 "d": "Why the night sky looks completely different from the northern and southern hemispheres — the two celestial poles, circumpolar stars, the seasonal flip, Polaris versus the Southern Cross, and why Orion and the Moon appear upside down down south. Computed live for the Science Centre Observatory, Singapore.",

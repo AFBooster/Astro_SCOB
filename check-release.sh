@@ -95,12 +95,18 @@ if [ -n "$CACHE" ]; then ok "cache name is $CACHE"; else bad "no scob-sky-vN cac
 uncached=()
 for a in "${ASSETS[@]}"; do grep -aq "'$a'" sw.js || uncached+=("$a"); done
 
-# Only .html/.js/.css entries are checked for staleness — icons and manifests may
-# legitimately be absent from a partial working copy.
+# Every asset the service worker pre-caches must exist on disk. A cached name with
+# no matching file — e.g. sw.js lists icon-192.png but only icon192.png is present —
+# makes the SW install reject and 404s that asset on every page. Before, only
+# .html/.js/.css were checked here, so a renamed/missing icon or manifest slipped
+# through; now ALL cached asset types are verified.
 stale=()
 while IFS= read -r a; do
   [ -z "$a" ] && continue
-  case "$a" in *.html|*.js|*.css) [ -f "$a" ] || stale+=("$a");; esac
+  case "$a" in
+    *.html|*.js|*.css|*.png|*.webmanifest|*.svg|*.ico|*.jpg|*.jpeg|*.gif|*.webp)
+      [ -f "$a" ] || stale+=("$a");;
+  esac
 done < <(grep -aoE "^[[:space:]]*'[^']+'," sw.js | tr -d " ',")
 
 if [ "${#uncached[@]}" -eq 0 ] && [ "${#stale[@]}" -eq 0 ]; then
@@ -180,6 +186,79 @@ for f in *.html dashboard-core.js; do
   done
 done
 [ "$badlinks" -eq 0 ] && ok "all internal html/js/css references point to existing files"
+
+# ── Referenced assets exist — icons, manifests, images ─────────────────────
+# The links check above only covers .html/.js/.css. Pages and manifests also
+# reference NON-code assets that were never validated:
+#   <link rel="apple-touch-icon" href="icon-180.png">
+#   <link rel="icon"             href="icon-192.png">
+#   <link rel="manifest"         href="manifest.webmanifest">
+#   manifest "icons":[{ "src":"icon-192.png", "sizes":"192x192" }]
+# A page pointing at icon-192.png while only icon192.png existed passed clean and
+# shipped broken icons on every page — the exact drift a hyphen typo caused. Now
+# every local (non-URL, non-anchor) asset reference must resolve to a real file,
+# and each manifest icon's pixel size must match its declared "sizes".
+section "Referenced assets exist (icons, manifests, images)"
+badassets=0
+
+# (1) href/src/content="…ext" in HTML and the dashboard's JS. Absolute URLs
+#     (which contain "://") are skipped by the [^"#:] class.
+for f in *.html dashboard-core.js *.webmanifest; do
+  [ -f "$f" ] || continue
+  for t in $(grep -aoE '(href|src|content)="[^"#:]+\.(png|webmanifest|svg|ico|jpg|jpeg|gif|webp)"' "$f" \
+              | sed -E 's/.*="([^"]+)"/\1/' | sed -E 's/\?.*$//' | sort -u); do
+    [ -f "$t" ] || { bad "$f -> $t (missing)"; badassets=$((badassets+1)); }
+  done
+done
+
+# (2) manifest "icons":[{ "src": "…" }] — the JSON form the regex above can't
+#     see. Existence is pure bash, so it always runs.
+for m in *.webmanifest; do
+  [ -f "$m" ] || continue
+  for src in $(grep -aoE '"src"[[:space:]]*:[[:space:]]*"[^"]+"' "$m" \
+                | sed -E 's/.*"([^"]+)"[[:space:]]*$/\1/' | sed -E 's/\?.*$//' | sort -u); do
+    [ -f "$src" ] || { bad "$m -> $src (missing)"; badassets=$((badassets+1)); }
+  done
+done
+
+# (3) manifest icon pixel size must match its declared "sizes" — catches a
+#     same-name wrong-size swap (e.g. a 196×196 file shipped as icon-192.png).
+#     python3-gated; existence (1)/(2) and the sw.js check already guard the rest.
+ICON_SIZE_PY='
+import glob, re, struct, os, sys
+def png_size(p):
+    try:
+        with open(p, "rb") as fh: h = fh.read(24)
+        if h[:8] == b"\x89PNG\r\n\x1a\n":
+            w, ht = struct.unpack(">II", h[16:24]); return "%dx%d" % (w, ht)
+    except Exception: pass
+    return None
+for mf in sorted(glob.glob("*.webmanifest")):
+    txt = open(mf, encoding="utf-8").read()
+    for blk in re.findall(r"\{[^{}]*\"src\"[^{}]*\}", txt):
+        m = re.search(r"\"src\"\s*:\s*\"([^\"]+)\"", blk)
+        if not m: continue
+        src = m.group(1).split("?")[0]
+        if not os.path.isfile(src): continue
+        sm = re.search(r"\"sizes\"\s*:\s*\"([^\"]+)\"", blk)
+        if not sm: continue
+        want = sm.group(1).split()[0]
+        got = png_size(src)
+        if got and want and got != want:
+            sys.stdout.write("%s|%s|%s|%s\n" % (mf, src, want, got))
+'
+if command -v python3 >/dev/null 2>&1; then
+  while IFS='|' read -r mf src want got; do
+    [ -z "$mf" ] && continue
+    bad "$mf declares $src as $want but the file is $got"; badassets=$((badassets+1))
+  done < <(python3 -c "$ICON_SIZE_PY" 2>/dev/null)
+else
+  note "manifest icon pixel-size cross-check skipped (python3 not found)"
+fi
+
+if [ "$badassets" -eq 0 ]; then
+  ok "all referenced icons, manifests and images exist (and match declared sizes)"
+fi
 
 # ── Orphan check — a new page nobody can reach ─────────────────────────────
 section "Every page is reachable"

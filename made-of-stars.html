@@ -1,0 +1,1475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Made of Stars — Where Gold, Iron &amp; You Came From — SCOB</title>
+<meta name="description" content="How the universe made the elements — hydrogen in the Big Bang, oxygen and calcium in exploding giant stars, much of the iron in exploding white dwarfs, gold in colliding neutron stars — and how they ended up in the Earth, in every living thing and in you. A playable 13.8-billion-year timeline from the Science Centre Observatory, Singapore.">
+<meta name="theme-color" content="#0b1733">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:var(--ui);font-size:15px;line-height:1.55;}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 42px;}
+header{padding:16px 0 8px;}
+h1{font-size:clamp(20px,5.4vw,25px);margin:0;color:var(--gold);}
+h2{font-size:clamp(17px,4.4vw,19px);margin:2px 0 4px;line-height:1.3;color:var(--gold);}
+h3{font-size:14.5px;margin:16px 0 4px;color:var(--white);}
+p{margin:8px 0;}
+a{color:var(--cyan);}
+.mute{color:var(--mute);}
+.small{font-size:12.5px;}
+b.w{color:var(--white);}
+/* hero */
+.hero{background:radial-gradient(120% 140% at 88% -10%,rgba(183,156,255,.32),transparent 55%),linear-gradient(160deg,#22195a,#0d1533 70%);border:1px solid var(--purple);border-radius:16px;padding:16px;margin:12px 0;}
+.hero .kick{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--purple);font-weight:800;}
+.hero .big{font-size:clamp(18px,4.8vw,22px);font-weight:800;color:var(--white);margin:4px 0 0;line-height:1.35;}
+.hero .big em{font-style:normal;color:var(--gold);}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+@media(max-width:620px){.stats{grid-template-columns:1fr;}}
+.stat{background:rgba(6,10,26,.45);border:1px solid var(--line);border-radius:12px;padding:10px 12px;}
+.stat .n{font-size:22px;font-weight:800;color:var(--gold);line-height:1.1;}
+.stat .t{font-size:12.5px;color:#dfe6f7;margin-top:3px;line-height:1.45;}
+.go{display:inline-block;margin-top:12px;background:var(--gold);color:#0b1733;border:0;border-radius:10px;padding:10px 14px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;}
+/* chapter chips */
+.chaps{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px;}
+.chaps a{font-size:12.5px;color:var(--white);text-decoration:none;background:var(--navy2);border:1px solid var(--line);border-radius:999px;padding:5px 10px;white-space:nowrap;}
+.chaps a:hover{border-color:var(--cyan);}
+/* sections */
+.sec{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;border-left:5px solid var(--purple);scroll-margin-top:150px;}
+.sec .num{font-size:11.5px;color:var(--mute);font-weight:800;text-transform:uppercase;letter-spacing:.6px;}
+.lead{font-size:14.5px;color:#e7edfa;}
+.wow{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:12px 0 4px;font-size:13.5px;line-height:1.6;}
+.wow b{color:var(--gold);}
+.note{font-size:12px;color:var(--mute);margin-top:8px;line-height:1.55;}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.btn{background:var(--navy3);color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn:hover{background:#21356a;}
+.seg{display:inline-flex;border:1px solid var(--cyan);border-radius:9px;overflow:hidden;}
+.seg button{background:transparent;color:var(--cyan);border:0;padding:7px 10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.seg button[aria-pressed="true"]{background:var(--cyan);color:#0b1733;}
+.btn:focus-visible,.seg button:focus-visible,.el:focus-visible,.leg button:focus-visible,.sb:focus-visible,.cyst button:focus-visible,.go:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+canvas{display:block;width:100%;height:auto;}
+/* 1 · timeline */
+.scene{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#05070f;margin-top:10px;}
+.scene .cap{position:absolute;left:10px;top:8px;right:10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.88);text-shadow:0 1px 3px #000,0 0 8px #000;pointer-events:none;}
+.tl-ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+#tl{width:100%;margin:12px 0 0;accent-color:var(--gold);}
+.marks{position:relative;height:12px;margin:0 8px;}
+.marks i{position:absolute;top:1px;width:2px;height:9px;background:#4a5578;border-radius:1px;transform:translateX(-1px);}
+.marks i.past{background:var(--gold);}
+.tl-read{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+@media(max-width:620px){.tl-read{grid-template-columns:1fr 1fr;}.tl-read .rd:last-child{grid-column:1/3;}}
+.rd{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:8px 10px;}
+.rd .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);font-weight:700;}
+.rd .v{font-size:15px;font-weight:800;color:var(--white);margin-top:1px;}
+.tl-ev{margin-top:10px;background:rgba(6,10,26,.55);border:1px solid var(--gold);border-radius:12px;padding:11px 13px;min-height:118px;}
+.tl-ev .when{font-size:12px;color:var(--gold);font-weight:800;}
+.tl-ev .tt{font-size:16px;font-weight:800;margin-top:2px;}
+.tl-ev .dd{font-size:13.5px;color:#dfe6f7;margin-top:4px;line-height:1.55;}
+.mini{display:grid;grid-template-columns:repeat(18,1fr);gap:2px;margin:8px auto 0;max-width:500px;}
+.mini span{aspect-ratio:1;border-radius:3px;background:#141d3a;font-size:clamp(6px,1.6vw,9.5px);display:flex;align-items:center;justify-content:center;color:transparent;font-weight:700;transition:background .5s,color .5s,opacity .5s;}
+.mini span.on{color:#0b1733;}
+.mini .sp,.pt .sp{height:5px;aspect-ratio:auto;background:transparent;}
+.meter{margin-top:12px;}
+.meter .lab{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:#dfe6f7;margin:4px 0;}
+.meter .lab b{color:var(--gold);}
+.zbar{position:relative;height:12px;border-radius:999px;background:#141d3a;border:1px solid var(--line);overflow:hidden;}
+.zbar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--gold));transition:width .35s;}
+.zbar .sunmark{position:absolute;left:70%;top:0;bottom:0;width:2px;background:var(--white);opacity:.8;}
+/* 2 · kitchens */
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+@media(max-width:700px){.kgrid{grid-template-columns:1fr;}}
+.kc{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:12px;border-top:4px solid var(--kc,#888);}
+.kc.wide{grid-column:1/-1;}
+.kc .hd{display:flex;gap:10px;align-items:center;}
+.kc .ic{flex:0 0 auto;font-size:24px;line-height:1;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(6,10,26,.6);}
+.kc h3{margin:0;color:var(--kc);font-size:15.5px;}
+.kc .sub{font-size:12px;color:var(--mute);}
+.kc p{font-size:13.5px;color:#e7edfa;}
+.mk{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0;}
+.mk span{font-size:11.5px;border-radius:6px;padding:2px 6px;background:rgba(255,255,255,.07);border:1px solid var(--line);}
+.pt-at{font-size:12.5px;margin-top:8px;padding:8px 10px;border-radius:9px;background:rgba(6,10,26,.55);border:1px dashed var(--line);line-height:1.55;}
+.up{color:var(--green);font-weight:700;}.lo{color:var(--amber);font-weight:700;}.dn{color:var(--mute);}
+@keyframes mosPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes mosTwinkle{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes mosPuff{from{transform:translateY(1px)}to{transform:translateY(-3px)}}
+@keyframes mosSpin{to{transform:rotate(360deg)}}
+.ic-bb{animation:mosPulse 2.6s ease-in-out infinite;}
+.ic-mx{animation:mosTwinkle 2.2s ease-in-out infinite;}
+.ic-lm{animation:mosPuff 1.8s ease-in-out infinite alternate;}
+.ic-wd{animation:mosPulse 1.4s ease-in-out infinite;}
+.ic-ns{animation:mosSpin 5s linear infinite;}
+.ic-cr{animation:mosTwinkle .9s ease-in-out infinite;}
+/* 3 · the onion */
+.onion{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start;margin-top:10px;}
+@media(max-width:700px){.onion{grid-template-columns:1fr;}}
+#onion{border-radius:12px;background:#05070f;border:1px solid var(--line);max-width:440px;margin:0 auto;}
+.oncap{font-size:12.5px;color:#dfe6f7;text-align:center;margin-top:6px;font-weight:700;}
+.onleg{display:flex;flex-wrap:wrap;gap:3px 10px;justify-content:center;margin-top:6px;font-size:11.5px;color:#dfe6f7;}
+.onleg span{display:inline-flex;align-items:center;gap:4px;}
+.onleg i,.sb i{width:11px;height:11px;border-radius:50%;display:inline-block;}
+.stg{display:grid;gap:3px;}
+.sb{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center;text-align:left;width:100%;background:transparent;border:1px solid transparent;border-radius:9px;color:var(--white);padding:6px 8px;font:inherit;font-size:13px;cursor:pointer;}
+.sb:hover{background:rgba(255,255,255,.04);}
+.sb .du{color:var(--gold);font-weight:800;font-size:12px;white-space:nowrap;}
+.sb[aria-current="true"]{border-color:var(--gold);background:rgba(245,197,66,.09);}
+.stgd{margin-top:8px;background:rgba(6,10,26,.55);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.55;min-height:96px;}
+.stgd b{color:var(--gold);}
+.sq{margin-top:6px;}
+.sq .r{display:grid;grid-template-columns:150px 1fr 150px;gap:8px;align-items:center;font-size:12.5px;margin:5px 0;}
+.sq .r .nm{color:#dfe6f7;}
+.sq .r .sz{color:var(--gold);font-weight:700;}
+@media(max-width:620px){.sq .r{grid-template-columns:96px 1fr 104px;font-size:11.5px;}}
+.sq .b{height:10px;border-radius:999px;background:#141d3a;overflow:hidden;}
+.sq .b i{display:block;height:100%;border-radius:999px;}
+#valley{width:100%;height:auto;display:block;background:#05070f;border:1px solid var(--line);border-radius:12px;margin-top:8px;}
+/* 4 · beyond iron */
+#race{background:#05070f;border:1px solid var(--line);border-radius:12px;margin:10px 0 8px;}
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+@media(max-width:700px){.lanes{grid-template-columns:1fr;}}
+.lane{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;}
+.lane.s{border-top:4px solid var(--green);}.lane.r{border-top:4px solid var(--purple);}
+.lane p{margin:6px 0;color:#dfe6f7;}
+/* 5 · the cycle */
+.cyc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start;margin-top:10px;}
+@media(max-width:700px){.cyc{grid-template-columns:1fr;}}
+#cyc{width:100%;height:auto;display:block;max-width:420px;margin:0 auto;background:#05070f;border:1px solid var(--line);border-radius:12px;}
+.cyst{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.cyst button{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:999px;padding:5px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.cyst button[aria-current="true"]{border-color:var(--gold);color:var(--gold);}
+.cyp{margin-top:8px;background:rgba(6,10,26,.55);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.55;min-height:120px;}
+.cyp b{color:var(--gold);}
+/* 6 · periodic table */
+.leg{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.leg button{display:inline-flex;gap:6px;align-items:center;background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit;}
+.leg button i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+.leg button[aria-pressed="true"]{border-color:var(--gold);background:rgba(245,197,66,.14);}
+.ptwrap{overflow-x:auto;padding-bottom:4px;margin-top:10px;}
+.pt{display:grid;grid-template-columns:repeat(18,minmax(17px,1fr));gap:2px;min-width:322px;}
+.el{position:relative;aspect-ratio:1/1.05;border:0;border-radius:4px;padding:0;font:800 clamp(8px,1.9vw,13px)/1 var(--ui);color:#0b1733;cursor:pointer;background:#555;transition:opacity .25s;}
+.el small{position:absolute;top:2px;left:3px;font-size:clamp(5px,.95vw,8px);font-weight:600;opacity:.75;}
+@media(max-width:600px){.el small{display:none;}}
+.el.rad{background:repeating-linear-gradient(45deg,#2a3354 0 3px,#3d4870 3px 6px);color:#c9d2e6;}
+.el.hm{background:#4b557a;color:#e3e8f5;}
+.el.dim{opacity:.15;}
+.el.cur{outline:2px solid var(--white);outline-offset:1px;z-index:1;}
+.pt .ph{display:flex;align-items:center;justify-content:center;font-size:clamp(5px,.9vw,8px);color:var(--mute);border:1px dashed var(--line);border-radius:4px;}
+.pick{background:var(--navy3);color:var(--white);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit;font-size:13px;max-width:100%;}
+.ptd{margin-top:10px;background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start;}
+.ptd .big{width:72px;height:76px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#0b1733;font-weight:800;font-size:26px;line-height:1.1;}
+.ptd .big small{font-size:11px;font-weight:700;}
+.ptd .nm{font-size:17px;font-weight:800;}
+.ptd .ow{font-size:13.5px;color:var(--gold);margin-top:2px;font-weight:700;}
+.ptd .shares{display:flex;height:10px;border-radius:999px;overflow:hidden;margin:8px 0 4px;max-width:320px;}
+.ptd .shares i{display:block;height:100%;}
+.ptd p{font-size:13.5px;color:#e7edfa;margin:8px 0 0;}
+.kchip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;color:#0b1733;margin:4px 4px 0 0;}
+/* 7 · you */
+.you{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;margin-top:12px;align-items:start;}
+@media(max-width:700px){.you{grid-template-columns:1fr;}}
+.waf{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;max-width:340px;}
+.waf span{aspect-ratio:1;border-radius:4px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;color:rgba(11,23,51,.8);transition:background .5s;}
+.wafk{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;color:#dfe6f7;}
+.wafk span,.ekey span{display:inline-flex;align-items:center;gap:5px;}
+.wafk i,.ekey i{width:11px;height:11px;border-radius:3px;display:inline-block;}
+.wafs{font-size:14px;line-height:1.6;margin:0 0 8px;}
+.wafs b{color:var(--gold);}
+.blist{list-style:none;padding:0;margin:0;font-size:13px;}
+.blist li{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid rgba(51,64,107,.6);}
+.blist .sy{font-weight:800;border-radius:6px;text-align:center;color:#0b1733;padding:2px 0;}
+.blist .kg{color:var(--gold);font-weight:800;white-space:nowrap;text-align:right;}
+.blist .ro{color:#dfe6f7;}
+.blist .ki{font-size:11.5px;color:var(--mute);}
+.quote{font-size:16px;font-style:italic;text-align:center;margin:14px 0 4px;color:var(--white);}
+/* 8 · earth & stuff */
+.ebar{display:flex;height:34px;border-radius:9px;overflow:hidden;margin-top:8px;border:1px solid var(--line);}
+.ebar span{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#0b1733;white-space:nowrap;overflow:hidden;border-right:1px solid rgba(11,23,51,.55);}
+.ekey{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:12px;color:#dfe6f7;}
+.ogrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;}
+@media(min-width:760px){.ogrid{grid-template-columns:repeat(4,1fr);}}
+.oc{background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:10px 11px;}
+.oc .oe{font-size:26px;line-height:1.1;}
+.oc b{display:block;font-size:14px;margin-top:2px;}
+.oc p{font-size:12.5px;color:#dfe6f7;margin:6px 0 0;line-height:1.5;}
+.oc .kis{font-size:14px;margin-top:6px;letter-spacing:2px;}
+.ech{display:inline-block;font-weight:800;font-size:11.5px;border-radius:5px;padding:1px 6px;color:#0b1733;margin:4px 3px 0 0;}
+/* 9 · tonight */
+.tn{display:grid;gap:8px;margin-top:10px;}
+.tnr{display:grid;grid-template-columns:46px 1fr;gap:11px;background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:9px 11px;align-items:start;}
+.tnr.below{opacity:.55;}
+.tnr .ic svg{width:46px;height:46px;display:block;border-radius:9px;background:rgba(6,10,26,.6);}
+.tnr .st{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--purple);font-weight:800;}
+.tnr .nm{font-size:14.5px;font-weight:800;}
+.tnr .wh{font-size:12.5px;margin-top:2px;}
+.tnr .sy{font-size:12.5px;color:#dfe6f7;margin-top:3px;line-height:1.5;}
+/* 10 · myths */
+.myth{background:rgba(255,107,107,.08);border:1px solid var(--red);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.6;color:#e7edfa;}
+.myth b{color:#ffb4b4;}
+.open{background:rgba(91,214,224,.08);border:1px solid var(--cyan);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.6;}
+.open b{color:var(--cyan);}
+</style>
+<!-- Social sharing / SEO metadata -->
+<link rel="canonical" href="https://afbooster.online/made-of-stars.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SCOB Night-Sky">
+<meta property="og:title" content="Made of Stars — Where Gold, Iron &amp; You Came From — SCOB">
+<meta property="og:description" content="How the universe made the elements — and how they ended up in the Earth, in every living thing and in you. A playable 13.8-billion-year timeline from the Science Centre Observatory, Singapore.">
+<meta property="og:url" content="https://afbooster.online/made-of-stars.html">
+<meta property="og:image" content="https://afbooster.online/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Made of Stars — Where Gold, Iron &amp; You Came From — SCOB">
+<meta name="twitter:description" content="How the universe made the elements — and how they ended up in the Earth, in every living thing and in you. A playable 13.8-billion-year timeline from the Science Centre Observatory, Singapore.">
+<meta name="twitter:image" content="https://afbooster.online/og-image.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>⚛️ Made of Stars</h1>
+    <div class="loc">Where the gold in a ring, the iron in your blood and the calcium in your bones were made — a 13.8-billion-year story you can play. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="cosmic-extremes.html">🌀 Nebulae &amp; black holes</a>
+      <a href="solar-system.html">🪐 Solar system</a>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="heroT">
+    <div class="kick">The short version</div>
+    <p class="big" id="heroT">Almost every atom in you was <em>cooked inside a star</em> that lived and died before the Sun was born.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">≈ 90%</div><div class="t">of your weight was forged inside stars. The rest is hydrogen, made in the Big Bang itself.</div></div>
+      <div class="stat"><div class="n">6 in 10</div><div class="t">of the atoms in your body are hydrogen — 13.8 billion years old, older than any star.</div></div>
+      <div class="stat"><div class="n">4.6 billion+</div><div class="t">years: the youngest any iron atom in your blood can be. All of it was made before the Sun formed.</div></div>
+    </div>
+    <button type="button" class="go" id="heroPlay">▶ Play the 13.8-billion-year story</button>
+  </section>
+
+  <nav class="chaps" aria-label="Chapters">
+    <a href="#ch-time">⏳ Timeline</a><a href="#ch-kitchens">🍳 Six kitchens</a><a href="#ch-onion">🧅 Inside a giant star</a><a href="#ch-beyond">⚛️ Beyond iron</a><a href="#ch-cycle">♻️ The recycling</a><a href="#ch-table">🧪 Periodic table</a><a href="#ch-you">🧍 You</a><a href="#ch-earth">🌍 Earth &amp; your stuff</a><a href="#ch-tonight">🔭 Tonight</a><a href="#ch-myths">🤔 Myths</a>
+  </nav>
+
+  <section class="sec" id="ch-time" style="border-left-color:var(--gold)">
+    <div class="num">Chapter 1</div>
+    <h2>⏳ 13.8 billion years, from the Big Bang to you</h2>
+    <p class="lead">Press play, or drag the slider. Watch the periodic table fill in as each cosmic “kitchen” switches on — and the heavy-element meter creep up as generation after generation of stars live and die.</p>
+    <div class="scene">
+      <canvas id="scene" role="img" aria-label="Illustration of the universe at this moment"></canvas>
+      <div class="cap" id="scap"></div>
+    </div>
+    <div class="tl-ctl">
+      <button type="button" class="btn" id="tlPlay" aria-label="Play">▶ Play</button>
+      <button type="button" class="btn" id="tlPrev" aria-label="Previous moment">⏮</button>
+      <button type="button" class="btn" id="tlNext" aria-label="Next moment">⏭</button>
+      <div class="seg" role="group" aria-label="Timeline scale">
+        <button type="button" id="mStory" aria-pressed="true">Story stops</button>
+        <button type="button" id="mScale" aria-pressed="false">True to scale</button>
+      </div>
+    </div>
+    <input type="range" id="tl" min="0" max="23" step="1" value="0" aria-label="Time since the Big Bang">
+    <div class="marks" id="marks" aria-hidden="true"></div>
+    <div class="tl-read">
+      <div class="rd"><div class="k">Universe age</div><div class="v" id="rAge">—</div></div>
+      <div class="rd"><div class="k">How long ago</div><div class="v" id="rAgo">—</div></div>
+      <div class="rd"><div class="k" title="The universe’s whole history squeezed into one calendar year">Cosmic calendar ⓘ</div><div class="v" id="rCal">—</div></div>
+    </div>
+    <div class="tl-ev" aria-live="polite">
+      <div class="when" id="evW"></div>
+      <div class="tt" id="evT"></div>
+      <div class="dd" id="evD"></div>
+    </div>
+    <p class="note" id="scaleNote" hidden>True to scale: on this bar the Sun forms two-thirds of the way along, and all of human history — the last 300,000 years — is the final 0.002%, far thinner than a single pixel. Tap ⏭ to step into it.</p>
+    <h3>Kinds of atoms that exist: <span id="rKinds">0</span> of the 92 that nature makes</h3>
+    <div class="mini" id="mini" aria-hidden="true"></div>
+    <div class="meter">
+      <div class="lab"><span>Heavy elements in the gas — everything except hydrogen &amp; helium</span><b id="rZ">0%</b></div>
+      <div class="zbar"><div class="fill" id="zfill"></div><i class="sunmark"></i></div>
+      <div class="lab small mute"><span>0%</span><span>☀️ the Sun’s birth cloud ≈ 1.4%</span><span>2%</span></div>
+    </div>
+    <p class="note">Cosmic calendar: squeeze the universe’s whole history into one year, with the Big Bang at midnight on 1 January and now at midnight on 31 December — an idea made famous by Carl Sagan. Even today about 98% of ordinary matter is still the Big Bang’s hydrogen and helium. The heavy-element meter is schematic: the real build-up varied from place to place.</p>
+  </section>
+
+  <section class="sec" id="ch-kitchens" style="border-left-color:var(--orange)">
+    <div class="num">Chapter 2</div>
+    <h2>🍳 Six cosmic kitchens</h2>
+    <p class="lead">The old one-line story — “stars make the elements and supernovae scatter them” — is only part of the truth. Astronomers now count six different kitchens, and some are surprising: <b class="w">most of the gold on Earth was never inside a supernova at all.</b></p>
+    <div class="kgrid">
+      <article class="kc" style="--kc:#6ea8ff">
+        <div class="hd"><div class="ic ic-bb" aria-hidden="true">💥</div><div><h3>The Big Bang</h3><div class="sub">The first 20 minutes · 13.8 billion years ago</div></div></div>
+        <p>For a few minutes the whole universe was a nuclear furnace. Protons and neutrons fused into helium — then the universe expanded, cooled, and the cooking stopped. Out came about <b class="w">three-quarters hydrogen and one-quarter helium</b> by weight, plus a trace of lithium. Nothing heavier.</p>
+        <div class="mk"><span>H hydrogen</span><span>He helium</span><span>Li a little lithium</span></div>
+        <div class="pt-at" id="pa-bb">Working out tonight’s sky…</div>
+      </article>
+      <article class="kc" style="--kc:#ff9d3c">
+        <div class="hd"><div class="ic ic-mx" aria-hidden="true">🌟</div><div><h3>Giant stars that explode</h3><div class="sub">Stars over ~8 times the Sun’s mass · core-collapse supernovae</div></div></div>
+        <p>A giant star fuses ever-heavier elements in its core — helium, then carbon, neon, oxygen and silicon — until it is left with iron, which gives out no energy when fused. The core collapses in under a second and the star blows itself apart, flinging its new elements into space and cooking more in the blast.</p>
+        <div class="mk"><span>O oxygen</span><span>Ne neon</span><span>Mg magnesium</span><span>Si silicon</span><span>S sulfur</span><span>Ca calcium</span><span>P phosphorus</span><span>Na sodium</span><span>K potassium</span><span>+ part of the C &amp; Fe</span></div>
+        <p class="small mute">Supernova 1987A made about 0.07 Suns’ worth of radioactive nickel that decayed into iron — some 23,000 Earths of it.</p>
+        <div class="pt-at" id="pa-mx">Working out tonight’s sky…</div>
+      </article>
+      <article class="kc" style="--kc:#5fd38a">
+        <div class="hd"><div class="ic ic-lm" aria-hidden="true">💨</div><div><h3>Sun-like stars that die gently</h3><div class="sub">Stars of about 1–8 Suns · red giants → planetary nebulae</div></div></div>
+        <p>Smaller stars never explode. As bloated red giants they <b class="w">slow-cook</b> heavy elements by catching neutrons one at a time, then puff their outer layers — rich in carbon, nitrogen and those heavy atoms — gently into space as a glowing planetary nebula, leaving a white-dwarf ember behind. This quiet kitchen made <b class="w">about half of everything heavier than iron</b>.</p>
+        <div class="mk"><span>C carbon</span><span>N nitrogen</span><span>Sr strontium</span><span>Ba barium</span><span>Pb lead</span><span>+ half the heavy elements</span></div>
+        <p class="small mute">The proof came in 1952, when technetium — an element that decays away within a few million years — was found in the light of red giants. It can only be there if the star is making it.</p>
+        <div class="pt-at" id="pa-lm">Working out tonight’s sky…</div>
+      </article>
+      <article class="kc" style="--kc:#5bd6e0">
+        <div class="hd"><div class="ic ic-wd" aria-hidden="true">⚪</div><div><h3>Exploding white dwarfs</h3><div class="sub">Type Ia supernovae · dead stars in close pairs</div></div></div>
+        <p>A white dwarf is the Earth-sized ember of a dead Sun-like star. Give it a close companion and it can steal gas (or merge with another white dwarf) until it nears about 1.4 times the Sun’s mass — then it detonates completely, leaving nothing behind but a cloud of new elements, above all <b class="w">iron</b>.</p>
+        <div class="mk"><span>Fe about half the iron</span><span>Mn manganese</span><span>Ni nickel</span><span>Cr chromium</span><span>+ some Si, S, Ca</span></div>
+        <p class="small mute">Tycho Brahe’s “new star” of 1572 was one of these — confirmed in 2008 from its light echo, still bouncing off distant dust clouds four centuries later.</p>
+        <div class="pt-at" id="pa-wd">Working out tonight’s sky…</div>
+      </article>
+      <article class="kc" style="--kc:#b79cff">
+        <div class="hd"><div class="ic ic-ns" aria-hidden="true">💫</div><div><h3>Colliding neutron stars</h3><div class="sub">Kilonovae · the gold mines of the universe</div></div></div>
+        <p>A neutron star is the city-sized core left behind when a giant star explodes. When two of them orbit each other they slowly spiral together and smash. The wreckage is so flooded with neutrons that atoms swell all the way up to <b class="w">gold, platinum and uranium</b> in about a second.</p>
+        <div class="mk"><span>Au gold</span><span>Pt platinum</span><span>U uranium</span><span>I iodine</span><span>Eu europium</span><span>+ many rare earths</span></div>
+        <p class="small mute">On 17 August 2017 detectors felt the gravitational waves of one such crash, 130 million light-years away (GW170817), and telescopes then watched the glow of freshly made heavy elements. One estimate: about 16,000 Earths’ worth of heavy elements, around 10 Earths of them gold and platinum. Rare, fast-spinning collapsing stars may add some gold too — the split is still being worked out.</p>
+        <div class="pt-at" id="pa-ns">Working out tonight’s sky…</div>
+      </article>
+      <article class="kc" style="--kc:#ff8ac2">
+        <div class="hd"><div class="ic ic-cr" aria-hidden="true">⚡</div><div><h3>Cosmic-ray collisions</h3><div class="sub">Atoms chipped apart in space</div></div></div>
+        <p>Cosmic rays are atomic nuclei flung out by supernovae at nearly the speed of light. When one slams into a carbon or oxygen atom drifting in space, it chips off small fragments. That is where nearly all <b class="w">beryllium and boron</b>, and some lithium, come from — stars cannot make them; they destroy them.</p>
+        <div class="mk"><span>Be beryllium</span><span>B boron</span><span>Li some lithium</span></div>
+        <div class="pt-at">You can’t point a telescope at this kitchen — but it reaches you: cosmic rays striking our atmosphere make particles called muons, and a steady stream of them passes through your body every second.</div>
+      </article>
+      <article class="kc wide" style="--kc:#8f9abb">
+        <div class="hd"><div class="ic" aria-hidden="true">🧪</div><div><h3>…and a tiny seventh kitchen: us</h3><div class="sub">Nuclear reactors &amp; particle accelerators · since 1937</div></div></div>
+        <p>Technetium and promethium were made in stars too, but every form of them decays away, so all the star-made atoms are long gone. Today we make them — and every element beyond uranium — in reactors and accelerators. The speck of americium inside most smoke alarms is one.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="ch-onion" style="border-left-color:var(--pink)">
+    <div class="num">Chapter 3</div>
+    <h2>🧅 Inside a giant star: the onion, and the iron wall</h2>
+    <p class="lead">Follow a star 25 times the Sun’s mass through its life. Each new fuel burns hotter and faster than the last — by the end, a whole stage is over in less than a day.</p>
+    <div class="row"><button type="button" class="btn" id="onPlay">▶ Play its life</button><button type="button" class="btn" id="onPrev" aria-label="Previous stage">◀ Stage</button><button type="button" class="btn" id="onNext" aria-label="Next stage">Stage ▶</button></div>
+    <div class="onion">
+      <div><canvas id="onion" role="img" aria-label="Cross-section of a giant star, showing its layers"></canvas><div class="oncap" id="onCap"></div><div class="onleg" id="onLeg" aria-hidden="true"></div></div>
+      <div><div class="stg" id="stg"></div><div class="stgd" id="stgD" aria-live="polite"></div></div>
+    </div>
+    <h3>If its hydrogen-burning life were squeezed into one year…</h3>
+    <div class="sq" id="sq"></div>
+    <p class="note">Stage lengths for a 25-solar-mass star from the models of Woosley, Heger &amp; Weaver (2002); bars on a logarithmic scale. The layers are drawn to show their order, not to scale.</p>
+    <h3>Why it all stops at iron</h3>
+    <svg id="valley" viewBox="0 0 360 214" role="img" aria-label="The nuclear energy valley: light elements high on the left, iron and nickel at the bottom, heavy elements rising again on the right"></svg>
+    <p>Think of a valley. Fusing light nuclei together rolls them <b class="w">downhill</b>: every step releases energy, and that energy is what makes a star shine. <b class="w">Iron, with its neighbour nickel, sits at the very bottom.</b> Fusing iron into anything heavier means pushing uphill — it costs energy instead of making it. So the moment a giant star’s core turns to iron, its power is cut, and gravity wins.</p>
+    <p class="small mute">The far side of the valley is how nuclear power works: splitting (fission) uranium also rolls downhill towards iron, and releases energy. Vertical scale squeezed so the whole curve fits.</p>
+  </section>
+
+  <section class="sec" id="ch-beyond" style="border-left-color:var(--purple)">
+    <div class="num">Chapter 4</div>
+    <h2>⚛️ Beyond iron: the slow lane and the fast lane</h2>
+    <p class="lead">If fusion stops at iron, how do gold and uranium exist? Not by fusing — by <b class="w">catching neutrons</b>. A nucleus swallows a neutron; sooner or later a neutron inside it turns into a proton, and the atom becomes the next element up. There are two ways to climb.</p>
+    <canvas id="race" role="img" aria-label="Two nuclei climbing from iron: the slow lane stops at bismuth, the fast lane reaches uranium"></canvas>
+    <div class="row"><button type="button" class="btn" id="raceGo">▶ Race them</button><span class="small mute" id="raceMsg" aria-live="polite">Both start at iron (26 protons).</span></div>
+    <div class="lanes">
+      <div class="lane s"><b>🐢 Slow lane — the “s-process”</b><p>Inside dying red giants. Neutrons trickle in, roughly one every few decades or centuries, so each new nucleus has time to settle before the next arrives. The climb takes thousands of years — and gets stuck at lead and bismuth.</p><div class="mk"><span>Sr strontium</span><span>Ba barium</span><span>Pb lead</span><span>Bi bismuth</span></div></div>
+      <div class="lane r"><b>🐇 Fast lane — the “r-process”</b><p>In colliding neutron stars. A flood of neutrons: hundreds caught in under a second, building wildly overweight nuclei that then decay into gold, platinum, iodine, europium, thorium and uranium.</p><div class="mk"><span>I iodine</span><span>Eu europium</span><span>Pt platinum</span><span>Au gold</span><span>U uranium</span></div></div>
+    </div>
+    <div class="wow">💡 <b>Every atom of uranium and thorium on Earth came from the fast lane</b> — the slow lane can’t get past bismuth. Their slow radioactive decay still helps keep the inside of our planet hot.</div>
+  </section>
+
+  <section class="sec" id="ch-cycle" style="border-left-color:var(--green)">
+    <div class="num">Chapter 5</div>
+    <h2>♻️ The great recycling: the cycle that made the Sun</h2>
+    <p class="lead">No single star makes much on its own. The Milky Way builds heavy elements the way a garden builds soil: stars are born from gas, cook it, and hand it back a little richer — over and over. Run the cycle.</p>
+    <div class="cyc">
+      <svg id="cyc" viewBox="0 0 340 300" role="img" aria-label="The cycle of star birth, life, death and recycling"></svg>
+      <div>
+        <div class="row"><button type="button" class="btn" id="cyGo">▶ Run the cycle</button><button type="button" class="btn" id="cyReset">↺ Reset</button></div>
+        <div class="cyst" id="cySt" role="group" aria-label="Stages of the cycle"></div>
+        <div class="cyp" id="cyP" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="wow">💡 <b>The Sun’s ancestors were mostly gentle.</b> A 2024 study counted the stars whose ashes ended up in our Solar System: about <b>93 in every 100</b> were ordinary stars that died quietly, about <b>6</b> were giants that exploded, and <b>fewer than 1</b> was an exploding white dwarf.</div>
+    <p class="note">There were no neat “generations” in reality — stars of every size were being born and dying at once for nine billion years before the Sun. The laps here are schematic.</p>
+  </section>
+
+  <section class="sec" id="ch-table" style="border-left-color:var(--cyan)">
+    <div class="num">Chapter 6</div>
+    <h2>🧪 The periodic table of where everything came from</h2>
+    <p class="lead">Every element, coloured by the kitchen that made it — two or three colours mean they shared the job. Tap a kitchen to light up its elements, or tap an element for its story.</p>
+    <div class="leg" id="leg" role="group" aria-label="Highlight the elements from one kitchen"></div>
+    <div class="ptwrap"><div class="pt" id="pt"></div></div>
+    <div class="row" style="margin-top:8px"><label class="small mute" for="ptsel">Or pick one:</label><select id="ptsel" class="pick"></select></div>
+    <div class="ptd" id="ptd" aria-live="polite"></div>
+    <p class="note">Shares are approximate — after Jennifer Johnson’s periodic table of origins (<i>Science</i>, 2019) and published slow-lane/fast-lane splits — and research keeps refining them. Striped: made in stars, but none of the star-made atoms survives. Grey: made only by people.</p>
+  </section>
+
+  <section class="sec" id="ch-you" style="border-left-color:var(--pink)">
+    <div class="num">Chapter 7</div>
+    <h2>🧍 You are made of star stuff</h2>
+    <p class="lead">An average 70 kg adult, one square for every 1%. Count by weight or by number of atoms, and colour it by element or by where each atom was made.</p>
+    <div class="row">
+      <div class="seg" role="group" aria-label="Count by"><button type="button" id="wW" aria-pressed="true">By weight</button><button type="button" id="wA" aria-pressed="false">By number of atoms</button></div>
+      <div class="seg" role="group" aria-label="Colour by"><button type="button" id="cO" aria-pressed="true">Where it was made</button><button type="button" id="cE" aria-pressed="false">Element</button></div>
+    </div>
+    <div class="you">
+      <div><div class="waf" id="waf" role="img" aria-label="One hundred squares showing what the body is made of"></div><div class="wafk" id="wafK"></div></div>
+      <div><p class="wafs" id="wafS"></p><ul class="blist" id="blist"></ul></div>
+    </div>
+    <div class="wow">💡 It is the same for all life. Every living thing is built mostly from six elements — carbon, hydrogen, nitrogen, oxygen, phosphorus and sulfur. One came from the Big Bang; the other five from stars. The magnesium at the heart of every chlorophyll molecule in a leaf was made in a giant star; the iodine your thyroid needs, in colliding neutron stars.</div>
+    <p class="quote">“We are made of star-stuff.” <span class="mute" style="font-style:normal;font-size:13px">— Carl Sagan, <i>Cosmos</i> (1980)</span></p>
+    <p class="note">Amounts are averaged reference values for a 70 kg adult; real bodies vary. By weight hydrogen is only a tenth of you — but it is the lightest atom, so it is six in every ten of your atoms.</p>
+  </section>
+
+  <section class="sec" id="ch-earth" style="border-left-color:var(--amber)">
+    <div class="num">Chapter 8</div>
+    <h2>🌍 The Earth, and the things in your hand</h2>
+    <h3>The whole Earth, by weight</h3>
+    <div class="ebar" id="ebar" role="img" aria-label="Earth by weight: iron 32%, oxygen 30%, silicon 15%, magnesium 14%, then sulfur, nickel, calcium, aluminium and the rest"></div>
+    <div class="ekey" id="ekey"></div>
+    <p>When the young Earth was molten, its iron sank to the centre to form the core — and dragged nearly all the gold and platinum down with it. There are enough precious metals in the core to coat the whole planet <b class="w">four metres deep</b>. The gold we mine arrived later, on meteorites that kept raining down for hundreds of millions of years after the core had formed.</p>
+    <div class="wow">💡 All the gold ever mined — about <b>222,600 tonnes</b> — would fit in a cube <b>22.6 m</b> on each side. The neutron-star crash of 2017 made around <b>10 Earths’ worth</b> of gold and platinum in one go.</div>
+    <h3>What’s in your hand</h3>
+    <div class="ogrid" id="ogrid"></div>
+  </section>
+
+  <section class="sec" id="ch-tonight" style="border-left-color:var(--green)">
+    <div class="num">Chapter 9</div>
+    <h2>🔭 See a star’s whole life tonight from SCOB</h2>
+    <p class="lead">Every stage of the cycle is up there somewhere. Here is where each one is, worked out on your device for the observatory deck — a ready-made route for showing visitors the life of the stars in one evening.</p>
+    <div class="row"><div class="seg" role="group" aria-label="When"><button type="button" id="tNow" aria-pressed="false">Now</button><button type="button" id="t9" aria-pressed="false">Tonight 9 pm</button></div><span class="small mute" id="tWhen"></span></div>
+    <div class="tn" id="tn"></div>
+    <p class="note">Heights are for the Science Centre Observatory, Jurong (1.33°N). Below about 20° the view passes through thick, bright city air, so low objects look dimmer than they would high up.</p>
+  </section>
+
+  <section class="sec" id="ch-myths" style="border-left-color:var(--red)">
+    <div class="num">Chapter 10</div>
+    <h2>🤔 Myths, and what we still don’t know</h2>
+    <div class="myth">🚫 <b>“All the gold came from supernovae.”</b> Probably not most of it. Ordinary supernovae turn out to be poor at making gold; the evidence points to colliding neutron stars (caught in the act in 2017), perhaps helped by rare, extreme collapsing stars.</div>
+    <div class="myth">🚫 <b>“Stars fuse their way up to gold.”</b> Fusion stops at iron. Everything heavier is built by catching neutrons — slowly in red giants, or in a flash when neutron stars collide.</div>
+    <div class="myth">🚫 <b>“The Sun will explode one day.”</b> It is far too small. In about five billion years it will swell into a red giant, puff its outer layers gently into space — handing some carbon and nitrogen back to the galaxy — and settle down as a white dwarf.</div>
+    <div class="myth">🚫 <b>“We are 100% stardust.”</b> Almost: about 90% of your weight was made in stars. But the hydrogen in you — six in every ten of your atoms — is older than any star. It came straight from the Big Bang.</div>
+    <div class="open"><b>🔬 Still being worked out:</b> how much of the gold comes from neutron-star collisions and how much from rare, exotic supernovae; what the very first stars were like (none has ever been seen directly); and the “lithium problem” — the Big Bang should have made about three times more lithium than the oldest stars show.</div>
+  </section>
+
+  <div class="foot">
+    Object heights are computed on your device for the Science Centre Observatory. Sources: element origins after J. A. Johnson, “Populating the periodic table: Nucleosynthesis of the elements”, <i>Science</i> 363, 474 (2019), and NASA Goddard’s version of her chart; slow/fast-lane shares from Simmerer et al. (2004), Sneden, Cowan &amp; Gallino (2008) and Bisterzo et al. (2011, 2014); iron split about equally between exploding white dwarfs and giant stars (Maoz &amp; Graur 2017). Burning stages of a 25-solar-mass star: Woosley, Heger &amp; Weaver (2002). GW170817: LIGO/Virgo and ESO; heavy-element and gold estimates by E. Berger (Harvard–Smithsonian CfA, 2017). The nearby merger before the Solar System: Bartos &amp; Márka, <i>Nature</i> 569, 85 (2019). The Sun’s ancestors: Fiore et al. (2024, arXiv:2406.08036). Milky Way thick disc: Xiang &amp; Rix (<i>Nature</i>, 2022). Technetium in stars: P. W. Merrill (1952). Tycho’s supernova type: Krause et al. (2008). Earth’s gold and the late meteorite bombardment: Willbold, Elliott &amp; Moorbath (<i>Nature</i>, 2011). Gold mined: World Gold Council. Body composition: averaged reference values; whole-Earth composition: Morgan &amp; Anders (1980). Betelgeuse: Joyce et al. (2020). Age of the universe: Planck (2018). Cosmic calendar after Carl Sagan, <i>Cosmos</i> (1980).<br>
+    Learn more (opens external sites): <a href="https://svs.gsfc.nasa.gov/13873/" target="_blank" rel="noopener">NASA — Origins of the Elements</a> · <a href="https://www.astronomy.ohio-state.edu/johnson.3064/nucleo/index.html" target="_blank" rel="noopener">Jennifer Johnson — The Origin of the Elements</a> · <a href="https://www.eso.org/public/news/eso1733/" target="_blank" rel="noopener">ESO — the 2017 kilonova</a>.<br>
+    Companion pages: <a href="cosmic-extremes.html">nebulae, neutron stars &amp; black holes</a> · <a href="seestar.html">how the Seestar photographs nebulae</a> · <a href="solar-system.html">the solar system</a> · <a href="scale-model.html">the scale of it all</a>.<br>
+    <a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+/* Made of Stars — where the elements came from. Everything here runs on the device; the only
+ * astronomy is astro-core.js (heights for the "see it tonight" list). Test hook: window.MOS. */
+(function () {
+'use strict';
+var A = window.Astro;
+var RM = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+function $(id) { return document.getElementById(id); }
+function now() { return (window.performance && performance.now ? performance.now() : Date.now()) / 1000; }
+function fmtInt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function rng(seed) { var s = seed >>> 0; return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+
+/* ── Time ─────────────────────────────────────────────────────────────── */
+var T0 = 13.8;                          /* age of the universe, billion years (Planck 2018: 13.787) */
+var YR = 1e-9, MIN = YR / 525960;       /* one year and one minute, in billions of years */
+var NOWY = new Date().getUTCFullYear();
+function ago(y) { return T0 - y * YR; } /* the universe's age y years ago */
+
+/* ── The kitchens ─────────────────────────────────────────────────────── */
+/* start = cosmic age (billion years) at which the kitchen first switches on (approximate) */
+var K = {
+  bb:  { n: 'The Big Bang',            w: 'the Big Bang',                 ic: '💥', c: '#6ea8ff', start: 3 * MIN },
+  mx:  { n: 'Exploding giant stars',   w: 'exploding giant stars',        ic: '🌟', c: '#ff9d3c', start: 0.2 },
+  lm:  { n: 'Dying Sun-like stars',    w: 'gently dying Sun-like stars',  ic: '💨', c: '#5fd38a', start: 0.5 },
+  wd:  { n: 'Exploding white dwarfs',  w: 'exploding white dwarfs',       ic: '⚪', c: '#5bd6e0', start: 1.0 },
+  ns:  { n: 'Colliding neutron stars', w: 'colliding neutron stars',      ic: '💫', c: '#b79cff', start: 0.3 },
+  cr:  { n: 'Cosmic rays',             w: 'cosmic-ray collisions',        ic: '⚡', c: '#ff8ac2', start: 0.35 },
+  rad: { n: 'Made, but none left',     w: '',                             ic: '⏳', c: '#3d4870', start: 0.3 },
+  hm:  { n: 'Made by people',          w: 'people',                       ic: '🧪', c: '#4b557a', start: ago(NOWY - 1937) }
+};
+var KORD = ['bb', 'mx', 'lm', 'wd', 'ns', 'cr', 'rad', 'hm'];
+var RADBG = 'repeating-linear-gradient(45deg,#2a3354 0 3px,#3d4870 3px 6px)';
+
+/* ── The 118 elements: symbol, name, kitchens with shares in tenths ─────────
+ * After J. A. Johnson (Science 363, 474, 2019) and NASA Goddard's chart of it; the
+ * neutron-capture elements use published slow/fast-lane (s/r) splits. Approximate. */
+var ELS = ('H Hydrogen bb10|He Helium bb9lm1|Li Lithium lm6bb3cr1|Be Beryllium cr10|B Boron cr8mx2|C Carbon lm5mx5|N Nitrogen lm7mx3|O Oxygen mx10|F Fluorine lm5mx5|Ne Neon mx10|' +
+  'Na Sodium mx8lm2|Mg Magnesium mx10|Al Aluminium mx9lm1|Si Silicon mx8wd2|P Phosphorus mx10|S Sulfur mx7wd3|Cl Chlorine mx8wd2|Ar Argon mx7wd3|' +
+  'K Potassium mx9wd1|Ca Calcium mx7wd3|Sc Scandium mx9wd1|Ti Titanium mx7wd3|V Vanadium mx6wd4|Cr Chromium wd5mx5|Mn Manganese wd8mx2|Fe Iron wd6mx4|Co Cobalt mx5wd5|Ni Nickel wd6mx4|' +
+  'Cu Copper mx8lm2|Zn Zinc mx8lm2|Ga Gallium mx6lm4|Ge Germanium mx5lm5|As Arsenic mx4lm3ns3|Se Selenium mx5ns3lm2|Br Bromine ns6mx2lm2|Kr Krypton lm4mx3ns3|' +
+  'Rb Rubidium ns5lm3mx2|Sr Strontium lm7mx2ns1|Y Yttrium lm7ns3|Zr Zirconium lm8ns2|Nb Niobium lm7ns3|Mo Molybdenum lm5ns5|Tc Technetium rad10|Ru Ruthenium ns7lm3|Rh Rhodium ns9lm1|' +
+  'Pd Palladium ns5lm5|Ag Silver ns8lm2|Cd Cadmium lm5ns5|In Indium ns6lm4|Sn Tin lm6ns4|Sb Antimony ns7lm3|Te Tellurium ns8lm2|I Iodine ns10|Xe Xenon ns8lm2|' +
+  'Cs Caesium ns8lm2|Ba Barium lm8ns2|La Lanthanum lm7ns3|Ce Cerium lm8ns2|Pr Praseodymium lm5ns5|Nd Neodymium lm6ns4|Pm Promethium rad10|Sm Samarium ns7lm3|Eu Europium ns10|' +
+  'Gd Gadolinium ns8lm2|Tb Terbium ns9lm1|Dy Dysprosium ns9lm1|Ho Holmium ns9lm1|Er Erbium ns8lm2|Tm Thulium ns9lm1|Yb Ytterbium ns7lm3|Lu Lutetium ns8lm2|' +
+  'Hf Hafnium lm5ns5|Ta Tantalum ns6lm4|W Tungsten lm6ns4|Re Rhenium ns9lm1|Os Osmium ns9lm1|Ir Iridium ns10|Pt Platinum ns10|Au Gold ns10|Hg Mercury lm6ns4|Tl Thallium lm7ns3|' +
+  'Pb Lead lm8ns2|Bi Bismuth lm5ns5|Po Polonium rad10|At Astatine rad10|Rn Radon rad10|Fr Francium rad10|Ra Radium rad10|Ac Actinium rad10|Th Thorium ns10|Pa Protactinium rad10|U Uranium ns10|' +
+  'Np Neptunium hm10|Pu Plutonium hm10|Am Americium hm10|Cm Curium hm10|Bk Berkelium hm10|Cf Californium hm10|Es Einsteinium hm10|Fm Fermium hm10|Md Mendelevium hm10|No Nobelium hm10|Lr Lawrencium hm10|' +
+  'Rf Rutherfordium hm10|Db Dubnium hm10|Sg Seaborgium hm10|Bh Bohrium hm10|Hs Hassium hm10|Mt Meitnerium hm10|Ds Darmstadtium hm10|Rg Roentgenium hm10|Cn Copernicium hm10|' +
+  'Nh Nihonium hm10|Fl Flerovium hm10|Mc Moscovium hm10|Lv Livermorium hm10|Ts Tennessine hm10|Og Oganesson hm10').split('|').map(function (s, i) {
+  var p = s.split(' '), o = [], m, re = /([a-z]+)(\d+)/g;
+  while ((m = re.exec(p[2]))) o.push([m[1], +m[2] / 10]);
+  return { z: i + 1, s: p[0], n: p[1], o: o };
+});
+/* the 19 elements listed for the body below */
+var BODYZ = [8, 6, 1, 7, 20, 15, 19, 16, 11, 17, 12, 26, 30, 29, 53, 34, 25, 42, 27];
+
+var NOTE = {
+  1: 'The oldest atoms in you. Stars burn hydrogen; they never make it — every hydrogen atom is left over from the Big Bang. About six in every ten atoms in your body are hydrogen.',
+  2: 'Made in the Big Bang’s first minutes, which is why about a quarter of all ordinary matter is helium. The helium in a party balloon has a twist: it was made underground, shot out as alpha particles by slowly decaying uranium and thorium — which were themselves made in colliding neutron stars.',
+  3: 'The Big Bang made a little; more came from dying stars (partly through the outbursts called novae) and from cosmic rays. Theory predicts about three times more Big Bang lithium than the oldest stars show — the unsolved “lithium problem”. It is in your phone battery.',
+  4: 'Almost no star makes beryllium — it is chipped off bigger atoms by cosmic rays in space.',
+  5: 'Chipped out of bigger atoms by cosmic rays; giant stars add a little through the neutrino blast of their supernovae.',
+  6: 'The backbone of every living thing. Pencil “lead” and diamonds are pure carbon.',
+  7: 'It is in every protein and every rung of your DNA — and makes up 78% of the air.',
+  8: 'Spread through space when giant stars explode. About two-thirds of your weight, mostly in water — and nearly half the weight of the rocks under your feet.',
+  10: 'It glows orange-red in neon signs.',
+  11: 'Half of table salt.',
+  12: 'It sits at the centre of every chlorophyll molecule — the reason leaves are green.',
+  14: 'With oxygen it builds most of the rock beneath your feet — and every computer chip.',
+  15: 'It holds your DNA together and carries energy in every cell (as ATP).',
+  16: 'It is in your hair and nails.',
+  17: 'The other half of table salt — and of your stomach acid.',
+  19: 'It keeps your nerves firing; bananas are rich in it.',
+  20: 'About a kilogram of it builds your bones and teeth.',
+  24: 'It is what makes stainless steel stainless.',
+  26: 'About 4 g of it carries oxygen in your blood — roughly the iron in a small nail. It is also about a third of the whole Earth’s weight.',
+  28: 'Much of Earth’s core is iron and nickel.',
+  29: 'The wiring in your walls.',
+  30: 'About 2 g of it keeps hundreds of your enzymes working.',
+  38: 'Strontium is what makes red fireworks red.',
+  43: 'Made in red giants — spotted in their light in 1952, the first proof that stars make elements. But every form of technetium decays within a few million years, so none survives from before the Earth. Ours is made in reactors, and used every day in hospital scans.',
+  53: 'Your body holds about 20 mg of it, mostly in your thyroid — a little cosmic treasure in every one of us.',
+  56: 'It gives fireworks their green, and patients drink a barium “meal” to show up on X-rays.',
+  60: 'It is in the powerful magnets in phones, earbuds and electric motors.',
+  61: 'Made by neutron-catching in stars, but every form of promethium decays within a few decades, so none of the star-made atoms is left. Ours comes from reactors.',
+  63: 'Astronomers use it as the fingerprint of the fast lane in very old stars.',
+  77: 'A worldwide layer of iridium-rich dust marks the asteroid strike that ended the dinosaurs.',
+  78: 'It cleans the exhaust in car catalytic converters.',
+  79: 'The 2017 collision alone made about ten Earths’ worth of gold and platinum. Most of Earth’s own gold sank into the core; what we mine was delivered later by meteorites.',
+  82: 'The end of the slow lane’s road. Lead is also where uranium and thorium end up after billions of years of decay.',
+  83: 'The heaviest element the slow lane can reach — it gets stuck here.',
+  86: 'Made by the fast lane, but short-lived. The radon that seeps from some rocks is re-made all the time as uranium in the ground slowly decays.',
+  88: 'Made by the fast lane, but short-lived; what exists on Earth is re-made as uranium slowly decays. Marie and Pierre Curie discovered it in 1898.',
+  90: 'Only the fast lane can make thorium. Its slow decay helps keep the Earth’s interior hot.',
+  92: 'Only the fast lane — colliding neutron stars — can make uranium. Its slow decay helps heat the Earth’s interior, and it fuels nuclear power stations.',
+  93: 'Made in nuclear reactors (a few atoms also form naturally in uranium ore).',
+  94: 'Made in nuclear reactors (a few atoms also form naturally in uranium ore).',
+  95: 'Made in nuclear reactors — a speck of it sits in most smoke alarms.'
+};
+
+/* ── The timeline: 24 story stops (a = cosmic age in billions of years) ───── */
+var EV = [
+  { a: 0, e: 'bang', fx: { he: 0 }, w: '13.8 billion years ago', t: 'The Big Bang', cap: 'The beginning — everything unimaginably hot and dense',
+    d: 'Everything — all the matter and energy there will ever be — starts out unimaginably hot and dense, and begins to expand.' },
+  { a: 3 * MIN, e: 'bang', fx: { he: 0.3 }, w: '3 minutes after the Big Bang', t: 'The first nuclei: hydrogen, helium, a pinch of lithium', cap: 'Protons, neutrons and new helium nuclei — about a billion °C',
+    d: 'For about 20 minutes the whole universe is a nuclear furnace. Protons and neutrons fuse into helium until expansion cools everything and the cooking stops — about 75% hydrogen and 25% helium by weight, plus a trace of lithium. Nothing heavier yet.' },
+  { a: 380000 * YR, e: 'fog', fx: {}, w: '380,000 years after', t: 'The first atoms — light breaks free', cap: 'The afterglow is set free; the first atoms drift through the dark',
+    d: 'Until now the universe was a glowing fog. Now it is cool enough for electrons to settle around nuclei, making the first atoms, and light streams out freely. That light still reaches us, stretched into faint microwaves: the afterglow of the Big Bang.' },
+  { a: 0.1, e: 'dark', w: '100 million years after', t: 'The dark ages', cap: 'The dark ages — gravity gathers the gas into clumps',
+    d: 'No stars yet — just dark hydrogen and helium gas. Gravity slowly pulls it into clumps.' },
+  { a: 0.18, e: 'dawn', fx: {}, w: 'About 150–200 million years after', t: 'The first stars switch on', cap: 'Cosmic dawn — giant blue first stars',
+    d: 'The densest clumps collapse and ignite. Made of pure Big Bang gas, the first stars were probably huge, blue and short-lived — burning out in a few million years.' },
+  { a: 0.2, e: 'dawn', fx: { sn: 1 }, w: 'Soon after', t: 'The first supernovae: the first oxygen, carbon and iron', cap: 'The first supernovae scatter the first heavy elements',
+    d: 'The first giant stars explode, scattering the universe’s first heavy elements — oxygen, carbon, magnesium, silicon, calcium, iron. The next stars are born from slightly “seasoned” gas.' },
+  { a: 0.3, e: 'dawn', fx: { sn: 1, gw: 1 }, w: 'A few hundred million years after (approx.)', t: 'The first neutron stars collide: the first gold', cap: 'Neutron stars collide — the first gold',
+    d: 'Neutron stars left by those first supernovae begin to spiral together and smash, making the first gold, platinum and uranium. Some of the oldest stars we can find already carry their traces.' },
+  { a: 0.8, e: 'galaxy', w: '13 billion years ago', t: 'Our Milky Way takes shape', cap: 'A young galaxy — stars are born, cook, die and recycle',
+    d: 'Gas and young star clusters gather into the galaxy we live in. A 2022 study of a quarter of a million stars found its thick disc began forming about 13 billion years ago.' },
+  { a: 1.5, e: 'galaxy', w: 'About 12 billion years ago', t: 'All the kitchens are cooking', cap: 'A young galaxy — stars are born, cook, die and recycle',
+    d: 'Sun-like stars have now had time to die gently, adding carbon, nitrogen, barium and lead; white dwarfs have begun exploding, adding iron. Each new generation of stars is born a little richer in heavy elements than the last.' },
+  { a: 5, e: 'galaxy', w: 'About 9 billion years ago', t: 'The great recycling', cap: 'Generation after generation — the heavy elements build up',
+    d: 'Billions of stars are born, cook, die and hand their ashes back. Slowly, heavy elements build up — to about 1% of the gas.' },
+  { a: T0 - 4.66, e: 'galaxy', fx: { gw: 1 }, w: 'About 4.7 billion years ago (approx.)', t: 'A gold delivery for our future home', cap: 'Two neutron stars collide near our future birth cloud',
+    d: 'Two neutron stars collide perhaps 1,000 light-years from the gas cloud that will become our Solar System, sprinkling in gold, platinum and iodine. One study estimates it supplied about 0.3% of the heaviest elements on Earth — an eyelash’s worth in each of us, mostly iodine.' },
+  { a: T0 - 4.567, e: 'sun', w: '4.6 billion years ago', t: 'The Sun and planets are born', cap: 'The newborn Sun and its disc of planet-building dust',
+    d: 'A cloud of this enriched gas — about 98.6% hydrogen and helium, 1.4% everything else — collapses. Its centre becomes the Sun; a spinning disc of dust around it clumps into planets. Every atom of iron, calcium and gold in you was already in that cloud.' },
+  { a: T0 - 4.54, e: 'earth', fx: { core: 1 }, w: '4.54 billion years ago', t: 'Earth forms — and swallows its gold', cap: 'Cut-away: the molten Earth’s iron sinks to form the core',
+    d: 'The young Earth is molten. Its heavy iron sinks to the centre to form the core, dragging nearly all the gold and platinum down with it.' },
+  { a: T0 - 4.0, e: 'earth', fx: { meteor: 1 }, w: 'About 4 billion years ago', t: 'Meteorites bring gold back to the surface', cap: 'A rain of meteorites brings precious metals back',
+    d: 'Hundreds of millions of years later, a heavy rain of meteorites delivers fresh precious metals to the crust. Much of the gold we mine today arrived this way.' },
+  { a: T0 - 3.5, e: 'earth', fx: { life: 1 }, w: 'At least 3.5 billion years ago', t: 'Life begins', cap: 'Life begins in the oceans',
+    d: 'Simple microbes appear in the oceans, built from star-made carbon, nitrogen, oxygen, phosphorus and sulfur — plus Big Bang hydrogen.' },
+  { a: T0 - 2.4, e: 'earth', fx: { life: 1, ox: 1 }, w: '2.4 billion years ago', t: 'Oxygen fills the air', cap: 'An oxygen-rich, blue sky',
+    d: 'Microbes that harness sunlight release oxygen — atoms first made in giant stars — and slowly change the air for ever.' },
+  { a: T0 - 0.538, e: 'earth', fx: { life: 1, ox: 1, green: 1 }, w: '538 million years ago', t: 'Animals burst onto the scene', cap: 'Life spreads — and later climbs onto land',
+    d: 'Over a geologically short time the oceans fill with animals with shells, skeletons and eyes — calcium and phosphorus from giant stars, put to new use.' },
+  { a: T0 - 0.066, e: 'earth', fx: { life: 1, ox: 1, green: 1, impact: 1 }, w: '66 million years ago', t: 'The dinosaurs are wiped out', cap: 'The asteroid strike',
+    d: 'An asteroid strikes what is now Mexico. The worldwide layer of dust it left is rich in iridium — a fast-lane element, rare in Earth’s crust but common in asteroids.' },
+  { a: ago(300000), e: 'earth', fx: { life: 1, ox: 1, green: 1, humans: 1 }, w: '300,000 years ago', t: 'Modern humans appear', cap: 'Modern humans',
+    d: 'On the cosmic calendar this is about eleven minutes to midnight on 31 December. Every one of those first people was built from star-made atoms — just as you are.' },
+  { a: ago(NOWY - 1054), e: 'earth', fx: { life: 1, ox: 1, green: 1, humans: 1, guest: 1 }, w: '1054 AD', t: 'A “guest star” blazes in the sky', cap: '1054: the “guest star”',
+    d: 'Chinese astronomers record a new star bright enough to see in daylight for weeks. It was a giant star exploding; its wreck is the Crab Nebula, still flinging out freshly made elements today.' },
+  { a: ago(NOWY - 1957), e: 'earth', fx: { life: 1, ox: 1, green: 1, humans: 1 }, w: '1950s', t: 'We work out where atoms come from', cap: 'Understanding begins',
+    d: 'In 1952 technetium is found in red-giant stars — proof that stars make elements. In 1957 a landmark paper by Burbidge, Burbidge, Fowler and Hoyle maps out how stars cook them.' },
+  { a: ago(NOWY - 1987), e: 'earth', fx: { life: 1, ox: 1, green: 1, humans: 1, sn87: 1 }, w: '1987', t: 'Supernova 1987A', cap: '1987: Supernova 1987A',
+    d: 'A giant star explodes in the Large Magellanic Cloud, visible from Singapore low in the south. Detectors catch two dozen of its neutrinos, and it makes the equivalent of some 23,000 Earths of iron.' },
+  { a: ago(NOWY - 2017), e: 'earth', fx: { life: 1, ox: 1, green: 1, humans: 1, gw: 1 }, w: '2017', t: 'Caught making gold', cap: '2017: colliding neutron stars caught in the act',
+    d: 'Gravitational waves from two colliding neutron stars, 130 million light-years away, reach Earth. Telescopes then see the glow of freshly made heavy elements — the universe’s gold mine, caught in the act.' },
+  { a: T0, e: 'earth', fx: { life: 1, ox: 1, green: 1, humans: 1, you: 1 }, w: 'Today', t: 'You', cap: 'You are here',
+    d: 'Made of Big Bang hydrogen and the ashes of countless stars that lived and died before the Sun — reading about it on a device built from the same atoms.' }
+];
+/* schematic heavy-element build-up in our part of the Milky Way: [cosmic age, % by mass] */
+var ZA = [[0, 0], [0.18, 0], [0.3, 0.005], [0.5, 0.03], [1, 0.14], [2, 0.45], [4, 0.85], [6, 1.1], [T0 - 4.567, 1.4], [T0, 1.5]];
+
+/* ── A 25-solar-mass star (Woosley, Heger & Weaver 2002) ─────────────────── */
+var OL = [['Hydrogen', '#6ea8ff', 1.00], ['Helium', '#f5c542', 0.62], ['Carbon & oxygen', '#ff9d3c', 0.48], ['Neon, sodium & magnesium', '#ff8ac2', 0.38],
+  ['Oxygen & magnesium', '#b79cff', 0.30], ['Silicon & sulfur', '#5fd38a', 0.22], ['Iron & nickel', '#c3c9d6', 0.14]];
+var STG = [
+  { f: 'Hydrogen → helium', y: 6.7e6, du: '6.7 million years', d: 'The star spends about 90% of its life here, fusing hydrogen into helium in its core at around 40 million °C — just as the Sun does, only far faster.' },
+  { f: 'Helium → carbon & oxygen', y: 8.4e5, du: '840,000 years', d: 'With the core’s hydrogen used up, the core shrinks and heats to 200 million °C, and helium fuses into carbon and oxygen. The star swells into a red supergiant — like Betelgeuse today.' },
+  { f: 'Carbon → neon, sodium & magnesium', y: 522, du: '522 years', d: 'At about 840 million °C carbon fuses. From here on, ghostly neutrinos carry off most of the energy, so each new stage races by faster than the last.' },
+  { f: 'Neon → oxygen & magnesium', y: 0.89, du: '≈ 11 months', d: 'At 1.6 billion °C neon nuclei are broken apart by the heat and rebuilt into oxygen and magnesium.' },
+  { f: 'Oxygen → silicon & sulfur', y: 0.40, du: '≈ 5 months', d: 'At about 2 billion °C oxygen fuses into silicon and sulfur.' },
+  { f: 'Silicon → iron & nickel', y: 0.73 / 365.25, du: '≈ 18 hours', d: 'At 3.6 billion °C silicon is rebuilt, step by step, into nickel and iron. Iron is the end of the line: fusing it gives out no energy. The star now has less than a day to live.' },
+  { f: 'The core collapses', y: 0.25 / 31557600, du: 'under a second', d: 'The iron core — about 1.4 times the Sun’s mass, squeezed into a ball roughly the size of the Earth — can no longer hold itself up. It falls in at up to a quarter of the speed of light and becomes a neutron star only about 20 km across.' },
+  { f: 'Supernova!', y: 0, du: 'glows for months', d: 'The infalling layers rebound off the new neutron star; a shock wave and a flood of neutrinos blow the star apart. The blast cooks still more elements, and radioactive nickel decaying into iron keeps the wreck glowing for months. Everything the star made is flung into space — ready for the next generation.' }
+];
+/* nuclear binding energy per particle (MeV), approximate — the "energy valley" */
+var BE = [['H', 1, 0], ['He', 4, 7.074], ['C', 12, 7.680], ['O', 16, 7.976], ['Ne', 20, 8.032], ['Mg', 24, 8.261], ['Si', 28, 8.448], ['S', 32, 8.493], ['Ar', 36, 8.520],
+  ['Ca', 40, 8.551], ['Ti', 48, 8.723], ['Cr', 52, 8.776], ['Fe', 56, 8.790], ['Ni', 62, 8.795], ['Zr', 90, 8.710], ['Sn', 120, 8.505], ['Ba', 138, 8.393], ['Er', 166, 8.142],
+  ['W', 184, 8.005], ['Au', 197, 7.916], ['Pb', 208, 7.867], ['U', 238, 7.570]];
+
+/* ── The body (70 kg adult): symbol, kg, % of atoms, what it does ─────────── */
+var BODY = [
+  ['O', 45, 24, 'Water (about 60% of you) and nearly every molecule of life'],
+  ['C', 13, 12, 'The backbone of proteins, fats, sugars and DNA'],
+  ['H', 7, 62, 'Water and every organic molecule'],
+  ['N', 1.8, 1.1, 'Proteins and the rungs of your DNA'],
+  ['Ca', 1.0, 0.22, 'Bones and teeth; tells muscles to contract'],
+  ['P', 0.78, 0.22, 'DNA’s backbone, bones, and ATP — your cells’ energy currency'],
+  ['K', 0.14, 0.03, 'Keeps your nerves firing'],
+  ['S', 0.14, 0.038, 'Proteins, hair and nails'],
+  ['Na', 0.10, 0.037, 'Body fluids and nerve signals'],
+  ['Cl', 0.095, 0.024, 'Stomach acid and body fluids'],
+  ['Mg', 0.019, 0.015, 'Bones and hundreds of enzymes'],
+  ['Fe', 0.0042, 0, 'Haemoglobin — carries oxygen in your blood'],
+  ['Zn', 0.0023, 0, 'Enzymes and your immune system'],
+  ['Cu', 0.000072, 0, 'Enzymes; helps you make red blood cells'],
+  ['I', 0.00002, 0, 'Thyroid hormones, which set your body’s pace']
+];
+var ECOL = { O: '#6ea8ff', C: '#ffb454', H: '#f4f6fb', N: '#b79cff', Ca: '#5fd38a', P: '#ff8ac2', rest: '#9fb0d6' };
+/* the whole Earth by mass (Morgan & Anders 1980) */
+var EARTH = [['Fe', 32.1], ['O', 30.1], ['Si', 15.1], ['Mg', 13.9], ['S', 2.9], ['Ni', 1.8], ['Ca', 1.5], ['Al', 1.4], ['other', 1.2]];
+var STUFF = [
+  ['💍', 'A gold ring', ['Au'], 'Forged in colliding neutron stars — every atom of it older than the Earth.'],
+  ['💧', 'A glass of water', ['H', 'O'], 'Two Big Bang hydrogen atoms for every oxygen atom from a giant star.'],
+  ['🧂', 'Table salt', ['Na', 'Cl'], 'Both halves cooked in giant stars and spread by supernovae.'],
+  ['📱', 'Your phone', ['Li', 'Si', 'Co', 'Cu', 'Nd', 'Au'], 'Lithium, silicon, cobalt, copper, neodymium and gold: atoms from all six cosmic kitchens in one pocket.'],
+  ['✏️', 'A pencil', ['C'], 'Its “lead” is graphite — pure carbon, from dying Sun-like stars and giant stars.'],
+  ['🍌', 'A banana', ['K'], 'Rich in potassium from giant stars — including a trace of naturally radioactive potassium-40, made before the Sun.'],
+  ['🎆', 'Fireworks', ['Sr', 'Ba', 'Na', 'Cu'], 'Red strontium and green barium from dying red giants; yellow sodium and blue copper from giant stars.'],
+  ['🚨', 'A smoke alarm', ['Am'], 'Its speck of americium was made by people in a nuclear reactor — no star left us any.']
+];
+
+/* ── See it tonight (J2000 RA/Dec, degrees) ───────────────────────────────── */
+var SKY = [
+  { st: 'Birth', n: 'Orion Nebula (M42)', ra: 83.82, dec: -5.39, k: 'dso', sc: 'Any scope; glorious in the Seestar', pa: '',
+    say: 'A star nursery 1,340 light-years away. The new stars switching on inside it are made from gas already enriched by earlier generations — the cycle, live.' },
+  { st: 'Youth', n: 'Pleiades (M45)', ra: 56.75, dec: 24.12, k: 'dso', sc: 'Binoculars or the 6" apo at low power', pa: '',
+    say: 'A family of stars about a hundred million years old — newborns by cosmic standards, made from recycled gas.' },
+  { st: 'Old age — will explode', n: 'Betelgeuse', ra: 88.79, dec: 7.41, k: 'star', sc: 'Naked eye — note its orange colour', pa: 'A red supergiant cooking heavy elements now; it will explode one day.',
+    say: 'A red supergiant about 530 light-years away, near the end of its life. Its core is cooking heavy elements now; perhaps in the next 100,000 years it will explode as a supernova.' },
+  { st: 'Old age — will explode', n: 'Antares', ra: 247.35, dec: -26.43, k: 'star', sc: 'Naked eye', pa: 'The red supergiant heart of the Scorpion — a future supernova.',
+    say: 'The red supergiant heart of the Scorpion — another star that will one day explode and scatter what it has made.' },
+  { st: 'Old age — will explode', n: 'Eta Carinae', ra: 161.27, dec: -59.68, k: 'star', sc: 'Binoculars or any scope', pa: 'One of the most massive, unstable stars known.',
+    say: 'One of the most massive and unstable stars known. It nearly tore itself apart in the 1840s, briefly becoming one of the brightest stars in the sky.' },
+  { st: 'Gentle death', n: 'Ring Nebula (M57)', ra: 283.40, dec: 33.03, k: 'dso', sc: 'Main dome 40 cm or the 11"', pa: 'A Sun-like star’s gentle farewell.',
+    say: 'A Sun-like star’s farewell: its outer layers, rich in carbon and nitrogen, puffed into space around a white-dwarf ember.' },
+  { st: 'Gentle death', n: 'Dumbbell Nebula (M27)', ra: 299.90, dec: 22.72, k: 'dso', sc: 'Any dome scope; the Seestar for colour', pa: 'Another dying Sun-like star returning its ashes.',
+    say: 'Another dying Sun-like star returning its ashes to space — bigger and brighter than the Ring.' },
+  { st: 'Gentle death', n: 'Helix Nebula (NGC 7293)', ra: 337.41, dec: -20.84, k: 'dso', sc: 'Seestar (big but faint)', pa: 'One of the nearest planetary nebulae.',
+    say: 'One of the nearest planetary nebulae, about 650 light-years away — large, but faint under city skies.' },
+  { st: 'Violent death', n: 'Crab Nebula (M1)', ra: 83.63, dec: 22.01, k: 'dso', sc: 'Main dome 40 cm; a faint smudge', pa: 'The wreck of the giant star seen to explode in 1054.',
+    say: 'The wreck of a giant star that Chinese astronomers saw explode in 1054 as a “guest star” (客星). Its debris — fresh oxygen, iron and more — is still flying outward.' },
+  { st: 'Ancient stars', n: 'Omega Centauri', ra: 201.70, dec: -47.48, k: 'dso', sc: 'Any scope — superb in the 40 cm', pa: '',
+    say: 'About ten million stars, roughly 12 billion years old — born when the galaxy had few heavy elements, so their light shows far less iron than the Sun’s.' },
+  { st: 'Ancient stars', n: 'Hercules Cluster (M13)', ra: 250.42, dec: 36.46, k: 'dso', sc: 'Any dome scope', pa: '',
+    say: 'A ball of several hundred thousand stars more than 11 billion years old, made from early, unseasoned gas.' },
+  { st: 'White-dwarf ember', n: 'Sirius', ra: 101.29, dec: -16.72, k: 'star', sc: 'Naked eye; Sirius B needs the big dome and steady air', pa: 'Its faint partner Sirius B is a white dwarf (not expected to explode).',
+    say: 'The brightest star in the night sky has a faint partner, Sirius B: a white dwarf, the Earth-sized ember of a dead Sun-like star. (It is not expected to explode.)' },
+  { st: 'Supernova seen in 1987', n: 'Large Magellanic Cloud (galaxy)', ra: 83.87, dec: -69.27, k: 'dso', sc: 'Naked eye, low in the south', pa: '',
+    say: 'A neighbour galaxy where Supernova 1987A exploded — the nearest seen in four centuries, its neutrinos caught on Earth.' },
+  { st: 'Gold factory, 2017', n: 'NGC 4993 (galaxy)', ra: 197.45, dec: -23.38, k: 'dso', sc: 'Point only — far too faint for a public view', pa: 'The galaxy where the 2017 gold-making collision happened — too faint to show, but you can point to it.',
+    say: 'The galaxy where two neutron stars collided in 2017, making about ten Earths of gold and platinum. It is 130 million light-years away — too faint to show, but you can point to it.' }
+];
+var PLX = {
+  Mars: { st: 'An iron world', n: 'Mars', k: 'planet', pl: 'Mars', sc: 'Any scope', pa: '',
+    say: 'Red because its dust is rich in iron oxide — rust. That iron was forged in exploding white dwarfs and giant stars.' },
+  Jupiter: { st: 'The Big Bang’s recipe', n: 'Jupiter', k: 'planet', pl: 'Jupiter', sc: 'Any scope', pa: 'A ball of mostly hydrogen and helium — almost the Big Bang’s own recipe.',
+    say: 'A giant ball of mostly hydrogen and helium — nearly the Big Bang’s own mix, with a little star-made spice.' },
+  Saturn: { st: 'The Big Bang’s recipe', n: 'Saturn', k: 'planet', pl: 'Saturn', sc: 'Any scope', pa: 'Mostly hydrogen and helium — nearly the Big Bang’s own recipe.',
+    say: 'Like Jupiter, mostly hydrogen and helium. Its rings are mostly water ice — Big Bang hydrogen bonded to star-made oxygen.' }
+};
+var PA = { bb: ['Jupiter', 'Saturn'], mx: ['Betelgeuse', 'Antares', 'Eta Carinae', 'Crab Nebula (M1)'], lm: ['Ring Nebula (M57)', 'Dumbbell Nebula (M27)', 'Helix Nebula (NGC 7293)'],
+  wd: ['Sirius'], ns: ['NGC 4993 (galaxy)'] };
+
+/* ── Helpers ──────────────────────────────────────────────────────────── */
+function bySym(s) { for (var i = 0; i < ELS.length; i++) if (ELS[i].s === s) return ELS[i]; return null; }
+/* periodic-table cell [row, column]; lanthanides/actinides on rows 9-10 */
+function pos(z) {
+  if (z === 1) return [1, 1]; if (z === 2) return [1, 18];
+  if (z <= 10) return [2, z <= 4 ? z - 2 : z + 8];
+  if (z <= 18) return [3, z <= 12 ? z - 10 : z];
+  if (z <= 36) return [4, z - 18];
+  if (z <= 54) return [5, z - 36];
+  if (z <= 56) return [6, z - 54];
+  if (z <= 71) return [9, z - 54];
+  if (z <= 86) return [6, z - 68];
+  if (z <= 88) return [7, z - 86];
+  if (z <= 103) return [10, z - 86];
+  return [7, z - 100];
+}
+function originWords(e) {
+  var o = e.o, a = o[0], b = o[1], c = o[2], w = function (x) { return K[x[0]].w; };
+  if (a[0] === 'hm') return 'Made only by people, in nuclear reactors and particle accelerators.';
+  if (a[0] === 'rad') return 'Made in stars, but every form of it is radioactive and short-lived — none of the star-made atoms survives.';
+  if (a[1] >= 0.9) return 'Almost all from ' + w(a) + (b ? ' (a little from ' + w(b) + ')' : '') + '.';
+  var rest = b ? w(b) + (c ? ' and ' + w(c) : '') : '';
+  if (a[1] >= 0.7) return 'Mostly from ' + w(a) + ', some from ' + rest + '.';
+  if (a[1] >= 0.55) return 'More than half from ' + w(a) + ', the rest from ' + rest + '.';
+  if (c) return 'A mix of ' + w(a) + ', ' + w(b) + ' and ' + w(c) + '.';
+  return 'About half from ' + w(a) + ', half from ' + w(b) + '.';
+}
+function tileBg(e) {
+  var k0 = e.o[0][0];
+  if (k0 === 'rad') return RADBG;
+  if (k0 === 'hm') return K.hm.c;
+  if (e.o.length === 1) return K[k0].c;
+  var acc = 0, st = [];
+  e.o.forEach(function (x) { var p0 = Math.round(acc * 100), p1 = Math.round((acc + x[1]) * 100); st.push(K[x[0]].c + ' ' + p0 + '% ' + p1 + '%'); acc += x[1]; });
+  return 'linear-gradient(135deg,' + st.join(',') + ')';
+}
+/* cosmic age at which an element first exists anywhere */
+function appear(e) {
+  var t = Infinity;
+  e.o.forEach(function (x) { var s = x[0] === 'rad' ? (e.z === 43 ? K.lm.start : K.ns.start) : K[x[0]].start; if (s < t) t = s; });
+  return t;
+}
+function zAt(age) {
+  if (age <= ZA[0][0]) return 0;
+  for (var i = 1; i < ZA.length; i++) if (age <= ZA[i][0]) { var a = ZA[i - 1], b = ZA[i]; return a[1] + (b[1] - a[1]) * (age - a[0]) / (b[0] - a[0]); }
+  return ZA[ZA.length - 1][1];
+}
+function trimNum(x) { var r = x >= 100 ? Math.round(x) : Math.round(x * 10) / 10; return String(r); }
+/* a span of time (in years) in words */
+function fmtSpan(y) {
+  if (y < 1 / 8766) return Math.max(1, Math.round(y * 525960)) + ' minutes';
+  if (y < 1 / 365.25) return Math.round(y * 8766) + ' hours';
+  if (y < 1) return Math.round(y * 365.25) + ' days';
+  if (y < 1e6) { var p = Math.pow(10, Math.max(0, Math.floor(Math.log(y) / Math.LN10) - 1)); return fmtInt(Math.round(y / p) * p) + ' years'; }
+  if (y < 1e9) return trimNum(y / 1e6) + ' million years';
+  return trimNum(y / 1e9) + ' billion years';
+}
+function fmtAge(g) { return g <= 0 ? 'The very beginning' : fmtSpan(g * 1e9); }
+function fmtAgo(g) {
+  var y = g * 1e9;
+  if (y < 0.5) return 'Now';
+  if (y < 3000) { var yr = Math.round(y); return fmtInt(yr) + ' years ago (' + (NOWY - yr) + ')'; }
+  return fmtSpan(y) + ' ago';
+}
+/* The universe's history squeezed into one calendar year (365 days) */
+var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var MDAY = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+function cosmicCalendar(age) {
+  var YEAR = 365 * 86400, f = Math.max(0, Math.min(1, age / T0));
+  if (f >= 1) return '31 Dec, midnight — now';
+  var secs = f * YEAR, left = YEAR - secs, day = Math.floor(secs / 86400), rem = secs - day * 86400, m = 0;
+  while (m < 11 && day >= MDAY[m]) { day -= MDAY[m]; m++; }
+  var hh = Math.floor(rem / 3600), mm = Math.floor((rem % 3600) / 60), ss = rem - hh * 3600 - mm * 60, t = pad2(hh) + ':' + pad2(mm);
+  if (left < 3600) {
+    var dp = left < 1 ? 2 : (left < 10 ? 1 : 0), q = Math.pow(10, dp), sv = Math.floor(ss * q) / q;
+    t += ':' + (sv < 10 ? '0' : '') + sv.toFixed(dp);
+  }
+  return (day + 1) + ' ' + MON[m] + ', ' + t;
+}
+/* how long a stage would last if the star's hydrogen-burning life were one year */
+function squeeze(yrs) {
+  var s = yrs / STG[0].y * 31557600;
+  if (s >= 0.9 * 31557600) return Math.round(s / 31557600) + ' year';
+  if (s >= 1.5 * 86400) return Math.round(s / 86400) + ' days';
+  if (s >= 3600) return Math.round(s / 3600) + ' hours';
+  if (s >= 60) return Math.round(s / 60) + ' minutes';
+  if (s >= 1) return (Math.round(s * 10) / 10) + ' seconds';
+  if (s >= 0.001) return Math.round(s * 1000) + ' thousandths of a second';
+  return 'a blink: under a millionth of a second';
+}
+/* largest-remainder rounding: integers that add up to total */
+function lrRound(vals, total) {
+  var sum = vals.reduce(function (a, b) { return a + b; }, 0) || 1;
+  var raw = vals.map(function (v) { return v / sum * total; }), fl = raw.map(Math.floor);
+  var left = total - fl.reduce(function (a, b) { return a + b; }, 0);
+  var idx = raw.map(function (v, i) { return i; }).sort(function (a, b) { return (raw[b] - fl[b]) - (raw[a] - fl[a]) || a - b; });
+  for (var k = 0; k < left; k++) fl[idx[k % idx.length]]++;
+  return fl;
+}
+/* 100 squares of the body: groups (by element) and the kitchen of every square */
+function waffle(mode) {
+  var groups = mode === 'atoms' ? ['H', 'O', 'C', 'N', 'rest'] : ['O', 'C', 'H', 'N', 'Ca', 'P', 'rest'];
+  var val = groups.map(function (g) {
+    var s = 0;
+    BODY.forEach(function (b) { var inG = g === 'rest' ? groups.indexOf(b[0]) < 0 : b[0] === g; if (inG) s += mode === 'atoms' ? b[2] : b[1]; });
+    return s;
+  });
+  var cnt = lrRound(val, 100), sq = [], byK = {};
+  groups.forEach(function (g, i) {
+    var el = g === 'rest' ? null : bySym(g), o = el ? el.o : [['mx', 1]];
+    var per = lrRound(o.map(function (x) { return x[1]; }), cnt[i]);
+    o.forEach(function (x, j) { for (var k = 0; k < per[j]; k++) { sq.push({ g: g, k: x[0] }); byK[x[0]] = (byK[x[0]] || 0) + 1; } });
+  });
+  return { groups: groups, cnt: cnt, sq: sq, byK: byK };
+}
+function fmtMass(kg) {
+  if (kg >= 1) return (Math.round(kg * 10) / 10) + ' kg';
+  var g = kg * 1000;
+  if (g >= 1) return (g >= 10 ? Math.round(g) : Math.round(g * 10) / 10) + ' g';
+  return Math.round(g * 1000) + ' mg';
+}
+function where(p) {
+  var a = Math.round(p.alt), d = A.compass(p.az);
+  if (p.alt >= 20) return '<span class="up">' + a + '° up in the ' + d + '</span>';
+  if (p.alt > 0) return '<span class="lo">low — ' + a + '° in the ' + d + '</span>';
+  return '<span class="dn">below the horizon</span>';
+}
+
+/* ── Canvas helpers ───────────────────────────────────────────────────── */
+function fit(cv, aspect) {
+  var r = cv.getBoundingClientRect(), w = Math.max(1, Math.round(r.width || cv.clientWidth || 300)), h = Math.max(1, Math.round(w * aspect));
+  var d = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(w * d); cv.height = Math.round(h * d);
+  var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0);
+  return { ctx: c, w: w, h: h };
+}
+function dot(c, x, y, r, col) { c.beginPath(); c.arc(x, y, Math.max(0.2, r), 0, 6.2832); c.fillStyle = col; c.fill(); }
+function glow(c, x, y, r, rgb, a) {
+  if (!(r > 0)) return;
+  var g = c.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, 'rgba(' + rgb + ',' + a + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
+  c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill();
+}
+function ring(c, x, y, r, col, lw) { c.beginPath(); c.arc(x, y, Math.max(0.5, r), 0, 6.2832); c.strokeStyle = col; c.lineWidth = lw; c.stroke(); }
+function label(c, txt, x, y, col, size) { c.fillStyle = col || '#f4f6fb'; c.font = '700 ' + (size || 11) + 'px system-ui,-apple-system,"Segoe UI",sans-serif'; c.textBaseline = 'middle'; c.fillText(txt, x, y); }
+var PART = [], KC = [K.mx.c, K.lm.c, K.wd.c, K.ns.c, K.bb.c];
+(function () { var r = rng(20261106); for (var i = 0; i < 240; i++) PART.push({ x: r(), y: r(), v: r(), ph: r() * 6.2832, r: r() }); })();
+function starfield(c, w, h, n, a) {
+  for (var i = 0; i < n; i++) { var p = PART[i]; dot(c, ((p.x * 7.13) % 1) * w, ((p.y * 5.37) % 1) * h, 0.4 + p.r * 0.8, 'rgba(255,255,255,' + (a * (0.3 + 0.7 * p.v)).toFixed(2) + ')'); }
+}
+function ripple(c, x, y, t) {
+  var ph = t * 5, d = 7;
+  dot(c, x + Math.cos(ph) * d, y + Math.sin(ph) * d, 2.4, '#e2d8ff'); dot(c, x - Math.cos(ph) * d, y - Math.sin(ph) * d, 2.4, '#e2d8ff');
+  for (var q = 0; q < 3; q++) { var k = RM ? q / 3 : ((t * 0.7 + q / 3) % 1); ring(c, x, y, 10 + k * 42, 'rgba(183,156,255,' + (0.7 * (1 - k)).toFixed(3) + ')', 1.3); }
+}
+function cornerStar(c, w, h, t, txt) {
+  var x = w * 0.16, y = h * 0.22, pu = RM ? 1 : 0.75 + 0.25 * Math.sin(t * 4);
+  glow(c, x, y, 26 * pu, '255,236,190', 0.8);
+  c.strokeStyle = 'rgba(255,245,220,0.8)'; c.lineWidth = 1.2; c.beginPath();
+  c.moveTo(x - 16 * pu, y); c.lineTo(x + 16 * pu, y); c.moveTo(x, y - 16 * pu); c.lineTo(x, y + 16 * pu); c.stroke();
+  dot(c, x, y, 3.2, '#ffffff'); label(c, txt, x + 20, y + 16, '#ffe9b8', 12);
+}
+
+/* ── Scene (chapter 1) ────────────────────────────────────────────────── */
+var SC = { cv: $('scene'), ctx: null, w: 0, h: 0, era: '', fx: {}, t0: -9, age: 0 };
+function sBang(c, w, h, t, fx) {
+  var g = c.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) * 0.7);
+  g.addColorStop(0, '#fff8e1'); g.addColorStop(0.3, '#ffc46b'); g.addColorStop(0.65, '#c2421c'); g.addColorStop(1, '#3a0d07');
+  c.fillStyle = g; c.fillRect(0, 0, w, h);
+  var he = fx.he || 0, n = PART.length;
+  for (var i = 0; i < n; i++) {
+    var p = PART[i], x = p.x * w + Math.sin(t * 2.3 + p.ph) * 5, y = p.y * h + Math.cos(t * 1.9 + p.ph * 1.3) * 5;
+    if (i < n * he) { dot(c, x - 1.6, y - 1.6, 1.8, '#ff7b6b'); dot(c, x + 1.6, y - 1.6, 1.8, '#f4f6fb'); dot(c, x - 1.6, y + 1.6, 1.8, '#f4f6fb'); dot(c, x + 1.6, y + 1.6, 1.8, '#ff7b6b'); }
+    else dot(c, x, y, 1.9, (i % 2) ? '#ff7b6b' : '#e9edf7');
+  }
+}
+var FOG = null;
+function fogLayer(w, h) {
+  if (FOG && FOG.w === w && FOG.h === h) return FOG.cv;
+  var cv = document.createElement('canvas'), d = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(w * d); cv.height = Math.round(h * d);
+  var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0);
+  c.fillStyle = '#070912'; c.fillRect(0, 0, w, h);
+  for (var i = 0; i < PART.length; i++) {
+    var p = PART[i], x = p.x * w, y = p.y * h, r = 8 + p.r * 22;
+    glow(c, x, y, r, '255,' + Math.round(110 + p.v * 90) + ',70', (0.07 + 0.11 * p.v).toFixed(3));
+  }
+  FOG = { w: w, h: h, cv: cv }; return cv;
+}
+function sFog(c, w, h, t) {
+  c.drawImage(fogLayer(w, h), 0, 0, w, h);
+  for (var j = 0; j < 46; j++) {
+    var q = PART[j], x = ((q.x * w + t * 7 * (q.v - 0.5)) % w + w) % w, y = ((q.y * h + t * 5 * (q.r - 0.5)) % h + h) % h;
+    dot(c, x, y, 1.9, '#ff8f80'); dot(c, x + 3.2 * Math.cos(t * 3 + q.ph), y + 3.2 * Math.sin(t * 3 + q.ph), 0.9, '#9fd4ff');
+  }
+}
+function sDark(c, w, h, t) {
+  c.fillStyle = '#03040a'; c.fillRect(0, 0, w, h);
+  var C = [[0.22, 0.35], [0.7, 0.3], [0.5, 0.72], [0.86, 0.76], [0.14, 0.8]], m = Math.min(w, h);
+  for (var i = 0; i < C.length; i++) glow(c, C[i][0] * w, C[i][1] * h, (0.2 + 0.04 * Math.sin(t * 0.6 + i)) * m, '120,135,170', 0.26);
+  for (var j = 0; j < 150; j++) {
+    var p = PART[j], k = C[j % C.length], f = 0.3 + 0.25 * (0.5 + 0.5 * Math.sin(t * 0.35 + p.ph));
+    dot(c, k[0] * w + (p.x - 0.5) * m * 0.9 * f, k[1] * h + (p.y - 0.5) * m * 0.9 * f, 0.9, 'rgba(170,185,215,0.55)');
+  }
+}
+var FS = [[0.18, 0.32], [0.42, 0.62], [0.66, 0.28], [0.84, 0.6], [0.3, 0.82], [0.56, 0.45], [0.9, 0.22]];
+function sDawn(c, w, h, t, fx) {
+  var g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#050a1f'); g.addColorStop(1, '#0b0820');
+  c.fillStyle = g; c.fillRect(0, 0, w, h); starfield(c, w, h, 50, 0.4);
+  for (var i = 0; i < FS.length; i++) { var x = FS[i][0] * w, y = FS[i][1] * h, tw = 0.8 + 0.2 * Math.sin(t * 2 + i * 1.7); glow(c, x, y, 13 * tw, '170,205,255', 0.85); dot(c, x, y, 2.8, '#ffffff'); }
+  if (fx.sn) {
+    var per = 3.2, k = RM ? 0.45 : (t / per) % 1, s = FS[Math.floor(RM ? 1 : t / per) % FS.length], sx = s[0] * w, sy = s[1] * h, m = Math.min(w, h);
+    ring(c, sx, sy, 6 + k * m * 0.35, 'rgba(255,170,80,' + (1 - k).toFixed(3) + ')', 2.5);
+    for (var j = 0; j < 30; j++) { var p = PART[j], rr = k * m * 0.3 * (0.5 + p.v); dot(c, sx + Math.cos(p.ph) * rr, sy + Math.sin(p.ph) * rr, 1.7, KC[j % 3]); }
+  }
+  if (fx.gw) ripple(c, w * 0.8, h * 0.78, t);
+}
+var GAL = null;
+function sGalaxy(c, w, h, t, fx) {
+  c.fillStyle = '#04060f'; c.fillRect(0, 0, w, h); starfield(c, w, h, 50, 0.35);
+  if (!GAL) { GAL = []; var r = rng(77); for (var i = 0; i < 560; i++) { var arm = i % 2, s = r(); GAL.push({ th: s * 3.4 * Math.PI + arm * Math.PI + (r() - 0.5) * 0.32 * (0.4 + s), r: (0.07 + 0.88 * s) * (1 + (r() - 0.5) * 0.12), b: 0.35 + 0.65 * r(), pink: r() < 0.1 }); } }
+  var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.47, rot = t * 0.06, tilt = 0.55, zf = Math.min(1, zAt(SC.age) / 1.4);
+  glow(c, cx, cy, R * 0.34, '255,214,150', 0.6);
+  for (var j = 0; j < GAL.length; j++) {
+    var p = GAL[j], a = p.th + rot, x = cx + Math.cos(a) * p.r * R * 1.25, y = cy + Math.sin(a) * p.r * R * tilt;
+    dot(c, x, y, p.pink ? 1.6 : 1.1, p.pink ? 'rgba(255,138,194,' + (0.55 * p.b).toFixed(2) + ')' : 'rgba(205,218,255,' + (0.6 * p.b).toFixed(2) + ')');
+    if (j % 7 === 0 && j / GAL.length < zf) dot(c, x + 1.5, y - 1, 1.1, KC[j % 4]);
+  }
+  if (!RM) { var per = 2.7, k = (t / per) % 1, q = GAL[(Math.floor(t / per) * 37) % GAL.length], a2 = q.th + rot;
+    glow(c, cx + Math.cos(a2) * q.r * R * 1.25, cy + Math.sin(a2) * q.r * R * tilt, 4 + 12 * (1 - k), '255,240,200', (0.95 * (1 - k)).toFixed(3)); }
+  if (fx.gw) ripple(c, w * 0.82, h * 0.24, t);
+}
+var DISK = null;
+function sSun(c, w, h, t) {
+  c.fillStyle = '#04050c'; c.fillRect(0, 0, w, h); starfield(c, w, h, 50, 0.4);
+  var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.46;
+  if (!DISK) { DISK = []; var r = rng(4567); for (var i = 0; i < 400; i++) DISK.push({ a: r() * 6.2832, d: 0.14 + 0.86 * Math.pow(r(), 0.8), s: r() }); }
+  for (var j = 0; j < DISK.length; j++) {
+    var p = DISK[j], a = p.a + t * 0.18 / Math.pow(p.d, 1.5);
+    dot(c, cx + Math.cos(a) * p.d * R * 1.3, cy + Math.sin(a) * p.d * R * 0.42, 0.8 + p.s * 0.9, 'rgba(' + Math.round(200 + p.s * 55) + ',' + Math.round(140 + p.s * 60) + ',90,' + (0.35 + 0.4 * p.s).toFixed(2) + ')');
+  }
+  glow(c, cx, cy, R * 0.45, '255,214,120', 0.8); dot(c, cx, cy, R * 0.09, '#fff3c4');
+  var PL = [[0.36, '#c9b08a', 2.2], [0.6, '#6ea8ff', 2.6], [0.86, '#e6cda8', 3.8]];
+  for (var k = 0; k < PL.length; k++) { var b = t * 0.3 / Math.pow(PL[k][0], 1.5) + k * 2.1; dot(c, cx + Math.cos(b) * PL[k][0] * R * 1.3, cy + Math.sin(b) * PL[k][0] * R * 0.42, PL[k][2], PL[k][1]); }
+}
+var LAND = [[0.15, -0.35, 0.34, 0.2], [0.55, 0.2, 0.24, 0.38], [0.95, -0.15, 0.42, 0.24], [1.35, 0.45, 0.22, 0.14], [1.7, -0.55, 0.26, 0.12], [1.2, 0.05, 0.18, 0.3]];
+function sEarth(c, w, h, t, fx) {
+  c.fillStyle = '#02030a'; c.fillRect(0, 0, w, h); starfield(c, w, h, 70, 0.55);
+  var cx = w * 0.5, cy = h * 0.54, R = Math.min(w, h) * 0.33;
+  glow(c, cx, cy, R * 1.24, fx.ox ? '110,170,255' : '255,170,110', fx.ox ? 0.42 : 0.3);
+  var og = c.createRadialGradient(cx - R * 0.35, cy - R * 0.35, R * 0.1, cx, cy, R);
+  og.addColorStop(0, fx.life ? '#3f93db' : '#5b8590'); og.addColorStop(1, fx.life ? '#0c3772' : '#1f3742');
+  c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.fillStyle = og; c.fill(); c.clip();
+  var land = fx.green ? '#4e9a57' : (fx.life ? '#8c7b5b' : '#6b5847'), off = (t * 0.035) % 2;
+  for (var i = 0; i < LAND.length; i++) { var L = LAND[i]; c.beginPath(); c.ellipse(cx + (((L[0] + off) % 2) - 1) * R * 1.9, cy + L[1] * R, L[2] * R, L[3] * R, 0.3 * i, 0, 6.2832); c.fillStyle = land; c.fill(); }
+  if (fx.core) { c.fillStyle = 'rgba(255,110,50,0.35)'; c.fillRect(cx - R, cy - R, 2 * R, 2 * R); }
+  var sh = c.createLinearGradient(cx - R, 0, cx + R, 0); sh.addColorStop(0.5, 'rgba(0,0,8,0)'); sh.addColorStop(1, 'rgba(0,0,8,0.8)');
+  c.fillStyle = sh; c.fillRect(cx - R, cy - R, 2 * R, 2 * R);
+  if (fx.humans) for (var k = 0; k < 40; k++) { var p = PART[k], x2 = cx + R * (0.15 + 0.8 * p.x), y2 = cy + R * (p.y * 1.5 - 0.75); if ((x2 - cx) * (x2 - cx) + (y2 - cy) * (y2 - cy) < R * R * 0.92) dot(c, x2, y2, 0.9, 'rgba(255,214,120,' + (0.55 + 0.45 * Math.sin(t * 3 + p.ph)).toFixed(2) + ')'); }
+  c.restore();
+  if (fx.core) {
+    c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R, -Math.PI / 2, 0); c.closePath(); c.fillStyle = '#8a3a17'; c.fill();
+    c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, R * 0.55, -Math.PI / 2, 0); c.closePath(); c.fillStyle = '#ffb454'; c.fill();
+    label(c, 'iron core', cx + R * 0.62, cy - R * 0.86, '#ffd9a0', 12);
+  }
+  if (fx.meteor || fx.impact) for (var m = 0; m < (fx.impact ? 1 : 4); m++) {
+    var q = PART[m + 50], ph = RM ? 0.6 : ((t * 0.5 + q.v) % 1), sx = cx - R * 2.0 + ph * R * 1.25 + q.x * R * 0.5, sy = cy - R * 1.5 + ph * R * 0.85 + q.y * R * 0.2;
+    c.strokeStyle = 'rgba(255,220,170,0.9)'; c.lineWidth = fx.impact ? 3 : 1.6; c.beginPath(); c.moveTo(sx - 18, sy - 12); c.lineTo(sx, sy); c.stroke(); dot(c, sx, sy, fx.impact ? 3.2 : 1.8, '#fff3d0');
+  }
+  if (fx.guest) cornerStar(c, w, h, t, '1054');
+  if (fx.sn87) cornerStar(c, w, h, t, 'SN 1987A');
+  if (fx.gw) ripple(c, w * 0.84, h * 0.22, t);
+  if (fx.you) { var pu = RM ? 1 : 0.6 + 0.4 * Math.sin(t * 3), yx = cx - R * 0.35, yy = cy + R * 0.1; dot(c, yx, yy, 2.8, '#f5c542'); ring(c, yx, yy, 6 + 5 * pu, 'rgba(245,197,66,' + (0.85 * pu).toFixed(2) + ')', 1.6); label(c, 'you are here', yx - 34, yy + 18, '#ffe9b8', 12); }
+}
+function drawScene(t) {
+  var c = SC.ctx; if (!c) return;
+  var w = SC.w, h = SC.h, e = SC.era, fx = SC.fx || {}, tt = RM ? 0 : t;
+  if (e === 'bang') sBang(c, w, h, tt, fx);
+  else if (e === 'fog') sFog(c, w, h, tt);
+  else if (e === 'dark') sDark(c, w, h, tt);
+  else if (e === 'dawn') sDawn(c, w, h, tt, fx);
+  else if (e === 'galaxy') sGalaxy(c, w, h, tt, fx);
+  else if (e === 'sun') sSun(c, w, h, tt);
+  else sEarth(c, w, h, tt, fx);
+  var f = RM ? 0 : Math.max(0, 1 - (t - SC.t0) / 0.6);
+  if (f > 0) { c.fillStyle = 'rgba(5,7,15,' + f.toFixed(3) + ')'; c.fillRect(0, 0, w, h); }
+}
+
+/* ── Animation loop: one requestAnimationFrame for every running piece ─── */
+var ANIMS = [], rafOn = false, lastT = 0;
+function addAnim(el, on, tick) { var a = { el: el, vis: true, on: on, tick: tick }; ANIMS.push(a); return a; }
+function loop(ms) {
+  var t = ms / 1000, dt = lastT ? Math.min(0.1, t - lastT) : 0, any = false; lastT = t;
+  if (!document.hidden) for (var i = 0; i < ANIMS.length; i++) { var a = ANIMS[i]; if (a.vis && a.on()) { a.tick(t, dt); any = true; } }
+  if (any) requestAnimationFrame(loop); else { rafOn = false; lastT = 0; }
+}
+function kick() { if (!rafOn) { rafOn = true; requestAnimationFrame(loop); } }
+
+/* ── 1 · The timeline ─────────────────────────────────────────────────── */
+var TL = { mode: 'story', i: 0, age: 0, play: false, acc: 0 }, MINI = [];
+function curIdx(age) { var k = 0; for (var i = 0; i < EV.length; i++) if (EV[i].a <= age + 1e-15) k = i; return k; }
+function storyDur(ev) { var n = (ev.t + ' ' + ev.d).split(/\s+/).length; return Math.max(4, Math.min(8, 1.8 + n * 0.11)); }
+function miniBuild() {
+  var h = '';
+  ELS.forEach(function (e) { var p = pos(e.z); h += '<span data-z="' + e.z + '" style="grid-row:' + p[0] + ';grid-column:' + p[1] + '">' + e.s + '</span>'; });
+  h += '<span class="sp" style="grid-row:8;grid-column:1/19"></span>';
+  $('mini').innerHTML = h;
+  MINI = Array.prototype.slice.call($('mini').children || []).filter(function (s) { return s.getAttribute && s.getAttribute('data-z'); });
+}
+function kindsAt(age) { return ELS.filter(function (e) { return e.z <= 92 && appear(e) <= age + 1e-15; }).length; }
+function miniUpdate(age) {
+  var f = Math.min(1, zAt(age) / 1.4);
+  MINI.forEach(function (sp) {
+    var e = ELS[+sp.getAttribute('data-z') - 1], on = appear(e) <= age + 1e-15, bb = e.o.some(function (x) { return x[0] === 'bb'; });
+    sp.className = on ? 'on' : '';
+    sp.style.background = on ? tileBg(e) : '';
+    sp.style.opacity = on ? String(bb || e.o[0][0] === 'hm' ? 1 : Math.round((0.35 + 0.65 * f) * 100) / 100) : '';
+  });
+  $('rKinds').textContent = String(kindsAt(age));
+}
+function marksUpdate(i) {
+  $('marks').innerHTML = EV.map(function (e, k) {
+    var x = TL.mode === 'story' ? k / (EV.length - 1) * 100 : e.a / T0 * 100;
+    return '<i' + (k <= i ? ' class="past"' : '') + ' style="left:' + x.toFixed(2) + '%"></i>';
+  }).join('');
+}
+function tlSet() {
+  var i = TL.mode === 'story' ? TL.i : curIdx(TL.age), ev = EV[i], age = TL.mode === 'story' ? ev.a : TL.age;
+  TL.age = age;
+  $('rAge').textContent = fmtAge(age);
+  $('rAgo').textContent = fmtAgo(T0 - age);
+  $('rCal').textContent = cosmicCalendar(age);
+  $('evW').textContent = (TL.mode === 'story' ? '' : 'Latest milestone · ') + ev.w;
+  $('evT').textContent = ev.t;
+  $('evD').textContent = ev.d;
+  var z = zAt(age);
+  $('rZ').textContent = (z <= 0 ? '0' : z < 0.01 ? '< 0.01' : z < 1 ? z.toFixed(2) : z.toFixed(1)) + '%';
+  $('zfill').style.width = Math.min(100, z / 2 * 100).toFixed(1) + '%';
+  miniUpdate(age);
+  if (SC.era !== ev.e) SC.t0 = now();
+  SC.era = ev.e; SC.fx = ev.fx || {}; SC.age = age;
+  SC.cv.setAttribute('aria-label', 'Illustration: ' + ev.t);
+  $('scap').textContent = ev.cap || '';
+  $('tl').value = String(TL.mode === 'story' ? i : Math.round(age / T0 * 1000));
+  marksUpdate(i);
+  drawScene(now());
+}
+function playBtn() { var b = $('tlPlay'); b.textContent = TL.play ? '⏸ Pause' : '▶ Play'; b.setAttribute('aria-label', TL.play ? 'Pause' : 'Play'); }
+function setMode(m) {
+  if (m === TL.mode) return;
+  if (m === 'scale') TL.age = EV[TL.i].a; else TL.i = curIdx(TL.age);
+  TL.mode = m; TL.acc = 0;
+  var r = $('tl');
+  if (m === 'story') { r.max = String(EV.length - 1); r.step = '1'; } else { r.max = '1000'; r.step = '1'; }
+  $('mStory').setAttribute('aria-pressed', String(m === 'story'));
+  $('mScale').setAttribute('aria-pressed', String(m === 'scale'));
+  $('scaleNote').hidden = m !== 'scale';
+  tlSet();
+}
+function tlStep(d) {
+  TL.play = false; playBtn();
+  if (TL.mode === 'story') TL.i = Math.max(0, Math.min(EV.length - 1, TL.i + d));
+  else { var k = curIdx(TL.age); if (d > 0) TL.age = EV[Math.min(EV.length - 1, k + 1)].a; else TL.age = EV[Math.max(0, EV[k].a < TL.age - 1e-12 ? k : k - 1)].a; }
+  tlSet();
+}
+function tlTick(t, dt) {
+  if (TL.play) {
+    if (TL.mode === 'story') {
+      TL.acc += dt;
+      if (TL.acc >= storyDur(EV[TL.i])) { TL.acc = 0; if (TL.i < EV.length - 1) { TL.i++; tlSet(); } if (TL.i >= EV.length - 1) { TL.play = false; playBtn(); } }
+    } else {
+      var before = Math.round(TL.age / T0 * 1000);
+      TL.age = Math.min(T0, TL.age + dt * T0 / 36);
+      if (TL.age >= T0) { TL.play = false; playBtn(); tlSet(); }
+      else if (Math.round(TL.age / T0 * 1000) !== before) tlSet();
+    }
+  }
+  if (!RM) drawScene(t);
+}
+
+/* ── 3 · The onion ────────────────────────────────────────────────────── */
+var ON = { cv: $('onion'), c: null, w: 0, h: 0, s: 0, t0: -9, play: false, acc: 0 }, EXP = [];
+(function () { var r = rng(25); for (var i = 0; i < 170; i++) EXP.push({ a: r() * 6.2832, sp: 0.35 + 0.65 * r(), l: Math.min(6, Math.floor(Math.pow(r(), 0.7) * 7)) }); })();
+function stgSwatch(i) { return i <= 5 ? OL[i + 1][1] : (i === 6 ? '#e9edf7' : '#f5c542'); }
+function stgRender() {
+  $('stg').innerHTML = STG.map(function (s, i) {
+    return '<button type="button" class="sb" data-s="' + i + '" aria-current="' + (i === ON.s) + '"><i style="background:' + stgSwatch(i) + '"></i><span>' + (i + 1) + '. ' + s.f + '</span><span class="du">' + s.du + '</span></button>';
+  }).join('');
+  var s = STG[ON.s];
+  $('stgD').innerHTML = '<b>' + s.f + '</b> · ' + s.du + '<br>' + s.d;
+  $('onCap').textContent = ON.s <= 5 ? 'Stage ' + (ON.s + 1) + ' of 8 · core burning: ' + s.f : (ON.s === 6 ? 'Stage 7 of 8 · the iron core collapses' : 'Stage 8 of 8 · supernova — the new elements fly out');
+}
+function onSet(s) { ON.s = Math.max(0, Math.min(STG.length - 1, s)); ON.t0 = now(); ON.acc = 0; stgRender(); onDraw(now()); }
+function onDraw(t) {
+  var c = ON.c; if (!c) return;
+  var w = ON.w, h = ON.h, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.44, s = ON.s, k = Math.max(0, t - ON.t0);
+  var e = RM ? 1 : Math.min(1, k / 1.2); e = 1 - Math.pow(1 - e, 3);
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h); starfield(c, w, h, 40, 0.35);
+  if (s <= 5) {
+    var n = s + 2;
+    glow(c, cx, cy, R * 1.12, '110,168,255', 0.22);
+    for (var i = 0; i < n; i++) {
+      var L = OL[i], r = L[2] * R * (i === n - 1 ? e : 1); if (r <= 0.5) continue;
+      c.beginPath(); c.arc(cx, cy, r, 0, 6.2832); c.globalAlpha = i === 0 ? 0.5 : 0.93; c.fillStyle = L[1]; c.fill(); c.globalAlpha = 1;
+      c.lineWidth = 1; c.strokeStyle = 'rgba(5,7,15,0.6)'; c.stroke();
+    }
+    var pr = OL[n - 1][2] * R * e, pul = RM ? 0 : 0.12 * Math.sin(t * 5);
+    glow(c, cx, cy, Math.max(5, pr * (0.95 + pul)), '255,255,255', 0.6);
+  } else if (s === 6) {
+    for (var j = 0; j < OL.length; j++) {
+      var L2 = OL[j], r2 = j === 6 ? (L2[2] * R * (1 - e) + R * 0.025 * e) : L2[2] * R * (1 - 0.2 * e);
+      c.beginPath(); c.arc(cx, cy, Math.max(1, r2), 0, 6.2832); c.globalAlpha = j === 0 ? 0.5 : 0.93; c.fillStyle = L2[1]; c.fill(); c.globalAlpha = 1;
+      c.lineWidth = 1; c.strokeStyle = 'rgba(5,7,15,0.6)'; c.stroke();
+    }
+    if (e > 0.85) glow(c, cx, cy, R * 0.5 * (e - 0.85) / 0.15, '255,255,255', 0.85);
+  } else {
+    var e2 = RM ? 1 : Math.min(1, k / 2.4), ee = 1 - Math.pow(1 - e2, 2);
+    glow(c, cx, cy, R * (0.3 + 0.9 * ee), '255,220,160', (0.15 + 0.5 * (1 - ee)).toFixed(2));
+    for (var q = 0; q < EXP.length; q++) { var p = EXP[q], rr = R * (0.08 + 1.05 * ee * p.sp); dot(c, cx + Math.cos(p.a) * rr, cy + Math.sin(p.a) * rr, 1.8, OL[p.l][1]); }
+    dot(c, cx, cy, 2.4, '#e9f1ff');
+    if (!RM) { var bA = t * 6; c.strokeStyle = 'rgba(200,225,255,0.4)'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(cx - Math.cos(bA) * R * 0.22, cy - Math.sin(bA) * R * 0.22); c.lineTo(cx + Math.cos(bA) * R * 0.22, cy + Math.sin(bA) * R * 0.22); c.stroke(); }
+  }
+}
+function onTick(t, dt) {
+  if (ON.play) { ON.acc += dt; var d = ON.s === 6 ? 2.2 : 3.4; if (ON.acc >= d) { if (ON.s < STG.length - 1) onSet(ON.s + 1); else { ON.play = false; onBtn(); } } }
+  onDraw(t);
+}
+function onBtn() { $('onPlay').textContent = ON.play ? '⏸ Pause' : (ON.s >= STG.length - 1 ? '↺ Play again' : '▶ Play its life'); }
+function sqBuild() {
+  var max = Math.log(STG[0].y * 31557600) / Math.LN10, min = -1;
+  $('sq').innerHTML = STG.slice(0, 7).map(function (s, i) {
+    var lw = Math.max(2, (Math.log(s.y * 31557600) / Math.LN10 - min) / (max - min) * 100);
+    return '<div class="r"><span class="nm">' + s.f.replace(' → ', '→') + '</span><span class="b"><i style="width:' + lw.toFixed(1) + '%;background:' + stgSwatch(i) + '"></i></span><span class="sz">' + squeeze(s.y) + '</span></div>';
+  }).join('') + '<div class="r"><span class="nm mute">Real time</span><span></span><span class="mute">6.7 million years → under a second</span></div>';
+}
+
+/* ── 3b · The energy valley ───────────────────────────────────────────── */
+var VP = [];
+function vxy(Am, be) { return [26 + Math.sqrt(Am / 240) * 318, 178 - Math.sqrt(Math.max(0, 8.8 - be)) / 3 * 150]; }
+function vBuild() {
+  VP = BE.map(function (b) { return vxy(b[1], b[2]); });
+  var P = VP, d = 'M' + P[0][0].toFixed(1) + ' ' + P[0][1].toFixed(1);
+  for (var i = 0; i < P.length - 1; i++) {
+    var p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+    d += ' C' + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + ' ' + (p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + ' ' + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + ' ' + (p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
+  }
+  var s = '<defs><linearGradient id="vG" x1="0" x2="1"><stop offset="0" stop-color="#ff9d3c"/><stop offset=".38" stop-color="#f5c542"/><stop offset=".47" stop-color="#c3c9d6"/><stop offset="1" stop-color="#b79cff"/></linearGradient>' +
+    '<marker id="vA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ff6b6b"/></marker></defs>';
+  s += '<text x="10" y="16" font-size="10.5" fill="#9fb0d6">↑ more energy locked up per particle</text>';
+  s += '<path d="' + d + '" fill="none" stroke="url(#vG)" stroke-width="3.2" stroke-linecap="round"/>';
+  [['H', 0, 8, 4], ['He', 1, -27, 3], ['C', 2, -12, -8], ['O', 3, 2, -10], ['Fe', 12, -8, 18], ['Au', 19, -6, -10], ['U', 21, -12, -10]].forEach(function (L) {
+    var p = VP[L[1]]; s += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.6" fill="#f4f6fb"/><text x="' + (p[0] + L[2]).toFixed(1) + '" y="' + (p[1] + L[3]).toFixed(1) + '" font-size="11" font-weight="700" fill="#f4f6fb">' + L[0] + '</text>';
+  });
+  s += '<text x="96" y="70" font-size="10.5" fill="#ffb454">fusion rolls downhill:</text><text x="96" y="83" font-size="10.5" fill="#ffb454">energy out, the star shines ↘</text>';
+  s += '<text x="352" y="92" font-size="10.5" fill="#d9ccff" text-anchor="end">↙ splitting (fission): downhill too</text>';
+  s += '<path d="M206 190 Q 240 184 270 162" fill="none" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#vA)"/>';
+  s += '<text x="352" y="196" font-size="10.5" fill="#ff9a9a" text-anchor="end">fusing beyond iron: uphill</text>';
+  s += '<text x="10" y="206" font-size="10.5" fill="#c3c9d6">iron &amp; nickel: the bottom of the valley</text>';
+  s += '<circle id="vBall" r="6.5" cx="' + VP[0][0].toFixed(1) + '" cy="' + (VP[0][1] - 6).toFixed(1) + '" fill="#f5c542" stroke="#0b1733" stroke-width="1.5"/>';
+  $('valley').innerHTML = s;
+  if (RM) vBall(12);
+}
+function vBall(u) {
+  var i = Math.min(11, Math.floor(u)), f = Math.min(1, u - i), a = VP[i], b = VP[i + 1], el = $('vBall');
+  if (!a || !b || !el) return;
+  el.setAttribute('cx', (a[0] + (b[0] - a[0]) * f).toFixed(1)); el.setAttribute('cy', (a[1] + (b[1] - a[1]) * f - 6).toFixed(1));
+}
+function vTick(t) { var k = t % 5.2; vBall(k < 4 ? Math.pow(k / 4, 0.75) * 12 : 12); }
+
+/* ── 4 · The race beyond iron ─────────────────────────────────────────── */
+var RC = { cv: $('race'), c: null, w: 0, h: 0, t0: -1, run: false, msg: '' };
+var SL = [[26, 'Fe'], [38, 'Sr'], [56, 'Ba'], [82, 'Pb']], RLM = [[26, 'Fe'], [53, 'I'], [63, 'Eu'], [79, 'Au'], [92, 'U']];
+function zS(k) { return 26 + (83 - 26) * Math.min(1, k / 12); }
+function zR(k) { var f = Math.min(1, k / 1.6); return 26 + (92 - 26) * (1 - Math.pow(1 - f, 2)); }
+function lane(c, w, h, i, title, ms, z, t, fast) {
+  var y0 = h * (i === 0 ? 0.07 : 0.55), y = h * (i === 0 ? 0.31 : 0.79), x0 = w * 0.06, x1 = w * 0.94;
+  var X = function (zz) { return x0 + (zz - 26) / (92 - 26) * (x1 - x0); }, fs = Math.max(11, Math.min(14, Math.round(w / 48)));
+  c.textBaseline = 'top'; c.font = '700 ' + fs + 'px system-ui,-apple-system,"Segoe UI",sans-serif'; c.fillStyle = '#dfe6f7'; c.fillText(title, x0, y0);
+  c.lineCap = 'round'; c.lineWidth = 4; c.strokeStyle = '#33406b'; c.beginPath(); c.moveTo(x0, y); c.lineTo(x1, y); c.stroke();
+  c.strokeStyle = fast ? '#b79cff' : '#5fd38a'; c.beginPath(); c.moveTo(x0, y); c.lineTo(Math.max(x0 + 0.1, X(z)), y); c.stroke();
+  c.font = '600 ' + (fs - 1) + 'px system-ui,-apple-system,"Segoe UI",sans-serif';
+  ms.forEach(function (m) { var mx = X(m[0]), past = z >= m[0] - 0.01; c.fillStyle = past ? (fast ? '#d9ccff' : '#bff0cf') : '#56618a'; c.fillRect(mx - 1, y - 8, 2, 16); c.fillText(m[1], mx - 6, y + 11); });
+  if (!fast) { var bx = X(83.4); c.fillStyle = '#ff6b6b'; c.fillRect(bx, y - 12, 3, 24); c.fillText('stuck', bx + 6, y + 11); }
+  var nx = X(z), nr = 3.5 + Math.pow(z * 2.5, 1 / 3) * 1.5;
+  glow(c, nx, y, nr * 2.4, fast ? '183,156,255' : '95,211,138', 0.45);
+  dot(c, nx, y, nr, fast && z >= 91.9 ? '#f5c542' : '#e9edf7');
+  if (!RM && RC.run) {
+    var n = fast ? (z < 91.9 ? 10 : 0) : (z < 82.9 ? 1 : 0);
+    for (var j = 0; j < n; j++) { var ph = ((t * (fast ? 3 : 0.8)) + j / n) % 1, a = PART[j + 3].ph; dot(c, nx + Math.cos(a) * (nr + 28 * (1 - ph)), y + Math.sin(a) * (nr + 28 * (1 - ph)) * 0.6, 1.7, '#9fd4ff'); }
+  }
+  var el = ELS[Math.round(z) - 1]; c.textBaseline = 'bottom'; c.fillStyle = '#f4f6fb';
+  c.fillText(el.s + ' · ' + el.n + ' (' + Math.round(z) + ')', Math.min(nx + nr + 6, x1 - fs * 9), y - 9);
+}
+function raceDraw(t) {
+  var c = RC.c; if (!c) return;
+  var k = RC.t0 < 0 ? -1 : (RM ? 99 : t - RC.t0);
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, RC.w, RC.h);
+  var nar = RC.w < 560;
+  lane(c, RC.w, RC.h, 0, nar ? '🐢 Slow lane · red giant · thousands of years' : '🐢 Slow lane — inside a dying red giant (thousands of years)', SL, k < 0 ? 26 : zS(k), t, false);
+  lane(c, RC.w, RC.h, 1, nar ? '🐇 Fast lane · neutron stars · about a second' : '🐇 Fast lane — colliding neutron stars (about one second)', RLM, k < 0 ? 26 : zR(k), t, true);
+  var m = k < 0 ? 'Both start at iron (26 protons).' : (k < 1.6 ? 'Racing…' : (k < 12 ? 'Fast lane finished: gold, platinum and uranium made in about a second. The slow lane is still climbing…' : 'Slow lane stuck at bismuth after thousands of years. Gold, uranium and thorium need the fast lane.'));
+  if (m !== RC.msg) { RC.msg = m; $('raceMsg').textContent = m; }
+  if (k >= 12.5) RC.run = false;
+}
+
+/* ── 5 · The great recycling ──────────────────────────────────────────── */
+var CST = [
+  { ic: '☁️', n: 'Cloud', t: 'A cold cloud of gas and dust', d: 'Mostly hydrogen and helium, laced with the ashes of earlier stars. Gravity pulls the densest knots together.' },
+  { ic: '✨', n: 'Birth', t: 'Stars are born', d: 'Each knot collapses until its centre reaches about 10 million °C and hydrogen fusion switches on. Most newborn stars are small; a few are giants.' },
+  { ic: '🔥', n: 'Cooking', t: 'Stars cook new elements', d: 'Hydrogen into helium, then carbon, oxygen and more. Giants cook fast and die young, within millions of years; small stars simmer for billions.' },
+  { ic: '💥', n: 'Death', t: 'Stars die and give it back', d: 'Giants explode, Sun-like stars puff off their layers, white dwarfs detonate and neutron stars collide — each returning freshly made elements to space.' },
+  { ic: '🌫️', n: 'Mixing', t: 'The ashes mix in', d: 'Shock waves and stellar winds stir the new elements into the Milky Way’s gas — so the next cloud starts out a little richer.' }
+];
+var CZ = [0, 0.1, 0.4, 0.8, 1.1, 1.4], CY = { a: 0, run: false, laps: 0, stage: 0, sun: false };
+function cyNode(i) { var a = -Math.PI / 2 + i * 2 * Math.PI / 5; return [170 + 105 * Math.cos(a), 150 + 105 * Math.sin(a)]; }
+function cyBuild() {
+  var s = '<defs><radialGradient id="cyG"><stop offset="0" stop-color="#f5c542" stop-opacity=".85"/><stop offset="1" stop-color="#f5c542" stop-opacity="0"/></radialGradient></defs>';
+  s += '<circle cx="170" cy="150" r="105" fill="none" stroke="#33406b" stroke-width="3" stroke-dasharray="4 6"/>';
+  CST.forEach(function (st, i) {
+    var p = cyNode(i), a = -Math.PI / 2 + i * 2 * Math.PI / 5, lx = 170 + 141 * Math.cos(a), ly = 154 + 141 * Math.sin(a);
+    s += '<circle id="cyN' + i + '" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="23" fill="#1a2b56" stroke="#33406b" stroke-width="2"/>';
+    s += '<text x="' + p[0].toFixed(1) + '" y="' + (p[1] + 7).toFixed(1) + '" text-anchor="middle" font-size="20">' + st.ic + '</text>';
+    s += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#9fb0d6">' + st.n + '</text>';
+  });
+  s += '<g id="cySun" opacity="0"><line x1="193" y1="40" x2="284" y2="34" stroke="#f5c542" stroke-width="2" stroke-dasharray="3 4"/><circle cx="306" cy="34" r="21" fill="#3a2a05" stroke="#f5c542" stroke-width="2"/><text x="306" y="41" text-anchor="middle" font-size="19">☀️</text><text x="306" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#f5c542">Sun &amp; Earth</text></g>';
+  s += '<circle id="cyHalo" cx="170" cy="45" r="17" fill="url(#cyG)"/><circle id="cyDot" cx="170" cy="45" r="7" fill="#f5c542"/>';
+  s += '<text id="cyGen" x="170" y="146" text-anchor="middle" font-size="16" font-weight="800" fill="#f4f6fb">Generation 1</text>';
+  s += '<text id="cyZ" x="170" y="167" text-anchor="middle" font-size="12" fill="#f5c542">heavy elements: 0%</text>';
+  $('cyc').innerHTML = s;
+  $('cySt').innerHTML = CST.map(function (st, i) { return '<button type="button" data-c="' + i + '" aria-current="false">' + st.ic + ' ' + st.n + '</button>'; }).join('');
+}
+function cyZ() { return CZ[Math.min(CZ.length - 1, CY.laps)]; }
+function cyShow() {
+  var x = 170 + 105 * Math.cos(CY.a - Math.PI / 2), y = 150 + 105 * Math.sin(CY.a - Math.PI / 2);
+  $('cyDot').setAttribute('cx', x.toFixed(1)); $('cyDot').setAttribute('cy', y.toFixed(1));
+  $('cyHalo').setAttribute('cx', x.toFixed(1)); $('cyHalo').setAttribute('cy', y.toFixed(1));
+  for (var i = 0; i < CST.length; i++) { var n = $('cyN' + i); n.setAttribute('stroke', i === CY.stage ? '#f5c542' : '#33406b'); n.setAttribute('fill', i === CY.stage ? '#2a3a1a' : '#1a2b56'); }
+  $('cyGen').textContent = 'Generation ' + (CY.laps + 1);
+  $('cyZ').textContent = 'heavy elements: ' + cyZ() + '%';
+  $('cySun').setAttribute('opacity', CY.sun ? '1' : '0');
+  var st = CST[CY.stage], txt;
+  if (CY.sun && CY.stage === 0) txt = '<b>☀️ Our turn — 4.6 billion years ago.</b> One cloud in a quiet part of the Milky Way, already about 1.4% heavy elements after countless earlier stars, collapsed into the Sun and its planets. Rare radioactive atoms in meteorites show fresh star-ash arrived just before; one study suggests a neutron-star collision about 1,000 light-years away added some of our gold and iodine. And the cycle goes on: the Orion Nebula is making new stars right now.';
+  else txt = '<b>' + st.ic + ' ' + st.t + '</b> · generation ' + (CY.laps + 1) + '<br>' + st.d + (CY.stage === 0 && CY.laps > 0 ? ' This cloud starts with about <b>' + cyZ() + '%</b> heavy elements.' : '');
+  $('cyP').innerHTML = txt;
+  Array.prototype.forEach.call($('cySt').children || [], function (b, i) { b.setAttribute('aria-current', String(i === CY.stage)); });
+}
+function cyTick(t, dt) {
+  var lap = 2 * Math.PI, before = CY.a;
+  CY.a += dt * lap / 7;
+  if (Math.floor(CY.a / lap) > Math.floor(before / lap)) { CY.laps++; if (CY.laps >= 5) CY.sun = true; if (CY.laps >= 7) { CY.run = false; cyBtn(); } }
+  CY.stage = Math.round((CY.a % lap) / (lap / 5)) % 5;
+  cyShow();
+}
+function cyBtn() { $('cyGo').textContent = CY.run ? '⏸ Pause' : '▶ Run the cycle'; }
+
+/* ── 6 · The periodic table of origins ────────────────────────────────── */
+var PTF = null, PTSEL = 79;
+function ptBuild() {
+  var h = '';
+  ELS.forEach(function (e) {
+    var p = pos(e.z), k0 = e.o[0][0], cls = 'el' + (k0 === 'rad' ? ' rad' : '') + (k0 === 'hm' ? ' hm' : '');
+    h += '<button type="button" class="' + cls + '" data-z="' + e.z + '" style="grid-row:' + p[0] + ';grid-column:' + p[1] + (k0 === 'rad' || k0 === 'hm' ? '' : ';background:' + tileBg(e)) +
+      '" aria-label="' + e.n + ', ' + e.s + ': ' + originWords(e) + '"><small>' + e.z + '</small>' + e.s + '</button>';
+  });
+  h += '<span class="ph" style="grid-row:6;grid-column:3">57–71</span><span class="ph" style="grid-row:7;grid-column:3">89–103</span><span class="sp" style="grid-row:8;grid-column:1/19"></span>';
+  $('pt').innerHTML = h;
+  $('leg').innerHTML = KORD.map(function (k) {
+    return '<button type="button" data-k="' + k + '" aria-pressed="false"><i style="background:' + (k === 'rad' ? RADBG : K[k].c) + '"></i>' + K[k].ic + ' ' + K[k].n + '</button>';
+  }).join('') + '<button type="button" data-k="body" aria-pressed="false"><i style="background:#f4f6fb"></i>🧍 In your body</button>';
+  $('ptsel').innerHTML = ELS.map(function (e) { return '<option value="' + e.z + '">' + e.z + ' · ' + e.s + ' — ' + e.n + '</option>'; }).join('');
+}
+function ptFilter() {
+  Array.prototype.forEach.call($('pt').children || [], function (b) {
+    var z = b.getAttribute && +b.getAttribute('data-z'); if (!z) return;
+    var e = ELS[z - 1], hit = !PTF || (PTF === 'body' ? BODYZ.indexOf(z) >= 0 : e.o.some(function (x) { return x[0] === PTF; }));
+    b.classList.toggle('dim', !hit); b.classList.toggle('cur', z === PTSEL);
+  });
+  Array.prototype.forEach.call($('leg').children || [], function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-k') === PTF)); });
+}
+function ptShow(z) {
+  var e = ELS[z - 1], k0 = e.o[0][0]; PTSEL = z;
+  var note = NOTE[z] || (k0 === 'rad' ? 'Made in stars, but short-lived. The little on Earth is constantly re-made by the slow radioactive decay of uranium and thorium.' :
+    (k0 === 'hm' ? (z >= 101 ? 'Made a few atoms at a time in particle accelerators; most last only seconds or less.' : 'Made in nuclear reactors, in tiny amounts, for research.') : ''));
+  var shares = e.o.map(function (x) { return '<i style="width:' + Math.round(x[1] * 100) + '%;background:' + K[x[0]].c + '"></i>'; }).join('');
+  var who = e.o.map(function (x) { return '<span class="kchip" style="background:' + (x[0] === 'rad' ? '#9fb0d6' : K[x[0]].c) + '">' + K[x[0]].ic + ' ' + K[x[0]].n + '</span>'; }).join('');
+  $('ptd').innerHTML = '<div class="big" style="background:' + tileBg(e) + ';color:' + (k0 === 'rad' || k0 === 'hm' ? '#f4f6fb' : '#0b1733') + '"><small>' + z + '</small>' + e.s + '</div><div>' +
+    '<div class="nm">' + e.n + (BODYZ.indexOf(z) >= 0 ? ' <span class="pill">🧍 in your body</span>' : '') + '</div><div class="ow">' + originWords(e) + '</div>' +
+    (k0 !== 'rad' && k0 !== 'hm' && e.o.length > 1 ? '<div class="shares" aria-hidden="true">' + shares + '</div>' : '') + '<div>' + who + '</div>' + (note ? '<p>' + note + '</p>' : '') +
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn" id="ptPrev"' + (z > 1 ? '' : ' disabled') + '>‹ ' + (z > 1 ? ELS[z - 2].s : '') + '</button><button type="button" class="btn" id="ptNext"' + (z < 118 ? '' : ' disabled') + '>' + (z < 118 ? ELS[z].s : '') + ' ›</button></div></div>';
+  $('ptPrev').onclick = function () { if (PTSEL > 1) ptShow(PTSEL - 1); };
+  $('ptNext').onclick = function () { if (PTSEL < 118) ptShow(PTSEL + 1); };
+  $('ptsel').value = String(z);
+  ptFilter();
+}
+
+/* ── 7 · You ──────────────────────────────────────────────────────────── */
+var WM = 'weight', WC = 'origin';
+function youRender() {
+  var W = waffle(WM === 'atoms' ? 'atoms' : 'weight');
+  $('waf').innerHTML = W.sq.map(function (q) {
+    var col = WC === 'origin' ? K[q.k].c : (ECOL[q.g] || ECOL.rest);
+    return '<span style="background:' + col + '">' + (q.g === 'rest' ? '·' : q.g) + '</span>';
+  }).join('');
+  var keys;
+  if (WC === 'origin') keys = KORD.filter(function (k) { return W.byK[k]; }).map(function (k) { return '<span><i style="background:' + K[k].c + '"></i>' + K[k].ic + ' ' + K[k].n + ' · ' + W.byK[k] + '</span>'; });
+  else keys = W.groups.map(function (g, i) { return '<span><i style="background:' + (ECOL[g] || ECOL.rest) + '"></i>' + (g === 'rest' ? 'Everything else' : bySym(g).n) + ' · ' + W.cnt[i] + '</span>'; });
+  $('wafK').innerHTML = keys.join('');
+  var b = W.byK;
+  $('wafS').innerHTML = WM === 'atoms'
+    ? '<b>' + (b.bb || 0) + '%</b> of your atoms — six in every ten — are Big Bang hydrogen. About <b>' + (b.mx || 0) + '%</b> were made in exploding giant stars and <b>' + (b.lm || 0) + '%</b> in gently dying Sun-like stars.'
+    : 'By weight, roughly <b>' + (b.bb || 0) + '%</b> of you is Big Bang hydrogen, about <b>' + (b.mx || 0) + '%</b> was made in exploding giant stars and about <b>' + (b.lm || 0) + '%</b> in gently dying Sun-like stars. Exploding white dwarfs and colliding neutron stars supplied the precious traces — your iron, iodine and more — too small to fill a square.';
+  $('waf').setAttribute('aria-label', $('wafS').textContent || 'What your body is made of');
+  $('wW').setAttribute('aria-pressed', String(WM === 'weight')); $('wA').setAttribute('aria-pressed', String(WM === 'atoms'));
+  $('cO').setAttribute('aria-pressed', String(WC === 'origin')); $('cE').setAttribute('aria-pressed', String(WC === 'element'));
+}
+function blistBuild() {
+  $('blist').innerHTML = BODY.map(function (r) {
+    var e = bySym(r[0]);
+    return '<li><span class="sy" style="background:' + tileBg(e) + '">' + r[0] + '</span><span><b>' + e.n + '</b> <span class="ro">— ' + r[3] + '</span><br><span class="ki">' +
+      e.o.map(function (x) { return K[x[0]].ic + ' ' + K[x[0]].n; }).join(' · ') + '</span></span><span class="kg">' + fmtMass(r[1]) + '</span></li>';
+  }).join('');
+}
+
+/* ── 8 · Earth & things in your hand ──────────────────────────────────── */
+function earthBuild() {
+  var h = '', k = '';
+  EARTH.forEach(function (r) {
+    var e = r[0] === 'other' ? null : bySym(r[0]), bg = e ? tileBg(e) : '#56618a', nm = e ? e.n : 'Everything else';
+    h += '<span style="width:' + r[1] + '%;background:' + bg + '" title="' + nm + ' ' + r[1] + '%">' + (r[1] >= 5 ? r[0] : '') + '</span>';
+    k += '<span><i style="background:' + bg + '"></i>' + nm + ' ' + r[1] + '%</span>';
+  });
+  $('ebar').innerHTML = h; $('ekey').innerHTML = k;
+  $('ogrid').innerHTML = STUFF.map(function (o) {
+    var ks = [], chips = o[2].map(function (s) {
+      var e = bySym(s); e.o.forEach(function (x) { if (ks.indexOf(x[0]) < 0) ks.push(x[0]); });
+      return '<span class="ech" style="background:' + tileBg(e) + ';color:' + (e.o[0][0] === 'hm' ? '#f4f6fb' : '#0b1733') + '" title="' + e.n + ': ' + originWords(e) + '">' + s + '</span>';
+    }).join('');
+    return '<div class="oc"><div class="oe" aria-hidden="true">' + o[0] + '</div><b>' + o[1] + '</b><div>' + chips + '</div><p>' + o[3] + '</p><div class="kis" title="Made by: ' +
+      ks.map(function (x) { return K[x].n; }).join(', ') + '">' + ks.map(function (x) { return K[x].ic; }).join(' ') + '</div></div>';
+  }).join('');
+}
+
+/* ── 9 · See it tonight ───────────────────────────────────────────────── */
+var TM = 'auto';
+function tnTime() {
+  var d = new Date();
+  if (TM === 'now' || (TM === 'auto' && A.sunAltAt(d) < -12)) return { d: d, l: 'now' };
+  var sg = new Date(d.getTime() + 8 * 3600e3);
+  return { d: new Date(Date.UTC(sg.getUTCFullYear(), sg.getUTCMonth(), sg.getUTCDate(), 13, 0, 0)), l: '9pm' };
+}
+/* first time in the next 12 h that a target is 20° up in a properly dark sky (10-minute steps) */
+function nextUp(ra, dec, d) {
+  for (var m = 10; m <= 720; m += 10) {
+    var t = new Date(d.getTime() + m * 60000);
+    if (A.altazAt(ra, dec, t).alt >= 20 && A.sunAltAt(t) < -12) return t;
+  }
+  return null;
+}
+function sgtTime(t) { var s = new Date(t.getTime() + 8 * 3600e3), h = s.getUTCHours(), m = s.getUTCMinutes(); return ((h % 12) || 12) + ':' + pad2(m) + (h < 12 ? ' am' : ' pm'); }
+function upLater(r, d) { if (r.p.alt >= 20) return ''; var t = nextUp(r.ra, r.dec, d); return t ? ' — well up by ' + sgtTime(t) : ''; }
+function tnRender() {
+  var T = tnTime(), d = T.d, sky = A.sky(d);
+  var rows = SKY.map(function (o) { return { o: o, ra: o.ra, dec: o.dec, p: A.altazAt(o.ra, o.dec, d) }; });
+  ['Mars', 'Jupiter', 'Saturn'].forEach(function (nm) { var pl = sky.planets[nm]; if (pl) rows.push({ o: PLX[nm], ra: pl.ra, dec: pl.dec, p: { alt: pl.alt, az: pl.az } }); });
+  var up = rows.filter(function (r) { return r.p.alt >= 20; }).length;
+  $('tWhen').textContent = (T.l === 'now' ? 'Right now' + (A.sunAltAt(d) > -6 ? ' — daylight, so this is where they would be in a dark sky' : '') : 'Tonight at 9 pm (SGT)') + ' · ' + up + ' of ' + rows.length + ' well placed';
+  $('tNow').setAttribute('aria-pressed', String(T.l === 'now')); $('t9').setAttribute('aria-pressed', String(T.l !== 'now'));
+  $('tn').innerHTML = rows.map(function (r) {
+    var o = r.o;
+    return '<div class="tnr' + (r.p.alt <= 0 ? ' below' : '') + '"><div class="ic" aria-hidden="true">' + A.illus({ name: o.n, kind: o.k, planet: o.pl }, 46) + '</div><div><div class="st">' + o.st + '</div><div class="nm">' + o.n +
+      '</div><div class="wh">' + where(r.p) + upLater(r, d) + ' · <span class="mute">' + o.sc + '</span></div><div class="sy">' + o.say + '</div></div></div>';
+  }).join('');
+  Object.keys(PA).forEach(function (k) {
+    var best = null, el = $('pa-' + k);
+    rows.forEach(function (r) { if (PA[k].indexOf(r.o.n) >= 0 && (!best || r.p.alt > best.p.alt)) best = r; });
+    if (!el || !best) return;
+    if (best.p.alt < 20 && k !== 'bb') {        /* nothing well up: suggest the one that climbs soonest */
+      var soon = null, st = Infinity;
+      rows.forEach(function (r) { if (PA[k].indexOf(r.o.n) < 0) return; var u = nextUp(r.ra, r.dec, d); if (u && u.getTime() < st) { st = u.getTime(); soon = r; } });
+      if (soon) best = soon;
+    }
+    var head = '<b>🔭 From SCOB ' + (T.l === 'now' ? 'right now' : 'tonight at 9 pm') + ':</b> ';
+    if (k === 'bb' && best.p.alt < 10) { el.innerHTML = head + 'look anywhere — the Big Bang’s afterglow, cooled to −270 °C, fills the whole sky (radio telescopes see it as the cosmic microwave background).'; return; }
+    el.innerHTML = head + best.o.n + ' — ' + where(best.p) + upLater(best, d) + '. ' + (best.o.pa || '');
+  });
+}
+
+/* ── Start-up ─────────────────────────────────────────────────────────── */
+function fitAll() {
+  var sw = SC.cv.getBoundingClientRect().width || 300, a = fit(SC.cv, sw < 560 ? 0.72 : 0.5); SC.ctx = a.ctx; SC.w = a.w; SC.h = a.h; FOG = null;
+  var b = fit(ON.cv, 1); ON.c = b.ctx; ON.w = b.w; ON.h = b.h;
+  var rw = RC.cv.getBoundingClientRect().width || 300, r = fit(RC.cv, rw < 560 ? 0.62 : 0.36); RC.c = r.ctx; RC.w = r.w; RC.h = r.h;
+}
+function redrawAll() { var t = now(); drawScene(t); onDraw(t); raceDraw(t); }
+
+miniBuild(); stgRender(); sqBuild(); vBuild(); cyBuild(); cyShow(); ptBuild(); ptShow(79); youRender(); blistBuild(); earthBuild();
+$('onLeg').innerHTML = OL.map(function (L) { return '<span><i style="background:' + L[1] + '"></i>' + L[0] + '</span>'; }).join('');
+$('tl').max = String(EV.length - 1);
+fitAll(); tlSet(); onSet(0); raceDraw(now());
+try { tnRender(); } catch (err) { $('tWhen').textContent = 'Sky positions are unavailable on this device.'; }
+
+/* controls */
+$('heroPlay').onclick = function () {
+  setMode('story'); TL.i = 0; TL.acc = 0; TL.play = true; tlSet(); playBtn(); kick();
+  var s = $('ch-time'); if (s && s.scrollIntoView) s.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+};
+$('tlPlay').onclick = function () {
+  if (!TL.play && ((TL.mode === 'story' && TL.i >= EV.length - 1) || (TL.mode === 'scale' && TL.age >= T0))) { TL.i = 0; TL.age = 0; tlSet(); }
+  TL.play = !TL.play; TL.acc = 0; playBtn(); kick();
+};
+$('tlPrev').onclick = function () { tlStep(-1); };
+$('tlNext').onclick = function () { tlStep(1); };
+$('mStory').onclick = function () { setMode('story'); };
+$('mScale').onclick = function () { setMode('scale'); };
+$('tl').addEventListener('input', function () {
+  TL.play = false; playBtn();
+  var v = +$('tl').value;
+  if (TL.mode === 'story') TL.i = v; else TL.age = v / 1000 * T0;
+  tlSet();
+});
+$('onPlay').onclick = function () { if (!ON.play && ON.s >= STG.length - 1) onSet(0); ON.play = !ON.play; ON.acc = 0; onBtn(); kick(); };
+$('onPrev').onclick = function () { ON.play = false; onSet(ON.s - 1); onBtn(); kick(); };
+$('onNext').onclick = function () { ON.play = false; onSet(ON.s + 1); onBtn(); kick(); };
+$('stg').addEventListener('click', function (ev) { var b = ev.target && ev.target.closest ? ev.target.closest('button[data-s]') : null; if (b) { ON.play = false; onSet(+b.getAttribute('data-s')); onBtn(); kick(); } });
+$('raceGo').onclick = function () { RC.t0 = now(); RC.run = true; RC.msg = ''; $('raceGo').textContent = '↺ Race again'; kick(); if (RM) raceDraw(now()); };
+$('cyGo').onclick = function () { if (!CY.run && CY.laps >= 7) { CY.a = 0; CY.laps = 0; CY.sun = false; } CY.run = !CY.run; cyBtn(); kick(); };
+$('cyReset').onclick = function () { CY.run = false; CY.a = 0; CY.laps = 0; CY.stage = 0; CY.sun = false; cyBtn(); cyShow(); };
+$('cySt').addEventListener('click', function (ev) {
+  var b = ev.target && ev.target.closest ? ev.target.closest('button[data-c]') : null; if (!b) return;
+  var i = +b.getAttribute('data-c'); CY.run = false; cyBtn(); CY.stage = i; CY.a = Math.floor(CY.a / (2 * Math.PI)) * 2 * Math.PI + i * 2 * Math.PI / 5; cyShow();
+});
+$('pt').addEventListener('click', function (ev) { var b = ev.target && ev.target.closest ? ev.target.closest('button[data-z]') : null; if (b) ptShow(+b.getAttribute('data-z')); });
+$('leg').addEventListener('click', function (ev) { var b = ev.target && ev.target.closest ? ev.target.closest('button[data-k]') : null; if (!b) return; var k = b.getAttribute('data-k'); PTF = PTF === k ? null : k; ptFilter(); });
+$('ptsel').addEventListener('change', function () { ptShow(+$('ptsel').value); });
+$('wW').onclick = function () { WM = 'weight'; youRender(); };
+$('wA').onclick = function () { WM = 'atoms'; youRender(); };
+$('cO').onclick = function () { WC = 'origin'; youRender(); };
+$('cE').onclick = function () { WC = 'element'; youRender(); };
+$('tNow').onclick = function () { TM = 'now'; tnRender(); };
+$('t9').onclick = function () { TM = '9pm'; tnRender(); };
+
+/* animations — each runs only while it is on screen */
+var anScene = addAnim($('ch-time'), function () { return TL.play || !RM; }, tlTick);
+var anOnion = addAnim($('onion'), function () { return ON.play || !RM; }, onTick);
+var anValley = addAnim($('valley'), function () { return !RM; }, vTick);
+var anRace = addAnim($('race'), function () { return RC.run; }, function (t) { raceDraw(t); });
+var anCycle = addAnim($('cyc'), function () { return CY.run; }, cyTick);
+if ('IntersectionObserver' in window) {
+  ANIMS.forEach(function (a) { a.vis = false; });
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { ANIMS.forEach(function (a) { if (a.el === e.target) a.vis = e.isIntersecting; }); });
+    kick();
+  }, { rootMargin: '60px' });
+  ANIMS.forEach(function (a) { if (a.el) io.observe(a.el); });
+}
+document.addEventListener('visibilitychange', kick);
+kick();
+var rz = 0;
+window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { fitAll(); redrawAll(); }, 180); });
+setInterval(function () { try { tnRender(); } catch (err) {} }, 300000);
+
+/* test hook (test-logic.js) */
+window.MOS = { T0: T0, K: K, KORD: KORD, ELS: ELS, EV: EV, STG: STG, BODY: BODY, BODYZ: BODYZ, SKY: SKY, pos: pos, originWords: originWords, tileBg: tileBg, appear: appear,
+  kindsAt: kindsAt, zAt: zAt, cosmicCalendar: cosmicCalendar, fmtAgo: fmtAgo, fmtAge: fmtAge, squeeze: squeeze, waffle: waffle, lrRound: lrRound, fmtMass: fmtMass,
+  tnTime: tnTime, TL: TL, tlSet: tlSet, setMode: setMode, tlStep: tlStep, ptShow: ptShow, curIdx: curIdx };
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>
