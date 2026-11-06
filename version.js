@@ -13,7 +13,7 @@
  *   ./check-release.sh
  * to confirm everything is in sync before uploading.
  */
-window.SCOB_VERSION   = 'v4.23';   /* keep in lockstep with sw.js cache scob-sky-v126 */
+window.SCOB_VERSION   = 'v4.24';   /* keep in lockstep with sw.js cache scob-sky-v127 */
 window.SCOB_COPYRIGHT = '© 2026 AFBOOSTER.online';   // year of creation — do not roll forward
 
 /* v4.21: the shared language layer. When a reader has chosen 中文, Bahasa Melayu or தமிழ்

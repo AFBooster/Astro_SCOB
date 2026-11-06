@@ -107,7 +107,7 @@ if (!document.getElementById('icsCSS')) {
 /* the Friday public session, every week */
 var SESSIONS = {
   title: 'Stargazing at the Science Centre Observatory',
-  desc: 'Public stargazing at the Science Centre Observatory, Fridays 7:30–10 pm (weather permitting). Check tonight\'s forecast before you go: https://afbooster.online/sky-guide.html',
+  desc: 'Public stargazing at the Science Centre Observatory, Fridays 7:30–10 pm: a planetarium show, then the telescopes from 8:15 pm. Tickets are needed (not refunded for poor weather): https://www.science.edu.sg/whats-on/workshops-activities/stargazing — tonight\'s forecast: https://afbooster.online/sky-guide.html',
   rrule: 'FREQ=WEEKLY;BYDAY=FR', alarm: 180, url: 'https://afbooster.online/sky-guide.html'
 };
 function sessionsEvent() {

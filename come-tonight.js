@@ -20,9 +20,12 @@
 
 var LAT = 1.3342, LON = 103.7357;
 var START_H = 19.5, END_H = 22;              /* public session, SGT */
-var HOURS = [19, 20, 21];                    /* forecast hours covering 7–10 pm */
+var HOURS = [20, 21];                        /* forecast hours of the outdoor viewing, 8:15–10 pm
+                                                (7:30–8:15 is the planetarium show indoors) */
 var CACHE_KEY = 'scobComeTonight';
-var FB = 'https://www.facebook.com/ScienceCentreObservatory/';
+/* v4.24: the Science Centre's own stargazing page — tickets, and notices such as a haze
+   closure. (The Facebook address used before could not be confirmed.) */
+var FB = 'https://www.science.edu.sg/whats-on/workshops-activities/stargazing';
 
 function pad(n) { return (n < 10 ? '0' : '') + n; }
 function sgt(d) { return new Date((d ? d.getTime() : Date.now()) + 8 * 3600000); }   /* read with getUTC* */
@@ -140,14 +143,14 @@ function cached() {
 /* ── words, in Singapore's four official languages ───────────────────────── */
 var W = {
   en: { q: 'Should I come tonight?', qFri: 'Coming on Friday?',
-    sess: 'Public stargazing · Fridays 7:30–10 pm · Science Centre Observatory, Jurong',
+    sess: 'Public stargazing · Fridays 7:30–10 pm (planetarium show, then the telescopes from 8:15) · Science Centre Observatory, Jurong',
     next: 'Next session: {d}', tonightLbl: 'Tonight, 7:30–10 pm', nowOn: 'The session is on now — until 10 pm',
     maybeStorm: 'Worth a try — but showers are possible', noStorm: 'Rain or storms likely — not a good night',
     maybeHaze: 'Clear enough, but the air is hazy', noHaze: 'Very hazy air — better to stay in tonight',
     go: 'Good night to come', maybe: 'Worth a try — but cloud may get in the way', no: 'Likely clouded out — maybe another Friday',
     goH: 'Haze-free and mostly clear',
     clear: 'Mostly clear', partcloud: 'Partly cloudy', cloudy: 'Cloudy',
-    stats: '{cc}% cloud · up to {pp}% chance of rain, 7–10 pm',
+    stats: '{cc}% cloud · up to {pp}% chance of rain, 8–10 pm',
     thunder: 'Thunderstorms possible in the evening.',
     neaRain: 'NEA expects showers around Jurong in the next 2 hours.',
     neaStorm: 'NEA expects thundery or heavy showers around Jurong in the next 2 hours.',
@@ -156,8 +159,8 @@ var W = {
     hazeBad: 'Haze is Very Unhealthy — check NEA\'s advice before going out.',
     psi: 'PSI {v} (NEA, west)', pm: 'haze forecast {v} µg/m³',
     early: 'This is {n} days ahead — forecasts change; check again on the day.',
-    caveat: 'A weather forecast, not the observatory\'s decision. Sessions can close for rain — check the observatory\'s page before you travel.',
-    cal: '📅 Every Friday in my calendar', fbLink: 'Observatory updates ↗', more: 'Full forecast', updated: 'Updated {t}', saved: 'Saved forecast from {t} — you seem to be offline.',
+    caveat: 'A weather forecast, not the observatory\'s decision. Tickets are needed and are not refunded for poor weather, and the observatory can close for rain or haze — check its page before you travel.',
+    cal: '📅 Every Friday in my calendar', fbLink: 'Observatory page & tickets ↗', more: 'Full forecast', updated: 'Updated {t}', saved: 'Saved forecast from {t} — you seem to be offline.',
     offline: 'Could not load the forecast just now (offline?). Check the sky, or the observatory\'s page.',
     loading: 'Checking the forecast…',
     D: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], M: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -169,7 +172,7 @@ var W = {
     maybeHaze: '天空尚可，但空气有烟霾', noHaze: '烟霾严重，今晚最好留在家里',
     go: '适合前来', maybe: '值得一试，但云层可能会挡住', no: '很可能被云遮住，不妨改天',
     clear: '大致晴朗', partcloud: '局部多云', cloudy: '多云',
-    stats: '晚上7–10点：云量 {cc}% · 降雨概率最高 {pp}%',
+    stats: '晚上8–10点：云量 {cc}% · 降雨概率最高 {pp}%',
     thunder: '傍晚可能有雷雨。',
     neaRain: '新加坡环境局预测未来2小时裕廊一带有阵雨。',
     neaStorm: '新加坡环境局预测未来2小时裕廊一带有雷雨或大雨。',
@@ -178,8 +181,8 @@ var W = {
     hazeBad: '烟霾处于“非常不健康”水平，出门前请查看环境局的建议。',
     psi: 'PSI {v}（环境局，西区）', pm: '烟霾预测 {v} µg/m³',
     early: '距今还有 {n} 天，预报可能会变，当天请再查看。',
-    caveat: '这是天气预报，不是天文台的决定。下雨时活动可能取消，出发前请查看天文台的公告。',
-    cal: '📅 把每周五加入我的日历', fbLink: '天文台公告 ↗', more: '完整预报', updated: '更新于 {t}', saved: '离线中，显示 {t} 保存的预报。',
+    caveat: '这是天气预报，不是天文台的决定。观星需购票，天气不佳不退票；下雨或烟霾时天文台可能关闭，出发前请查看天文台网页。',
+    cal: '📅 把每周五加入我的日历', fbLink: '天文台网页与购票 ↗', more: '完整预报', updated: '更新于 {t}', saved: '离线中，显示 {t} 保存的预报。',
     offline: '暂时无法载入预报（可能离线）。请看看天空，或查看天文台的公告。',
     loading: '正在查看预报…',
     D: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'], M: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
@@ -191,7 +194,7 @@ var W = {
     maybeHaze: 'Langit agak cerah, tetapi udara berjerebu', noHaze: 'Jerebu teruk — lebih baik duduk di rumah malam ini',
     go: 'Malam yang baik untuk datang', maybe: 'Boleh dicuba — tetapi awan mungkin mengganggu', no: 'Mungkin dilitupi awan — cuba Jumaat lain',
     clear: 'Kebanyakannya cerah', partcloud: 'Sebahagian berawan', cloudy: 'Berawan',
-    stats: '{cc}% awan · peluang hujan sehingga {pp}%, 7–10 malam',
+    stats: '{cc}% awan · peluang hujan sehingga {pp}%, 8–10 malam',
     thunder: 'Ribut petir mungkin berlaku pada waktu petang.',
     neaRain: 'NEA menjangka hujan di sekitar Jurong dalam 2 jam akan datang.',
     neaStorm: 'NEA menjangka hujan lebat atau ribut petir di sekitar Jurong dalam 2 jam akan datang.',
@@ -200,8 +203,8 @@ var W = {
     hazeBad: 'Jerebu pada tahap Sangat Tidak Sihat — semak nasihat NEA sebelum keluar.',
     psi: 'PSI {v} (NEA, barat)', pm: 'ramalan jerebu {v} µg/m³',
     early: 'Ini {n} hari lagi — ramalan boleh berubah; semak semula pada hari itu.',
-    caveat: 'Ini ramalan cuaca, bukan keputusan balai cerap. Sesi boleh ditutup jika hujan — semak halaman balai cerap sebelum bertolak.',
-    cal: '📅 Setiap Jumaat dalam kalendar saya', fbLink: 'Berita balai cerap ↗', more: 'Ramalan penuh', updated: 'Dikemas kini {t}', saved: 'Ramalan disimpan pada {t} — anda mungkin di luar talian.',
+    caveat: 'Ini ramalan cuaca, bukan keputusan balai cerap. Tiket diperlukan dan tidak dipulangkan jika cuaca buruk, dan balai cerap boleh ditutup kerana hujan atau jerebu — semak halamannya sebelum bertolak.',
+    cal: '📅 Setiap Jumaat dalam kalendar saya', fbLink: 'Halaman balai cerap & tiket ↗', more: 'Ramalan penuh', updated: 'Dikemas kini {t}', saved: 'Ramalan disimpan pada {t} — anda mungkin di luar talian.',
     offline: 'Ramalan tidak dapat dimuatkan sekarang (luar talian?). Lihat langit, atau halaman balai cerap.',
     loading: 'Menyemak ramalan…',
     D: ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'], M: ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogos', 'Sep', 'Okt', 'Nov', 'Dis'],
@@ -213,7 +216,7 @@ var W = {
     maybeHaze: 'வானம் ஓரளவு தெளிவு, ஆனால் காற்றில் புகைமூட்டம்', noHaze: 'கடும் புகைமூட்டம் — இன்றிரவு வீட்டிலேயே இருப்பது நல்லது',
     go: 'வருவதற்கு நல்ல இரவு', maybe: 'முயற்சிக்கலாம் — ஆனால் மேகம் மறைக்கக்கூடும்', no: 'மேகமூட்டமாக இருக்கும் — வேறு வெள்ளியில் வரலாம்',
     clear: 'பெரும்பாலும் தெளிவு', partcloud: 'பகுதி மேகமூட்டம்', cloudy: 'மேகமூட்டம்',
-    stats: 'இரவு 7–10: மேகம் {cc}% · மழை வாய்ப்பு அதிகபட்சம் {pp}%',
+    stats: 'இரவு 8–10: மேகம் {cc}% · மழை வாய்ப்பு அதிகபட்சம் {pp}%',
     thunder: 'மாலையில் இடியுடன் கூடிய மழை பெய்யலாம்.',
     neaRain: 'அடுத்த 2 மணி நேரத்தில் ஜூரோங் பகுதியில் மழை பெய்யும் என NEA எதிர்பார்க்கிறது.',
     neaStorm: 'அடுத்த 2 மணி நேரத்தில் ஜூரோங் பகுதியில் இடி அல்லது கனமழை பெய்யும் என NEA எதிர்பார்க்கிறது.',
@@ -222,8 +225,8 @@ var W = {
     hazeBad: 'புகைமூட்டம் "மிகவும் ஆரோக்கியமற்ற" நிலையில் உள்ளது — வெளியே செல்லும் முன் NEA ஆலோசனையைப் பாருங்கள்.',
     psi: 'PSI {v} (NEA, மேற்கு)', pm: 'புகைமூட்ட முன்னறிவிப்பு {v} µg/m³',
     early: 'இன்னும் {n} நாட்கள் உள்ளன — முன்னறிவிப்பு மாறலாம்; அன்றைய நாள் மீண்டும் பாருங்கள்.',
-    caveat: 'இது வானிலை முன்னறிவிப்பு மட்டுமே, வானாய்வகத்தின் முடிவு அல்ல. மழையின்போது அமர்வு மூடப்படலாம் — புறப்படும் முன் வானாய்வகப் பக்கத்தைப் பாருங்கள்.',
-    cal: '📅 ஒவ்வொரு வெள்ளியையும் என் நாள்காட்டியில் சேர்', fbLink: 'வானாய்வகச் செய்திகள் ↗', more: 'முழு முன்னறிவிப்பு', updated: '{t} புதுப்பிக்கப்பட்டது', saved: '{t} சேமித்த முன்னறிவிப்பு — நீங்கள் இணைப்பில் இல்லை போலும்.',
+    caveat: 'இது வானிலை முன்னறிவிப்பு மட்டுமே, வானாய்வகத்தின் முடிவு அல்ல. நுழைவுச்சீட்டு தேவை; மோசமான வானிலைக்குப் பணம் திருப்பித் தரப்படாது. மழை அல்லது புகைமூட்டத்தால் வானாய்வகம் மூடப்படலாம் — புறப்படும் முன் அதன் பக்கத்தைப் பாருங்கள்.',
+    cal: '📅 ஒவ்வொரு வெள்ளியையும் என் நாள்காட்டியில் சேர்', fbLink: 'வானாய்வகப் பக்கம் & நுழைவுச்சீட்டு ↗', more: 'முழு முன்னறிவிப்பு', updated: '{t} புதுப்பிக்கப்பட்டது', saved: '{t} சேமித்த முன்னறிவிப்பு — நீங்கள் இணைப்பில் இல்லை போலும்.',
     offline: 'முன்னறிவிப்பை இப்போது ஏற்ற முடியவில்லை (இணைப்பு இல்லையா?). வானத்தைப் பாருங்கள், அல்லது வானாய்வகப் பக்கத்தைப் பாருங்கள்.',
     loading: 'முன்னறிவிப்பைப் பார்க்கிறது…',
     D: ['ஞாயிறு', 'திங்கள்', 'செவ்வாய்', 'புதன்', 'வியாழன்', 'வெள்ளி', 'சனி'], M: ['ஜன', 'பிப்', 'மார்', 'ஏப்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆக', 'செப்', 'அக்', 'நவ', 'டிச'],

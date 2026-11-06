@@ -154,6 +154,101 @@ section('Culture pages are credited on the About page (about.html)');
   });
 })();
 
+// ── v4.24: the v4.21 visitor modules ─────────────────────────────────────────
+// They run outside a page, so each gets a small context of its own: a fixed clock, a
+// stubbed fetch and localStorage. What is checked is the decision, not the network.
+function moduleCtx(files, nowISO, fetchStub, store) {
+  const T0 = Date.parse(nowISO), RealDate = Date;
+  class FixedDate extends RealDate { constructor(...a) { super(...(a.length ? a : [T0])); } static now() { return T0; } }
+  const mem = Object.assign({}, store || {});
+  const ctx = { console, Promise, JSON, Math, RegExp, Array, Object, String, Number, Error, setTimeout, clearTimeout, encodeURIComponent, unescape,
+    Date: FixedDate,
+    localStorage: { getItem: k => (k in mem ? mem[k] : null), setItem: (k, v) => { mem[k] = String(v); }, removeItem: k => { delete mem[k]; } },
+    document: { readyState: 'loading', addEventListener() {}, getElementById: () => null, createElement: () => ({ style: {} }), head: { appendChild() {} }, querySelector: () => null },
+    fetch: fetchStub || (() => Promise.reject(new Error('offline'))) };
+  ctx.window = ctx; vm.createContext(ctx);
+  files.forEach(f => vm.runInContext(fs.readFileSync(path.join(DIR, f), 'utf8'), ctx));
+  return ctx;
+}
+const jsonRes = o => Promise.resolve({ ok: true, json: () => Promise.resolve(o), text: () => Promise.resolve(JSON.stringify(o)) });
+function wxStub(day, cc, pp, code, psi, nea) {
+  return url => {
+    if (/api\.open-meteo\.com/.test(url)) {
+      const t = [...Array(24)].map((_, h) => day + 'T' + String(h).padStart(2, '0') + ':00');
+      return jsonRes({ hourly: { time: t, cloud_cover: t.map(() => cc), precipitation_probability: t.map(() => pp), weather_code: t.map(() => code) } });
+    }
+    if (/2-hour-weather-forecast/.test(url)) return jsonRes({ items: [{ forecasts: [{ area: 'Jurong West', forecast: nea }] }] });
+    if (/real-time\/api\/psi/.test(url)) return jsonRes({ data: { items: [{ readings: { psi_twenty_four_hourly: { west: psi } } }] } });
+    return Promise.reject(new Error('blocked'));
+  };
+}
+
+section('Should I come tonight? (come-tonight.js)');
+(function () {
+  let c = moduleCtx(['come-tonight.js'], '2026-11-06T10:00:00Z');          // Friday 6 pm SGT
+  let S = c.ComeTonight.session();
+  ok('Friday 6 pm → the session is tonight', S.tonight && S.ymd === '2026-11-06', JSON.stringify(S));
+  c = moduleCtx(['come-tonight.js'], '2026-11-06T14:30:00Z');              // Friday 10:30 pm
+  S = c.ComeTonight.session();
+  ok('Friday after 10 pm → next Friday', !S.tonight && S.ymd === '2026-11-13' && S.daysAhead === 7, JSON.stringify(S));
+  c = moduleCtx(['come-tonight.js'], '2026-11-03T02:00:00Z');              // Tuesday
+  ok('Tuesday → this Friday, 3 days ahead', c.ComeTonight.session().daysAhead === 3);
+  ok('cloud thresholds match the dashboard (30 / 65 %)', c.ComeTonight.cloudLevel(30, 29) === 'go' && c.ComeTonight.cloudLevel(31, 0) === 'maybe' && c.ComeTonight.cloudLevel(66, 0) === 'no');
+  const cases = [
+    ['clear, clean air', [15, 10, 1, 40, 'Fair (Night)'], 'go', 'cloud'],
+    ['clear but PSI 140', [15, 10, 1, 140, 'Fair (Night)'], 'maybe', 'haze'],
+    ['clear but PSI 230', [15, 10, 1, 230, 'Fair (Night)'], 'no', 'haze'],
+    ['part cloud, NEA thundery showers', [40, 40, 95, 40, 'Thundery Showers'], 'no', 'storm'],
+    ['overcast', [85, 70, 61, 40, 'Cloudy'], 'no', 'cloud']
+  ];
+  return Promise.all(cases.map(([name, a, lvl, cause]) => {
+    const cx = moduleCtx(['come-tonight.js'], '2026-11-06T10:00:00Z', wxStub('2026-11-06', ...a));
+    return cx.ComeTonight.check().then(r => ok(name + ' → ' + lvl + ' (' + cause + ')', r.level === lvl && r.cause === cause, r.level + ' / ' + r.cause));
+  }));
+})().then(() => {
+
+section('Add to calendar (scob-ics.js)');
+(function () {
+  const c = moduleCtx(['scob-ics.js'], '2026-11-06T10:00:00Z');
+  const t = c.SCOBICS.text([
+    { title: '2P/Encke 恩克彗星 在西方低空 — ' + 'x'.repeat(60), start: Date.UTC(2027, 0, 20, 12, 30), end: Date.UTC(2027, 0, 20, 13, 30), alarm: 60 },
+    { title: 'Eclipse', start: '2027-08-02', allDay: true, loc: '' },
+    c.SCOBICS.sessionsEvent()
+  ]);
+  const lines = t.split('\r\n');
+  ok('CRLF line endings, wrapped in VCALENDAR', /^BEGIN:VCALENDAR\r\n/.test(t) && /END:VCALENDAR\r\n$/.test(t) && !/[^\r]\n/.test(t));
+  ok('every line ≤ 75 octets (multi-byte titles folded safely)', lines.every(l => Buffer.byteLength(l, 'utf8') <= 75), lines.find(l => Buffer.byteLength(l, 'utf8') > 75));
+  ok('folding keeps the Chinese title intact', t.replace(/\r\n /g, '').includes('恩克彗星 在西方低空'));
+  ok('timed event in UTC', t.includes('DTSTART:20270120T123000Z') && t.includes('TRIGGER:-PT60M'));
+  ok('all-day event uses VALUE=DATE, next-day end, no empty LOCATION', t.includes('DTSTART;VALUE=DATE:20270802') && t.includes('DTEND;VALUE=DATE:20270803') && !/LOCATION:\r\n/.test(t));
+  ok('Friday sessions repeat weekly from a Friday 7:30 pm SGT', t.includes('RRULE:FREQ=WEEKLY;BYDAY=FR') && /DTSTART:\d{8}T113000Z/.test(t));
+  ok('the session entry says tickets are needed', /Tickets are needed/.test(t.replace(/\r\n /g, '')));
+})();
+
+section('Search (search-index.js)');
+(function () {
+  const c = moduleCtx(['search-index.js'], '2026-11-06T10:00:00Z');
+  const top = q => (c.SCOBSearch.find(q)[0] || { p: {} }).p.f;
+  ok('"psi" → the haze page first', top('psi') === 'haze.html', top('psi'));
+  ok('"psi" does not match inside "upside"', !c.SCOBSearch.find('psi').some(h => h.p.f === 'hemispheres.html'));
+  ok('"saturn" finds the planner and the planets page', ['scob-dashboard-v3.html', 'solar-system-planets.html'].every(f => c.SCOBSearch.find('saturn').some(h => h.p.f === f)));
+  ok('"eyepieces" (plural) finds the eyepiece pages', c.SCOBSearch.find('eyepieces').filter(h => /eyepiece/.test(h.p.f)).length === 2);
+  ok('nonsense finds nothing', c.SCOBSearch.find('zzqqxx').length === 0);
+})();
+
+section('Languages (scob-i18n.js)');
+(function () {
+  let c = moduleCtx(['scob-i18n.js'], '2026-11-06T10:00:00Z', null, { scobLang: 'zh' });
+  ok('an old per-page choice (scobLang) no longer turns the site Chinese', c.SCOBI18N.lang() === 'en');
+  c = moduleCtx(['scob-i18n.js'], '2026-11-06T10:00:00Z', null, { scobSiteLang: 'ta' });
+  ok('the site-wide choice (scobSiteLang) is honoured', c.SCOBI18N.lang() === 'ta');
+  ok('a summary template keeps its placeholders filled', !/\{|\}/.test(c.SCOBI18N.t('dash', 'go', { when: 'x', cc: 10, pp: '5%' })));
+  const D = c.SCOBI18N.DASH, missing = [];
+  ['zh', 'ms', 'ta'].forEach(l => Object.keys(D.en).forEach(k => { if (D[l][k] == null) missing.push(l + ':' + k); }));
+  ok('every English summary word has zh / ms / ta', missing.length === 0, missing.slice(0, 6).join(', '));
+})();
+
 console.log('');
 if (fails) { console.error('\x1b[31m' + fails + ' logic check(s) FAILED — an interactive feature has regressed.\x1b[0m'); process.exit(1); }
 console.log('\x1b[32mAll interactive-logic checks passed.\x1b[0m');
+});

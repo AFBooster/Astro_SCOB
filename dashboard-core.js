@@ -309,8 +309,11 @@ function jovePhys(dt){ // Meeus, Astronomical Algorithms ch. 43/44 low-accuracy 
   const dd=d-Dj/173;
   return{dd:dd,psi:psi,B:B,w2:rev(187.23+870.1869088*dd+psi-B)};
 }
-// REVIEW BY 2027-01-01: re-fit GRS System II longitude + drift to the latest JUPOS trend (the spot's drift rate wanders year to year). Also sanity-check the CelesTrak TLEs are still auto-refreshing (see satellite-pass code).
-function grsLon(dt){return rev(91+1.75*((jd(dt)-2461192.5)/30.44));} // 91° System II on 1 Jun 2026 (JUPOS trend), drifting ~1.75°/month
+// REVIEW BY 2027-05-01: re-anchor the GRS System II longitude to the latest JUPOS trend (the drift rate wanders year to year).
+// v4.24 (6 Nov 2026): re-anchored to IMCCE's JGRS service (an interpolation of the JUPOS measurements): 102.76° System II on
+// 6 Nov 2026. The June anchor (91°) had drifted to 100.0° by then — 2.7° behind, about 4½ minutes late on transit times.
+// Drift kept at 1.75°/month (the JGRS service's own figure). The CelesTrak TLEs refresh on every visit (satellite-pass code).
+function grsLon(dt){return rev(102.76+1.75*((jd(dt)-2461350.5)/30.44));} // 102.76° System II on 6 Nov 2026 (IMCCE JGRS / JUPOS), drifting ~1.75°/month
 function grsTransitTimes(){
   const out=[];if(!GL)return out;let prev=null;
   for(let min=17*60;min<=24*60;min+=2){
@@ -898,6 +901,7 @@ const EVENTS=[
  ['2026-12-24','🌕','Full Moon — supermoon','Slightly bigger & brighter than usual (full at about 10 am; the night before and after both look full).',1],
  ['2027-01-03','☄️','Quadrantids meteor shower peaks','Up to 40/hr after midnight; little moonlight, but the radiant stays very low from Singapore.',1],
  ['2027-01-04','🪐','Venus at greatest western elongation','Brilliant "morning star" before sunrise.',1],
+ ['2027-01-15','☄️','Comet 2P/Encke in the evening sky','Low in the west after dark and brightening fast — forecast about 8th magnitude mid-month and perhaps 6th by the 28th (binoculars, 6" apo). Catch it early in the session: it sinks lower every night and is lost in twilight by early February.',1],
  ['2027-01-22','🌕','Full Moon — supermoon','Slightly bigger & brighter than usual.',1],
  ['2027-02-03','🪐','Mercury at greatest eastern elongation','Low in the west just after sunset.',1],
  ['2027-02-06','🌑','Annular solar eclipse — not visible from Singapore','Path crosses Chile, Argentina & the south Atlantic.',0],

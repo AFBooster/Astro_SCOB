@@ -232,7 +232,22 @@
       from:2461161.5, to:2461405.5, review:'2026-12-31',
       scope:'40 cm dome / 6" apo · binoculars', mag:null,
       blurb:"A short-period comet (it loops back every 5.4 years) making a good 2026 showing — a soft, tailless glow of dust and gas boiling off a city-sized ball of ice as it nears the Sun.",
-      look:"A dim fuzzy patch, not a point — best in the big scope or binoculars, and easier the darker the sky." }
+      look:"A dim fuzzy patch, not a point — best in the big scope or binoculars, and easier the darker the sky." },
+    // 2P/Encke, added 6 Nov 2026 (v4.24) so the tracker is not empty after 10P's window closes.
+    // JPL solution K273/27 (1,526 observations to 3 Nov 2026), osculating at JD 2461430.5
+    // (25 Jan 2027). Perihelion 10 Feb 2027 at 0.34 au. Brightness law from the BAA's "Comet
+    // Prospects for 2027" (H1 = 11.5, K1 = 15.0), which expects about 5th magnitude at the end of
+    // January; JPL's own default (M1 15.7, k1 4.5) is far fainter, so treat the figure as a guide
+    // and check COBS reports in January. From Jurong it is an evening object low in the WEST,
+    // ~30° up at 8:30 pm on 20 Jan, ~18° on 28 Jan, gone into twilight by 5 Feb.
+    { id:'2p', name:'Comet 2P/Encke', kind:'comet',
+      q:0.3385806041, e:0.8473351836, i:11.34783629, node:334.01941285, peri:187.28906189, n:0.29841414166, Tp:2461446.72713,
+      g:11.5, K:15,
+      from:2461394.5, to:2461442.5, review:'2027-02-05',
+      scope:'Binoculars / 6" apo — low in the west',
+      mag:null,
+      blurb:"The comet with the shortest known orbit — it swings round the Sun every 3.3 years, and its dust is what makes the Taurid meteors. This is one of its best evening showings in decades, brightening fast as it dives towards the Sun.",
+      look:"A small fuzzy glow low in the west after dark, getting brighter — and lower — night by night. Catch it early in the session before it sets." }
   ];
   function cometEq(c, date){
     var J = jd(date), d = J - 2451543.5;

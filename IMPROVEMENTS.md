@@ -1,11 +1,47 @@
 # SCOB Night-Sky — improvement backlog
 
-Re-audited at **v4.18** (cache `scob-sky-v121`), 15 Oct 2026. Earlier audits:
+Re-audited at **v4.24** (cache `scob-sky-v127`), 6 Nov 2026 — see *Housekeeping, 6 Nov 2026* below. Earlier audits:
+v4.18 (16 Oct 2026),
 v4.14 and v4.13 (Oct), v4.11 (10 Sep 2026). Every open item is backed by something measured, not by a
 guess — the evidence is quoted so you can re-check it yourself.
 
 Open items are ranked by value ÷ effort.
 
+
+## Housekeeping, 6 Nov 2026 (v4.24)
+
+After five feature releases (v4.19–v4.23), everything the site states was checked again.
+
+* **Session facts, from the Science Centre's own stargazing page** (read 6 Nov 2026): Friday
+  7:30–10 pm is a **planetarium show (7:30–8:15) then the telescopes (8:15–10)**; **tickets are
+  needed** and are **not refunded for poor weather**; the observatory has closed for haze before.
+  Fixed: the Sky Guide's Chinese, Malay and Tamil footers called the sessions *free*; the
+  "Should I come tonight?" card now judges the 8–10 pm viewing hours (not 7–10), says tickets
+  are needed and links the official page (the Facebook address it used could not be confirmed —
+  the official page links `facebook.com/SCOBservatory`); the dashboard's two "SCOB Facebook"
+  buttons now open the official page; the Friday calendar entry says the same.
+* **Instruments** — the official page names the 40 cm Cassegrain (520 cm focal length) with the
+  15 cm apochromatic refractor, and a second dome with an 11" and a 7" *Cassegrain reflector*.
+  `Telescopes-Reference.md` had the 11" as "catadioptric"; corrected. The dashboard fleet card
+  already matched.
+* **Comets** — the only tracked comet (10P) leaves on 31 Dec 2026. Added **2P/Encke** for its
+  January 2027 evening apparition (JPL solution K273/27 at epoch 25 Jan 2027; BAA *Comet
+  Prospects for 2027* brightness, H1 11.5 / K1 15): positions agree with JPL Horizons to the
+  precession offset (the site works in coordinates of date); about 30° up in the west at 8:30 pm
+  on 20 Jan, gone into twilight by 5 Feb. Plus a dashboard event on 15 Jan. Not added: 332P
+  (fragmented; uncertain) and the morning comets of mid-2027 (45P, 255P, 104P — outside session
+  hours).
+* **Great Red Spot** — re-anchored to IMCCE's JGRS service (JUPOS): 102.76° System II on
+  6 Nov 2026; the June anchor had drifted 2.7° behind (transit times ~4½ min late). Next review
+  1 May 2027.
+* **Text** — the Tour's description still said only its "chrome" was translated; the Haze page's
+  description predated the region choice and five-region chart; README's data sources still
+  credited 7Timer for seeing (replaced in v4.13); README's file list lacked the v4.21 files.
+* **Guards added to `check-release.sh`** — fails if a page is missing from the search index or
+  has no translated title; warns two months ahead when the events calendar, the comet list or a
+  `REVIEW BY` date is about to run out.
+* **Tests added** — `test-logic.js` now covers the new modules (the come-tonight verdict and its
+  cause, calendar-file format and line folding, search ranking, the language key).
 
 ## Done in v4.15 (15 Oct 2026)
 
@@ -181,11 +217,13 @@ documented guesses into fitted numbers.
 
 ---
 
-## 2. Comets — re-check in November
+## 2. Comets — check 2P/Encke against real reports in January
 
-COBS on 15 Oct 2026 showed nothing brighter than magnitude 11 (10P ~10.5 and
-fading, 161P ~11.2, P/2026 R2 ~12.1). Look again in November; the 10P window
-closes 31 Dec 2026 and `test-astro.js` warns from 1 Dec.
+2P/Encke was added (v4.24) on the BAA's *forecast* (5th magnitude at the end of January 2027);
+JPL's default law is far fainter. In early January compare with COBS reports and refit `g`/`K`
+as was done for 10P. After Encke (window ends 5 Feb 2027) the next comets are morning objects
+(45P in August, 255P in September, 104P in October) — outside session hours; look again in
+the summer for anything new.
 
 ---
 

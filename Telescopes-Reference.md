@@ -9,8 +9,8 @@ This is the standing reference for instruments available at the Friday public st
 |---|---|---|---|
 | Main telescope | 40 cm (16") | Cassegrain reflector, focal length 520 cm | In the 5.5 m stainless-steel dome on an equatorial mount (English yoke). Equipped with a digital camera for astrophotography. The showpiece instrument. |
 | Sub-telescope (on main) | 15 cm (6") | Apochromatic Kepler refractor, focal length 180 cm | Piggybacked on the 40 cm; wide-field, high-contrast views. |
-| Second dome (primary) | 11" (28 cm) | Catadioptric | Houses the observatory's second-largest scope. |
-| Second dome (secondary) | 7" (18 cm) | Coupled to the 11" | Paired for a second viewing station. |
+| Second dome (primary) | 11" (28 cm) | Cassegrain reflector | Houses the observatory's second-largest scope. |
+| Second dome (secondary) | 7" (18 cm) | Cassegrain reflector, coupled to the 11" | Paired for a second viewing station. |
 
 ## Portable telescopes (set up on the viewing deck)
 

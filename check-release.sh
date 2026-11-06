@@ -194,6 +194,45 @@ for p in "${PAGES[@]}"; do
 done
 [ "$orphans" -eq 0 ] && ok "no orphan pages"
 
+# ── v4.24: new pages must be findable and translatable ─────────────────────
+# search-index.js (site search, Start here, the menu filter) and scob-i18n.js (page titles in
+# 中文 / BM / தமிழ்) each keep a list of pages. A page missing from either is invisible to
+# search, or keeps an English title in the other languages.
+section "Search index and translations cover every page"
+if command -v node >/dev/null 2>&1; then
+  miss=$(node -e '
+    const fs=require("fs");global.window=global;global.document={readyState:"loading",addEventListener(){}};
+    require("./search-index.js");require("./scob-i18n.js");
+    const inIdx=new Set(window.SCOB_PAGES.map(p=>p.f)),I=window.SCOBI18N.PAGES,out=[];
+    for(const f of fs.readdirSync(".").filter(f=>f.endsWith(".html"))){
+      const s=fs.readFileSync(f,"utf8");if(/http-equiv="refresh"/.test(s))continue;      // redirect stubs
+      if(!inIdx.has(f))out.push(f+" is not in search-index.js");
+      if(!I[f])out.push(f+" has no translated title in scob-i18n.js");
+    }
+    console.log(out.join("\n"));' 2>&1)
+  if [ -z "$miss" ]; then ok "every page is in the search index and has translated titles"
+  else while IFS= read -r l; do [ -n "$l" ] && bad "$l"; done <<< "$miss"; fi
+else note "node not found — skipped"; fi
+
+# ── v4.24: time-limited data — warnings only, so they are seen in good time ─
+section "Time-limited data"
+if command -v node >/dev/null 2>&1; then
+  node -e '
+    const fs=require("fs"),now=Date.now(),day=864e5,iso=t=>new Date(t).toISOString().slice(0,10);let n=0;
+    const say=m=>{console.log("  \x1b[33m! "+m+"\x1b[0m");n++;};
+    const ev=[...fs.readFileSync("dashboard-core.js","utf8").matchAll(/^ \[\x27(\d{4}-\d\d-\d\d)\x27,/gm)].map(m=>m[1]).sort();
+    const last=Date.parse(ev[ev.length-1]);
+    if(last-now<120*day)say("events calendar (dashboard-core.js EVENTS) ends "+ev[ev.length-1]+" — add the next year");
+    global.window=global;require("./astro-core.js");const A=window.Astro,J=A.jd(new Date()),toD=j=>(j-2440587.5)*day;
+    const C=(A.COMETS||[]).filter(c=>c.to>J);
+    if(!C.length)say("no comet in astro-core.js COMETS is tracked beyond today — add the next comets worth showing");
+    else{const end=Math.max(...C.map(c=>toD(c.to)));if(end-now<60*day)say("the last tracked comet window ends "+iso(end)+" — add the next comets worth showing (astro-core.js COMETS)");}
+    for(const f of fs.readdirSync(".").filter(f=>/\.(js|html)$/.test(f)&&!/^test-/.test(f)))
+      for(const m of fs.readFileSync(f,"utf8").matchAll(/REVIEW BY (\d{4}-\d\d-\d\d)/g))
+        if(Date.parse(m[1])-now<60*day)say(f+": REVIEW BY "+m[1]+(Date.parse(m[1])<now?" has passed":" is coming up"));
+    if(!n)console.log("  \x1b[32m/\x1b[0m nothing due in the next two months");'
+else note "node not found — skipped"; fi
+
 # ── Result ─────────────────────────────────────────────────────────────────
 section "Result"
 printf '  %d passed, %d failed\n' "$pass" "$fail"

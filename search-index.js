@@ -136,7 +136,7 @@ var PAGES = [
 {
 "f": "tonights-tour.html",
 "t": "Tonight's Tour — SCOB Night-Sky",
-"d": "An auto-generated docent tour: what to show the public tonight, in order, with plain-language talking points and the right SCOB telescope for each object. Chrome available in English, 中文, Malay and Tamil.",
+"d": "An auto-generated docent tour: what to show the public tonight, in order, with plain-language talking points and the right SCOB telescope for each object — in English, 中文, Malay and Tamil, talking points included, and read aloud in that language.",
 "g": "Tonight & the session",
 "k": "docent script guide talk read aloud speech tour chinese malay tamil what to say saturn jupiter moon showpieces"
 },
@@ -472,7 +472,7 @@ var PAGES = [
 {
 "f": "haze.html",
 "t": "Haze & the Night Sky",
-"d": "Live NEA haze readings for Singapore — 24-hour PSI, 1-hour PM2.5 by region, the day's trend and a 5-day outlook — with what the smoke costs the view from the Science Centre Observatory and what it means for a public session.",
+"d": "Live NEA haze readings for Singapore — 24-hour PSI and 1-hour PM2.5 for whichever region you follow, all five regions on one 24-hour chart, the week and a 5-day outlook — with what the smoke costs the view from the Science Centre Observatory and what it means for a public session.",
 "g": "Learn & reference",
 "k": "psi pm2.5 smoke air quality nea fires indonesia sumatra satellite region west east north south central"
 },
