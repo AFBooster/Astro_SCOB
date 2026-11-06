@@ -3,8 +3,8 @@
 **Project:** SCOB Night-Sky (Singapore Science Centre Observatory)
 **Purpose:** Track which ancient-culture sky systems are implemented, and plan the rest.
 **Observing site:** Singapore, ~1.3°N — near-equatorial, so *both* hemispheres are visible over the year. This matters: dark-constellation systems (Aboriginal, Inca) and southern star lore work here where they wouldn't in the north.
-**Last updated:** 2026-08-02
-**Live site:** https://afbooster.github.io/Astro_SCOB/ · **Repo:** github.com/AFBooster/Astro_SCOB · **Publish:** `publish.bat "message"`
+**Last updated:** 2026-11-06 (address only — the status below is unchanged since 2026-08-02)
+**Live site:** https://afbooster.online/ (the old afbooster.github.io/Astro_SCOB/ address forwards to it) · **Repo:** github.com/AFBooster/Astro_SCOB · **Publish:** `publish.bat "message"`
 
 Status legend: ✅ Done · 🟡 In progress · ⬜ Not started
 

@@ -299,8 +299,13 @@ for (const file of files) {
     });
     if (!crashed) ok('scripts parse and run clean (' + blocks.length + ' inline block' + (blocks.length === 1 ? '' : 's') + ', network offline)');
 
-    /* 4 — element ids that were looked up but never exist */
-    const missing = Array.from(new Set(ctx.__missing));
+    /* 4 — element ids that were looked up but never exist.
+     * version.js asks for #mobileRoot / #desktopRoot on EVERY page only to find out
+     * whether it is running on the dashboard — "null" is the expected answer
+     * everywhere else. Reporting that probe produced the same warning on every page
+     * (75 of them by v4.25), which buried any real one, so it is left out here. */
+    const PROBES = new Set(['mobileRoot', 'desktopRoot']);
+    const missing = Array.from(new Set(ctx.__missing)).filter(id => !PROBES.has(id));
     if (missing.length) warn('getElementById returned null for: ' + missing.join(', ') + ' — fine if guarded, a latent crash if not');
     else ok('every element looked up at load time exists');
   }

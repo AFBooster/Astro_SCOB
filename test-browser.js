@@ -69,11 +69,18 @@ function serve() {
     return route.abort();
   });
 
-  let failed = 0, warned = 0, checked = 0;
-  const fail = (pg, msg) => { console.log(`  \x1b[31mX ${pg}: ${msg}\x1b[0m`); failed++; };
-  const warn = (pg, msg) => { console.log(`  \x1b[33m! ${pg}: ${msg}\x1b[0m`); warned++; };
+  let failed = 0, warned = 0, checked = 0, hung = 0;
+  const gaveUp = new Set();   // hung pages: anything they report later is ignored
+  const fail = (pg, msg, force) => { if (gaveUp.has(pg) && !force) return; console.log(`  \x1b[31mX ${pg}: ${msg}\x1b[0m`); failed++; };
+  const warn = (pg, msg) => { if (gaveUp.has(pg)) return; console.log(`  \x1b[33m! ${pg}: ${msg}\x1b[0m`); warned++; };
+  // A page that has not finished within PAGE_LIMIT_MS counts as hung: it fails, and the run
+  // moves on instead of waiting for the CI job's own (6-hour) limit. In CI each page name is
+  // printed first, so a stalled log shows exactly which page was on screen.
+  const PAGE_LIMIT_MS = 45000;
+  const within = (promise, ms) => { let t; return Promise.race([promise, new Promise(r => { t = setTimeout(() => r('timeout'), ms); })]).finally(() => clearTimeout(t)); };
 
   for (const pg of pages) {
+    if (process.env.CI) console.log('  · ' + pg);
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', e => errors.push('pageerror: ' + (e && e.message || e)));
@@ -84,7 +91,7 @@ function serve() {
       if (/Failed to load resource|net::ERR_FAILED|ERR_BLOCKED|fetch|Load failed|NetworkError|Failed to fetch/i.test(t)) return;
       errors.push('console.error: ' + t);
     });
-    try {
+    const outcome = await within((async () => { try {
       await page.goto(`http://localhost:${PORT}/${pg}`, { waitUntil: 'load', timeout: 20000 });
       // let deferred on-load scripts and any redirect settle
       await page.waitForTimeout(700);
@@ -117,14 +124,20 @@ function serve() {
       }
     } catch (e) {
       fail(pg, 'navigation/render threw: ' + (e && e.message || e));
+    } })(), PAGE_LIMIT_MS);
+    if (outcome === 'timeout') {
+      gaveUp.add(pg);
+      fail(pg, `not finished after ${PAGE_LIMIT_MS / 1000} s — the page (or the browser) hung`, true);
+      if (++hung >= 2) { console.log('  Two pages hung — stopping the run here.'); break; }
     }
-    await page.close();
+    await within(page.close().catch(() => {}), 5000);
   }
 
-  await browser.close();
+  await within(browser.close().catch(() => {}), 10000);
   server.close();
 
   console.log(`\n  ${checked} pages rendered clean, ${warned} warning(s), ${failed} failure(s), of ${pages.length} pages.`);
   if (failed) { console.log('\x1b[31m  Browser smoke test FAILED.\x1b[0m'); process.exit(1); }
   console.log('\x1b[32m  Browser smoke test passed.\x1b[0m');
+  process.exit(0);   // don't let a stuck browser handle keep Node (and the CI step) alive
 })().catch(e => { console.error(e); process.exit(1); });

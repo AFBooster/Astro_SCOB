@@ -25,6 +25,9 @@ jobs:
     # pinned: ubuntu-latest moves to Ubuntu 26 from 19 Oct 2026, and the Playwright build
     # below installs its browser's system packages for a known Ubuntu. Move both together.
     runs-on: ubuntu-24.04
+    # A normal run takes about 2 minutes. Without a limit, a hung step waits for GitHub's
+    # 6-hour default and holds up the publish until then.
+    timeout-minutes: 40
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -44,11 +47,22 @@ jobs:
         run: |
           if [ -f test-logic.js ]; then node test-logic.js; else echo "test-logic.js not present — skipping."; fi
 
-      - name: Real-browser smoke test (headless Chromium)
+      # Installing the browser is its own step so the run's timings show which part is slow
+      # (the 6 Nov 2026 v4.25 deploy spent 12 minutes here instead of the usual 90 seconds).
+      - name: Install the headless browser (Playwright + Chromium)
+        timeout-minutes: 20
         run: |
           if [ -f test-browser.js ]; then
             npm i -D playwright@1.55.0
             npx playwright install --with-deps chromium
+          else
+            echo "test-browser.js not present — nothing to install."
+          fi
+
+      - name: Real-browser smoke test (headless Chromium)
+        timeout-minutes: 10        # about a minute for every page; each page also has its own 45 s limit
+        run: |
+          if [ -f test-browser.js ]; then
             node test-browser.js
           else
             echo "test-browser.js not present — skipping the real-browser smoke test."

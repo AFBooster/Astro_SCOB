@@ -1,12 +1,45 @@
 # SCOB Night-Sky — improvement backlog
 
-Re-audited at **v4.24** (cache `scob-sky-v127`), 6 Nov 2026 — see *Housekeeping, 6 Nov 2026* below. Earlier audits:
-v4.18 (16 Oct 2026),
+Re-audited at **v4.26** (cache `scob-sky-v129`), 6 Nov 2026 — see *Housekeeping, 6 Nov 2026 (v4.26)* below. Earlier audits:
+v4.24 (6 Nov 2026), v4.18 (16 Oct 2026),
 v4.14 and v4.13 (Oct), v4.11 (10 Sep 2026). Every open item is backed by something measured, not by a
 guess — the evidence is quoted so you can re-check it yourself.
 
 Open items are ranked by value ÷ effort.
 
+
+## Housekeeping, 6 Nov 2026 (v4.26)
+
+A second pass the same day, straight after v4.25 (*Made of Stars*). The local copy, GitHub and
+the files about to be published were compared first: identical, apart from the asset-existence
+gate in `check-release.sh`, which went up with v4.25.
+
+* **Test noise removed.** `test-pages.js` printed the same warning on 75 pages — `version.js`
+  asking for the dashboard's `#mobileRoot` / `#desktopRoot`, where "not found" is the expected
+  answer on every other page. Those two ids are no longer reported, and the suite now reads
+  **0 failed, 0 warnings**, so a genuinely missing element will stand out.
+* **The deploy can no longer stall for hours.** The v4.25 deploy spent 12 minutes in the
+  real-browser step (06:09:40 → 06:21:43 UTC; the previous runs took 90 s) and the workflow had
+  no time limit, so a genuine hang would have held the publish for GitHub's 6-hour default.
+  Now: a 40-minute job limit; installing Playwright + Chromium is its own step (20 min limit),
+  so the timings show whether the install or the test was slow; the test step has 10 minutes;
+  and `test-browser.js` gives every page 45 s — a hung page fails and the run moves on, two
+  hung pages end it — and prints each page name in CI so a stalled log shows where it stopped.
+  Checked by making a test page spin forever: it failed after 45 s and the run exited with an
+  error instead of waiting.
+* **Last duplicated theme CSS removed** — 381 bytes on 8 pages (`.foot a` on seven,
+  `.domenote` on `arabic-tonight.html`), each byte-identical to `scob-theme.css`.
+  `node migrate-theme.js --all` now reports 0 bytes across all 78 pages.
+* **Checked and clean:** every `<button>` has a `type`; every `target="_blank"` link has
+  `rel="noopener"`; no `http://` links, `console.log` calls, TODO markers or `<img>` without
+  `alt` in published files; the static HTML of all 78 pages has balanced tags; nothing
+  review-dated falls due in the next two months (GRS next review 1 May 2027; 10P leaves on
+  31 Dec 2026 and 2P/Encke covers January).
+* **Docs:** `world-skies-roadmap.md` still gave the old `afbooster.github.io` address; now
+  `afbooster.online`.
+* **Reviewed and kept on purpose:** `SCOB-Dashboard-User-Guide.pptx` (frozen at v3.51, not
+  published, not linked) and `migrate-theme.js` (dev-only; its dry run doubles as a check for
+  newly duplicated CSS).
 
 ## Housekeeping, 6 Nov 2026 (v4.24)
 
