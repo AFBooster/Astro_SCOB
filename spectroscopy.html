@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Starlight — How We Know What Stars Are Made Of — SCOB</title>
+<meta name="description" content="Astronomical spectroscopy for everyone: split starlight into a rainbow, find the dark and bright lines, and read them like barcodes to learn what a star is made of, how hot it is and how fast it moves. Animated light lab, atom ladder, element barcodes, a spectrum-detective game, star colours, the Doppler shift and the Seestar’s filter — from the Science Centre Observatory, Singapore.">
+<meta name="theme-color" content="#0b1733">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="scob-theme.css">
+<style>
+*{box-sizing:border-box;margin:0;}
+body{background:var(--navy);color:var(--white);font-family:var(--ui);font-size:15px;line-height:1.55;}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 42px;}
+header{padding:16px 0 8px;}
+h1{font-size:clamp(20px,5.4vw,25px);margin:0;color:var(--gold);}
+h2{font-size:clamp(17px,4.4vw,19px);margin:2px 0 4px;line-height:1.3;color:var(--gold);}
+h3{font-size:14.5px;margin:16px 0 4px;color:var(--white);}
+p{margin:8px 0;}
+a{color:var(--cyan);}
+.mute{color:var(--mute);}
+.small{font-size:12.5px;}
+b.w{color:var(--white);}
+.hero{background:radial-gradient(120% 140% at 90% -10%,rgba(91,214,224,.28),transparent 55%),linear-gradient(160deg,#17245c,#0d1533 70%);border:1px solid var(--cyan);border-radius:16px;padding:16px;margin:12px 0;}
+.hero .kick{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--cyan);font-weight:800;}
+.hero .big{font-size:clamp(18px,4.8vw,22px);font-weight:800;color:var(--white);margin:4px 0 0;line-height:1.35;}
+.hero .big em{font-style:normal;color:var(--gold);}
+.hero canvas{margin-top:12px;border-radius:10px;border:1px solid var(--line);background:#05070f;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+@media(max-width:620px){.stats{grid-template-columns:1fr;}}
+.stat{background:rgba(6,10,26,.45);border:1px solid var(--line);border-radius:12px;padding:10px 12px;}
+.stat .n{font-size:22px;font-weight:800;color:var(--gold);line-height:1.1;}
+.stat .t{font-size:12.5px;color:#dfe6f7;margin-top:3px;line-height:1.45;}
+.chaps{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px;}
+.chaps a{font-size:12.5px;color:var(--white);text-decoration:none;background:var(--navy2);border:1px solid var(--line);border-radius:999px;padding:5px 10px;white-space:nowrap;}
+.chaps a:hover{border-color:var(--cyan);}
+.sec{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;border-left:5px solid var(--cyan);scroll-margin-top:150px;}
+.sec .num{font-size:11.5px;color:var(--mute);font-weight:800;text-transform:uppercase;letter-spacing:.6px;}
+.lead{font-size:14.5px;color:#e7edfa;}
+.wow{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:12px 0 4px;font-size:13.5px;line-height:1.6;}
+.wow b{color:var(--gold);}
+.note{font-size:12px;color:var(--mute);margin-top:8px;line-height:1.55;}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;}
+.btn{background:var(--navy3);color:var(--cyan);border:1px solid var(--cyan);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn:hover{background:#21356a;}
+.btn[aria-pressed="true"]{background:var(--cyan);color:#0b1733;}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--cyan);border-radius:9px;overflow:hidden;}
+.seg button{background:transparent;color:var(--cyan);border:0;padding:7px 10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.seg button[aria-pressed="true"]{background:var(--cyan);color:#0b1733;}
+.btn:focus-visible,.seg button:focus-visible,.chip:focus-visible,.bc:focus-visible,.pre:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+canvas{display:block;width:100%;height:auto;}
+.cv{border-radius:12px;border:1px solid var(--line);background:#05070f;margin-top:10px;}
+.cap{font-size:13px;color:#dfe6f7;margin-top:8px;background:rgba(6,10,26,.55);border:1px solid var(--line);border-radius:10px;padding:9px 12px;line-height:1.55;min-height:64px;}
+.cap b{color:var(--gold);}
+.law{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+@media(max-width:700px){.law{grid-template-columns:1fr;}}
+.law div{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.5;}
+.law b:first-child{display:block;font-size:13px;color:var(--white);margin-bottom:3px;}
+.law canvas{height:22px;border-radius:5px;margin-top:6px;}
+/* barcodes */
+.bcs{display:grid;gap:6px;margin-top:10px;}
+.bc{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:center;text-align:left;width:100%;background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:7px 9px;color:var(--white);font:inherit;cursor:pointer;}
+.bc:hover{border-color:#4b5b8f;}
+.bc[aria-pressed="true"]{border-color:var(--gold);background:rgba(245,197,66,.08);}
+.bc .el{font-size:13px;font-weight:800;line-height:1.2;}
+.bc .el small{display:block;font-size:11px;font-weight:600;color:var(--mute);}
+.bc canvas{height:26px;border-radius:5px;}
+.bc.st{cursor:default;}.bc.st:hover{border-color:var(--line);}
+@media(max-width:560px){.bc{grid-template-columns:84px 1fr;}}
+.scale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mute);margin:2px 2px 0;}
+/* detective */
+.mys{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:999px;padding:5px 11px;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.chip i{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.chip[aria-pressed="true"]{border-color:var(--gold);background:rgba(245,197,66,.14);}
+.verdict{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.55;border:1px solid var(--line);background:var(--navy3);min-height:48px;}
+.verdict.good{border-color:var(--green);background:rgba(95,211,138,.1);}
+.verdict.bad{border-color:var(--amber);background:rgba(255,180,84,.08);}
+.verdict b{color:var(--gold);}
+.score{font-size:12.5px;color:var(--mute);margin-left:auto;}
+/* temperature */
+.bb{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start;margin-top:10px;}
+@media(max-width:700px){.bb{grid-template-columns:1fr;}}
+.disc{width:120px;height:120px;border-radius:50%;margin:4px auto 8px;box-shadow:0 0 40px 6px rgba(255,255,255,.18);transition:background .3s,box-shadow .3s;}
+.rd{background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:6px;}
+.rd .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);font-weight:700;}
+.rd .v{font-size:15px;font-weight:800;color:var(--white);margin-top:1px;}
+#bbT{width:100%;accent-color:var(--gold);margin-top:10px;}
+.pres{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.pre{background:var(--navy3);border:1px solid var(--line);color:var(--white);border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;}
+.pre[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);}
+.cls{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px;}
+@media(max-width:620px){.cls{grid-template-columns:repeat(4,1fr);}}
+.cls button{border:0;border-radius:10px;padding:7px 6px;text-align:center;font:700 11px/1.35 var(--ui);color:#0b1733;cursor:pointer;}
+.cls button b{display:block;font-size:20px;line-height:1.1;}
+.cls button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.payne{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;}
+.payne .ic{font-size:30px;}
+/* doppler */
+.dv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+@media(max-width:620px){.dv{grid-template-columns:1fr 1fr;}.dv .rd:last-child{grid-column:1/3;}}
+/* tonight */
+.tn{display:grid;gap:6px;margin-top:10px;}
+.tnr{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:13px;}
+.tnr.below{opacity:.5;}
+.tnr .sw{width:26px;height:26px;border-radius:50%;box-shadow:0 0 10px 1px rgba(255,255,255,.15);}
+.tnr .nm{font-weight:800;}
+.tnr .ty{font-size:11.5px;color:var(--mute);}
+.tnr .wh{font-size:12px;text-align:right;max-width:48vw;}
+.up{color:var(--green);font-weight:700;}.lo{color:var(--amber);font-weight:700;}.dn{color:var(--mute);}
+/* diy + history */
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px;}
+.steps li{counter-increment:s;position:relative;padding:9px 12px 9px 44px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;font-size:13.5px;line-height:1.55;}
+.steps li::before{content:counter(s);position:absolute;left:11px;top:9px;width:24px;height:24px;border-radius:50%;background:var(--cyan);color:#0b1733;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.safe{background:rgba(255,107,107,.1);border:1px solid var(--red);border-radius:10px;padding:9px 12px;margin-top:10px;font-size:13.5px;}
+.safe b{color:#ffb4b4;}
+.hist{display:grid;gap:6px;margin-top:10px;}
+.hi{display:grid;grid-template-columns:64px 1fr;gap:10px;background:var(--navy3);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px;line-height:1.5;}
+.hi .y{font-weight:800;color:var(--gold);font-size:14px;}
+.hi b{color:var(--white);}
+</style>
+<!-- Social sharing / SEO metadata -->
+<link rel="canonical" href="https://afbooster.online/spectroscopy.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SCOB Night-Sky">
+<meta property="og:title" content="Reading Starlight — How We Know What Stars Are Made Of — SCOB">
+<meta property="og:description" content="Split starlight into a rainbow, read its dark and bright lines like barcodes, and learn what a star is made of, how hot it is and how fast it moves — animated, from the Science Centre Observatory, Singapore.">
+<meta property="og:url" content="https://afbooster.online/spectroscopy.html">
+<meta property="og:image" content="https://afbooster.online/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Reading Starlight — How We Know What Stars Are Made Of — SCOB">
+<meta name="twitter:description" content="Split starlight into a rainbow, read its dark and bright lines like barcodes, and learn what a star is made of, how hot it is and how fast it moves — animated, from the Science Centre Observatory, Singapore.">
+<meta name="twitter:image" content="https://afbooster.online/og-image.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌈 Reading Starlight</h1>
+    <div class="loc">How scientists know what a star is made of, how hot it is and how fast it is moving — without ever going there. Science Centre Observatory, Jurong.</div>
+    <div class="bar">
+      <a href="scob-dashboard-v3.html">← Dashboard</a>
+      <a href="made-of-stars.html">⚛️ Made of stars</a>
+      <a href="filters.html">🎛️ Filters</a>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="heroT">
+    <div class="kick">The short version</div>
+    <p class="big" id="heroT">Spread a star’s light into a rainbow and it is crossed by <em>dark lines, like a barcode</em>. Every element makes its own pattern — so the barcode tells us what the star is made of.</p>
+    <canvas id="heroCv" role="img" aria-label="Starlight passing through a prism and spreading into a rainbow crossed by dark lines"></canvas>
+    <div class="stats">
+      <div class="stat"><div class="n">574</div><div class="t">dark lines Joseph von Fraunhofer mapped in sunlight in 1814. Nobody knew what they were for another 45 years.</div></div>
+      <div class="stat"><div class="n">27 years</div><div class="t">between finding helium in the Sun’s light (1868) and finding it on Earth (1895).</div></div>
+      <div class="stat"><div class="n">25 cm/s</div><div class="t">— under 1 km/h. The ESPRESSO spectrograph in Chile can tell when a distant star drifts towards us that slowly.</div></div>
+    </div>
+  </section>
+
+  <nav class="chaps" aria-label="Chapters">
+    <a href="#ch-lab">🔦 Light lab</a><a href="#ch-atom">🪜 Why lines?</a><a href="#ch-bar">🏷️ Barcodes</a><a href="#ch-det">🕵️ Spectrum detective</a><a href="#ch-temp">🌡️ Colour &amp; heat</a><a href="#ch-dop">🚀 Moving lines</a><a href="#ch-scob">🔭 At SCOB tonight</a><a href="#ch-diy">🛠️ Make a spectroscope</a><a href="#ch-hist">🏛️ Milestones</a>
+  </nav>
+
+  <section class="sec" id="ch-lab" style="border-left-color:var(--gold)">
+    <div class="num">Chapter 1</div>
+    <h2>🔦 The light lab: three kinds of rainbow</h2>
+    <p class="lead">In 1859 Gustav Kirchhoff and Robert Bunsen worked out the rules. Pick a light source below and watch what reaches the rainbow. Each dot is a little packet of light — a photon — with its own colour.</p>
+    <div class="row">
+      <div class="seg" role="group" aria-label="What is shining">
+        <button type="button" id="lbC" aria-pressed="true">Hot glowing object</button>
+        <button type="button" id="lbA" aria-pressed="false">…behind cool gas</button>
+        <button type="button" id="lbE" aria-pressed="false">Hot gas on its own</button>
+      </div>
+      <label class="small mute" for="lbGas">Gas:</label>
+      <select id="lbGas" class="btn" style="padding:6px 8px"><option value="H">Hydrogen</option><option value="Na">Sodium</option><option value="Ne">Neon</option><option value="Hg">Mercury</option><option value="He">Helium</option></select>
+    </div>
+    <canvas id="lab" class="cv" role="img" aria-label="A light source, an optional cloud of gas, a prism and the resulting spectrum"></canvas>
+    <div class="cap" id="labCap" aria-live="polite"></div>
+    <div class="law">
+      <div><b>1 · Continuous spectrum</b>A hot, dense glowing thing — a light-bulb filament, molten metal, the deep layers of a star — gives every colour: a smooth rainbow.<canvas id="law1" aria-hidden="true"></canvas></div>
+      <div><b>2 · Absorption lines</b>Shine that light through cooler gas and the gas takes out its own colours, leaving <b class="w">dark lines</b>. Starlight looks like this: the star’s outer layers are the gas.<canvas id="law2" aria-hidden="true"></canvas></div>
+      <div><b>3 · Emission lines</b>Hot, thin gas on its own glows <b class="w">only</b> in those same colours: bright lines on black. Neon signs and glowing nebulae look like this.<canvas id="law3" aria-hidden="true"></canvas></div>
+    </div>
+    <p class="note">The lab is drawn for clarity, not to scale. Notice in the middle mode that the gas does not destroy the light it catches — it sends it back out in random directions, which is why the same gas, seen from the side, glows with bright lines.</p>
+  </section>
+
+  <section class="sec" id="ch-atom" style="border-left-color:var(--pink)">
+    <div class="num">Chapter 2</div>
+    <h2>🪜 Why only certain colours? The atom’s ladder</h2>
+    <p class="lead">An atom’s electron can only sit on certain “rungs” of energy, like a ladder with no in-between steps. When it drops from a higher rung to a lower one, it throws out a photon carrying exactly the energy of that drop — and energy means colour. Hydrogen’s rungs give it four visible colours.</p>
+    <div class="row">
+      <div class="seg" role="group" aria-label="Emit or absorb">
+        <button type="button" id="atE" aria-pressed="true">Hot gas: emit</button>
+        <button type="button" id="atA" aria-pressed="false">Cool gas: absorb</button>
+      </div>
+      <button type="button" class="btn" id="atAuto" aria-pressed="false">▶ Run on its own</button>
+    </div>
+    <div class="row" id="atJumps" role="group" aria-label="Pick a jump"></div>
+    <canvas id="atom" class="cv" role="img" aria-label="Energy levels of a hydrogen atom with an electron jumping between them"></canvas>
+    <div class="cap" id="atCap" aria-live="polite"></div>
+    <div class="wow">💡 The colours are not guesses — they come out of one formula. In 1885 a Swiss schoolteacher, Johann Balmer, found the pattern in hydrogen’s four visible lines; the page works out every wavelength above from the modern version of his rule (the Rydberg formula). Drops to the bottom rung give ultraviolet light, and drops to the third rung infrared, both invisible to our eyes but seen by telescopes.</div>
+  </section>
+
+  <section class="sec" id="ch-bar" style="border-left-color:var(--green)">
+    <div class="num">Chapter 3</div>
+    <h2>🏷️ Every element has a barcode</h2>
+    <p class="lead">Heat any element in a laboratory and it glows with its own unique set of colours — its fingerprint. Then compare it with the Sun: tap an element and its lines light up on the Sun’s spectrum. Where they match, that element is in the Sun.</p>
+    <h3>The Sun’s spectrum</h3>
+    <canvas id="sunCv" class="cv" role="img" aria-label="The Sun’s spectrum with its strongest dark lines labelled"></canvas>
+    <div class="cap" id="barCap" aria-live="polite">Tap an element below to compare its barcode with the Sun.</div>
+    <h3>Laboratory barcodes (bright lines from hot gas)</h3>
+    <div class="bcs" id="bcs" role="group" aria-label="Element barcodes"></div>
+    <p class="note">Wavelengths in nanometres (nm, billionths of a metre), from the US National Institute of Standards and Technology’s atomic spectra tables and Fraunhofer’s line list; brightness is simplified. “Iron” shows only its strongest lines — it really has thousands.</p>
+  </section>
+
+  <section class="sec" id="ch-det" style="border-left-color:var(--purple)">
+    <div class="num">Chapter 4</div>
+    <h2>🕵️ Spectrum detective</h2>
+    <p class="lead">Your turn. Each mystery spectrum below came from a real kind of object. Switch on the elements you think are there — their lines appear as markers above it. A coloured dot means that line is in the mystery spectrum; a red ✗ means it isn’t. An element is only there if <i>all</i> its lines are. When you think you have them all, press <b class="w">Check</b>.</p>
+    <div class="mys" id="mys" role="group" aria-label="Mystery spectra"></div>
+    <canvas id="det" class="cv" role="img" aria-label="A mystery spectrum to identify"></canvas>
+    <div class="chips" id="detEls" role="group" aria-label="Elements to test"></div>
+    <div class="row"><button type="button" class="btn" id="detCheck">✔ Check</button><button type="button" class="btn" id="detShow">👀 Show me</button><span class="score" id="detScore"></span></div>
+    <div class="verdict" id="detV" aria-live="polite">Pick a mystery, then test some elements.</div>
+  </section>
+
+  <section class="sec" id="ch-temp" style="border-left-color:var(--orange)">
+    <div class="num">Chapter 5</div>
+    <h2>🌡️ A star’s colour is its thermometer</h2>
+    <p class="lead">Heat a poker in a fire and it glows dull red, then orange, then yellow-white. Stars work the same way: the hotter the surface, the more the light shifts towards blue. Slide the temperature and watch the curve, the colour and the star’s class change.</p>
+    <div class="bb">
+      <div>
+        <canvas id="bbCv" class="cv" role="img" aria-label="How much light a hot body gives at each wavelength, for the chosen temperature"></canvas>
+        <input type="range" id="bbT" min="0" max="1000" step="1" value="302" aria-label="Surface temperature">
+        <div class="pres" id="bbPre" role="group" aria-label="Example temperatures"></div>
+      </div>
+      <div>
+        <div class="disc" id="bbDisc" aria-hidden="true"></div>
+        <div class="rd"><div class="k">Surface temperature</div><div class="v" id="bbK">—</div></div>
+        <div class="rd"><div class="k">Brightest colour</div><div class="v" id="bbPk">—</div></div>
+        <div class="rd"><div class="k">Star class</div><div class="v" id="bbCl">—</div></div>
+        <div class="rd"><div class="k">Each square metre shines</div><div class="v" id="bbLum">—</div></div>
+      </div>
+    </div>
+    <div class="cap" id="bbCap" aria-live="polite"></div>
+    <h3>The star classes: O B A F G K M</h3>
+    <p class="small mute" style="margin:2px 0 0">Hottest on the left. Astronomers remember the order with “Oh Be A Fine Girl/Guy, Kiss Me”. Tap a class to try it.</p>
+    <div class="cls" id="cls" role="group" aria-label="Star classes"></div>
+    <div class="wow payne"><div class="ic" aria-hidden="true">👩‍🔬</div><div><b>The woman who found what stars are made of.</b> Around 1900 Annie Jump Cannon and the women “computers” of Harvard sorted hundreds of thousands of star spectra by eye into these classes — Cannon alone classified some 350,000. In 1925 Cecilia Payne used the new physics of atoms to show <i>why</i> the spectra differ: mostly temperature, not ingredients. Her surprise was that stars are made almost entirely of hydrogen and helium. Senior astronomers doubted it, and she was persuaded to call her result “almost certainly not real” — but within four years it was confirmed. Today it is the bedrock of astronomy.</div></div>
+  </section>
+
+  <section class="sec" id="ch-dop" style="border-left-color:var(--red)">
+    <div class="num">Chapter 6</div>
+    <h2>🚀 Moving lines: the Doppler shift</h2>
+    <p class="lead">When a star moves towards us its light waves are squashed together, so every line slides a little towards blue. When it moves away they are stretched towards red. It is the same effect that makes an ambulance siren drop in pitch as it passes. Measure the slide and you have the speed.</p>
+    <canvas id="dopCv" class="cv" role="img" aria-label="A moving star’s light waves bunching up in front and stretching behind, with a close-up of one spectral line shifting"></canvas>
+    <input type="range" id="dopV" min="-2000" max="2000" step="10" value="0" aria-label="Speed towards or away from us, in kilometres per second" style="width:100%;accent-color:var(--red);margin-top:10px">
+    <div class="scale" aria-hidden="true"><span>← towards us (bluer)</span><span>standing still</span><span>away from us (redder) →</span></div>
+    <div class="pres" id="dopPre" role="group" aria-label="Real examples"></div>
+    <div class="dv">
+      <div class="rd"><div class="k">Speed along our line of sight</div><div class="v" id="dvV">—</div></div>
+      <div class="rd"><div class="k">Shift of the red hydrogen line</div><div class="v" id="dvS">—</div></div>
+      <div class="rd"><div class="k">Size of the shift</div><div class="v" id="dvR">—</div></div>
+    </div>
+    <div class="cap" id="dopCap" aria-live="polite"></div>
+    <div class="wow">🧾 <b>One spectrum, six answers.</b> <b>What it is made of</b> — which barcodes appear. <b>How hot</b> — its colour, and which lines are strong. <b>How fast it moves</b> towards or away from us — the shift. <b>How fast it spins</b> — spinning smears each line wider. <b>Its magnetism</b> — magnetic fields split lines in two (how George Ellery Hale found in 1908 that sunspots are giant magnets). <b>Hidden company</b> — lines that wobble back and forth betray an unseen star or planet tugging on it.</div>
+  </section>
+
+  <section class="sec" id="ch-scob" style="border-left-color:var(--cyan)">
+    <div class="num">Chapter 7</div>
+    <h2>🔭 Spectroscopy at SCOB tonight</h2>
+    <p class="lead">The Observatory uses this idea every time its <a href="seestar.html">Seestar S30</a> photographs a nebula from the middle of Jurong. Its built-in dual-band filter lets through just two narrow slices of colour — a 30 nm window around the green-blue oxygen line (OIII, 500.7 nm) and a 20 nm window around the red hydrogen line (Hα, 656.3 nm) — and blocks the rest.</p>
+    <div class="row">
+      <button type="button" class="btn" id="fOn" aria-pressed="false">🎛️ Fit the dual-band filter</button>
+    </div>
+    <canvas id="filtCv" class="cv" role="img" aria-label="The Orion Nebula’s bright lines and the broad glow of white street lights, with the Seestar’s two filter windows"></canvas>
+    <div class="dv">
+      <div class="rd"><div class="k">Nebula light let through</div><div class="v" id="fNeb">—</div></div>
+      <div class="rd"><div class="k">City glow let through</div><div class="v" id="fCity">—</div></div>
+      <div class="rd"><div class="k">Nebula stands out</div><div class="v" id="fGain">—</div></div>
+    </div>
+    <div class="cap" id="filtCap" aria-live="polite"></div>
+    <p class="note">A simplified model: the nebula’s line strengths are typical of the Orion Nebula; the city glow is a typical white LED street light — by early 2023 the Land Transport Authority had switched 99% of the 110,000 street lights it looks after from orange sodium lamps to white LEDs. Galaxies and star clusters shine at every colour, like the street lights, which is why the filter cannot help with them. More on the <a href="filters.html">filters</a> and <a href="light-pollution.html">light pollution</a> pages.</p>
+
+    <h3>Star colours you can see tonight</h3>
+    <p class="small mute" style="margin:2px 0 0">The brightest stars from Singapore, hottest first, with their height above the Observatory. Through the deck telescopes the colour difference is easy — compare blue-white Rigel with orange Betelgeuse in Orion, or Spica with Arcturus. Throwing the view very slightly out of focus makes the colour easier to see.</p>
+    <div class="row"><div class="seg" role="group" aria-label="When"><button type="button" id="tNow" aria-pressed="false">Right now</button><button type="button" id="t9" aria-pressed="true">9 pm tonight</button></div><span class="small mute" id="tWhen"></span></div>
+    <div class="tn" id="tn"></div>
+  </section>
+
+  <section class="sec" id="ch-diy" style="border-left-color:var(--green)">
+    <div class="num">Chapter 8</div>
+    <h2>🛠️ Make your own spectroscope</h2>
+    <p class="lead">The tiny tracks on a CD or DVD split light just like a prism. With a box and some tape you can see the barcodes of the lamps around you — tonight.</p>
+    <ol class="steps">
+      <li>Find a small box (a tea or tissue box works) and an old CD or DVD you no longer need. A DVD’s tracks are closer together, so it spreads the colours wider.</li>
+      <li>At one end cut a window about 2 cm tall and cover it with two pieces of card or aluminium foil, taped so that only a <b class="w">very thin slit</b> is left between them — about 1 mm. The thinner the slit, the sharper the lines.</li>
+      <li>Tape the disc inside the opposite end, shiny side facing the slit, tilted at about 45°. Cut a peephole in the top or side of the box above the disc.</li>
+      <li>Point the slit at a lamp and look through the peephole at the disc. Tilt the box until a rainbow appears. Try every lamp you can find.</li>
+      <li>Compare what you see with the barcodes below. A torch or a filament bulb gives a smooth rainbow; fluorescent tubes and neon signs give bright lines.</li>
+    </ol>
+    <div class="safe">⚠️ <b>Never point your spectroscope — or anything else — at the Sun.</b> It can permanently damage your eyes. For sunlight, point the slit at a bright white cloud or a sunlit sheet of paper. With a really fine slit you may even glimpse Fraunhofer’s dark lines.</div>
+    <h3>What the lamps around you look like</h3>
+    <div class="bcs" id="lamps"></div>
+    <p class="note">On the deck, astronomers do the same with a tiny diffraction grating such as the Star Analyser, which screws into a telescope’s eyepiece or camera like a filter and turns every star into a short spectrum.</p>
+  </section>
+
+  <section class="sec" id="ch-hist" style="border-left-color:var(--purple)">
+    <div class="num">Chapter 9</div>
+    <h2>🏛️ How we learned to read starlight</h2>
+    <div class="hist">
+      <div class="hi"><div class="y">1666</div><div><b>Isaac Newton</b> splits sunlight with a prism and calls the band of colours a “spectrum”.</div></div>
+      <div class="hi"><div class="y">1802</div><div><b>William Wollaston</b> notices a few dark gaps in the Sun’s spectrum — and thinks they are just the borders between colours.</div></div>
+      <div class="hi"><div class="y">1814</div><div><b>Joseph von Fraunhofer</b>, a glass-maker, maps 574 dark lines and labels the strongest A to K. He also sees that stars such as Sirius have different patterns from the Sun.</div></div>
+      <div class="hi"><div class="y">1859</div><div><b>Gustav Kirchhoff and Robert Bunsen</b> show that each element has its own lines, and that the Sun’s dark lines mean sodium, iron and more are in the Sun. Within two years they discover two new elements by their lines alone: caesium (“sky-blue”) and rubidium (“deep red”).</div></div>
+      <div class="hi"><div class="y">1864</div><div><b>William Huggins</b> turns a spectroscope on the Cat’s Eye Nebula and sees bright lines, not a rainbow: it is glowing gas, not a swarm of stars.</div></div>
+      <div class="hi"><div class="y">1868</div><div>During an eclipse <b>Pierre Janssen</b>, and soon after <b>Norman Lockyer</b>, see a yellow line in the Sun that matches no known element. Lockyer names it helium, after the Greek for Sun. <b>William Ramsay</b> finally finds helium on Earth in 1895.</div></div>
+      <div class="hi"><div class="y">1901</div><div><b>Annie Jump Cannon</b> puts the star classes into the order O B A F G K M, still used today.</div></div>
+      <div class="hi"><div class="y">1908</div><div><b>George Ellery Hale</b> sees sunspot lines split in two: sunspots are giant magnets.</div></div>
+      <div class="hi"><div class="y">1912</div><div><b>Vesto Slipher</b> measures the first speed of a galaxy: Andromeda is coming towards us at about 300 km/s. Most of the others he measures are rushing away.</div></div>
+      <div class="hi"><div class="y">1925</div><div><b>Cecilia Payne</b> shows that stars are made mostly of hydrogen and helium.</div></div>
+      <div class="hi"><div class="y">1927</div><div><b>Ira Bowen</b> solves the mystery of “nebulium”, a supposed new element glowing green in nebulae: it is ordinary oxygen, giving off light that is only possible in near-empty space.</div></div>
+      <div class="hi"><div class="y">1929</div><div><b>Edwin Hubble</b> puts Slipher’s speeds together with distances: the farther a galaxy, the faster it moves away. The universe is expanding.</div></div>
+      <div class="hi"><div class="y">1963</div><div><b>Maarten Schmidt</b> realises that the strange lines of 3C 273 are just hydrogen, stretched by 16%: it is a quasar, far beyond our galaxy.</div></div>
+      <div class="hi"><div class="y">1995</div><div><b>Michel Mayor and Didier Queloz</b> see 51 Pegasi’s lines wobble by about 56 m/s every four days: the first planet found around a Sun-like star (Nobel Prize 2019).</div></div>
+      <div class="hi"><div class="y">2022</div><div>The <b>James Webb Space Telescope</b> finds carbon dioxide in the air of WASP-39 b, a planet 700 light-years away, by reading the starlight that passes through its atmosphere.</div></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Star heights are computed on your device for the Science Centre Observatory. Sources: line wavelengths from the NIST Atomic Spectra Database (Kramida, Ralchenko, Reader &amp; NIST ASD Team) and the classic solar line tables (Moore, Minnaert &amp; Houtgast, 1966); hydrogen wavelengths computed from the Rydberg constant (CODATA), converted to air with the standard refractive index of air (Edlén). Black-body curves: Planck’s law with CODATA constants; star colours from the CIE 1931 colour-matching functions in the analytic form of Wyman, Sloan &amp; Shirley (<i>JCGT</i> 2, 2013) and the sRGB standard; rainbow colours after D. Bruton. The Sun’s temperature: IAU 2015 nominal value. Star temperatures and classes: typical published values. Doppler examples: V. M. Slipher (1913); Mayor &amp; Queloz, <i>Nature</i> 378, 355 (1995); M. Schmidt, <i>Nature</i> 197, 1040 (1963); spectrograph precision: Pepe et al., <i>A&amp;A</i> 645, A96 (2021, ESPRESSO). Cecilia Payne’s thesis: <i>Stellar Atmospheres</i> (1925). Fraunhofer’s 574 lines: J. Fraunhofer (1817). Seestar S30 filter: ZWO (duo-band, 30 nm OIII and 20 nm Hα). Singapore street lights: Land Transport Authority, reported by Mothership (February 2024). WASP-39 b: JWST Transiting Exoplanet Community ERS Team, <i>Nature</i> 614, 649 (2023).<br>
+    Learn more (opens external sites): <a href="https://physics.nist.gov/PhysRefData/ASD/lines_form.html" target="_blank" rel="noopener">NIST Atomic Spectra Database</a> · <a href="https://science.nasa.gov/mission/webb/science-overview/science-explainers/spectroscopy-101-introduction/" target="_blank" rel="noopener">NASA — Spectroscopy 101</a> · <a href="https://esawebb.org/news/weic2213/" target="_blank" rel="noopener">ESA/Webb — carbon dioxide on WASP-39 b</a>.<br>
+    Companion pages: <a href="made-of-stars.html">where the elements came from</a> · <a href="filters.html">telescope filters</a> · <a href="seestar.html">the Seestar</a> · <a href="light-pollution.html">light pollution</a> · <a href="solar.html">the Sun</a>.<br>
+    <a href="about.html">About &amp; credits</a> · <span class="scob-version" style="opacity:.75"></span>
+  </div>
+</div>
+<script src="astro-core.js"></script>
+<script>
+/* Reading Starlight — spectroscopy explained. Everything runs on the device; the only astronomy is
+ * astro-core.js (heights for tonight's star colours). Test hook: window.SPEC. */
+(function () {
+'use strict';
+var A = window.Astro;
+var RM = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+function $(id) { return document.getElementById(id); }
+function now() { return (window.performance && performance.now ? performance.now() : Date.now()) / 1000; }
+function fmtInt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+function rng(seed) { var s = seed >>> 0; return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+var R = rng(20261106);
+
+/* ── Physics ──────────────────────────────────────────────────────────── */
+var CK = 299792.458;          // speed of light, km/s
+var RH = 10967758.34;         // Rydberg constant for hydrogen (R∞ with the reduced-mass correction), 1/m
+var NAIR = 1.000277;          // refractive index of air for visible light
+var C2 = 0.0143877735;        // second radiation constant hc/k, m·K
+var WIEN = 2897771.955;       // Wien's displacement constant, nm·K
+var TSUN = 5772;              // the Sun's surface temperature, K (IAU 2015 nominal)
+var L0 = 380, L1 = 770;       // the visible range drawn on every strip, nm
+var TOL = 0.35;               // how close (nm) a lab line must sit to a feature to count as a match
+
+function vacToAir(l) { return l > 200 ? l / NAIR : l; }
+function rydbergVac(nu, nl) { return 1e9 / (RH * (1 / (nl * nl) - 1 / (nu * nu))); }
+function rydberg(nu, nl) { return vacToAir(rydbergVac(nu, nl)); }
+function levelE(n) { return -13.6057 / (n * n); }
+function photonEV(lvac) { return 1239.842 / lvac; }
+function wien(T) { return WIEN / T; }
+function planck(lnm, T) { var l = lnm * 1e-9, x = C2 / (l * T); return x > 700 ? 0 : 1 / (Math.pow(l, 5) * (Math.exp(x) - 1)); }
+function planckRel(lnm, T) { return planck(lnm, T) / planck(wien(T), T); }
+function dopShift(l, v) { return l * v / CK; }              // non-relativistic: fine for stars and galaxies here
+function surf(T) { return Math.pow(T / TSUN, 4); }          // brightness per square metre, Sun = 1
+
+/* CIE 1931 colour-matching functions, multi-lobe fit of Wyman, Sloan & Shirley (2013) */
+function lobe(x, mu, s1, s2) { var t = (x - mu) / (x < mu ? s1 : s2); return Math.exp(-0.5 * t * t); }
+function cmf(l) {
+  return [1.056 * lobe(l, 599.8, 37.9, 31.0) + 0.362 * lobe(l, 442.0, 16.0, 26.7) - 0.065 * lobe(l, 501.1, 20.4, 26.2),
+          0.821 * lobe(l, 568.8, 46.9, 40.5) + 0.286 * lobe(l, 530.9, 16.3, 31.1),
+          1.217 * lobe(l, 437.0, 11.8, 36.0) + 0.681 * lobe(l, 459.0, 26.0, 13.8)];
+}
+function gam(c) { return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055; }
+var BBC = {};
+/* the colour a black body of temperature T looks to the eye (sRGB, brightest channel = 255) */
+function bbColor(T) {
+  var k = Math.round(T / 10) * 10;
+  if (BBC[k]) return BBC[k];
+  var X = 0, Y = 0, Z = 0;
+  for (var l = 380; l <= 780; l += 5) { var p = planck(l, k), m = cmf(l); X += p * m[0]; Y += p * m[1]; Z += p * m[2]; }
+  var r = Math.max(0, 3.2406 * X - 1.5372 * Y - 0.4986 * Z), g = Math.max(0, -0.9689 * X + 1.8758 * Y + 0.0415 * Z), b = Math.max(0, 0.0557 * X - 0.2040 * Y + 1.0570 * Z);
+  var mx = Math.max(r, g, b) || 1;
+  BBC[k] = [r, g, b].map(function (c) { return Math.round(255 * clamp(gam(c / mx), 0, 1)); });
+  return BBC[k];
+}
+/* the colour of a single wavelength (after D. Bruton), dimmed towards the ends of what eyes can see */
+function wl2rgb(l) {
+  var r = 0, g = 0, b = 0;
+  if (l < 440) { r = (440 - l) / 60; b = 1; }
+  else if (l < 490) { g = (l - 440) / 50; b = 1; }
+  else if (l < 510) { g = 1; b = (510 - l) / 20; }
+  else if (l < 580) { r = (l - 510) / 70; g = 1; }
+  else if (l < 645) { r = 1; g = (645 - l) / 65; }
+  else { r = 1; }
+  var f = l < 420 ? 0.3 + 0.7 * (l - 380) / 40 : l > 700 ? 0.3 + 0.7 * (780 - l) / 80 : 1;
+  f = clamp(f, 0.15, 1);
+  return [r, g, b].map(function (c) { return Math.round(255 * Math.pow(clamp(c, 0, 1) * f, 0.8)); });
+}
+function rgbs(c, a) { return a == null ? 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')' : 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+function wlCss(l, a) { return rgbs(wl2rgb(clamp(l, 380, 780)), a); }
+function colName(l) {
+  return l < 380 ? 'ultraviolet' : l < 450 ? 'violet' : l < 485 ? 'blue' : l < 520 ? 'blue-green' : l < 565 ? 'green' : l < 590 ? 'yellow' : l < 625 ? 'orange' : l <= 780 ? 'red' : 'infrared';
+}
+/* typical white LED street light: the blue chip plus the broad yellow glow of its phosphor */
+function ledI(l) { var a = (l - 450) / 10.5, b = (l - 572) / (l < 572 ? 48 : 62); return 0.95 * Math.exp(-0.5 * a * a) + 0.72 * Math.exp(-0.5 * b * b); }
+
+/* ── Star classes (Harvard: O B A F G K M) ─────────────────────────────── */
+var CLS = [
+  { c: 'O', lo: 30000, hi: 1e9, rep: 40000, rng: 'over 30,000 K', ex: 'Naos', col: 'blue', sp: 'lines of helium that has lost an electron; hydrogen lines weak' },
+  { c: 'B', lo: 10000, hi: 30000, rep: 20000, rng: '10,000–30,000 K', ex: 'Spica, Rigel', col: 'blue-white', sp: 'helium lines, and hydrogen growing stronger' },
+  { c: 'A', lo: 7500, hi: 10000, rep: 8750, rng: '7,500–10,000 K', ex: 'Sirius, Vega', col: 'white', sp: 'the strongest hydrogen lines of any star' },
+  { c: 'F', lo: 6000, hi: 7500, rep: 6750, rng: '6,000–7,500 K', ex: 'Procyon', col: 'yellowish white', sp: 'hydrogen fading; calcium and metal lines growing' },
+  { c: 'G', lo: 5200, hi: 6000, rep: 5600, rng: '5,200–6,000 K', ex: 'the Sun, α Centauri', col: 'pale yellow-white', sp: 'strong calcium lines and a forest of metal lines' },
+  { c: 'K', lo: 3700, hi: 5200, rep: 4450, rng: '3,700–5,200 K', ex: 'Arcturus, Aldebaran', col: 'orange', sp: 'metal lines strong, hydrogen weak' },
+  { c: 'M', lo: 0, hi: 3700, rep: 3050, rng: '2,400–3,700 K', ex: 'Betelgeuse, Antares', col: 'orange-red', sp: 'wide bands from molecules such as titanium oxide' }
+];
+function classOf(T) { for (var i = 0; i < CLS.length; i++) if (T >= CLS[i].lo) return CLS[i]; return CLS[CLS.length - 1]; }
+
+/* ── Laboratory lines (air wavelengths, nm; relative strength 0–1) ─────── */
+var EL = {
+  H:  { n: 'Hydrogen', sub: 'the most common element', col: '#ff6b8a', rgb: '255,120,160', l: [656.28, 486.13, 434.05, 410.17, 397.01], s: [1, .55, .32, .2, .14] },
+  He: { n: 'Helium', sub: 'found in the Sun first', col: '#ffc58a', rgb: '255,205,170', l: [587.56, 447.15, 667.82, 501.57, 492.19, 471.31, 706.52, 388.86], s: [1, .45, .35, .3, .15, .12, .4, .45] },
+  Na: { n: 'Sodium', sub: 'old orange street lamps', col: '#ffb347', rgb: '255,190,90', l: [588.995, 589.592], s: [1, .8] },
+  Mg: { n: 'Magnesium', sub: 'the Sun’s green “b” lines', col: '#7ee0a1', rgb: '150,235,180', l: [383.83, 516.73, 517.27, 518.36], s: [.6, .7, .85, 1] },
+  Ca: { n: 'Calcium', sub: 'the Sun’s darkest lines', col: '#b79cff', rgb: '190,170,255', l: [393.37, 396.85, 422.67], s: [1, .9, .6] },
+  Fe: { n: 'Iron', sub: 'thousands of lines', col: '#ffd36b', rgb: '255,215,120', l: [382.04, 404.58, 406.36, 407.17, 426.05, 430.79, 432.58, 438.35, 440.48, 466.81, 489.15, 492.05, 495.76, 516.89, 527.04, 532.80, 537.15, 539.71, 540.58],
+        s: [.8, .7, .6, .55, .5, .75, .55, .7, .55, .4, .35, .35, .4, .5, .75, .5, .45, .4, .4] },
+  Ne: { n: 'Neon', sub: 'red-orange signs', col: '#ff5a36', rgb: '255,96,60', l: [540.06, 585.25, 588.19, 594.48, 597.55, 602.99, 607.43, 609.62, 614.31, 616.36, 621.73, 626.65, 630.48, 633.44, 638.30, 640.22, 650.65, 659.90, 667.83, 671.70, 692.95, 703.24],
+        s: [.25, .75, .3, .45, .2, .4, .5, .5, .6, .4, .4, .5, .3, .6, .6, 1, .6, .4, .4, .3, .6, .7] },
+  Hg: { n: 'Mercury', sub: 'inside fluorescent tubes', col: '#9ec5ff', rgb: '170,190,255', l: [404.66, 435.83, 546.07, 576.96, 579.07], s: [.45, .8, 1, .45, .5] },
+  O:  { n: 'Oxygen', sub: 'glows green in nebulae', col: '#5bd6e0', rgb: '91,214,224', l: [500.68, 495.89, 436.32, 630.03, 636.38], s: [1, .33, .05, .2, .07] },
+  N:  { n: 'Nitrogen', sub: 'beside hydrogen’s red line', col: '#ff8ac2', rgb: '255,138,194', l: [658.35, 654.80, 575.46], s: [1, .34, .03] },
+  S:  { n: 'Sulphur', sub: 'deep red, in nebulae', col: '#e8443a', rgb: '232,68,58', l: [671.64, 673.08], s: [.8, 1] },
+  TiO: { n: 'TiO', sub: 'titanium oxide, a molecule', col: '#c98a5a', rgb: '201,138,90', l: [476.1, 495.4, 516.7, 544.8, 586.2, 615.9, 705.4], s: [.5, .6, .7, .8, .75, .85, .9], band: true }
+};
+var BAR = ['H', 'He', 'Na', 'Mg', 'Ca', 'Fe', 'Ne', 'Hg'];                       // barcode rows
+var CHIPS = ['H', 'He', 'Na', 'Mg', 'Ca', 'Fe', 'O', 'N', 'S', 'Ne', 'Hg', 'TiO'];  // detective chips
+
+/* ── Mystery spectra. parts: [element, strength, line width nm] ──────── */
+var MYS = [
+  { id: 'sun', ic: '☀️', n: 'The Sun', mode: 'abs', T: TSUN, req: ['H', 'Na', 'Mg', 'Ca', 'Fe'], opt: [], earth: true,
+    parts: [['H', .62, .32], ['Na', .82, .2], ['Mg', .72, .18], ['Ca', .92, .55], ['Fe', .5, .13]],
+    win: 'The Sun: hydrogen, sodium, magnesium, calcium and iron — just what Kirchhoff and Bunsen began finding in 1859. The two lines at the far red end (686.7 and 759.4 nm) are not from the Sun at all: they are oxygen in Earth’s own air.' },
+  { id: 'vega', ic: '💎', n: 'Vega', mode: 'abs', T: 9600, req: ['H'], opt: [],
+    parts: [['H', .78, 1.5]],
+    win: 'Vega: hydrogen, with huge, wide lines. At about 9,600 K Vega is the perfect temperature for hydrogen lines, so they drown out almost everything else.' },
+  { id: 'spica', ic: '🔷', n: 'Spica', mode: 'abs', T: 25000, req: ['H', 'He'], opt: [],
+    parts: [['H', .5, .8], ['He', .4, .3]],
+    win: 'Spica: hydrogen and helium. Helium’s lines only show in very hot stars — Spica’s surface is about 25,000 K.' },
+  { id: 'betel', ic: '🔴', n: 'Betelgeuse', mode: 'abs', T: 3600, req: ['TiO', 'Na', 'Ca'], opt: ['Fe', 'Mg'],
+    parts: [['TiO', .7, 14], ['Na', .86, .35], ['Ca', .88, .5], ['Fe', .42, .15], ['Mg', .6, .2]],
+    win: 'Betelgeuse: titanium oxide, sodium and calcium, with iron and magnesium too. At about 3,600 K it is cool enough for atoms to join into molecules, whose wide bands give red giants their saw-tooth spectra.' },
+  { id: 'orion', ic: '🌫️', n: 'Orion Nebula', mode: 'em', req: ['H', 'O'], opt: ['He', 'N', 'S'],
+    parts: [['H', 1, .45], ['O', 1, .45], ['He', .14, .45], ['N', .32, .45], ['S', .08, .45]],
+    win: 'The Orion Nebula: glowing hydrogen and oxygen, with helium, nitrogen and sulphur. The green oxygen lines puzzled astronomers for over 60 years — they blamed a new element, “nebulium”, until Ira Bowen showed in 1927 that it was oxygen.' },
+  { id: 'neon', ic: '🟥', n: 'Neon sign', mode: 'em', req: ['Ne'], opt: [],
+    parts: [['Ne', 1, .38]],
+    win: 'A neon sign: neon, with its crowd of red and orange lines. Real neon glows red-orange; signs of other colours use other gases or coated tubes.' },
+  { id: 'lamp', ic: '🟧', n: 'Old street lamp', mode: 'em', req: ['Na'], opt: [],
+    parts: [['Na', 1, .45]],
+    win: 'An old sodium street lamp: two sodium lines so close together they look like one orange-yellow glow. That is why everything looked orange under them.' }
+];
+function buildFeats(m) {
+  var f = [];
+  m.parts.forEach(function (p) {
+    var e = EL[p[0]];
+    e.l.forEach(function (l, i) {
+      var s = m.mode === 'em' ? p[1] * e.s[i] : p[1] * (0.5 + 0.5 * e.s[i]);
+      f.push({ l: l, s: Math.min(0.95, s), w: p[2], el: p[0], band: !!e.band });
+    });
+  });
+  if (m.earth) f.push({ l: 686.72, s: .55, w: .55, el: 'air' }, { l: 759.37, s: .72, w: .75, el: 'air' });
+  return f;
+}
+MYS.forEach(function (m) { m.f = buildFeats(m); });
+var SUNF = MYS[0].f;
+
+/* detective scoring: does every line of element k sit on a feature? */
+function matchEl(k, feats) {
+  var e = EL[k], hit = 0, res = e.l.map(function (l) {
+    var ok = feats.some(function (f) { return f.el !== 'air' && Math.abs(f.l - l) <= TOL; });
+    if (ok) hit++;
+    return ok;
+  });
+  return { k: k, hit: hit, n: e.l.length, res: res, all: hit === e.l.length };
+}
+function detEval(mi, sel) {
+  var m = MYS[mi], per = sel.map(function (k) { return matchEl(k, m.f); });
+  var good = per.filter(function (r) { return r.all; }).map(function (r) { return r.k; });
+  var wrong = per.filter(function (r) { return !r.all; }).map(function (r) { return r.k; });
+  var unexplained = m.f.filter(function (f) {
+    return f.el !== 'air' && !good.some(function (k) { return EL[k].l.some(function (l) { return Math.abs(l - f.l) <= TOL; }); });
+  }).length;
+  var need = m.req.filter(function (k) { return sel.indexOf(k) < 0; });
+  return { per: per, good: good, wrong: wrong, unexplained: unexplained, need: need, solved: !need.length && !wrong.length };
+}
+
+/* ── Hydrogen jumps for the atom ladder ───────────────────────────────── */
+var JUMPS = [[3, 2, 'Hα', 'hydrogen-alpha'], [4, 2, 'Hβ', 'hydrogen-beta'], [5, 2, 'Hγ', 'hydrogen-gamma'], [6, 2, 'Hδ', 'hydrogen-delta'], [2, 1, 'Lyman-α', ''], [4, 3, 'Paschen-α', '']].map(function (j) {
+  var vac = rydbergVac(j[0], j[1]);
+  return { u: j[0], lo: j[1], n: j[2], nm: j[3], l: rydberg(j[0], j[1]), vac: vac, ev: photonEV(vac) };
+});
+
+/* ── Bright stars for tonight: name, RA°, Dec° (J2000), type, surface K, constellation ── */
+var STARS = [
+  ['Acrux', 186.650, -63.099, 'B0.5', 28000, 'Southern Cross'], ['Spica', 201.298, -11.161, 'B1', 25000, 'Virgo'],
+  ['Achernar', 24.429, -57.237, 'B6', 15000, 'Eridanus'], ['Regulus', 152.093, 11.967, 'B8', 12500, 'Leo'],
+  ['Rigel', 78.634, -8.202, 'B8', 12100, 'Orion'], ['Sirius', 101.287, -16.716, 'A1', 9940, 'Canis Major'],
+  ['Vega', 279.235, 38.784, 'A0', 9600, 'Lyra'], ['Fomalhaut', 344.413, -29.622, 'A3', 8600, 'Piscis Austrinus'],
+  ['Deneb', 310.358, 45.280, 'A2', 8500, 'Cygnus'], ['Altair', 297.696, 8.868, 'A7', 7700, 'Aquila'],
+  ['Canopus', 95.988, -52.696, 'A9', 7400, 'Carina'], ['Procyon', 114.825, 5.225, 'F5', 6530, 'Canis Minor'],
+  ['Alpha Centauri', 219.902, -60.834, 'G2', 5800, 'Centaurus'], ['Capella', 79.172, 45.998, 'G8 + G0', 5300, 'Auriga'],
+  ['Pollux', 116.329, 28.026, 'K0', 4600, 'Gemini'], ['Arcturus', 213.915, 19.182, 'K1.5', 4300, 'Boötes'],
+  ['Aldebaran', 68.980, 16.509, 'K5', 3900, 'Taurus'], ['Antares', 247.352, -26.432, 'M1.5', 3600, 'Scorpius'],
+  ['Betelgeuse', 88.793, 7.407, 'M2', 3600, 'Orion']
+];
+
+/* ── Lamps for the DIY spectroscope ───────────────────────────────────── */
+var LAMPS = [
+  { n: 'Candle or filament bulb', sub: 'a hot glowing solid: a smooth rainbow', o: { mode: 'abs', T: 2700, f: [] } },
+  { n: 'White LED', sub: 'blue chip + yellow glow: smooth, no sharp lines', o: { mode: 'em', led: true, f: [] } },
+  { n: 'Fluorescent tube', sub: 'mercury lines, plus red and green from its coating', o: { mode: 'em', base: 0.03, f: [404.66, .45, 435.83, .85, 546.07, 1, 576.96, .35, 579.07, .38, 489, .25, 543, .7, 585.5, .14, 611.5, 1, 627, .25, 650, .1, 707, .12] } },
+  { n: 'Old sodium street lamp', sub: 'one orange-yellow pair', o: { mode: 'em', f: [588.995, 1, 589.592, .85] } },
+  { n: 'Neon sign', sub: 'a crowd of red and orange lines', o: { mode: 'em', f: [] } },
+  { n: 'Daylight from a white cloud', sub: 'a rainbow crossed by dark lines', o: { mode: 'abs', T: TSUN, f: SUNF } }
+];
+(function () {
+  LAMPS[4].o.f = EL.Ne.l.map(function (l, i) { return { l: l, s: EL.Ne.s[i], w: .3 }; });
+  [2, 3].forEach(function (k) { var a = LAMPS[k].o.f, out = []; for (var i = 0; i < a.length; i += 2) out.push({ l: a[i], s: a[i + 1], w: .3 }); LAMPS[k].o.f = out; });
+})();
+
+/* ── Canvas helpers ───────────────────────────────────────────────────── */
+var FONT = 'system-ui,-apple-system,"Segoe UI",sans-serif';
+function DPR() { return Math.min(2, window.devicePixelRatio || 1); }
+function ctx2(cv, w, h) { var d = DPR(); cv.width = Math.round(w * d); cv.height = Math.round(h * d); var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); return { c: c, w: w, h: h, d: d }; }
+function cssW(cv) { var r = cv.getBoundingClientRect(); return Math.max(1, Math.round(r.width || cv.clientWidth || 300)); }
+function fit(cv, aspect) { var w = cssW(cv); return ctx2(cv, w, Math.max(1, Math.round(w * aspect))); }
+function fitH(cv, h) { cv.style.height = h + 'px'; return ctx2(cv, cssW(cv), h); }
+function fitBox(cv) { var r = cv.getBoundingClientRect(); return ctx2(cv, Math.max(1, Math.round(r.width || 300)), Math.max(1, Math.round(r.height || 24))); }
+function dot(c, x, y, r, col) { c.beginPath(); c.arc(x, y, Math.max(0.2, r), 0, 6.2832); c.fillStyle = col; c.fill(); }
+function glow(c, x, y, r, rgb, a) {
+  if (!(r > 0)) return;
+  var g = c.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, 'rgba(' + rgb + ',' + a + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)');
+  c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill();
+}
+function label(c, txt, x, y, col, size, align, wt) {
+  c.fillStyle = col || '#f4f6fb'; c.font = (wt || 700) + ' ' + (size || 11) + 'px ' + FONT;
+  c.textBaseline = 'middle'; c.textAlign = align || 'left'; c.fillText(txt, x, y); c.textAlign = 'left';
+}
+function cross(c, x, y, r, col) { c.strokeStyle = col; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x - r, y - r); c.lineTo(x + r, y + r); c.moveTo(x + r, y - r); c.lineTo(x - r, y + r); c.stroke(); }
+function triDown(c, x, y, s, col) { c.beginPath(); c.moveTo(x - s, y - s * 1.2); c.lineTo(x + s, y - s * 1.2); c.lineTo(x, y); c.closePath(); c.fillStyle = col; c.fill(); }
+function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function frame(c, x, y, w, h) { c.strokeStyle = 'rgba(255,255,255,.25)'; c.lineWidth = 1; c.strokeRect(x - 0.5, y - 0.5, w + 1, h + 1); }
+function xOf(l, x0, x1, l0, l1) { l0 = l0 || L0; l1 = l1 || L1; return x0 + (l - l0) / (l1 - l0) * (x1 - x0); }
+var SF = []; (function () { for (var i = 0; i < 120; i++) SF.push([R(), R(), R()]); })();
+function starfield(c, w, h, n, a, dx) {
+  for (var i = 0; i < n; i++) { var p = SF[i], x = ((p[0] * w + (dx || 0) * (0.4 + p[2])) % w + w) % w; dot(c, x, p[1] * h, 0.4 + p[2] * 0.8, 'rgba(255,255,255,' + (a * (0.3 + 0.7 * p[2])).toFixed(2) + ')'); }
+}
+function axis(c, x0, x1, y, l0, l1, narrow) {
+  var step = narrow ? 100 : 50, first = true;
+  c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 1;
+  for (var l = Math.ceil(l0 / step) * step; l <= l1; l += step) {
+    var x = xOf(l, x0, x1, l0, l1);
+    c.beginPath(); c.moveTo(x, y); c.lineTo(x, y + 4); c.stroke();
+    label(c, l + (first ? ' nm' : ''), x, y + 11, '#9aa6c8', 10, 'center', 600); first = false;
+  }
+}
+
+/* ── The spectrum painter: one column per device pixel ─────────────────
+ * o = { mode: 'abs' (rainbow with dark lines) | 'em' (bright lines on black), f: [{l, s, w, band}],
+ *       T: tint the rainbow with a black body, led: add a white-LED glow, base: faint continuum } */
+function specAt(l, o, minW, wn) {
+  var I, i, f, d, w;
+  if (o.mode === 'em') {
+    I = o.base || 0;
+    if (o.led) I += ledI(l);
+    for (i = 0; i < o.f.length; i++) { f = o.f[i]; w = Math.max(f.w, minW); d = (l - f.l) / w; if (d > -4 && d < 4) I += f.s * Math.exp(-0.5 * d * d); }
+    return Math.min(1, Math.sqrt(I));
+  }
+  I = wn ? 0.42 + 0.58 * wn(l) : 1;
+  for (i = 0; i < o.f.length; i++) {
+    f = o.f[i];
+    if (f.band) { d = l - f.l; if (d > -0.8) I *= 1 - f.s * (d < 0 ? (d + 0.8) / 0.8 : Math.exp(-d / f.w)); }
+    else { w = Math.max(f.w, minW); d = (l - f.l) / w; if (d > -4 && d < 4) I *= 1 - f.s * Math.exp(-0.5 * d * d); }
+  }
+  return I;
+}
+function paintSpec(c, x, y, w, h, o, d) {
+  var l0 = o.l0 || L0, l1 = o.l1 || L1, n = Math.max(1, Math.round(w * (d || 1))), minW = 0.55 * (l1 - l0) / n, wn = null, cw = w / n;
+  if (o.T) { var mx = 0; for (var k = 0; k <= 48; k++) mx = Math.max(mx, planck(l0 + (l1 - l0) * k / 48, o.T)); wn = function (l) { return planck(l, o.T) / mx; }; }
+  for (var i = 0; i < n; i++) {
+    var l = l0 + (l1 - l0) * (i + 0.5) / n, I = specAt(l, o, minW, wn) * (o.dim || 1), rgb = wl2rgb(l);
+    c.fillStyle = 'rgb(' + Math.round(rgb[0] * I) + ',' + Math.round(rgb[1] * I) + ',' + Math.round(rgb[2] * I) + ')';
+    c.fillRect(x + i * cw, y, cw + 0.5, h);
+  }
+}
+function offStrip(w, h, d, o) {
+  var cv = document.createElement('canvas'), f = ctx2(cv, Math.max(1, w), Math.max(1, h));
+  paintSpec(f.c, 0, 0, w, h, o, d);
+  return cv;
+}
+function prism(c, x, y, s) {
+  c.beginPath(); c.moveTo(x, y - 0.6 * s); c.lineTo(x + 0.55 * s, y + 0.45 * s); c.lineTo(x - 0.55 * s, y + 0.45 * s); c.closePath();
+  var g = c.createLinearGradient(x - 0.5 * s, y, x + 0.5 * s, y);
+  g.addColorStop(0, 'rgba(160,220,255,.18)'); g.addColorStop(1, 'rgba(160,220,255,.05)');
+  c.fillStyle = g; c.fill(); c.strokeStyle = 'rgba(190,230,255,.75)'; c.lineWidth = 1.3; c.stroke();
+}
+function pIn(x, y, s) { return { x: x - 0.275 * s, y: y - 0.075 * s }; }
+function pOut(x, y, s) { return { x: x + 0.275 * s, y: y - 0.075 * s }; }
+function fan(c, ex, ey, x0, x1, y0, a) {
+  var g = c.createLinearGradient(x0, 0, x1, 0);
+  for (var k = 0; k <= 6; k++) g.addColorStop(k / 6, wlCss(L0 + (L1 - L0) * k / 6, a));
+  c.beginPath(); c.moveTo(ex, ey); c.lineTo(x1, y0); c.lineTo(x0, y0); c.closePath(); c.fillStyle = g; c.fill();
+}
+function aim(x, y, tx, ty, l, st) { var dx = tx - x, dy = ty - y, m = Math.sqrt(dx * dx + dy * dy) || 1; return { x: x, y: y, vx: dx / m, vy: dy / m, l: l, st: st }; }
+function photon(c, p, a) { var rgb = wl2rgb(clamp(p.l, 380, 780)).join(','); dot(c, p.x, p.y, 3.4, 'rgba(' + rgb + ',' + (0.22 * a).toFixed(2) + ')'); dot(c, p.x, p.y, 1.7, 'rgba(' + rgb + ',' + a + ')'); }
+function flashes(c, list, t) {
+  for (var i = 0; i < list.length; i++) { var f = list[i], k = (t - f.t) / 0.45; if (k < 0 || k > 1) continue; glow(c, f.x, f.y, (f.r || 6) * (1 + k), wl2rgb(clamp(f.l, 380, 780)).join(','), 0.8 * (1 - k)); }
+}
+
+/* ── Hero: starlight → prism → a barcode ─────────────────────────────── */
+var HE = { cv: $('heroCv'), c: null, w: 0, h: 0, d: 1, ph: [], fl: [], acc: 0, off: null, L: null };
+var SCAN = [['Na', 589.29, 'sodium'], ['Mg', 517.27, 'magnesium'], ['H', 656.28, 'hydrogen'], ['Ca', 393.37, 'calcium'], ['Fe', 527.04, 'iron'], ['H', 486.13, 'hydrogen']];
+function heroLayout() {
+  var w = HE.w, h = HE.h, s = Math.min(0.5 * h, w < 560 ? 0.25 * w : 0.2 * w);
+  var L = HE.L = { sx: 0.08 * w, sy: 0.32 * h, px: 0.31 * w, py: 0.36 * h, s: s, x0: 0.40 * w, x1: 0.97 * w, y0: 0.70 * h, y1: 0.86 * h };
+  L.i = pIn(L.px, L.py, s); L.o = pOut(L.px, L.py, s);
+  HE.off = offStrip(L.x1 - L.x0, L.y1 - L.y0, HE.d, { mode: 'abs', T: TSUN, f: SUNF });
+  HE.ph = []; HE.fl = [];
+  /* start with light already on its way, so the picture is never empty */
+  for (var k = 0, nk = RM ? 60 : (w < 560 ? 70 : 120); k < nk; k++) { heroSpawn(1); var p = HE.ph[HE.ph.length - 1], m = Math.floor(R() * (w < 560 ? 110 : 200)); for (var st = 0; st < m; st++) if (!heroStep(p, 4, 0)) { HE.ph.pop(); break; } }
+}
+function heroSpawn(n) {
+  var L = HE.L;
+  for (var k = 0; k < n; k++) {
+    var l, tries = 0;
+    do { l = L0 + R() * (L1 - L0); } while (++tries < 9 && SUNF.some(function (f) { return f.s > 0.4 && Math.abs(f.l - l) < Math.max(0.8, f.w * 1.6); }));
+    HE.ph.push(aim(L.sx, L.sy + (R() - 0.5) * 6, L.i.x, L.i.y, l, 0));
+  }
+}
+/* move one photon a distance ds along its path; returns false once it has landed */
+function heroStep(p, ds, t) {
+  var L = HE.L;
+  p.x += p.vx * ds; p.y += p.vy * ds;
+  if (p.st === 0 && p.x >= L.i.x) { var q = aim(p.x, p.y, L.o.x, L.o.y + (p.l - 575) / 390 * 0.08 * L.s, p.l, 4); p.vx = q.vx; p.vy = q.vy; p.st = 4; }
+  else if (p.st === 4 && p.x >= L.o.x) { var q2 = aim(p.x, p.y, xOf(p.l, L.x0, L.x1), L.y0, p.l, 1); p.vx = q2.vx; p.vy = q2.vy; p.st = 1; }
+  else if (p.st === 1 && p.y >= L.y0) { if (t) HE.fl.push({ x: p.x, y: L.y0, l: p.l, t: t, r: 5 }); return false; }
+  return true;
+}
+function heroTick(t, dt) {
+  var sp = Math.max(120, 0.3 * HE.w);
+  HE.acc += dt * (HE.w < 560 ? 40 : 70);
+  var n = Math.floor(HE.acc); HE.acc -= n;
+  if (HE.ph.length < 260) heroSpawn(n);
+  for (var i = HE.ph.length - 1; i >= 0; i--) if (!heroStep(HE.ph[i], sp * dt, t)) HE.ph.splice(i, 1);
+  for (var j = HE.fl.length - 1; j >= 0; j--) if (t - HE.fl[j].t > 0.45) HE.fl.splice(j, 1);
+  heroDraw(t);
+}
+function heroDraw(t) {
+  var c = HE.c, w = HE.w, h = HE.h, L = HE.L;
+  if (!c || !L) return;
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  starfield(c, w, h, 70, 0.6);
+  var pu = RM ? 1 : 0.9 + 0.1 * Math.sin(t * 3);
+  glow(c, L.sx, L.sy, 34 * pu, '255,244,214', 0.9); dot(c, L.sx, L.sy, 5, '#fffdf4');
+  label(c, 'a star', L.sx, L.sy + 32, '#ffe9b8', 11, 'center');
+  c.strokeStyle = 'rgba(255,255,255,.10)'; c.lineWidth = 7; c.beginPath(); c.moveTo(L.sx, L.sy); c.lineTo(L.i.x, L.i.y); c.stroke();
+  fan(c, L.o.x, L.o.y, L.x0, L.x1, L.y0, 0.10);
+  prism(c, L.px, L.py, L.s);
+  label(c, 'prism', L.px, L.py + 0.45 * L.s + 11, '#9aa6c8', 10.5, 'center', 600);
+  c.drawImage(HE.off, L.x0, L.y0, L.x1 - L.x0, L.y1 - L.y0); frame(c, L.x0, L.y0, L.x1 - L.x0, L.y1 - L.y0);
+  for (var i = 0; i < HE.ph.length; i++) photon(c, HE.ph[i], 0.95);
+  flashes(c, HE.fl, t);
+  var ph = RM ? 0.5 : (t / 2.4) % 1, k = RM ? 0 : Math.floor(t / 2.4) % SCAN.length, a = Math.min(1, ph * 6, (1 - ph) * 6);
+  var sc = SCAN[k], x = xOf(sc[1], L.x0, L.x1);
+  c.globalAlpha = a;
+  triDown(c, x, L.y0 - 3, 4, '#f5c542');
+  label(c, sc[0] + ' · ' + sc[2], clamp(x, L.x0 + 40, L.x1 - 40), L.y0 - 15, '#f5c542', 11, 'center');
+  c.globalAlpha = 1;
+  label(c, w < 560 ? 'the spectrum: a barcode' : 'the spectrum: a rainbow crossed by dark lines, like a barcode', L.x0, L.y1 + 11, '#9aa6c8', 10.5, 'left', 600);
+}
+
+/* ── 1 · The light lab (Kirchhoff’s three laws) ──────────────────────── */
+var LAB = { cv: $('lab'), c: null, w: 0, h: 0, d: 1, mode: 'cont', gas: 'H', ph: [], fl: [], acc: 0, L: null, off: null, side: null };
+var GASW = { H: 'red, blue-green and violet at 656, 486, 434 and 410 nm', Na: 'one yellow-orange pair at 589 nm', Ne: 'dozens of red, orange and yellow colours', Hg: 'violet, blue, green and yellow', He: 'a bright yellow at 588 nm and several others' };
+function labLines() { var e = EL[LAB.gas]; return e.l.map(function (l, i) { return { l: l, s: e.s[i] }; }).filter(function (x) { return x.l >= L0 && x.l <= L1; }); }
+function labLayout() {
+  var w = LAB.w, h = LAB.h, L;
+  L = w < 560
+    ? { sx: .07 * w, sy: .22 * h, cx: .33 * w, cy: .22 * h, rx: .11 * w, ry: .1 * h, px: .62 * w, py: .24 * h, s: Math.min(.26 * h, .26 * w), x0: .40 * w, x1: .97 * w, y0: .72 * h, y1: .83 * h, sx0: .05 * w, sx1: .50 * w, sy0: .50 * h, sy1: .55 * h }
+    : { sx: .07 * w, sy: .3 * h, cx: .27 * w, cy: .3 * h, rx: .075 * w, ry: .17 * h, px: .5 * w, py: .33 * h, s: Math.min(.4 * h, .17 * w), x0: .57 * w, x1: .97 * w, y0: .66 * h, y1: .82 * h, sx0: .14 * w, sx1: .41 * w, sy0: .64 * h, sy1: .70 * h };
+  L.i = pIn(L.px, L.py, L.s); L.o = pOut(L.px, L.py, L.s);
+  LAB.L = L; LAB.ph = []; LAB.fl = []; labStrips();
+}
+function labStrips() {
+  var L = LAB.L; if (!L) return;
+  var ln = labLines().map(function (x) { return { l: x.l, s: x.s, w: 1.1 }; });
+  var o = LAB.mode === 'cont' ? { mode: 'abs', f: [] } : LAB.mode === 'abs' ? { mode: 'abs', f: ln.map(function (x) { return { l: x.l, s: Math.min(.95, .55 + .4 * x.s), w: x.w }; }) } : { mode: 'em', f: ln };
+  LAB.off = offStrip(L.x1 - L.x0, L.y1 - L.y0, LAB.d, o);
+  LAB.side = offStrip(L.sx1 - L.sx0, L.sy1 - L.sy0, LAB.d, { mode: 'em', f: ln });
+  LAB.ph = []; LAB.fl = [];
+  for (var k = 0, nk = LAB.w < 560 ? 70 : 110; k < nk; k++) { labSpawn(1); var i = LAB.ph.length - 1, m = Math.floor(R() * (LAB.w < 560 ? 120 : 190)); for (var st = 0; st < m; st++) if (!labStep(i, 4, 0)) break; }
+}
+function labPick() {
+  var ln = labLines(), tot = 0, i;
+  for (i = 0; i < ln.length; i++) tot += ln[i].s;
+  var r = R() * tot;
+  for (i = 0; i < ln.length; i++) { r -= ln[i].s; if (r <= 0) return ln[i].l; }
+  return ln[0].l;
+}
+function labSpawn(n) {
+  var L = LAB.L;
+  for (var k = 0; k < n; k++) {
+    var p, l;
+    if (LAB.mode === 'em') {
+      l = labPick();
+      if (R() < 0.4) p = aim(L.sx + 8, L.sy + (R() - .5) * 8, L.i.x, L.i.y, l, 0);
+      else { var a = R() * 6.2832; p = { x: L.sx + Math.cos(a) * 10, y: L.sy + Math.sin(a) * 10, vx: Math.cos(a), vy: Math.sin(a), l: l, st: 3 }; }
+    } else {
+      var line = LAB.mode === 'abs' && R() < 0.4;
+      l = line ? labPick() : L0 + R() * (L1 - L0);
+      p = aim(L.sx + 8, L.sy + (R() - .5) * 8, L.i.x, L.i.y, l, 0);
+      p.line = LAB.mode === 'abs' && (line || labLines().some(function (x) { return Math.abs(x.l - l) < 0.6; }));
+      p.ax = L.cx + (R() - .5) * L.rx * 0.9;
+    }
+    LAB.ph.push(p);
+  }
+}
+/* advance photon i by ds; returns false if it was removed */
+function labStep(i, ds, t) {
+  var L = LAB.L, p = LAB.ph[i];
+  p.x += p.vx * ds; p.y += p.vy * ds;
+  if (p.st === 0 && p.line && p.x >= p.ax) {
+    if (t) LAB.fl.push({ x: p.x, y: p.y, l: p.l, t: t, r: 9 });
+    var re;
+    if (R() < 0.45) re = aim(p.x, p.y, xOf(p.l, L.sx0, L.sx1), L.sy0, p.l, 2);
+    else { var a = -Math.PI / 2 + (R() - .5) * 2.4; if (R() < .35) a += Math.PI; re = { x: p.x, y: p.y, vx: Math.cos(a), vy: Math.sin(a), l: p.l, st: 3 }; }
+    LAB.ph[i] = re; return true;
+  }
+  if (p.st === 0 && p.x >= L.i.x) { var q = aim(p.x, p.y, L.o.x, L.o.y + (p.l - 575) / 390 * 0.08 * L.s, p.l, 4); p.vx = q.vx; p.vy = q.vy; p.st = 4; }
+  else if (p.st === 4 && p.x >= L.o.x) { var q2 = aim(p.x, p.y, xOf(p.l, L.x0, L.x1), L.y0, p.l, 1); p.vx = q2.vx; p.vy = q2.vy; p.st = 1; }
+  else if (p.st === 1 && p.y >= L.y0) { if (t) LAB.fl.push({ x: p.x, y: L.y0, l: p.l, t: t, r: 5 }); LAB.ph.splice(i, 1); return false; }
+  else if (p.st === 2 && p.y >= L.sy0) { if (t) LAB.fl.push({ x: p.x, y: L.sy0, l: p.l, t: t, r: 5 }); LAB.ph.splice(i, 1); return false; }
+  else if (p.x < -10 || p.x > LAB.w + 10 || p.y < -10 || p.y > LAB.h + 10) { LAB.ph.splice(i, 1); return false; }
+  return true;
+}
+function labTick(t, dt) {
+  var sp = Math.max(110, .24 * LAB.w);
+  LAB.acc += dt * (LAB.w < 560 ? 34 : 52);
+  var n = Math.floor(LAB.acc); LAB.acc -= n;
+  if (LAB.ph.length < 320) labSpawn(n);
+  for (var i = LAB.ph.length - 1; i >= 0; i--) labStep(i, sp * dt, t);
+  for (var j = LAB.fl.length - 1; j >= 0; j--) if (t - LAB.fl[j].t > 0.45) LAB.fl.splice(j, 1);
+  labDraw(t);
+}
+function bulb(c, x, y, t) {
+  var pu = RM ? 1 : .92 + .08 * Math.sin(t * 5);
+  glow(c, x, y, 30 * pu, '255,214,150', .9);
+  c.strokeStyle = '#fff6df'; c.lineWidth = 1.6; c.beginPath();
+  for (var k = 0; k <= 8; k++) { var xx = x - 8 + k * 2, yy = y + (k % 2 ? -4 : 4); if (k) c.lineTo(xx, yy); else c.moveTo(xx, yy); }
+  c.stroke();
+}
+function tube(c, x, y, rgb, t) {
+  var pu = RM ? 1 : .9 + .1 * Math.sin(t * 4);
+  glow(c, x, y, 32 * pu, rgb, .75);
+  rr(c, x - 9, y - 17, 18, 34, 8); c.fillStyle = 'rgba(' + rgb + ',.6)'; c.fill(); c.strokeStyle = 'rgba(255,255,255,.6)'; c.lineWidth = 1; c.stroke();
+}
+function labDraw(t) {
+  var c = LAB.c, w = LAB.w, h = LAB.h, L = LAB.L, g = EL[LAB.gas], nm = g.n.toLowerCase(), P = w < 560;
+  if (!c || !L) return;
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  if (LAB.mode !== 'em') { c.strokeStyle = 'rgba(255,255,255,.07)'; c.lineWidth = 9; c.beginPath(); c.moveTo(L.sx, L.sy); c.lineTo(L.i.x, L.i.y); c.stroke(); }
+  fan(c, L.o.x, L.o.y, L.x0, L.x1, L.y0, .08);
+  prism(c, L.px, L.py, L.s);
+  label(c, 'prism', L.px, L.py + 0.45 * L.s + 11, '#9aa6c8', 10.5, 'center', 600);
+  var sly = P ? L.sy - 30 : L.sy + 31;
+  if (LAB.mode === 'em') { tube(c, L.sx, L.sy, g.rgb, t); label(c, 'hot ' + nm + ' gas', L.sx - 12, sly, 'rgb(' + g.rgb + ')', 11); }
+  else { bulb(c, L.sx, L.sy, t); label(c, P ? 'hot glowing thing' : 'hot glowing object', L.sx - 12, sly, '#ffe9b8', 11); }
+  if (LAB.mode === 'abs') {
+    c.beginPath(); c.ellipse(L.cx, L.cy, L.rx, L.ry, 0, 0, 6.2832);
+    c.fillStyle = 'rgba(' + g.rgb + ',.10)'; c.fill();
+    c.setLineDash([4, 4]); c.strokeStyle = 'rgba(' + g.rgb + ',.5)'; c.lineWidth = 1; c.stroke(); c.setLineDash([]);
+    label(c, 'cool ' + nm + ' gas', L.cx, P ? L.cy + L.ry + 11 : L.cy - L.ry - 9, 'rgb(' + g.rgb + ')', 11, 'center');
+    c.drawImage(LAB.side, L.sx0, L.sy0, L.sx1 - L.sx0, L.sy1 - L.sy0); frame(c, L.sx0, L.sy0, L.sx1 - L.sx0, L.sy1 - L.sy0);
+    label(c, 'the same gas from the side: bright lines', L.sx0, L.sy1 + 10, '#9aa6c8', 10.5, 'left', 600);
+  }
+  c.drawImage(LAB.off, L.x0, L.y0, L.x1 - L.x0, L.y1 - L.y0); frame(c, L.x0, L.y0, L.x1 - L.x0, L.y1 - L.y0);
+  label(c, LAB.mode === 'cont' ? 'continuous spectrum' : LAB.mode === 'abs' ? 'absorption: dark lines' : 'emission: bright lines', L.x0, L.y1 + 11, '#f4f6fb', 11);
+  for (var i = 0; i < LAB.ph.length; i++) photon(c, LAB.ph[i], LAB.ph[i].st === 3 || LAB.ph[i].st === 2 ? 0.75 : 0.95);
+  flashes(c, LAB.fl, t);
+}
+function lawDraw() {
+  var H = EL.H, ln = H.l.map(function (l, i) { return { l: l, s: H.s[i], w: 1.1 }; });
+  [['law1', { mode: 'abs', f: [] }], ['law2', { mode: 'abs', f: ln.map(function (x) { return { l: x.l, s: Math.min(.95, .6 + .4 * x.s), w: 1.1 }; }) }], ['law3', { mode: 'em', f: ln }]].forEach(function (q) {
+    var cv = $(q[0]); if (!cv) return;
+    var f = fitBox(cv); f.c.fillStyle = '#000'; f.c.fillRect(0, 0, f.w, f.h); paintSpec(f.c, 0, 0, f.w, f.h, q[1], f.d);
+  });
+}
+function labCaption() {
+  var g = EL[LAB.gas], nm = g.n.toLowerCase(), wd = GASW[LAB.gas];
+  $('labCap').innerHTML = LAB.mode === 'cont'
+    ? '<b>A hot, dense glowing object</b> — a lamp filament, molten metal, the deep layers of a star — sends out light of every colour. The prism spreads it into an unbroken rainbow: a <b>continuous spectrum</b>.'
+    : LAB.mode === 'abs'
+      ? '<b>The same light shining through cool ' + nm + '.</b> The gas catches only its own colours — ' + wd + ' — and throws them off in random directions, so those colours go missing from the beam: <b>dark lines</b>. This is what starlight looks like.'
+      : '<b>Hot ' + nm + ' on its own</b> glows only in its own colours — ' + wd + ' — so the prism shows <b>bright lines on black</b>. They are exactly the colours of the dark lines: same atoms, same fingerprint.';
+}
+function setLab(m) {
+  LAB.mode = m;
+  [['lbC', 'cont'], ['lbA', 'abs'], ['lbE', 'em']].forEach(function (b) { var el = $(b[0]); if (el) el.setAttribute('aria-pressed', String(b[1] === m)); });
+  LAB.ph = []; LAB.fl = []; labStrips(); labCaption(); labDraw(now()); kick();
+}
+function setGas(k) { if (!EL[k]) k = 'H'; LAB.gas = k; LAB.ph = []; LAB.fl = []; labStrips(); labCaption(); labDraw(now()); kick(); }
+
+/* ── 2 · The atom ladder (hydrogen) ───────────────────────────────────── */
+var AT = { cv: $('atom'), c: null, w: 0, h: 0, d: 1, mode: 'emit', j: 0, auto: false, st: 'idle', t0: 0, idleAt: 0, seen: { emit: {}, abs: {} }, L: null, off: null };
+var LEVY = { 1: 1, 2: .7, 3: .5, 4: .36, 5: .25, 6: .16 };      // rungs drawn wider apart than to scale
+function atLayout() {
+  var w = AT.w, h = AT.h;
+  var L = AT.L = w < 560
+    ? { lx0: .07 * w, lx1: .93 * w, ex: .52 * w, top: .07 * h, bot: .63 * h, sx0: .04 * w, sx1: .96 * w, sy0: .78 * h, sy1: .87 * h }
+    : { lx0: .05 * w, lx1: .44 * w, ex: .27 * w, top: .1 * h, bot: .9 * h, sx0: .52 * w, sx1: .97 * w, sy0: .44 * h, sy1: .58 * h };
+  var sw = L.sx1 - L.sx0;
+  L.uv = [L.sx0, L.sx0 + .085 * sw]; L.vis = [L.sx0 + .1 * sw, L.sx1 - .1 * sw]; L.ir = [L.sx1 - .085 * sw, L.sx1];
+  AT.off = offStrip(L.vis[1] - L.vis[0], L.sy1 - L.sy0, AT.d, { mode: 'abs', f: [] });
+}
+function levY(n) { var L = AT.L; return L.top + (L.bot - L.top) * (n > 6 ? 0 : LEVY[n]); }
+function jumpX(J) { var L = AT.L; return J.l < L0 ? (L.uv[0] + L.uv[1]) / 2 : J.l > L1 ? (L.ir[0] + L.ir[1]) / 2 : xOf(J.l, L.vis[0], L.vis[1]); }
+function ease(k) { k = clamp(k, 0, 1); return k * k * (3 - 2 * k); }
+function wave(c, x0, y0, x1, y1, k, l, a) {      /* a wave packet travelling from (x0,y0) to (x1,y1): k = 0..1 */
+  var dx = x1 - x0, dy = y1 - y0, len = Math.sqrt(dx * dx + dy * dy) || 1, ux = dx / len, uy = dy / len, head = k * len;
+  var per = clamp(l / 40, 4, 34), amp = 4, rgb = l < 380 ? '200,170,255' : l > 780 ? '255,120,120' : wl2rgb(l).join(',');
+  c.strokeStyle = 'rgba(' + rgb + ',' + a + ')'; c.lineWidth = 2; c.beginPath();
+  for (var s = Math.max(0, head - 34), first = true; s <= head; s += 1.5) {
+    var o = amp * Math.sin(s / per * 6.2832), x = x0 + ux * s - uy * o, y = y0 + uy * s + ux * o;
+    if (first) { c.moveTo(x, y); first = false; } else c.lineTo(x, y);
+  }
+  c.stroke(); glow(c, x0 + ux * head, y0 + uy * head, 8, rgb, 0.7 * a);
+}
+function atPhase(t) {     /* where everything is, for the running jump */
+  var J = JUMPS[AT.j], tau = t - AT.t0, em = AT.mode === 'emit', n0 = em ? J.u : J.lo, n1 = em ? J.lo : J.u, ey;
+  if (AT.st === 'idle') return { ey: levY(n0), ph: null };
+  if (em) {
+    if (tau < 0.5) ey = levY(n0) + (levY(n1) - levY(n0)) * ease(tau / 0.5);
+    else if (tau < 2.2) ey = levY(n1);
+    else ey = levY(n1) + (levY(n0) - levY(n1)) * ease((tau - 2.2) / 0.5);
+    return { ey: ey, ph: tau >= 0.5 && tau < 1.6 ? (tau - 0.5) / 1.1 : null, kick: tau >= 2.2 };
+  }
+  if (tau < 1.0) ey = levY(n0);
+  else if (tau < 2.2) ey = levY(n0) + (levY(n1) - levY(n0)) * ease((tau - 1.0) / 0.35);
+  else ey = levY(n1) + (levY(n0) - levY(n1)) * ease((tau - 2.2) / 0.4);
+  return { ey: ey, ph: tau < 1.0 ? tau / 1.0 : null, out: tau >= 2.2 && tau < 3.2 ? (tau - 2.2) / 1.0 : null };
+}
+function startJump() {
+  if (AT.st !== 'idle') return;
+  if (RM) { AT.seen[AT.mode][AT.j] = true; atDraw(now()); return; }
+  AT.st = 'go'; AT.t0 = now(); kick();
+}
+function atTick(t) {
+  if (AT.st === 'go') {
+    var tau = t - AT.t0, em = AT.mode === 'emit';
+    if ((em && tau >= 1.6) || (!em && tau >= 1.0)) AT.seen[AT.mode][AT.j] = true;
+    if (tau >= (em ? 2.75 : 3.2)) { AT.st = 'idle'; AT.idleAt = t; }
+  } else if (AT.auto && t - AT.idleAt > 0.5) { pickJump((AT.j + 1) % JUMPS.length, true); startJump(); }
+  atDraw(t);
+}
+function atDraw(t) {
+  var c = AT.c, w = AT.w, h = AT.h, L = AT.L, P = w < 560;
+  if (!c || !L) return;
+  var J = JUMPS[AT.j], em = AT.mode === 'emit', S = atPhase(t);
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  /* rungs */
+  for (var n = 1; n <= 7; n++) {
+    var y = levY(n), act = n === J.u || n === J.lo;
+    c.strokeStyle = act ? 'rgba(245,197,66,.85)' : 'rgba(255,255,255,.32)'; c.lineWidth = act ? 2 : 1.2;
+    if (n === 7) c.setLineDash([3, 4]);
+    c.beginPath(); c.moveTo(L.lx0, y); c.lineTo(L.lx1, y); c.stroke(); c.setLineDash([]);
+    label(c, n === 7 ? 'free (the electron escapes)' : 'rung ' + n, L.lx0, y - 8, act ? '#f5c542' : '#9aa6c8', 10.5, 'left', 600);
+    label(c, n === 7 ? '0 eV' : levelE(n).toFixed(2) + ' eV', L.lx1, y - 8, '#6f7ba3', 10, 'right', 600);
+  }
+  label(c, 'nucleus far below · rungs not to scale', L.lx0, Math.min(h - 8, L.bot + 16), '#6f7ba3', 10, 'left', 600);
+  /* the selected jump as an arrow */
+  var ax = L.ex + 30, ya = levY(em ? J.u : J.lo), yb = levY(em ? J.lo : J.u);
+  c.strokeStyle = 'rgba(245,197,66,.6)'; c.lineWidth = 1.4; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(ax, ya); c.lineTo(ax, yb); c.stroke(); c.setLineDash([]);
+  if (yb > ya) triDown(c, ax, yb, 4, 'rgba(245,197,66,.8)');
+  else { c.save(); c.translate(ax, yb); c.scale(1, -1); triDown(c, 0, 0, 4, 'rgba(245,197,66,.8)'); c.restore(); }
+  /* the electron */
+  var wig = RM ? 0 : Math.sin(t * 6) * 2;
+  glow(c, L.ex + wig, S.ey, 12, '91,214,224', .8); dot(c, L.ex + wig, S.ey, 4.5, '#bff6ff');
+  if (S.kick) label(c, 'a collision kicks it back up', L.ex - 40, S.ey - 14, '#9aa6c8', 10, 'right', 600);
+  /* the strip: UV box, rainbow or black, IR box */
+  var sy0 = L.sy0, sy1 = L.sy1;
+  c.fillStyle = 'rgba(183,156,255,.16)'; c.fillRect(L.uv[0], sy0, L.uv[1] - L.uv[0], sy1 - sy0);
+  c.fillStyle = 'rgba(255,107,107,.14)'; c.fillRect(L.ir[0], sy0, L.ir[1] - L.ir[0], sy1 - sy0);
+  if (em) { c.fillStyle = '#000'; c.fillRect(L.vis[0], sy0, L.vis[1] - L.vis[0], sy1 - sy0); }
+  else c.drawImage(AT.off, L.vis[0], sy0, L.vis[1] - L.vis[0], sy1 - sy0);
+  frame(c, L.vis[0], sy0, L.vis[1] - L.vis[0], sy1 - sy0); frame(c, L.uv[0], sy0, L.uv[1] - L.uv[0], sy1 - sy0); frame(c, L.ir[0], sy0, L.ir[1] - L.ir[0], sy1 - sy0);
+  label(c, 'UV', (L.uv[0] + L.uv[1]) / 2, sy1 + 10, '#b79cff', 10, 'center');
+  label(c, 'IR', (L.ir[0] + L.ir[1]) / 2, sy1 + 10, '#ff9b9b', 10, 'center');
+  label(c, em ? 'what a glowing cloud of hydrogen gives' : 'a rainbow after passing through hydrogen', (L.vis[0] + L.vis[1]) / 2, sy1 + 10, '#9aa6c8', 10, 'center', 600);
+  var seen = AT.seen[AT.mode];
+  JUMPS.forEach(function (Jk, k) {
+    if (!seen[k]) return;
+    var x = jumpX(Jk), inv = Jk.l < L0 || Jk.l > L1;
+    if (em || inv) { c.strokeStyle = inv ? 'rgba(255,255,255,.85)' : wlCss(Jk.l); c.lineWidth = 3; }
+    else { c.strokeStyle = 'rgba(0,0,0,.9)'; c.lineWidth = 3; }
+    c.beginPath(); c.moveTo(x, sy0); c.lineTo(x, sy1); c.stroke();
+    label(c, Jk.n, clamp(x, 30, w - 30), sy0 - 8 - (k % 2) * 11, inv ? '#cfd6ee' : wlCss(clamp(Jk.l, 420, 700)), 10, 'center');
+  });
+  /* photons */
+  if (S.ph != null) {
+    if (em) wave(c, L.ex, levY(J.lo), jumpX(J), sy0, S.ph, J.l, 1);
+    else wave(c, 0, levY(J.lo), L.ex - 4, levY(J.lo), S.ph, J.l, 1);
+  }
+  if (S.out != null) wave(c, L.ex, levY(J.lo), L.ex - 0.35 * w, levY(J.lo) - 0.5 * h, S.out, J.l, 0.45);
+  if (AT.st === 'idle' && !AT.auto && !P) label(c, 'pick a jump above, or tap here ▶', L.ex, h - 10, '#5bd6e0', 11, 'center');
+}
+function atCaption() {
+  var J = JUMPS[AT.j], em = AT.mode === 'emit', ev = J.ev.toFixed(2), lam = J.l >= 1000 ? fmtInt(J.l) + ' nm (' + (J.l / 1000).toFixed(3) + ' µm)' : J.l.toFixed(1) + ' nm';
+  var col = J.l < L0 ? 'ultraviolet light' : J.l > L1 ? 'infrared light' : colName(J.l) + ' light', a = em ? J.u : J.lo, b = em ? J.lo : J.u;
+  var extra = J.n === 'Hα' ? ' This is hydrogen-alpha (Hα): the red glow of nebulae, and one of the two colours the Seestar’s filter lets through.'
+    : J.n === 'Lyman-α' ? ' Invisible to our eyes — and blocked by Earth’s air, so it is studied from space.'
+    : J.n === 'Paschen-α' ? ' Invisible to us, but the James Webb Space Telescope sees it.'
+    : ' One of hydrogen’s four visible colours (' + J.nm + ', ' + J.n + ').';
+  $('atCap').innerHTML = em
+    ? '<b>Rung ' + a + ' → rung ' + b + '.</b> The electron drops ' + ev + ' eV of energy, so out comes a photon carrying exactly ' + ev + ' eV: ' + col + ' at <b>' + lam + '</b>.' + extra
+    : '<b>Rung ' + a + ' → rung ' + b + '.</b> Only a photon with exactly ' + ev + ' eV (' + col + ', ' + lam + ') can lift the electron up this step, so it is swallowed — while other colours pass straight through. That one colour goes missing: a dark line.' + (J.lo === 2 ? ' (To catch visible light the electron must already sit on rung 2, which needs a star of about 10,000 °C — why hydrogen lines are strongest in white stars like Sirius and Vega.)' : '');
+}
+function atButtons() {
+  var em = AT.mode === 'emit';
+  $('atJumps').innerHTML = JUMPS.map(function (J, k) {
+    var sw = J.l < L0 ? '#b79cff' : J.l > L1 ? '#ff9b9b' : wlCss(J.l);
+    return '<button type="button" class="btn" data-j="' + k + '" id="aj-' + k + '" aria-pressed="' + (k === AT.j) + '"><span style="color:' + sw + '">●</span> ' + J.n + ' · ' + (em ? J.u + '→' + J.lo : J.lo + '→' + J.u) + '</button>';
+  }).join('');
+}
+function pickJump(k, auto) {
+  AT.st = 'idle'; AT.j = k;
+  JUMPS.forEach(function (J, i) { var b = $('aj-' + i); if (b) b.setAttribute('aria-pressed', String(i === k)); });
+  atCaption(); atDraw(now());
+  if (!auto) startJump();
+}
+function setAtMode(m) {
+  if (AT.st !== 'idle') AT.st = 'idle';
+  AT.mode = m; $('atE').setAttribute('aria-pressed', String(m === 'emit')); $('atA').setAttribute('aria-pressed', String(m !== 'emit'));
+  atButtons(); atCaption(); atDraw(now()); kick();
+}
+
+/* ── 3 · Barcodes and the Sun ─────────────────────────────────────────── */
+var FRA = [['K', 393.37], ['H', 396.85], ['h', 410.17], ['g', 422.67], ['G', 430.79], ['F', 486.13], ['b', 517.27], ['E', 527.04], ['D', 589.29], ['C', 656.28], ['B', 686.72], ['A', 759.37]];
+var SUNMSG = {
+  H: 'All five hydrogen lines in this range sit on dark lines in the Sun, including Fraunhofer’s C (656.3 nm) and F (486.1 nm). Hydrogen makes up about three-quarters of the Sun’s mass.',
+  He: 'None of helium’s lines are here — yet a quarter of the Sun is helium! Its surface, at about 5,500 °C, is too cool to make helium’s lines. Helium was discovered in 1868 in the hotter gas glowing at the Sun’s edge during an eclipse.',
+  Na: 'Both sodium lines match the Sun’s pair of D lines at 589.0 and 589.6 nm. In 1859 sodium became the first element identified in the Sun.',
+  Mg: 'Magnesium matches the green “b” group (516.7–518.4 nm) and a violet line at 383.8 nm.',
+  Ca: 'Calcium matches the darkest lines of all, Fraunhofer’s H and K (396.8 and 393.4 nm), made by calcium atoms that have lost an electron — plus the line at 422.7 nm.',
+  Fe: 'Every one of these 19 strong iron lines matches — and the real Sun shows thousands more. Fraunhofer’s E line (527.0 nm) is iron.',
+  Ne: 'No neon lines. There is neon in the Sun, but its lines need much hotter gas, so it is measured in the Sun’s million-degree outer atmosphere and in the solar wind instead.',
+  Hg: 'No mercury lines: the metal mercury is far too rare in the Sun to leave a mark.'
+};
+var BC = { sel: null };
+function sunDraw() {
+  var cv = $('sunCv'); if (!cv) return;
+  var f = fitH(cv, 128), c = f.c, w = f.w, P = w < 560, x0 = 4, x1 = w - 4, sy0 = 40, sy1 = 92;
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, f.h);
+  paintSpec(c, x0, sy0, x1 - x0, sy1 - sy0, { mode: 'abs', T: TSUN, f: SUNF }, f.d);
+  var rows = [-1e9, -1e9, -1e9];
+  FRA.forEach(function (F) {
+    var x = xOf(F[1], x0, x1), r = 0;
+    while (r < 2 && x - rows[r] < 12) r++;
+    rows[r] = x;
+    var y = sy0 - 9 - r * 11;
+    c.strokeStyle = 'rgba(245,197,66,.35)'; c.lineWidth = 1; c.beginPath(); c.moveTo(x, y + 5); c.lineTo(x, sy0); c.stroke();
+    label(c, F[0], x, y, '#f5c542', 10.5, 'center');
+  });
+  if (BC.sel) {
+    var e = EL[BC.sel], m = matchEl(BC.sel, SUNF);
+    e.l.forEach(function (l, i) {
+      if (l < L0 || l > L1) return;
+      var x = xOf(l, x0, x1);
+      if (m.res[i]) { c.strokeStyle = e.col; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x, sy1 + 1); c.lineTo(x, sy1 + 7); c.stroke(); dot(c, x, sy1 + 9, 2.4, e.col); }
+      else cross(c, x, sy1 + 7, 3, '#ff6b6b');
+    });
+  }
+  axis(c, x0, x1, sy1 + 14, L0, L1, P);
+}
+function bcRows() {
+  $('bcs').innerHTML = BAR.map(function (k) {
+    var e = EL[k];
+    return '<button type="button" class="bc" data-el="' + k + '" id="bcb-' + k + '" aria-pressed="false"><span class="el">' + e.n + '<small>' + e.sub + '</small></span><canvas id="bc-' + k + '" aria-hidden="true"></canvas></button>';
+  }).join('');
+}
+function bcDraw() {
+  BAR.forEach(function (k) {
+    var cv = $('bc-' + k); if (!cv) return;
+    var f = fitBox(cv), e = EL[k];
+    f.c.fillStyle = '#000'; f.c.fillRect(0, 0, f.w, f.h);
+    paintSpec(f.c, 0, 0, f.w, f.h, { mode: 'em', f: e.l.map(function (l, i) { return { l: l, s: Math.max(.35, e.s[i]), w: .45 }; }) }, f.d);
+  });
+}
+function showEl(k) {
+  BC.sel = BC.sel === k ? null : k;
+  BAR.forEach(function (x) { var b = $('bcb-' + x); if (b) b.setAttribute('aria-pressed', String(x === BC.sel)); });
+  if (!BC.sel) $('barCap').innerHTML = 'Tap an element below to compare its barcode with the Sun.';
+  else {
+    var m = matchEl(k, SUNF), e = EL[k];
+    $('barCap').innerHTML = '<b>' + e.n + ': ' + (m.all ? 'in the Sun ✓' : m.hit ? 'a few chance overlaps — not a match' : 'no match') + '</b> (' + m.hit + ' of ' + m.n + ' lines line up, marked under the spectrum). ' + SUNMSG[k];
+  }
+  sunDraw();
+}
+
+/* ── 4 · Spectrum detective ───────────────────────────────────────────── */
+var DET = { m: 0, sel: [], solved: {} };
+var NOTE = {
+  'sun:He': 'yet a quarter of the Sun is helium: its surface is too cool to make helium’s lines',
+  'sun:TiO': 'the Sun’s surface is too hot for titanium oxide to survive, though it does show up in cooler sunspots',
+  'vega:He': 'Vega is not quite hot enough for helium lines',
+  'betel:H': 'Betelgeuse is mostly hydrogen, but at 3,600 K hydrogen hardly absorbs visible light',
+  'spica:Ca': 'at 25,000 K calcium has lost too many electrons to make these lines',
+  'orion:Ne': 'there is neon in the Orion Nebula, but its atoms have lost electrons, so they glow in different colours — mostly infrared'
+};
+function mysButtons() {
+  $('mys').innerHTML = MYS.map(function (m, i) { return '<button type="button" class="chip" data-m="' + i + '" id="my-' + i + '" aria-pressed="' + (i === DET.m) + '">' + m.ic + ' ' + m.n + '</button>'; }).join('');
+  $('detEls').innerHTML = CHIPS.map(function (k) { var e = EL[k]; return '<button type="button" class="chip" data-e="' + k + '" id="de-' + k + '" aria-pressed="false"><i style="background:' + e.col + '"></i>' + (k === 'TiO' ? 'TiO molecule' : k + ' · ' + e.n) + '</button>'; }).join('');
+}
+function detDraw() {
+  var cv = $('det'); if (!cv) return;
+  var m = MYS[DET.m], rows = Math.max(1, DET.sel.length), top = 10 + rows * 13, h = top + 52 + 24;
+  var f = fitH(cv, h), c = f.c, w = f.w, P = w < 560, x0 = 4, x1 = w - 40, sy0 = top, sy1 = top + 50;
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  paintSpec(c, x0, sy0, x1 - x0, sy1 - sy0, { mode: m.mode, T: m.T, f: m.f }, f.d);
+  frame(c, x0, sy0, x1 - x0, sy1 - sy0);
+  if (!DET.sel.length) label(c, 'switch on elements below', x0 + 4, 9, '#6f7ba3', 10.5, 'left', 600);
+  DET.sel.forEach(function (k, r) {
+    var e = EL[k], res = matchEl(k, m.f), y = 9 + r * 13;
+    label(c, k, x1 + 6, y, e.col, 10.5, 'left');
+    e.l.forEach(function (l, i) {
+      if (l < L0 || l > L1) return;
+      var x = xOf(l, x0, x1);
+      if (res.res[i]) { c.strokeStyle = 'rgba(' + e.rgb + ',.5)'; c.lineWidth = 1; c.beginPath(); c.moveTo(x, y + 3); c.lineTo(x, sy0); c.stroke(); dot(c, x, y, 3, e.col); }
+      else cross(c, x, y, 3, '#ff6b6b');
+    });
+  });
+  if (m.earth) { label(c, 'air', xOf(686.72, x0, x1), sy1 - 7, '#cfd6ee', 9, 'center', 600); label(c, 'air', xOf(759.37, x0, x1), sy1 - 7, '#cfd6ee', 9, 'center', 600); }
+  axis(c, x0, x1, sy1 + 3, L0, L1, P);
+}
+function nameList(ks) { var n = ks.map(function (k) { return EL[k].n.toLowerCase(); }); return n.length < 2 ? n.join('') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1]; }
+function detLive() {
+  var m = MYS[DET.m], ev = detEval(DET.m, DET.sel), el = $('detV');
+  el.className = 'verdict';
+  if (!DET.sel.length) {
+    el.innerHTML = 'Mystery: <b>' + m.ic + ' ' + m.n + '</b> — ' + (m.mode === 'em' ? 'bright lines on black, so this is glowing gas.' : 'a rainbow with dark lines, so this is light from a star.') + ' Switch on an element to test it.';
+    return ev;
+  }
+  el.innerHTML = ev.per.map(function (r) {
+    var e = EL[r.k], nt = NOTE[m.id + ':' + r.k];
+    return (r.all ? '✅ <b>' + e.n + '</b>: all ' + r.n + ' lines match'
+      : r.hit ? '⚠️ <b>' + e.n + '</b>: only ' + r.hit + ' of ' + r.n + ' lines match — a coincidence, so no'
+      : '❌ <b>' + e.n + '</b>: none of its ' + r.n + ' lines match') + (nt ? ' (' + nt + ')' : '') + '.';
+  }).join('<br>');
+  return ev;
+}
+function detRender() {
+  MYS.forEach(function (x, i) { var b = $('my-' + i); if (b) b.setAttribute('aria-pressed', String(i === DET.m)); });
+  CHIPS.forEach(function (k) { var b = $('de-' + k); if (b) b.setAttribute('aria-pressed', String(DET.sel.indexOf(k) >= 0)); });
+  detDraw(); detLive();
+  $('detScore').textContent = 'Solved: ' + Object.keys(DET.solved).length + ' of ' + MYS.length;
+}
+function pickMys(i) { DET.m = i; DET.sel = []; detRender(); }
+function toggleEl(k) { var i = DET.sel.indexOf(k); if (i >= 0) DET.sel.splice(i, 1); else DET.sel.push(k); detRender(); }
+function detCheck() {
+  var m = MYS[DET.m], ev = detEval(DET.m, DET.sel), el = $('detV'), u = ev.unexplained;
+  if (ev.solved) {
+    DET.solved[m.id] = true; detRender();
+    el.className = 'verdict good';
+    el.innerHTML = '🎉 <b>Solved!</b> ' + m.win + (u ? ' <span class="mute">(' + u + ' more line' + (u > 1 ? 's are' : ' is') + ' still unexplained — can you find ' + (u > 1 ? 'them' : 'it') + '?)</span>' : '');
+  } else {
+    el.className = 'verdict bad';
+    el.innerHTML = !DET.sel.length ? 'Switch on some elements first.'
+      : ev.wrong.length ? 'Not quite: <b>' + nameList(ev.wrong) + '</b> ' + (ev.wrong.length > 1 ? 'don’t' : 'doesn’t') + ' fit — an element is only there if <i>all</i> its lines are.'
+      : 'Getting there — ' + u + ' line' + (u > 1 ? 's are' : ' is') + ' still unexplained. Which element could make ' + (u > 1 ? 'them' : 'it') + '?';
+  }
+  return ev;
+}
+function detShow() {
+  var m = MYS[DET.m]; DET.sel = m.req.concat(m.opt); detRender();
+  var el = $('detV'); el.className = 'verdict good'; el.innerHTML = '👀 <b>The answer:</b> ' + m.win;
+}
+
+/* ── 5 · Colour = temperature ─────────────────────────────────────────── */
+var BB = { T: TSUN };
+var BBP = [['💡 Light bulb', 2700], ['🔴 Betelgeuse', 3600], ['🟠 Arcturus', 4300], ['☀️ Sun', TSUN], ['⭐ Procyon', 6530], ['💎 Sirius', 9940], ['🔷 Rigel', 12100], ['🔵 Spica', 25000], ['🌀 Naos', 40000]];
+function t2v(T) { return Math.round(1000 * Math.log(T / 2500) / Math.log(16)); }
+function v2t(v) { return 2500 * Math.pow(16, v / 1000); }
+function bbButtons() {
+  $('bbPre').innerHTML = BBP.map(function (p, i) { return '<button type="button" class="pre" data-t="' + p[1] + '" id="bp-' + i + '" aria-pressed="false">' + p[0] + '</button>'; }).join('');
+  $('cls').innerHTML = CLS.map(function (k) { return '<button type="button" data-t="' + k.rep + '" style="background:' + rgbs(bbColor(k.rep)) + '"><b>' + k.c + '</b>' + k.rng + '<br>' + k.ex + '</button>'; }).join('');
+}
+function bbExample(T) { var ex = ''; BBP.forEach(function (p) { if (Math.abs(p[1] - T) / T < 0.02) ex = p[0].replace(/^\S+\s/, ''); }); return ex; }
+function bbWords(T) {
+  var K = classOf(T), pk = wien(T), ex = bbExample(T);
+  var where = pk < 380 ? 'in the ultraviolet, beyond violet: most of its light is invisible to us, and what we can see looks ' + K.col
+    : pk > 770 ? 'in the infrared, beyond red: most of its light is invisible heat, and what we can see looks ' + K.col
+    : 'in the ' + colName(pk) + ', but there is plenty of every colour, so it looks ' + (T >= 5000 && T < 7500 ? 'white' : K.col);
+  return (ex ? '<b>' + ex + '.</b> ' : '') + 'At ' + fmtInt(T) + ' K the light is brightest ' + where + '. Class <b>' + K.c + '</b> stars show ' + K.sp + '.' +
+    (ex === 'Sun' ? ' From space the Sun looks white; our air scatters away some of its blue, which is why it can look yellow — and orange-red at sunset.' : '') +
+    (ex === 'Light bulb' ? ' An old filament bulb is a little “star” at 2,700 K, which is why its light looks so warm.' : '');
+}
+function setT(T, fromSlider) {
+  BB.T = clamp(T, 2500, 40000);
+  if (!fromSlider) $('bbT').value = String(t2v(BB.T));
+  bbRender();
+}
+function bbRender() {
+  var T = BB.T, col = bbColor(T), K = classOf(T), pk = wien(T), s = surf(T), disc = $('bbDisc');
+  disc.style.background = 'radial-gradient(circle at 40% 38%, #ffffff 0%, ' + rgbs(col) + ' 48%, ' + rgbs(col.map(function (x) { return Math.round(x * 0.55); })) + ' 100%)';
+  disc.style.boxShadow = '0 0 44px 8px ' + rgbs(col, 0.45);
+  $('bbK').textContent = fmtInt(T) + ' K · about ' + fmtInt(Math.round((T - 273.15) / 100) * 100) + ' °C';
+  $('bbPk').textContent = fmtInt(pk) + ' nm — ' + (pk < 380 ? 'ultraviolet (invisible)' : pk > 770 ? 'infrared (invisible)' : colName(pk));
+  $('bbCl').textContent = K.c + ' — ' + K.col;
+  $('bbLum').textContent = (s < 0.1 ? s.toFixed(2) : s < 10 ? s.toFixed(1) : fmtInt(s)) + '× as brightly as the Sun’s';
+  BBP.forEach(function (p, i) { var b = $('bp-' + i); if (b) b.setAttribute('aria-pressed', String(Math.abs(p[1] - T) / T < 0.02)); });
+  $('bbCap').innerHTML = bbWords(T);
+  bbDraw();
+}
+function bbDraw() {
+  var cv = $('bbCv'); if (!cv) return;
+  var wq = cssW(cv), f = fit(cv, wq < 420 ? 0.78 : 0.62), c = f.c, w = f.w, h = f.h, T = BB.T;
+  var x0 = 8, x1 = w - 8, y0 = 26, y1 = h - 24, lo = 50, hi = 1600, span = y1 - y0;
+  function X(l) { return x0 + (l - lo) / (hi - lo) * (x1 - x0); }
+  function Y(v) { return y1 - span * 0.9 * v; }
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  c.fillStyle = 'rgba(183,156,255,.07)'; c.fillRect(x0, y0, X(380) - x0, span);
+  c.fillStyle = 'rgba(255,107,107,.06)'; c.fillRect(X(770), y0, x1 - X(770), span);
+  label(c, 'ultraviolet', (x0 + X(380)) / 2, 11, '#b79cff', 10, 'center', 600);
+  label(c, 'visible', (X(380) + X(770)) / 2, 11, '#f4f6fb', 10, 'center', 600);
+  label(c, 'infrared (heat)', (X(770) + x1) / 2, 11, '#ff9b9b', 10, 'center', 600);
+  var n = 200, i, l;
+  c.beginPath(); c.moveTo(X(lo), y1);
+  for (i = 0; i <= n; i++) { l = lo + (hi - lo) * i / n; c.lineTo(X(l), Y(planckRel(l, T))); }
+  c.lineTo(X(hi), y1); c.closePath(); c.fillStyle = 'rgba(255,255,255,.07)'; c.fill();
+  var cols = Math.max(1, Math.round(X(770) - X(380)));
+  for (i = 0; i < cols; i++) { l = 380 + 390 * (i + 0.5) / cols; var yv = Y(planckRel(l, T)); c.fillStyle = wlCss(l, 0.85); c.fillRect(X(380) + i, yv, 1.3, y1 - yv); }
+  if (Math.abs(T - TSUN) > 60) {
+    c.setLineDash([4, 4]); c.strokeStyle = 'rgba(255,255,255,.4)'; c.lineWidth = 1; c.beginPath();
+    for (i = 0; i <= n; i++) { l = lo + (hi - lo) * i / n; if (i) c.lineTo(X(l), Y(planckRel(l, TSUN))); else c.moveTo(X(l), Y(planckRel(l, TSUN))); }
+    c.stroke(); c.setLineDash([]);
+    label(c, 'the Sun’s shape', X(wien(TSUN)) + 6, Y(1) + 14, '#cfd6ee', 10, 'left', 600);
+  }
+  c.strokeStyle = rgbs(bbColor(T)); c.lineWidth = 2.4; c.beginPath();
+  for (i = 0; i <= n; i++) { l = lo + (hi - lo) * i / n; if (i) c.lineTo(X(l), Y(planckRel(l, T))); else c.moveTo(X(l), Y(planckRel(l, T))); }
+  c.stroke();
+  var pk = wien(T), px = X(clamp(pk, lo, hi)), py = Y(1);
+  dot(c, px, py, 3.6, '#ffffff');
+  label(c, 'brightest at ' + fmtInt(pk) + ' nm', clamp(px, x0 + 62, x1 - 62), py - 10, '#ffffff', 10.5, 'center');
+  c.strokeStyle = 'rgba(255,255,255,.3)'; c.lineWidth = 1; c.beginPath(); c.moveTo(x0, y1 + 0.5); c.lineTo(x1, y1 + 0.5); c.stroke();
+  [250, 500, 750, 1000, 1250, 1500].forEach(function (q, k) { var x = X(q); c.beginPath(); c.moveTo(x, y1); c.lineTo(x, y1 + 4); c.stroke(); label(c, q + (k === 0 ? ' nm' : ''), x, y1 + 13, '#9aa6c8', 10, 'center', 600); });
+}
+
+/* ── 6 · Doppler ───────────────────────────────────────────────────────── */
+var DOP = { cv: $('dopCv'), c: null, w: 0, h: 0, d: 1, v: 0, pre: 'still', rings: [], lastE: -9, off: {}, L: null, bgx: 0 };
+var DPRE = [
+  { id: 'still', n: '🛑 Standing still', v: 0 },
+  { id: 'and', n: '🌀 Andromeda Galaxy', v: -300 },
+  { id: 'vir', n: '🌌 Virgo Cluster', v: 1100 },
+  { id: 'bin', n: '✨ Spica’s two stars', bin: true },
+  { id: 'p51', n: '🪐 51 Pegasi’s planet', ms: 56 },
+  { id: 'jup', n: '☀️ Jupiter tugging the Sun', ms: 12.5 },
+  { id: 'q3c', n: '💫 Quasar 3C 273', z: 0.158 }
+];
+var DCAP = {
+  still: 'Drag the slider: left for a star coming towards us, right for one moving away. The waves in the picture are hugely exaggerated — real shifts are tiny, so astronomers zoom right in on single lines.',
+  and: 'The Andromeda Galaxy is coming towards us at about 300 km/s (part of that is our own Sun’s motion around the Milky Way). Vesto Slipher measured it in 1912 — the first speed of any galaxy. Most galaxies are moving away; Andromeda is close enough for gravity to pull it our way.',
+  vir: 'Galaxies in the Virgo Cluster, about 54 million light-years away, are moving away at about 1,100 km/s on average — not flying through space so much as carried along as space itself stretches. The farther a galaxy, the faster it recedes (Hubble, 1929).',
+  bin: 'Spica is really two stars orbiting each other every 4 days. Their lines split and swing back and forth — one set by about ±120 km/s, the other by about ±190 km/s. Many “single” stars were found to be pairs only this way.',
+  p51: '51 Pegasi wobbles towards and away from us at about 56 m/s (200 km/h) every 4.2 days, tugged by a giant planet. Its lines shift by about a ten-thousandth of a nanometre — far too little to see here. Michel Mayor and Didier Queloz measured it in 1995 by comparing thousands of lines at once.',
+  jup: 'Jupiter swings the Sun around at about 12.5 m/s (45 km/h) every 11.9 years. Astronomers on another star would need a spectrograph like ESPRESSO to spot our Jupiter — and something better still for Earth, which moves the Sun by only 9 cm/s.',
+  q3c: '3C 273’s light is stretched by 15.8% — its hydrogen lines land in completely the wrong place, which is why nobody recognised them until Maarten Schmidt worked it out in 1963. It is a quasar: a feeding giant black hole, outshining our whole galaxy a hundred times over.'
+};
+function curPre() { for (var i = 0; i < DPRE.length; i++) if (DPRE[i].id === DOP.pre) return DPRE[i]; return null; }
+function dopButtons() { $('dopPre').innerHTML = DPRE.map(function (p) { return '<button type="button" class="pre" data-p="' + p.id + '" id="dp-' + p.id + '" aria-pressed="false">' + p.n + '</button>'; }).join(''); }
+function dopLayout() {
+  var w = DOP.w, h = DOP.h, P = w < 560;
+  DOP.L = { cy: P ? .25 * h : .3 * h, sx: P ? .40 * w : .44 * w, ox: .92 * w, z0: P ? .64 * h : .66 * h, z1: P ? .78 * h : .80 * h, x0: 6, x1: w - 6 };
+  DOP.off = {}; DOP.rings = []; DOP.lastE = -9;
+  if (RM) for (var k = 0; k < 9; k++) DOP.rings.push({ t: -k * 0.42 });
+}
+function zoomOff(l0, l1) {
+  var L = DOP.L, k = l0 + '-' + l1;
+  if (!DOP.off[k]) DOP.off[k] = offStrip(L.x1 - L.x0, L.z1 - L.z0, DOP.d, { mode: 'abs', f: [], l0: l0, l1: l1, dim: l1 - l0 > 100 ? 0.4 : 1 });
+  return DOP.off[k];
+}
+function setV(v) {
+  DOP.v = clamp(v, -2000, 2000); DOP.pre = null;
+  for (var i = 0; i < DPRE.length; i++) if (DPRE[i].v === DOP.v && DPRE[i].v != null) DOP.pre = DPRE[i].id;
+  dopRead(); if (RM) dopDraw(now());
+}
+function setPreset(id) {
+  DOP.pre = id; var p = curPre(); DOP.v = p && p.v != null ? p.v : 0;
+  $('dopV').value = String(DOP.v);
+  dopRead(); dopDraw(now()); kick();
+}
+function ratioWords(f) { var n = 1 / f; return f >= 0.01 ? (100 * f).toFixed(1) + '% longer' : '1 part in ' + (n >= 1e6 ? (n / 1e6).toFixed(1) + ' million' : n >= 1000 ? fmtInt(Math.round(n / 100) * 100) : fmtInt(n)); }
+function dopRead() {
+  var p = curPre(), v = DOP.v, s = dopShift(656.28, v), V = $('dvV'), S = $('dvS'), Q = $('dvR');
+  DPRE.forEach(function (x) { var b = $('dp-' + x.id); if (b) b.setAttribute('aria-pressed', String(!!p && x.id === p.id)); });
+  if (p && p.bin) { V.textContent = 'up to ±190 km/s · 4-day orbit'; S.textContent = '± 0.42 nm, two lines'; Q.textContent = '1 part in 1,600'; }
+  else if (p && p.ms) { V.textContent = '±' + p.ms + ' m/s · back and forth'; S.textContent = '± ' + (656.28 * p.ms / 1000 / CK).toPrecision(2) + ' nm'; Q.textContent = ratioWords(p.ms / 1000 / CK); }
+  else if (p && p.z) { V.textContent = 'z = ' + p.z + ' · carried away by expanding space'; S.textContent = '+' + (656.28 * p.z).toFixed(1) + ' nm — out of the visible'; Q.textContent = ratioWords(p.z); }
+  else {
+    V.textContent = v === 0 ? '0 km/s · not moving towards or away' : (v > 0 ? '+' : '−') + fmtInt(Math.abs(v)) + ' km/s · ' + (v > 0 ? 'moving away' : 'coming towards us');
+    S.textContent = v === 0 ? 'none' : (s > 0 ? '+' : '−') + Math.abs(s).toFixed(2) + ' nm (' + (s > 0 ? 'redder' : 'bluer') + ')';
+    Q.textContent = v === 0 ? '—' : ratioWords(Math.abs(v) / CK);
+  }
+  $('dopCap').innerHTML = p ? DCAP[p.id] : 'At ' + fmtInt(Math.abs(v)) + ' km/s ' + (v > 0 ? 'away from' : 'towards') + ' us, every line in the spectrum moves by the same fraction — ' + ratioWords(Math.abs(v) / CK) + '. Stars near the Sun typically move at tens of km/s; distant galaxies at thousands.';
+}
+function dopBeta() { var p = curPre(); if (p && p.z) return 0.45; if (p && (p.bin || p.ms)) return 0; return clamp(DOP.v / 2000, -1, 1) * 0.5; }
+function dopTick(t, dt) {
+  var p = curPre(), beta = dopBeta(), cvis = 0.2 * DOP.w;
+  if (!(p && (p.bin || p.ms)) && t - DOP.lastE > 0.42) { DOP.lastE = t; DOP.rings.push({ t: t }); }
+  for (var i = DOP.rings.length - 1; i >= 0; i--) if ((t - DOP.rings[i].t) * cvis > DOP.w * 1.1) DOP.rings.splice(i, 1);
+  DOP.bgx += beta * cvis * 0.35 * dt;
+  dopDraw(t);
+}
+function dopDraw(t) {
+  var c = DOP.c, w = DOP.w, h = DOP.h, L = DOP.L, P = w < 560;
+  if (!c || !L) return;
+  var p = curPre(), beta = dopBeta(), cvis = 0.2 * w, tt = RM ? 0 : t;
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  starfield(c, w, L.z0 - 18, 60, 0.5, DOP.bgx);
+  /* the observer */
+  c.font = '22px ' + FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('🔭', L.ox, L.cy); c.textAlign = 'left';
+  label(c, 'us', L.ox, L.cy + 22, '#9aa6c8', 10.5, 'center', 600);
+  if (p && p.bin) {
+    var ph = 6.2832 * tt / 5, sn = Math.sin(ph), cs = Math.cos(ph), rA = .045 * w, rB = .075 * w;
+    var A1 = { x: L.sx + rA * cs, y: L.cy + 0.35 * rA * sn, r: 7, col: '200,215,255' }, B1 = { x: L.sx - rB * cs, y: L.cy - 0.35 * rB * sn, r: 5, col: '215,225,255' };
+    c.strokeStyle = 'rgba(255,255,255,.15)'; c.lineWidth = 1;
+    c.beginPath(); c.ellipse(L.sx, L.cy, rA, .35 * rA, 0, 0, 6.2832); c.stroke(); c.beginPath(); c.ellipse(L.sx, L.cy, rB, .35 * rB, 0, 0, 6.2832); c.stroke();
+    [A1, B1].sort(function (a, b) { return a.y - b.y; }).forEach(function (s) { glow(c, s.x, s.y, s.r * 3, s.col, .7); dot(c, s.x, s.y, s.r, 'rgb(' + s.col + ')'); });
+    var v1 = 120 * sn, v2 = -190 * sn;
+    label(c, 'Spica A ' + (v1 >= 0 ? '+' : '−') + Math.abs(Math.round(v1)) + ' km/s', L.sx, L.cy + .35 * rB + 22, '#cfd6ee', 10.5, 'center');
+    label(c, 'Spica B ' + (v2 >= 0 ? '+' : '−') + Math.abs(Math.round(v2)) + ' km/s', L.sx, L.cy + .35 * rB + 36, '#cfd6ee', 10.5, 'center');
+    var z0 = 654.3, z1 = 658.3;
+    c.drawImage(zoomOff(z0, z1), L.x0, L.z0, L.x1 - L.x0, L.z1 - L.z0);
+    darkLine(c, xOf(656.28 + dopShift(656.28, v1), L.x0, L.x1, z0, z1), L, 0.14 / (z1 - z0) * (L.x1 - L.x0), 0.7);
+    darkLine(c, xOf(656.28 + dopShift(656.28, v2), L.x0, L.x1, z0, z1), L, 0.12 / (z1 - z0) * (L.x1 - L.x0), 0.5);
+    zoomFrame(c, L, z0, z1, P ? 'Hα close-up: two stars, two lines' : 'close-up of hydrogen’s red line (Hα): two stars, two lines');
+    return;
+  }
+  if (p && p.ms) {
+    var ph2 = 6.2832 * tt / (p.id === 'p51' ? 4 : 8), R1 = (p.id === 'p51' ? .16 : .24) * w;
+    c.strokeStyle = 'rgba(255,255,255,.15)'; c.lineWidth = 1; c.beginPath(); c.ellipse(L.sx, L.cy, R1, .3 * R1, 0, 0, 6.2832); c.stroke();
+    var sx = L.sx - 3 * Math.cos(ph2);
+    glow(c, sx, L.cy, 30, '255,240,210', .8); dot(c, sx, L.cy, 7, '#fff4dc');
+    dot(c, L.sx + R1 * Math.cos(ph2), L.cy + .3 * R1 * Math.sin(ph2), p.id === 'p51' ? 4 : 5, p.id === 'p51' ? '#ffb37a' : '#e8c79a');
+    label(c, p.id === 'p51' ? 'the star wobbles as its planet orbits' : 'the Sun wobbles as Jupiter orbits', L.sx, L.cy + .3 * R1 + 18, '#cfd6ee', 10.5, 'center', 600);
+    c.drawImage(zoomOff(650, 663), L.x0, L.z0, L.x1 - L.x0, L.z1 - L.z0);
+    darkLine(c, xOf(656.28, L.x0, L.x1, 650, 663), L, 0.18 / 13 * (L.x1 - L.x0), 0.85);
+    zoomFrame(c, L, 650, 663, P ? 'Hα close-up: the shift is far too small to see' : 'close-up of hydrogen’s red line (Hα): the shift is less than 1/100 of a pixel here');
+    return;
+  }
+  /* rings: each wavefront grows from where the star was; seen from the star they drift with speed beta */
+  var lr = 560 * (1 + beta), ll = 560 * (1 - beta), sxs = L.sx;
+  c.save(); c.beginPath(); c.rect(0, 0, w, L.z0 - (p && p.z ? 36 : 18)); c.clip();
+  for (var i = 0; i < DOP.rings.length; i++) {
+    var age = RM ? -DOP.rings[i].t + 0.2 : t - DOP.rings[i].t, r = age * cvis, cx = sxs + beta * cvis * age, a = Math.max(0, 0.8 * (1 - r / (w * 1.05)));
+    if (r <= 0 || a <= 0) continue;
+    c.lineWidth = 1.6;
+    c.strokeStyle = wlCss(clamp(lr, 400, 700), a.toFixed(3)); c.beginPath(); c.arc(cx, L.cy, r, -Math.PI / 2, Math.PI / 2); c.stroke();
+    c.strokeStyle = wlCss(clamp(ll, 400, 700), a.toFixed(3)); c.beginPath(); c.arc(cx, L.cy, r, Math.PI / 2, Math.PI * 1.5); c.stroke();
+  }
+  c.restore();
+  if (p && p.z) { c.strokeStyle = 'rgba(190,220,255,.6)'; c.lineWidth = 2; c.beginPath(); c.moveTo(sxs - 26, L.cy - 18); c.lineTo(sxs + 26, L.cy + 18); c.stroke(); }
+  glow(c, sxs, L.cy, 30, p && p.z ? '190,220,255' : '255,240,210', .85); dot(c, sxs, L.cy, 6, '#ffffff');
+  if (beta) {
+    var dir = beta > 0 ? -1 : 1, ax0 = sxs + dir * 16, ax1 = sxs + dir * 48;
+    c.strokeStyle = '#f5c542'; c.lineWidth = 2; c.beginPath(); c.moveTo(ax0, L.cy - 24); c.lineTo(ax1, L.cy - 24); c.stroke();
+    c.beginPath(); c.moveTo(ax1, L.cy - 24); c.lineTo(ax1 - dir * 6, L.cy - 28); c.lineTo(ax1 - dir * 6, L.cy - 20); c.closePath(); c.fillStyle = '#f5c542'; c.fill();
+    label(c, p && p.z ? 'carried away by expanding space' : beta > 0 ? 'moving away from us' : 'coming towards us', sxs, L.cy + 40, '#f5c542', 10.5, 'center');
+    label(c, beta > 0 ? 'waves stretched: redder' : 'waves squashed: bluer', clamp(L.ox - 60, sxs + 70, w - 70), L.cy - 44, wlCss(clamp(lr, 420, 680)), 10.5, 'center');
+  } else label(c, 'waves evenly spaced', sxs, L.cy + 40, '#9aa6c8', 10.5, 'center', 600);
+  if (p && p.z) {
+    c.drawImage(zoomOff(380, 770), L.x0, L.z0, L.x1 - L.x0, L.z1 - L.z0);
+    [[410.17, 'Hδ'], [434.05, 'Hγ'], [486.13, 'Hβ'], [656.28, 'Hα']].forEach(function (q, k) {
+      var xr = xOf(q[0], L.x0, L.x1), xs = xOf(q[0] * (1 + p.z), L.x0, L.x1);
+      c.setLineDash([3, 3]); c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1; c.beginPath(); c.moveTo(xr, L.z0); c.lineTo(xr, L.z1); c.stroke(); c.setLineDash([]);
+      if (xs <= L.x1) { var g = c.createLinearGradient(xs - 7, 0, xs + 7, 0); g.addColorStop(0, wlCss(q[0] * (1 + p.z), 0)); g.addColorStop(0.5, wlCss(q[0] * (1 + p.z), 1)); g.addColorStop(1, wlCss(q[0] * (1 + p.z), 0)); c.fillStyle = g; c.fillRect(xs - 7, L.z0, 14, L.z1 - L.z0); }
+      if (k === 2 || !P) label(c, q[1] + ' →', xr, L.z0 - 8 - (k % 2) * 11, '#cfd6ee', 10, 'center');
+    });
+    zoomFrame(c, L, 380, 770, P ? 'dashed: where the lines belong · bright: 3C 273' : 'dashed: where hydrogen’s lines belong · bright: where 3C 273’s are');
+    return;
+  }
+  var z0b = 650, z1b = 663, xl = xOf(656.28 + dopShift(656.28, DOP.v), L.x0, L.x1, z0b, z1b);
+  c.drawImage(zoomOff(z0b, z1b), L.x0, L.z0, L.x1 - L.x0, L.z1 - L.z0);
+  darkLine(c, xl, L, 0.18 / 13 * (L.x1 - L.x0), 0.85);
+  zoomFrame(c, L, z0b, z1b, P ? 'Hα close-up · dashed = where it sits in the lab' : 'close-up of hydrogen’s red line (Hα) · dashed = where it sits in the lab');
+}
+function darkLine(c, x, L, sig, depth) {
+  var g = c.createLinearGradient(x - 3 * sig, 0, x + 3 * sig, 0);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(0.5, 'rgba(0,0,0,' + depth + ')'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  c.fillStyle = g; c.fillRect(x - 3 * sig, L.z0, 6 * sig, L.z1 - L.z0);
+}
+function zoomFrame(c, L, z0, z1, title) {
+  frame(c, L.x0, L.z0, L.x1 - L.x0, L.z1 - L.z0);
+  if (z1 - z0 < 100) {
+    var xr = xOf(656.28, L.x0, L.x1, z0, z1);
+    c.setLineDash([3, 3]); c.strokeStyle = 'rgba(255,255,255,.8)'; c.lineWidth = 1; c.beginPath(); c.moveTo(xr, L.z0 - 4); c.lineTo(xr, L.z1 + 4); c.stroke(); c.setLineDash([]);
+  }
+  label(c, title, L.x0, L.z0 - (z1 - z0 > 100 ? 30 : 10), '#9aa6c8', 10.5, 'left', 600);
+  label(c, (z1 - z0 > 100 ? z0 : z0.toFixed(1)) + ' nm', L.x0, L.z1 + 11, '#6f7ba3', 10, 'left', 600);
+  label(c, (z1 - z0 > 100 ? z1 : z1.toFixed(1)) + ' nm', L.x1, L.z1 + 11, '#6f7ba3', 10, 'right', 600);
+}
+
+/* ── 7 · The Seestar’s dual-band filter ───────────────────────────────── */
+var FL = { cv: $('filtCv'), on: false, k: 0 };
+var NEB = [[656.28, 1, 'Hα'], [658.35, .2, ''], [654.80, .07, ''], [486.13, .33, 'Hβ'], [500.68, 1.2, 'OIII'], [495.89, .4, ''], [587.56, .04, ''], [434.05, .15, 'Hγ'], [410.17, .08, ''], [671.64, .015, ''], [673.08, .02, ''], [630.03, .02, ''], [436.32, .01, '']];
+var BANDS = [[485.68, 515.68, 'OIII · 30 nm', '91,214,224'], [646.28, 666.28, 'Hα · 20 nm', '255,107,107']];
+function inBand(l) { return BANDS.some(function (b) { return l >= b[0] && l <= b[1]; }); }
+function filterStats() {
+  var nk = 0, nt = 0, ck = 0, ct = 0, l;
+  NEB.forEach(function (x) { nt += x[1]; if (inBand(x[0])) nk += x[1]; });
+  for (l = L0; l <= L1; l += 0.5) { var v = ledI(l); ct += v; if (inBand(l)) ck += v; }
+  return { neb: nk / nt, city: ck / ct, gain: (nk / nt) / (ck / ct) };
+}
+function setFilter(on) {
+  FL.on = !!on; $('fOn').setAttribute('aria-pressed', String(FL.on));
+  $('fOn').textContent = FL.on ? '🎛️ Take the filter off' : '🎛️ Fit the dual-band filter';
+  if (RM) FL.k = FL.on ? 1 : 0;
+  var S = filterStats();
+  $('fNeb').textContent = FL.on ? Math.round(100 * S.neb) + '%' : '100%';
+  $('fCity').textContent = FL.on ? Math.round(100 * S.city) + '%' : '100%';
+  $('fGain').textContent = FL.on ? '×' + Math.round(S.gain) + ' better' : '×1 (no help)';
+  $('filtCap').innerHTML = FL.on
+    ? '<b>Filter fitted.</b> About ' + Math.round(10 * S.neb) + ' in every 10 parts of the nebula’s light still gets through — it is concentrated in exactly those colours — but only about 1 part in ' + Math.round(1 / S.city) + ' of the street-light glow. Against the sky, the nebula stands out about ' + Math.round(S.gain) + ' times better.'
+    : '<b>No filter.</b> The camera collects every colour: the nebula’s handful of bright lines, and the street lights’ broad glow at all colours. Over a city the glow wins, and faint nebulae vanish.';
+  filtDraw(); kick();
+}
+function filtTick(t, dt) { var tg = FL.on ? 1 : 0; FL.k = tg > FL.k ? Math.min(tg, FL.k + dt * 2.5) : Math.max(tg, FL.k - dt * 2.5); filtDraw(); }
+function filtDraw() {
+  var cv = FL.cv; if (!cv) return;
+  var wq = cssW(cv), f = fit(cv, wq < 560 ? 0.62 : 0.4), c = f.c, w = f.w, h = f.h, P = w < 560, k = FL.k;
+  var x0 = 6, x1 = w - 6, y0 = 30, y1 = h - 24, span = y1 - y0;
+  function X(l) { return xOf(l, x0, x1); }
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, w, h);
+  var mx = 0, l; for (l = L0; l <= L1; l += 2) mx = Math.max(mx, ledI(l));
+  c.beginPath(); c.moveTo(x0, y1);
+  for (l = L0; l <= L1; l += 1) c.lineTo(X(l), y1 - span * 0.55 * ledI(l) / mx);
+  c.lineTo(x1, y1); c.closePath(); c.fillStyle = 'rgba(255,214,150,.2)'; c.fill(); c.strokeStyle = 'rgba(255,214,150,.75)'; c.lineWidth = 1.3; c.stroke();
+  label(c, P ? 'street-light glow' : 'white LED street lights (the city’s glow)', X(P ? 596 : 560), y1 - span * 0.55 - 10, '#ffd696', 10.5, 'center');
+  NEB.forEach(function (q) {
+    var x = X(q[0]), top = y1 - span * 0.95 * Math.sqrt(q[1] / 1.2);
+    c.strokeStyle = wlCss(q[0]); c.lineWidth = 2; c.beginPath(); c.moveTo(x, y1); c.lineTo(x, top); c.stroke();
+    glow(c, x, top, 6, wl2rgb(q[0]).join(','), .8);
+    if (q[2]) { c.globalAlpha = q[2] === 'Hα' || q[2] === 'OIII' ? 1 - k : 1; label(c, q[2], x + (q[2] === 'Hα' ? 8 : q[2] === 'OIII' ? 6 : 0), top - 8, wlCss(q[0]), 10.5, q[2] === 'Hα' || q[2] === 'OIII' ? 'left' : 'center'); c.globalAlpha = 1; }
+  });
+  label(c, P ? 'Orion Nebula' : 'Orion Nebula: bright lines', x0 + 4, y0 + 0.3 * span, '#cfd6ee', 10.5, 'left', 600);
+  if (k > 0) {
+    c.fillStyle = 'rgba(5,7,15,' + (0.8 * k).toFixed(3) + ')';
+    var a = X(BANDS[0][0]), b = X(BANDS[0][1]), cc = X(BANDS[1][0]), d = X(BANDS[1][1]);
+    c.fillRect(x0, y0 - 2, a - x0, span + 2); c.fillRect(b, y0 - 2, cc - b, span + 2); c.fillRect(d, y0 - 2, x1 - d, span + 2);
+    BANDS.forEach(function (B) {
+      var xa = X(B[0]), xb = X(B[1]);
+      c.strokeStyle = 'rgba(' + B[3] + ',' + (0.9 * k).toFixed(3) + ')'; c.lineWidth = 1.4; c.strokeRect(xa, y0 - 2, xb - xa, span + 2);
+      c.globalAlpha = k; label(c, B[2], (xa + xb) / 2, y0 - 14, 'rgb(' + B[3] + ')', 10, 'center'); c.globalAlpha = 1;
+    });
+  }
+  c.strokeStyle = 'rgba(255,255,255,.3)'; c.lineWidth = 1; c.beginPath(); c.moveTo(x0, y1 + .5); c.lineTo(x1, y1 + .5); c.stroke();
+  axis(c, x0, x1, y1, L0, L1, P);
+}
+
+/* ── 7b · Star colours tonight ────────────────────────────────────────── */
+var TM = 'auto';
+function tnTime() {
+  var d = new Date();
+  if (TM === 'now' || (TM === 'auto' && A.sunAltAt(d) < -12)) return { d: d, l: 'now' };
+  var sg = new Date(d.getTime() + 8 * 3600e3);
+  return { d: new Date(Date.UTC(sg.getUTCFullYear(), sg.getUTCMonth(), sg.getUTCDate(), 13, 0, 0)), l: '9pm' };
+}
+function nextUp(ra, dec, d) {
+  for (var m = 10; m <= 720; m += 10) { var t = new Date(d.getTime() + m * 60000); if (A.altazAt(ra, dec, t).alt >= 20 && A.sunAltAt(t) < -12) return t; }
+  return null;
+}
+function sgtTime(t) { var s = new Date(t.getTime() + 8 * 3600e3), h = s.getUTCHours(), m = s.getUTCMinutes(); return ((h % 12) || 12) + ':' + pad2(m) + (h < 12 ? ' am' : ' pm'); }
+function where(p) {
+  var a = Math.round(p.alt), d = A.compass(p.az);
+  if (p.alt >= 20) return '<span class="up">' + a + '° up in the ' + d + '</span>';
+  if (p.alt > 0) return '<span class="lo">low — ' + a + '° in the ' + d + '</span>';
+  return '<span class="dn">below the horizon</span>';
+}
+function colWord(T) { return classOf(T).col; }
+function tnRender() {
+  var T = tnTime(), d = T.d;
+  var rows = STARS.map(function (s) { return { s: s, p: A.altazAt(s[1], s[2], d) }; });
+  var up = rows.filter(function (r) { return r.p.alt >= 20; }).length;
+  $('tWhen').textContent = (T.l === 'now' ? 'Right now' + (A.sunAltAt(d) > -6 ? ' — daylight, so this is where they would be in a dark sky' : '') : 'Tonight at 9 pm (SGT)') + ' · ' + up + ' of ' + rows.length + ' well placed';
+  $('tNow').setAttribute('aria-pressed', String(T.l === 'now')); $('t9').setAttribute('aria-pressed', String(T.l !== 'now'));
+  $('tn').innerHTML = rows.map(function (r) {
+    var s = r.s, col = bbColor(s[4]), nu = r.p.alt < 20 ? nextUp(s[1], s[2], d) : null;
+    return '<div class="tnr' + (r.p.alt <= 0 ? ' below' : '') + '"><div class="sw" style="background:' + rgbs(col) + '" aria-hidden="true"></div><div><div class="nm">' + s[0] + ' <span class="ty">· ' + s[5] + '</span></div><div class="ty">' + s[3] + ' · about ' + fmtInt(s[4]) + ' K · ' + colWord(s[4]) + '</div></div><div class="wh">' + where(r.p) + (nu ? '<br><span class="mute">well up by ' + sgtTime(nu) + '</span>' : '') + '</div></div>';
+  }).join('');
+}
+
+/* ── 8 · Lamps ─────────────────────────────────────────────────────────── */
+function lampRows() {
+  $('lamps').innerHTML = LAMPS.map(function (L, i) { return '<div class="bc st"><span class="el">' + L.n + '<small>' + L.sub + '</small></span><canvas id="lp-' + i + '" aria-hidden="true"></canvas></div>'; }).join('');
+}
+function lampsDraw() {
+  LAMPS.forEach(function (Lp, i) {
+    var cv = $('lp-' + i); if (!cv) return;
+    var f = fitBox(cv); f.c.fillStyle = '#000'; f.c.fillRect(0, 0, f.w, f.h); paintSpec(f.c, 0, 0, f.w, f.h, Lp.o, f.d);
+  });
+}
+
+/* ── Animation loop: one requestAnimationFrame for every running piece ─── */
+var ANIMS = [], rafOn = false, lastT = 0;
+function addAnim(el, on, tick) { var a = { el: el, vis: true, on: on, tick: tick }; ANIMS.push(a); return a; }
+function loop(ms) {
+  var t = ms / 1000, dt = lastT ? Math.min(0.1, t - lastT) : 0, any = false; lastT = t;
+  if (!document.hidden) for (var i = 0; i < ANIMS.length; i++) { var a = ANIMS[i]; if (a.vis && a.on()) { a.tick(t, dt); any = true; } }
+  if (any) requestAnimationFrame(loop); else { rafOn = false; lastT = 0; }
+}
+function kick() { if (!rafOn) { rafOn = true; requestAnimationFrame(loop); } }
+
+/* ── Start-up ─────────────────────────────────────────────────────────── */
+function fitAll() {
+  var a = fit(HE.cv, cssW(HE.cv) < 560 ? 0.7 : 0.36); HE.c = a.c; HE.w = a.w; HE.h = a.h; HE.d = a.d; heroLayout();
+  var b = fit(LAB.cv, cssW(LAB.cv) < 560 ? 0.95 : 0.46); LAB.c = b.c; LAB.w = b.w; LAB.h = b.h; LAB.d = b.d; labLayout();
+  var g = fit(AT.cv, cssW(AT.cv) < 560 ? 0.95 : 0.5); AT.c = g.c; AT.w = g.w; AT.h = g.h; AT.d = g.d; atLayout();
+  var e = fit(DOP.cv, cssW(DOP.cv) < 560 ? 0.92 : 0.5); DOP.c = e.c; DOP.w = e.w; DOP.h = e.h; DOP.d = e.d; dopLayout();
+}
+function drawStatic() { lawDraw(); sunDraw(); bcDraw(); detDraw(); bbDraw(); filtDraw(); lampsDraw(); }
+function redrawAll() { var t = now(); heroDraw(t); labDraw(t); atDraw(t); dopDraw(t); drawStatic(); }
+function on(id, ev, fn) { var el = $(id); if (el) el.addEventListener(ev, fn); }
+function hit(e, attr) { var el = e.target && e.target.closest ? e.target.closest('[' + attr + ']') : null; return el ? el.getAttribute(attr) : null; }
+
+bcRows(); mysButtons(); bbButtons(); dopButtons(); lampRows(); atButtons();
+labCaption(); atCaption();
+fitAll(); redrawAll();
+setT(TSUN); setPreset('still'); setFilter(false); pickMys(0); tnRender();
+
+on('lbC', 'click', function () { setLab('cont'); });
+on('lbA', 'click', function () { setLab('abs'); });
+on('lbE', 'click', function () { setLab('em'); });
+on('lbGas', 'change', function () { setGas($('lbGas').value || 'H'); });
+on('atE', 'click', function () { setAtMode('emit'); });
+on('atA', 'click', function () { setAtMode('abs'); });
+on('atAuto', 'click', function () {
+  AT.auto = !AT.auto; AT.idleAt = 0;
+  $('atAuto').setAttribute('aria-pressed', String(AT.auto)); $('atAuto').textContent = AT.auto ? '⏸ Stop' : '▶ Run on its own';
+  if (AT.auto && RM) { JUMPS.forEach(function (J, k) { AT.seen[AT.mode][k] = true; }); AT.auto = false; $('atAuto').setAttribute('aria-pressed', 'false'); $('atAuto').textContent = '▶ Run on its own'; }
+  atDraw(now()); kick();
+});
+on('atJumps', 'click', function (e) { var j = hit(e, 'data-j'); if (j != null) pickJump(+j); });
+on('atom', 'click', function () { startJump(); });
+on('bcs', 'click', function (e) { var k = hit(e, 'data-el'); if (k) showEl(k); });
+on('mys', 'click', function (e) { var m = hit(e, 'data-m'); if (m != null) pickMys(+m); });
+on('detEls', 'click', function (e) { var k = hit(e, 'data-e'); if (k) toggleEl(k); });
+on('detCheck', 'click', detCheck);
+on('detShow', 'click', detShow);
+on('bbT', 'input', function () { setT(v2t(+$('bbT').value), true); });
+on('bbPre', 'click', function (e) { var T = hit(e, 'data-t'); if (T) setT(+T); });
+on('cls', 'click', function (e) { var T = hit(e, 'data-t'); if (T) setT(+T); });
+on('dopV', 'input', function () { setV(+$('dopV').value); kick(); });
+on('dopPre', 'click', function (e) { var id = hit(e, 'data-p'); if (id) setPreset(id); });
+on('fOn', 'click', function () { setFilter(!FL.on); });
+on('tNow', 'click', function () { TM = 'now'; tnRender(); });
+on('t9', 'click', function () { TM = '9pm'; tnRender(); });
+
+/* animations — each runs only while it is on screen */
+addAnim(HE.cv, function () { return !RM; }, heroTick);
+addAnim(LAB.cv, function () { return !RM; }, labTick);
+addAnim(AT.cv, function () { return !RM || AT.st !== 'idle'; }, atTick);
+addAnim(DOP.cv, function () { return !RM; }, dopTick);
+addAnim(FL.cv, function () { return FL.k !== (FL.on ? 1 : 0); }, filtTick);
+if ('IntersectionObserver' in window) {
+  ANIMS.forEach(function (a) { a.vis = false; });
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (en) { ANIMS.forEach(function (a) { if (a.el === en.target) a.vis = en.isIntersecting; }); });
+    kick();
+  }, { rootMargin: '60px' });
+  ANIMS.forEach(function (a) { if (a.el) io.observe(a.el); });
+}
+document.addEventListener('visibilitychange', kick);
+kick();
+var rz = 0, lastW = window.innerWidth;
+window.addEventListener('resize', function () {
+  clearTimeout(rz);
+  rz = setTimeout(function () { if (window.innerWidth === lastW) return; lastW = window.innerWidth; fitAll(); redrawAll(); }, 180);
+});
+setInterval(function () { try { tnRender(); } catch (err) {} }, 300000);
+
+/* test hook (test-logic.js) */
+window.SPEC = { CK: CK, TSUN: TSUN, L0: L0, L1: L1, EL: EL, MYS: MYS, SUNF: SUNF, JUMPS: JUMPS, STARS: STARS, CLS: CLS, LAMPS: LAMPS, NEB: NEB, BANDS: BANDS,
+  rydberg: rydberg, rydbergVac: rydbergVac, levelE: levelE, photonEV: photonEV, wien: wien, planck: planck, planckRel: planckRel, bbColor: bbColor, wl2rgb: wl2rgb, colName: colName,
+  classOf: classOf, dopShift: dopShift, surf: surf, matchEl: matchEl, detEval: detEval, filterStats: filterStats, t2v: t2v, v2t: v2t,
+  setLab: setLab, setGas: setGas, setAtMode: setAtMode, pickJump: pickJump, showEl: showEl, pickMys: pickMys, toggleEl: toggleEl, detCheck: detCheck, detShow: detShow,
+  setT: setT, setV: setV, setPreset: setPreset, setFilter: setFilter, tnRender: tnRender, tnTime: tnTime, DET: DET, AT: AT, LAB: LAB, DOP: DOP, BB: BB, FL: FL, BC: BC };
+})();
+</script>
+<script src="version.js"></script>
+</body>
+</html>

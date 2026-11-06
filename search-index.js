@@ -386,6 +386,13 @@ var PAGES = [
 "k": "nucleosynthesis elements periodic table origin gold iron supernova kilonova neutron star merger big bang stardust star stuff body atoms fusion cosmic calendar"
 },
 {
+"f": "spectroscopy.html",
+"t": "Reading Starlight — How We Know What Stars Are Made Of",
+"d": "Astronomical spectroscopy for everyone: split starlight into a rainbow, find its dark and bright lines and read them like barcodes to learn what a star is made of, how hot it is and how fast it is moving. An animated light lab, the hydrogen atom’s ladder, element barcodes, a spectrum-detective game, star colours and classes, the Doppler shift, and how the Seestar’s dual-band filter beats Singapore’s street lights — from the Science Centre Observatory.",
+"g": "Learn & reference",
+"k": "spectroscopy spectrum spectra spectral lines absorption emission fraunhofer kirchhoff bunsen prism rainbow barcode element composition hydrogen helium doppler redshift blueshift temperature black body star colour color class OBAFGKM cecilia payne exoplanet filter"
+},
+{
 "f": "hemispheres.html",
 "t": "Northern vs Southern Hemisphere Skies",
 "d": "Why the night sky looks completely different from the northern and southern hemispheres — the two celestial poles, circumpolar stars, the seasonal flip, Polaris versus the Southern Cross, and why Orion and the Moon appear upside down down south. Computed live for the Science Centre Observatory, Singapore.",
