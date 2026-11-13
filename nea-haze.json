@@ -2,7 +2,7 @@
   "_comment": "Written by .github/workflows/refresh-nea-haze.yml. Do not edit by hand - it is overwritten on a schedule.",
   "source": "Meteorological Service Singapore (MSS), the national meteorological authority under NEA",
   "page": "https://www.weather.gov.sg/warning-haze-satellite-image/",
-  "image": "https://www.weather.gov.sg/files/warnadv/haze/sat/suma_20261112_081738.jpg",
-  "captured": "2026-11-12T08:17:38+08:00",
-  "refreshed": "2026-11-12T16:57:02Z"
+  "image": "https://www.weather.gov.sg/files/warnadv/haze/sat/suma_20261113_173503.jpg",
+  "captured": "2026-11-13T17:35:03+08:00",
+  "refreshed": "2026-11-13T12:27:03Z"
 }
